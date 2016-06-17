@@ -34,6 +34,7 @@ desired effect
 	
 		
 		<pinche-app></pinche-app>
+		
 
 
 </div>

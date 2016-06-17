@@ -14,12 +14,35 @@ Vue.component('pincheApp', Layout);
 let router = new Router();
 //content views
 import HomeView from './components/app_logic/HelloView.vue';
+import NotFoundView from './components/layouts/errors/404.vue';
 //config routes
 router.map({
-	'/home':{
+	'/':{
 		component: HomeView,
-		name: "home"
-	}
+		name: "home",
+		subRoutes:{
+			'other':{
+				component: HomeView,
+				name: "otro"
+			},
+			'profile':{
+				component: NotFoundView,
+				name: 'profile',
+				subRoutes: {
+					'/edit' : {
+						component: NotFoundView,
+						name: 'custom1',	
+					},
+					'/create' : {
+						component: NotFoundView,
+						name: 'custom2',	
+					},
+
+				}
+			}
+		}
+	},
+	
 });
 
 /*

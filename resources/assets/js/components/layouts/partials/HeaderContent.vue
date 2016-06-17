@@ -6,7 +6,7 @@
 		</h1>
 		<ol class="breadcrumb">
 			<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-			<li class="active">Dashboard</li>
+			<li v-show="$index > 0" v-for="item in listPath" :class="{'active': listPath.length-1 == $index}" track-by="$index">{{item}}</li>
 		</ol>
 	</section>
 </template>
@@ -24,6 +24,11 @@ module.exports = {
 			type: String,
 			required: false,
 			default: ""
+		}
+	},
+	computed:{
+		listPath: function(){
+			return this.$route.path.split('/');
 		}
 	}
 }

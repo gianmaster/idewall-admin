@@ -14562,6 +14562,10 @@ var _HelloView = require('./components/app_logic/HelloView.vue');
 
 var _HelloView2 = _interopRequireDefault(_HelloView);
 
+var _ = require('./components/layouts/errors/404.vue');
+
+var _2 = _interopRequireDefault(_);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _vue2.default.use(_vueRouter2.default);
@@ -14578,10 +14582,32 @@ var router = new _vueRouter2.default();
 
 //config routes
 router.map({
-	'/home': {
+	'/': {
 		component: _HelloView2.default,
-		name: "home"
+		name: "home",
+		subRoutes: {
+			'other': {
+				component: _HelloView2.default,
+				name: "otro"
+			},
+			'profile': {
+				component: _2.default,
+				name: 'profile',
+				subRoutes: {
+					'/edit': {
+						component: _2.default,
+						name: 'custom1'
+					},
+					'/create': {
+						component: _2.default,
+						name: 'custom2'
+					}
+
+				}
+			}
+		}
 	}
+
 });
 
 /*
@@ -14595,7 +14621,7 @@ new Vue({
 
 router.start(App, '#thefuckingapp');
 
-},{"./components/app_logic/HelloView.vue":7,"./components/layouts/Layout.vue":8,"vue":5,"vue-resource":3,"vue-router":4}],7:[function(require,module,exports){
+},{"./components/app_logic/HelloView.vue":7,"./components/layouts/Layout.vue":8,"./components/layouts/errors/404.vue":9,"vue":5,"vue-resource":3,"vue-router":4}],7:[function(require,module,exports){
 'use strict';
 
 var _TogglePanel = require('../reusables/TogglePanel.vue');
@@ -14628,7 +14654,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-60d9cc0a", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../reusables/TogglePanel.vue":14,"vue":5,"vue-hot-reload-api":2}],8:[function(require,module,exports){
+},{"../reusables/TogglePanel.vue":17,"vue":5,"vue-hot-reload-api":2}],8:[function(require,module,exports){
 'use strict';
 
 var _MainHeader = require('./partials/MainHeader.vue');
@@ -14682,7 +14708,32 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-598eeb8d", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./partials/ControlSidebar.vue":9,"./partials/Footer.vue":10,"./partials/HeaderContent.vue":11,"./partials/MainHeader.vue":12,"./partials/Sidebar.vue":13,"vue":5,"vue-hot-reload-api":2}],9:[function(require,module,exports){
+},{"./partials/ControlSidebar.vue":10,"./partials/Footer.vue":11,"./partials/HeaderContent.vue":12,"./partials/MainHeader.vue":13,"./partials/Sidebar.vue":16,"vue":5,"vue-hot-reload-api":2}],9:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.default = {
+	methods: {
+		nothingToDoHere: function nothingToDoHere() {
+			alert('Nothing to do here, go to Home');
+		}
+	}
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"error-page\">\n\t<h2 class=\"headline text-yellow\"> 404</h2>\n\t<div class=\"error-content\">\n\t<h3><i class=\"fa fa-warning text-yellow\"></i> Oops! Recurso no encontrado.</h3>\n\t\t<p>\n\t\t\tPágina o recurso no encontrado\n\t\t\tIr a la página de inicio <a v-link=\"{name: 'index'}\">Home</a> \n\t\t</p>\n\t\t<form class=\"search-form\" @submit=\"nothingToDoHere\">\n\t\t\t<div class=\"input-group\">\n\t\t\t\t<input type=\"text\" name=\"search\" class=\"form-control\" placeholder=\"Buscar...\">\n\t\t\t\t<div class=\"input-group-btn\">\n\t\t\t\t\t<button type=\"submit\" name=\"submit\" class=\"btn btn-warning btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t</div>\n\t\t\t</div><!-- /.input-group -->\n\t\t</form>\n\t</div><!-- /.error-content -->\n</div><!-- /.error-page -->\n\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-b1f664ec", module.exports)
+  } else {
+    hotAPI.update("_v-b1f664ec", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":5,"vue-hot-reload-api":2}],10:[function(require,module,exports){
 "use strict";
 if (module.exports.__esModule) module.exports = module.exports.default
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t<!-- Control Sidebar -->\n\t<aside class=\"control-sidebar control-sidebar-dark\">\n\t\t<!-- Create the tabs -->\n\t\t<ul class=\"nav nav-tabs nav-justified control-sidebar-tabs\">\n\t\t\t<li class=\"active\"><a href=\"#control-sidebar-home-tab\" data-toggle=\"tab\"><i class=\"fa fa-home\"></i></a></li>\n\t\t\t<li><a href=\"#control-sidebar-settings-tab\" data-toggle=\"tab\"><i class=\"fa fa-gears\"></i></a></li>\n\t\t</ul>\n\t\t<!-- Tab panes -->\n\t\t<div class=\"tab-content\">\n\t\t\t<!-- Home tab content -->\n\t\t\t<div class=\"tab-pane active\" id=\"control-sidebar-home-tab\">\n\t\t\t<h3 class=\"control-sidebar-heading\">Actividad reciente</h3>\n\t\t\t\t<ul class=\"control-sidebar-menu\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<a href=\"javascript::;\">\n\t\t\t\t\t\t\t<i class=\"menu-icon fa fa-birthday-cake bg-red\"></i>\n\t\t\t\t\t\t\t<div class=\"menu-info\">\n\t\t\t\t\t\t\t\t<h4 class=\"control-sidebar-subheading\">Cumpleaños</h4>\n\t\t\t\t\t\t\t\t<p>01-07-1990</p>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</li>\n\t\t\t\t</ul><!-- /.control-sidebar-menu -->\n\n\t\t\t\t<h3 class=\"control-sidebar-heading\">Progreso</h3>\n\t\t\t\t<ul class=\"control-sidebar-menu\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<a href=\"javascript::;\">\n\t\t\t\t\t\t\t<h4 class=\"control-sidebar-subheading\">\n\t\t\t\t\t\t\t\tCustom Template\n\t\t\t\t\t\t\t\t<span class=\"label label-danger pull-right\">70%</span>\n\t\t\t\t\t\t\t</h4>\n\t\t\t\t\t\t\t<div class=\"progress progress-xxs\">\n\t\t\t\t\t\t\t\t<div class=\"progress-bar progress-bar-danger\" style=\"width: 70%\"></div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</li>\n\t\t\t\t</ul><!-- /.control-sidebar-menu -->\n\n\t\t\t</div><!-- /.tab-pane -->\n\t\t\t<!-- Stats tab content -->\n\t\t\t<div class=\"tab-pane\" id=\"control-sidebar-stats-tab\">Status</div><!-- /.tab-pane -->\n\t\t\t<!-- Settings tab content -->\n\t\t\t<div class=\"tab-pane\" id=\"control-sidebar-settings-tab\">\n\t\t\t\t<form method=\"post\">\n\t\t\t\t\t<h3 class=\"control-sidebar-heading\">Ajustes Generales</h3>\n\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t<label class=\"control-sidebar-subheading\">\n\t\t\t\t\t\t\tPanel de reporte\n\t\t\t\t\t\t\t<input type=\"checkbox\" class=\"pull-right\">\n\t\t\t\t\t\t</label>\n\t\t\t\t\t\t<p>\n\t\t\t\t\t\t\tAjustes de información\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div><!-- /.form-group -->\n\t\t\t\t</form>\n\t\t\t</div><!-- /.tab-pane -->\n\t\t</div>\n</aside><!-- /.control-sidebar\n\n<!-- Add the sidebar's background. This div must be placed\n\timmediately after the control sidebar -->\n\t<div class=\"control-sidebar-bg\"></div>\n"
@@ -14696,7 +14747,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-d1805794", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":5,"vue-hot-reload-api":2}],10:[function(require,module,exports){
+},{"vue":5,"vue-hot-reload-api":2}],11:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -14747,7 +14798,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-2fac5f92", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":5,"vue-hot-reload-api":2}],11:[function(require,module,exports){
+},{"vue":5,"vue-hot-reload-api":2}],12:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -14762,10 +14813,15 @@ module.exports = {
 			required: false,
 			default: ""
 		}
+	},
+	computed: {
+		listPath: function listPath() {
+			return this.$route.path.split('/');
+		}
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<section class=\"content-header\">\n\t<h1>\n\t\t{{title_page}}\n\t\t<small>{{page_description}}</small>\n\t</h1>\n\t<ol class=\"breadcrumb\">\n\t\t<li><a href=\"#\"><i class=\"fa fa-dashboard\"></i> Home</a></li>\n\t\t<li class=\"active\">Dashboard</li>\n\t</ol>\n</section>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<section class=\"content-header\">\n\t<h1>\n\t\t{{title_page}}\n\t\t<small>{{page_description}}</small>\n\t</h1>\n\t<ol class=\"breadcrumb\">\n\t\t<li><a href=\"#\"><i class=\"fa fa-dashboard\"></i> Home</a></li>\n\t\t<li v-show=\"$index > 0\" v-for=\"item in listPath\" :class=\"{'active': listPath.length-1 == $index}\" track-by=\"$index\">{{item}}</li>\n\t</ol>\n</section>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -14776,7 +14832,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-3e7c0ff6", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":5,"vue-hot-reload-api":2}],12:[function(require,module,exports){
+},{"vue":5,"vue-hot-reload-api":2}],13:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -14840,10 +14896,99 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-43a1eac6", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":5,"vue-hot-reload-api":2}],13:[function(require,module,exports){
-"use strict";
+},{"vue":5,"vue-hot-reload-api":2}],14:[function(require,module,exports){
+'use strict';
+
+var _MenuItem = require('./MenuItem2.vue');
+
+var _MenuItem2 = _interopRequireDefault(_MenuItem);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 module.exports = {
+	components: {
+		creaMenu: _MenuItem2.default
+	},
+	props: {
+		item: {
+			type: Object,
+			required: true
+		},
+		isActive: {
+			type: Boolean,
+			required: true
+		},
+		isParent: {
+			type: Boolean,
+			required: true
+		}
+	}
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<li v-link-active=\"\" v-if=\"!isParent\">\n\t<a v-link=\"{name:item.url, activeClass:'active'}\"><i :class=\"item.iconClass\"></i> {{item.name}}</a>\n</li>\n<li v-else=\"\" class=\"treeview\">\n\t<a href=\"#\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span> <i class=\"fa fa-angle-left pull-right\"></i></a>\n\t<ul class=\"treeview-menu\">\n\t\t<crea-menu v-for=\"itemenu in item.children\" :item=\"itemenu\" :is-active=\"\n\t\titemenu.active\" :is-parent=\"itemenu.children.length>0\"></crea-menu>\n\t</ul>\n</li>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-656197c9", module.exports)
+  } else {
+    hotAPI.update("_v-656197c9", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"./MenuItem2.vue":15,"vue":5,"vue-hot-reload-api":2}],15:[function(require,module,exports){
+'use strict';
+
+var _MenuItem = require('./MenuItem.vue');
+
+var _MenuItem2 = _interopRequireDefault(_MenuItem);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+module.exports = {
+	components: {
+		creaMenu: _MenuItem2.default
+	},
+	props: {
+		item: {
+			type: Object,
+			required: true
+		},
+		isActive: {
+			type: Boolean,
+			required: true
+		},
+		isParent: {
+			type: Boolean,
+			required: true
+		}
+	}
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<li v-link-active=\"\" v-if=\"!isParent\">\n\t<a v-link=\"{name:item.url, activeClass:'active'}\"><i :class=\"item.iconClass\"></i> {{item.name}}</a>\n</li>\n<li v-else=\"\" class=\"treeview\">\n\t<a href=\"#\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span> <i class=\"fa fa-angle-left pull-right\"></i></a>\n\t<ul class=\"treeview-menu\">\n\t\t<crea-menu v-for=\"itemenu in item.children\" :item=\"itemenu\" :is-active=\"\n\t\titemenu.active\" :is-parent=\"itemenu.children.length>0\"></crea-menu>\n\t</ul>\n</li>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-46e90ab9", module.exports)
+  } else {
+    hotAPI.update("_v-46e90ab9", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"./MenuItem.vue":14,"vue":5,"vue-hot-reload-api":2}],16:[function(require,module,exports){
+'use strict';
+
+var _MenuItem = require('./MenuItem.vue');
+
+var _MenuItem2 = _interopRequireDefault(_MenuItem);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+module.exports = {
+	components: {
+		menuItem: _MenuItem2.default
+	},
 	props: {
 		username: {
 			type: String,
@@ -14854,10 +14999,47 @@ module.exports = {
 			type: Boolean,
 			required: true
 		}
+	},
+	data: function data() {
+		return {
+			menu: [{
+				iconClass: 'fa fa-dashboard',
+				name: 'Home',
+				url: 'home',
+				active: false,
+				children: []
+			}, {
+				iconClass: 'fa fa-cogs',
+				name: 'Configuraciones',
+				url: 'otro',
+				active: false,
+				children: []
+			}, {
+				iconClass: 'fa fa-calendar',
+				name: 'Reportes',
+				url: 'profile',
+				active: true,
+				children: [{
+					iconClass: 'fa fa-link',
+					name: 'Mensuales',
+					url: 'custom1',
+					active: false,
+					children: []
+				}, {
+					iconClass: 'fa fa-link',
+					name: 'Sucursales',
+					url: 'custom2',
+					active: true,
+					children: []
+				}]
+			}]
+		};
 	}
 };
+
+//configs
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<!-- Left side column. contains the logo and sidebar -->\n<aside class=\"main-sidebar\">\n\n\t<!-- sidebar: style can be found in sidebar.less -->\n\t<section class=\"sidebar\">\n\n\t\t<!-- Sidebar user panel (optional) -->\n\t\t<div class=\"user-panel\" v-show=\"auth\">\n\t\t\t<div class=\"pull-left image\">\n\t\t\t\t<img src=\"img/user2-160x160.jpg\" class=\"img-circle\" alt=\"User Image\">\n\t\t\t</div>\n\t\t\t<div class=\"pull-left info\">\n\t\t\t\t<p>{{ username }}</p>\n\t\t\t\t<!-- Status -->\n\t\t\t\t<a href=\"#\"><i class=\"fa fa-circle text-success\"></i> Online</a>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- search form (Optional) -->\n\t\t<form action=\"#\" method=\"get\" class=\"sidebar-form\">\n\t\t\t<div class=\"input-group\">\n\t\t\t\t<input type=\"text\" name=\"q\" class=\"form-control\" placeholder=\"Search...\">\n\t\t\t\t<span class=\"input-group-btn\">\n\t\t\t\t\t<button type=\"submit\" name=\"search\" id=\"search-btn\" class=\"btn btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t</span>\n\t\t\t</div>\n\t\t</form>\n\t\t<!-- /.search form -->\n\n\t\t<!-- Sidebar Menu -->\n\t\t<ul class=\"sidebar-menu\">\n\t\t\t<li class=\"header\">Menu</li>\n\t\t\t<!-- Optionally, you can add icons to the links -->\n\t\t\t<li v-link-active=\"\"><a v-link=\"{name:'home', activeClass:'active'}\"><i class=\"fa fa-link\"></i> <span>Dashboard</span></a></li>\n\t\t\t<li><a href=\"#\"><i class=\"fa fa-link\"></i> <span>Opción 1</span></a></li>\n\t\t\t<li class=\"treeview\">\n\t\t\t\t<a href=\"#\"><i class=\"fa fa-link\"></i> <span>Multiopción</span> <i class=\"fa fa-angle-left pull-right\"></i></a>\n\t\t\t\t<ul class=\"treeview-menu\">\n\t\t\t\t\t<li><a href=\"#\">Subnivel 1</a></li>\n\t\t\t\t\t<li><a href=\"#\">Subnivel 2</a></li>\n\t\t\t\t</ul>\n\t\t\t</li>\n\t\t</ul><!-- /.sidebar-menu -->\n\t</section>\n\t<!-- /.sidebar -->\n</aside>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<!-- Left side column. contains the logo and sidebar -->\n<aside class=\"main-sidebar\">\n\n\t<!-- sidebar: style can be found in sidebar.less -->\n\t<section class=\"sidebar\">\n\n\t\t<!-- Sidebar user panel (optional) -->\n\t\t<div class=\"user-panel\" v-show=\"auth\">\n\t\t\t<div class=\"pull-left image\">\n\t\t\t\t<img src=\"img/user2-160x160.jpg\" class=\"img-circle\" alt=\"User Image\">\n\t\t\t</div>\n\t\t\t<div class=\"pull-left info\">\n\t\t\t\t<p>{{ username }}</p>\n\t\t\t\t<!-- Status -->\n\t\t\t\t<a href=\"#\"><i class=\"fa fa-circle text-success\"></i> Online</a>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- search form (Optional) -->\n\t\t<form action=\"#\" method=\"get\" class=\"sidebar-form\">\n\t\t\t<div class=\"input-group\">\n\t\t\t\t<input type=\"text\" name=\"q\" class=\"form-control\" placeholder=\"Search...\">\n\t\t\t\t<span class=\"input-group-btn\">\n\t\t\t\t\t<button type=\"submit\" name=\"search\" id=\"search-btn\" class=\"btn btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t</span>\n\t\t\t</div>\n\t\t</form>\n\t\t<!-- /.search form -->\n\n\t\t<!-- Sidebar Menu -->\n\t\t<ul class=\"sidebar-menu\">\n\t\t\t<li class=\"header\">Menu</li>\n\t\t\t<menu-item v-for=\"itemenu in menu\" :item=\"itemenu\" :is-active=\"itemenu.active\" :is-parent=\"itemenu.children.length>0\"></menu-item>\n\t\t\t<!--\n\t\t\t<li v-link-active><a v-link=\"{name:'home', activeClass:'active'}\"><i class='fa fa-link'></i> <span>Dashboard</span></a></li>\n\t\t\t<li v-link-active><a v-link=\"{name: 'otro', activeClass:'active'}\"><i class='fa fa-link'></i> <span>Opción 1</span></a></li>\n\t\t\t<li class=\"treeview\">\n\t\t\t\t<a href=\"#\"><i class='fa fa-link'></i> <span>Multiopción</span> <i class=\"fa fa-angle-left pull-right\"></i></a>\n\t\t\t\t<ul class=\"treeview-menu\">\n\t\t\t\t\t<li><a href=\"#level1\">Subnivel 1</a></li>\n\t\t\t\t\t<li><a href=\"#level2\">Subnivel 2</a></li>\n\t\t\t\t</ul>\n\t\t\t</li>\n\t\t\t-->\n\t\t</ul>\n\t\t\n\t\t<!-- /.sidebar-menu -->\n\t</section>\n\t<!-- /.sidebar -->\n</aside>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -14868,7 +15050,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-6e8a0ef5", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":5,"vue-hot-reload-api":2}],14:[function(require,module,exports){
+},{"./MenuItem.vue":14,"vue":5,"vue-hot-reload-api":2}],17:[function(require,module,exports){
 "use strict";
 
 module.exports = {

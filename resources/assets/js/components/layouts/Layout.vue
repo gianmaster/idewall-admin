@@ -25,6 +25,8 @@ import HeaderContent from './partials/HeaderContent.vue';
 import ControlSidebar from './partials/ControlSidebar.vue';
 import Footer from './partials/Footer.vue';
 
+
+
 module.exports = {
 	components: {
 		mainHeader: MainHeader,
