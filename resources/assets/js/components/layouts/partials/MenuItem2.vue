@@ -1,6 +1,6 @@
 <template>
 	<li v-link-active v-if="!isParent">
-		<a v-link="{name:item.url, activeClass:'active'}"><i :class="item.iconClass"></i> {{item.name}}</a>
+		<a v-link="{name:item.url, activeClass:'active'}"><i :class="item.iconClass"></i> <span>{{item.name}}</span></a>
 	</li>
 	<li v-else class="treeview">
 		<a href="#"><i :class='item.iconClass'></i> <span>{{item.name}}</span> <i class="fa fa-angle-left pull-right"></i></a>

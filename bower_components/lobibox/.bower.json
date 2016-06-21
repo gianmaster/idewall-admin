@@ -1,0 +1,49 @@
+{
+  "name": "lobibox",
+  "description": "jQuery Responsive notification plugin",
+  "main": "",
+  "authors": [
+    {
+      "name": "Zura Sekhniashvili",
+      "email": "zurasekhniashvili@gmail.com",
+      "homepage": "https://github.com/arboshiki"
+    }
+  ],
+  "license": "MIT",
+  "keywords": [
+    "jQuery",
+    "plugin",
+    "notification",
+    "responsive",
+    "messagebox",
+    "css3",
+    "animation",
+    "window",
+    "ajax",
+    "loading"
+  ],
+  "homepage": "https://github.com/arboshiki/lobibox",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "1.9.1 - 2"
+  },
+  "version": "1.2.4",
+  "_release": "1.2.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.2.4",
+    "commit": "10158b651988d59cbd201b83c19035ae758d6155"
+  },
+  "_source": "https://github.com/arboshiki/lobibox.git",
+  "_target": "~1.2.4",
+  "_originalSource": "lobibox",
+  "_direct": true
+}

@@ -14540,6 +14540,26 @@ setTimeout(function () {
 module.exports = Vue;
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"_process":1}],6:[function(require,module,exports){
+var inserted = exports.cache = {}
+
+exports.insert = function (css) {
+  if (inserted[css]) return
+  inserted[css] = true
+
+  var elem = document.createElement('style')
+  elem.setAttribute('type', 'text/css')
+
+  if ('textContent' in elem) {
+    elem.textContent = css
+  } else {
+    elem.styleSheet.cssText = css
+  }
+
+  document.getElementsByTagName('head')[0].appendChild(elem)
+  return elem
+}
+
+},{}],7:[function(require,module,exports){
 'use strict';
 
 var _vue = require('vue');
@@ -14554,9 +14574,13 @@ var _vueRouter = require('vue-router');
 
 var _vueRouter2 = _interopRequireDefault(_vueRouter);
 
-var _Layout = require('./components/layouts/Layout.vue');
+var _transitions = require('./components/transitions');
 
-var _Layout2 = _interopRequireDefault(_Layout);
+var _transitions2 = _interopRequireDefault(_transitions);
+
+var _LayoutNew = require('./components/layouts/LayoutNew.vue');
+
+var _LayoutNew2 = _interopRequireDefault(_LayoutNew);
 
 var _HelloView = require('./components/app_logic/HelloView.vue');
 
@@ -14566,15 +14590,28 @@ var _ = require('./components/layouts/errors/404.vue');
 
 var _2 = _interopRequireDefault(_);
 
+var _list = require('./components/app_logic/Users/list.vue');
+
+var _list2 = _interopRequireDefault(_list);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//Aditional componentes - no necesary VUE, but no use Jquery
+
 _vue2.default.use(_vueRouter2.default);
+_vue2.default.use(_vueResource2.default);
+
+(0, _transitions2.default)(_vue2.default);
+
 var App = _vue2.default.extend({});
+
+_vue2.default.http.options.root = '/api';
+_vue2.default.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#csrf_token').getAttribute('value');
 
 //load my components
 //import App from './components/layouts/Layout.vue';
 
-_vue2.default.component('pincheApp', _Layout2.default);
+_vue2.default.component('pincheApp', _LayoutNew2.default);
 
 //router instant
 var router = new _vueRouter2.default();
@@ -14583,28 +14620,26 @@ var router = new _vueRouter2.default();
 //config routes
 router.map({
 	'/': {
+		component: _list2.default,
+		name: "home"
+	},
+	'other': {
 		component: _HelloView2.default,
-		name: "home",
+		name: "otro"
+	},
+	'profile': {
+		component: _2.default,
+		name: 'profile',
 		subRoutes: {
-			'other': {
-				component: _HelloView2.default,
-				name: "otro"
-			},
-			'profile': {
+			'/edit': {
 				component: _2.default,
-				name: 'profile',
-				subRoutes: {
-					'/edit': {
-						component: _2.default,
-						name: 'custom1'
-					},
-					'/create': {
-						component: _2.default,
-						name: 'custom2'
-					}
-
-				}
+				name: 'custom1'
+			},
+			'/create': {
+				component: _2.default,
+				name: 'custom2'
 			}
+
 		}
 	}
 
@@ -14621,8 +14656,12 @@ new Vue({
 
 router.start(App, '#thefuckingapp');
 
-},{"./components/app_logic/HelloView.vue":7,"./components/layouts/Layout.vue":8,"./components/layouts/errors/404.vue":9,"vue":5,"vue-resource":3,"vue-router":4}],7:[function(require,module,exports){
+},{"./components/app_logic/HelloView.vue":8,"./components/app_logic/Users/list.vue":9,"./components/layouts/LayoutNew.vue":10,"./components/layouts/errors/404.vue":11,"./components/transitions":20,"vue":5,"vue-resource":3,"vue-router":4}],8:[function(require,module,exports){
 'use strict';
+
+var _HeaderContent = require('../layouts/partials/HeaderContent.vue');
+
+var _HeaderContent2 = _interopRequireDefault(_HeaderContent);
 
 var _TogglePanel = require('../reusables/TogglePanel.vue');
 
@@ -14632,18 +14671,20 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 module.exports = {
 	components: {
-		togglePanel: _TogglePanel2.default
+		togglePanel: _TogglePanel2.default,
+		contentHeader: _HeaderContent2.default
 	},
 
 	data: function data() {
 		return {
 			msg: "Bienvenido al dashboard",
-			text: 'lorem inkjas dflaksdjflakshdfahsd fñalskdjfalskjdf laskdjfpqiwencv apsdvlnadpofwejf añd'
+			text: 'Esta es una prueba de la funcionalidad y ventajas que nos puede ofrecer VUE',
+			mode: ''
 		};
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<toggle-panel>\n\t<div slot=\"title\">Mensaje del Sistema</div>\n\t<div slot=\"body\">\n\t\t<p>{{msg}}</p>\n\t\t<blockquote>{{text}}</blockquote>\n\t</div>\n</toggle-panel>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<content-header title-page=\"Bienvenido\" :page-description=\"mode | capitalize\"></content-header>\n<section class=\"content\">\n\t<toggle-panel>\n\t\t<div slot=\"title\">Mensaje del Sistema</div>\n\t\t<div slot=\"body\">\n\t\t\t<p>{{msg}}</p>\n\t\t\t<blockquote>{{text}}</blockquote>\n\t\t</div>\n\t</toggle-panel>\n</section>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -14654,7 +14695,129 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-60d9cc0a", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../reusables/TogglePanel.vue":17,"vue":5,"vue-hot-reload-api":2}],8:[function(require,module,exports){
+},{"../layouts/partials/HeaderContent.vue":14,"../reusables/TogglePanel.vue":19,"vue":5,"vue-hot-reload-api":2}],9:[function(require,module,exports){
+var __vueify_insert__ = require("vueify/lib/insert-css")
+var __vueify_style__ = __vueify_insert__.insert("\n\n")
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _HeaderContent = require('../../layouts/partials/HeaderContent.vue');
+
+var _HeaderContent2 = _interopRequireDefault(_HeaderContent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var BASE_URL = '/admin_lte/public/api';
+
+exports.default = {
+	data: function data() {
+		return {
+			newModel: {},
+			models: [],
+			mode: 'listar'
+		};
+	},
+	ready: function ready() {
+		this.listar();
+	},
+
+	methods: {
+		crear: function crear(model) {
+			var self = this;
+			this.$http.post(BASE_URL + '/users', this.newModel).then(function (resp) {
+				Lobibox.notify('success', {
+					msg: 'Se creo el usuario correctamente!',
+					sound: false
+				});
+				self.listar();
+				self.mode = 'listar';
+			}, function (err) {
+				console.warn(err);
+				Lobibox.notify('error', {
+					msg: 'Se presento un error al querer realizar esta acción',
+					sound: false
+				});
+			});
+		},
+		modificar: function modificar(_id) {
+			var _this = this;
+
+			var self = this;
+			this.$http.put(BASE_URL + '/users/' + _id, this.newModel).then(function (resp) {
+				Lobibox.notify('success', {
+					msg: 'Se creo el usuario correctamente!',
+					sound: false
+				});
+				self.listar();
+				self.mode = 'listar';
+				_this.newModel = {};
+			}, function (err) {
+				console.warn(err);
+				Lobibox.notify('error', {
+					msg: 'Se presento un error al querer realizar esta acción',
+					sound: false
+				});
+			});
+		},
+		eveDelete: function eveDelete(_id) {
+			alert('Se elimina el id ' + _id);
+		},
+		eveEdit: function eveEdit(_id) {
+			this.ver(_id);
+			this.mode = 'editar';
+		},
+		eveView: function eveView(_id) {
+			this.ver(_id);
+			this.mode = 'visualizar';
+		},
+		listar: function listar() {
+			var _this2 = this;
+
+			this.$http.get(BASE_URL + '/users').then(function (resp) {
+				_this2.models = resp.data.data;
+			}, function (err) {
+				console.warn(err);
+			});
+		},
+		ver: function ver(_id) {
+			var _this3 = this;
+
+			this.$http.get(BASE_URL + '/users/' + _id).then(function (resp) {
+				_this3.newModel = resp.data.data;
+			}, function (err) {
+				console.warn(err);
+			});
+		},
+		cancel: function cancel() {
+			this.newModel = {};
+			this.mode = 'listar';
+		}
+	},
+
+	components: {
+		contentHeader: _HeaderContent2.default
+	}
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<content-header title-page=\"Usuarios\" :page-description=\"mode | capitalize\"></content-header>\n<section class=\"content\">\n\t<!-- Your Page Content Here -->\n\n\t<!-- Modo listar -->\n\t<div class=\"row\" v-if=\"mode == 'listar'\" trasition=\"flip\">\n\t\t<div class=\"col-xs-12\">\n\t\t\t<button class=\"btn btn-primary btn-flat\" @click.prevent=\"mode='crear'\"><i class=\"fa fa-plus\"></i> Nuevo</button>\n\t\t</div>\t\n\n\t\t<div class=\"col-xs-12\">\n\t\t\t<table class=\"table table-responsive\">\n\t\t\t\t<thead>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<th class=\"text-center\">Nombre</th>\n\t\t\t\t\t\t<th class=\"text-center\">Correo</th>\n\t\t\t\t\t\t<th class=\"text-center\">Acciones</th>\n\t\t\t\t\t</tr>\n\t\t\t\t</thead>\n\t\t\t\t<tbody>\n\t\t\t\t\t<tr v-for=\"model in models\">\n\t\t\t\t\t\t<td>{{model.name}}</td>\n\t\t\t\t\t\t<td>{{model.email}}</td>\n\n\t\t\t\t\t\t<td class=\"text-center\">\n\n\t\t\t\t\t\t\t<div class=\"btn-group\">\n\n\t\t\t\t\t\t\t\t<a class=\"btn btn-default btn-xs\" href=\"\" @click.prevent=\"eveView(model.id)\"><i class=\"fa fa-eye\" data-toggle=\"tooltip\" title=\"Ver este usuario a detalle\" style=\"font-size: 1.2em;\"></i></a>\n\n\t\t\t\t\t\t\t\t<a class=\"btn btn-default btn-xs\" href=\"\" @click.prevent=\"eveEdit(model.id)\"><i class=\"fa fa-edit\" data-toggle=\"tooltip\" title=\"Editar este usuario\" style=\"font-size: 1.2em;\"></i></a>\n\n\t\t\t\t\t\t\t\t<a class=\"btn btn-danger btn-xs\" href=\"\" @click.prevent=\"eveDelete(model.id)\"><i class=\"fa fa-trash\" data-toggle=\"tooltip\" title=\"Eliminar este usuario\" style=\"font-size: 1.2em;\"></i></a>\n\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</td>\n\n\t\t\t\t\t</tr>\n\t\t\t\t</tbody>\n\t\t\t</table>\n\t\t</div>\n\t</div>\n\n\t<!-- Modo creacion / edicion -->\n\t<div class=\"row\" v-if=\"mode == 'crear' || mode == 'editar'\" trasition=\"flip\">\n\t\t<div class=\"col-sm-6 col-xs-12\">\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label for=\"nombre\">Nombre</label>\n\t\t\t\t<input type=\"text\" id=\"nombre\" v-model=\"newModel.name\" class=\"form-control\">\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"col-sm-6 col-xs-12\">\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label for=\"correo\">Email</label>\n\t\t\t\t<input type=\"email\" id=\"correo\" v-model=\"newModel.email\" class=\"form-control\">\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"col-sm-6 col-xs-12\" v-if=\"mode == 'crear'\">\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label for=\"correo\">Contraseña</label>\n\t\t\t\t<input type=\"password\" id=\"pass\" v-model=\"newModel.password\" class=\"form-control\">\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"col-xs-12\">\n\t\t\t<button v-if=\"mode == 'crear'\" class=\"btn btn-success btn-flat\" @click.prevent=\"crear(newModel)\"><i class=\"fa fa-save\"></i> Guardar</button>\n\t\t\t<button v-if=\"mode == 'editar'\" class=\"btn btn-success btn-flat\" @click.prevent=\"modificar(newModel.id)\"><i class=\"fa fa-save\"></i> Guardar Cambios</button>\n\t\t\t<button class=\"btn btn-default btn-flat\" @click.prevent=\"cancel\">Cancelar</button>\n\t\t</div>\n\t</div>\n\n\t<!-- Modo lectura -->\n\t<div class=\"row\" v-if=\"mode == 'visualizar'\" trasition=\"flip\">\n\t\t<div class=\"col-xs-12\">\n\t\t\t<label for=\"name\">Nombre</label>\n\t\t\t<p>{{newModel.name}}</p>\n\t\t</div>\n\t\t<div class=\"col-xs-12\">\n\t\t\t<label for=\"email\">Correo</label>\n\t\t\t<p>{{newModel.email}}</p>\n\t\t</div>\n\t\t<div class=\"col-xs-12\">\n\t\t\t<button class=\"btn btn-default btn-flat\" @click.prevent=\"cancel\"><i class=\"fa fa-arrow-circle-left\"></i> Regresar</button>\n\t\t</div>\n\t</div>\n\n</section><!-- /.content -->\t\t\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.dispose(function () {
+    __vueify_insert__.cache["\n\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-40a190be", module.exports)
+  } else {
+    hotAPI.update("_v-40a190be", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"../../layouts/partials/HeaderContent.vue":14,"vue":5,"vue-hot-reload-api":2,"vueify/lib/insert-css":6}],10:[function(require,module,exports){
 'use strict';
 
 var _MainHeader = require('./partials/MainHeader.vue');
@@ -14697,18 +14860,18 @@ module.exports = {
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t<main-header :username.sync=\"user\" :auth.sync=\"authorization\"></main-header>\n\t<sidebar :username.sync=\"user\" :auth.sync=\"authorization\"></sidebar>\n\n\t<div class=\"content-wrapper\">\n\t\t<content-header></content-header>\n\t\t<!-- Main content -->\n        <section class=\"content\">\n            <!-- Your Page Content Here -->\n            <router-view></router-view><!-- router del vue.js -->\n        </section><!-- /.content -->\n\t</div>\n\n\t<sidebar-control></sidebar-control>\n\n\t<main-footer :made-date.sync=\"fecha_creacion_sitio\"></main-footer>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t<main-header :username.sync=\"user\" :auth.sync=\"authorization\"></main-header>\n\t<sidebar :username.sync=\"user\" :auth.sync=\"authorization\"></sidebar>\n\n\t<div class=\"content-wrapper\">\n            <router-view></router-view><!-- router del vue.js -->\n\t</div>\n\n\t<sidebar-control></sidebar-control>\n\n\t<main-footer :made-date.sync=\"fecha_creacion_sitio\"></main-footer>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-598eeb8d", module.exports)
+    hotAPI.createRecord("_v-7e8f4b03", module.exports)
   } else {
-    hotAPI.update("_v-598eeb8d", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-7e8f4b03", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./partials/ControlSidebar.vue":10,"./partials/Footer.vue":11,"./partials/HeaderContent.vue":12,"./partials/MainHeader.vue":13,"./partials/Sidebar.vue":16,"vue":5,"vue-hot-reload-api":2}],9:[function(require,module,exports){
+},{"./partials/ControlSidebar.vue":12,"./partials/Footer.vue":13,"./partials/HeaderContent.vue":14,"./partials/MainHeader.vue":15,"./partials/Sidebar.vue":18,"vue":5,"vue-hot-reload-api":2}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14722,7 +14885,7 @@ exports.default = {
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"error-page\">\n\t<h2 class=\"headline text-yellow\"> 404</h2>\n\t<div class=\"error-content\">\n\t<h3><i class=\"fa fa-warning text-yellow\"></i> Oops! Recurso no encontrado.</h3>\n\t\t<p>\n\t\t\tPágina o recurso no encontrado\n\t\t\tIr a la página de inicio <a v-link=\"{name: 'index'}\">Home</a> \n\t\t</p>\n\t\t<form class=\"search-form\" @submit=\"nothingToDoHere\">\n\t\t\t<div class=\"input-group\">\n\t\t\t\t<input type=\"text\" name=\"search\" class=\"form-control\" placeholder=\"Buscar...\">\n\t\t\t\t<div class=\"input-group-btn\">\n\t\t\t\t\t<button type=\"submit\" name=\"submit\" class=\"btn btn-warning btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t</div>\n\t\t\t</div><!-- /.input-group -->\n\t\t</form>\n\t</div><!-- /.error-content -->\n</div><!-- /.error-page -->\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"error-page\">\n\t<h2 class=\"headline text-yellow\"> 404</h2>\n\t<div class=\"error-content\">\n\t<h3><i class=\"fa fa-warning text-yellow\"></i> Oops! Recurso no encontrado.</h3>\n\t\t<p>\n\t\t\tPágina o recurso no encontrado\n\t\t\tIr a la página de inicio <a v-link=\"{name: 'home'}\">Home</a> \n\t\t</p>\n\t\t<form class=\"search-form\" @submit=\"nothingToDoHere\">\n\t\t\t<div class=\"input-group\">\n\t\t\t\t<input type=\"text\" name=\"search\" class=\"form-control\" placeholder=\"Buscar...\">\n\t\t\t\t<div class=\"input-group-btn\">\n\t\t\t\t\t<button type=\"submit\" name=\"submit\" class=\"btn btn-warning btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t</div>\n\t\t\t</div><!-- /.input-group -->\n\t\t</form>\n\t</div><!-- /.error-content -->\n</div><!-- /.error-page -->\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -14733,7 +14896,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-b1f664ec", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":5,"vue-hot-reload-api":2}],10:[function(require,module,exports){
+},{"vue":5,"vue-hot-reload-api":2}],12:[function(require,module,exports){
 "use strict";
 if (module.exports.__esModule) module.exports = module.exports.default
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t<!-- Control Sidebar -->\n\t<aside class=\"control-sidebar control-sidebar-dark\">\n\t\t<!-- Create the tabs -->\n\t\t<ul class=\"nav nav-tabs nav-justified control-sidebar-tabs\">\n\t\t\t<li class=\"active\"><a href=\"#control-sidebar-home-tab\" data-toggle=\"tab\"><i class=\"fa fa-home\"></i></a></li>\n\t\t\t<li><a href=\"#control-sidebar-settings-tab\" data-toggle=\"tab\"><i class=\"fa fa-gears\"></i></a></li>\n\t\t</ul>\n\t\t<!-- Tab panes -->\n\t\t<div class=\"tab-content\">\n\t\t\t<!-- Home tab content -->\n\t\t\t<div class=\"tab-pane active\" id=\"control-sidebar-home-tab\">\n\t\t\t<h3 class=\"control-sidebar-heading\">Actividad reciente</h3>\n\t\t\t\t<ul class=\"control-sidebar-menu\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<a href=\"javascript::;\">\n\t\t\t\t\t\t\t<i class=\"menu-icon fa fa-birthday-cake bg-red\"></i>\n\t\t\t\t\t\t\t<div class=\"menu-info\">\n\t\t\t\t\t\t\t\t<h4 class=\"control-sidebar-subheading\">Cumpleaños</h4>\n\t\t\t\t\t\t\t\t<p>01-07-1990</p>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</li>\n\t\t\t\t</ul><!-- /.control-sidebar-menu -->\n\n\t\t\t\t<h3 class=\"control-sidebar-heading\">Progreso</h3>\n\t\t\t\t<ul class=\"control-sidebar-menu\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<a href=\"javascript::;\">\n\t\t\t\t\t\t\t<h4 class=\"control-sidebar-subheading\">\n\t\t\t\t\t\t\t\tCustom Template\n\t\t\t\t\t\t\t\t<span class=\"label label-danger pull-right\">70%</span>\n\t\t\t\t\t\t\t</h4>\n\t\t\t\t\t\t\t<div class=\"progress progress-xxs\">\n\t\t\t\t\t\t\t\t<div class=\"progress-bar progress-bar-danger\" style=\"width: 70%\"></div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</li>\n\t\t\t\t</ul><!-- /.control-sidebar-menu -->\n\n\t\t\t</div><!-- /.tab-pane -->\n\t\t\t<!-- Stats tab content -->\n\t\t\t<div class=\"tab-pane\" id=\"control-sidebar-stats-tab\">Status</div><!-- /.tab-pane -->\n\t\t\t<!-- Settings tab content -->\n\t\t\t<div class=\"tab-pane\" id=\"control-sidebar-settings-tab\">\n\t\t\t\t<form method=\"post\">\n\t\t\t\t\t<h3 class=\"control-sidebar-heading\">Ajustes Generales</h3>\n\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t<label class=\"control-sidebar-subheading\">\n\t\t\t\t\t\t\tPanel de reporte\n\t\t\t\t\t\t\t<input type=\"checkbox\" class=\"pull-right\">\n\t\t\t\t\t\t</label>\n\t\t\t\t\t\t<p>\n\t\t\t\t\t\t\tAjustes de información\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div><!-- /.form-group -->\n\t\t\t\t</form>\n\t\t\t</div><!-- /.tab-pane -->\n\t\t</div>\n</aside><!-- /.control-sidebar\n\n<!-- Add the sidebar's background. This div must be placed\n\timmediately after the control sidebar -->\n\t<div class=\"control-sidebar-bg\"></div>\n"
@@ -14747,7 +14910,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-d1805794", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":5,"vue-hot-reload-api":2}],11:[function(require,module,exports){
+},{"vue":5,"vue-hot-reload-api":2}],13:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -14798,17 +14961,17 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-2fac5f92", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":5,"vue-hot-reload-api":2}],12:[function(require,module,exports){
+},{"vue":5,"vue-hot-reload-api":2}],14:[function(require,module,exports){
 "use strict";
 
 module.exports = {
 	props: {
-		title_page: {
+		titlePage: {
 			type: String,
 			required: false,
 			default: "DashBoard"
 		},
-		page_description: {
+		pageDescription: {
 			type: String,
 			required: false,
 			default: ""
@@ -14821,7 +14984,7 @@ module.exports = {
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<section class=\"content-header\">\n\t<h1>\n\t\t{{title_page}}\n\t\t<small>{{page_description}}</small>\n\t</h1>\n\t<ol class=\"breadcrumb\">\n\t\t<li><a href=\"#\"><i class=\"fa fa-dashboard\"></i> Home</a></li>\n\t\t<li v-show=\"$index > 0\" v-for=\"item in listPath\" :class=\"{'active': listPath.length-1 == $index}\" track-by=\"$index\">{{item}}</li>\n\t</ol>\n</section>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<section class=\"content-header\">\n\t<h1>\n\t\t{{titlePage}}\n\t\t<small>{{pageDescription}}</small>\n\t</h1>\n\t<ol class=\"breadcrumb\">\n\t\t<li><a href=\"#\"><i class=\"fa fa-dashboard\"></i> Home</a></li>\n\t\t<li v-show=\"$index > 0\" v-for=\"item in listPath\" :class=\"{'active': listPath.length-1 == $index}\" track-by=\"$index\">{{item}}</li>\n\t</ol>\n</section>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -14832,7 +14995,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-3e7c0ff6", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":5,"vue-hot-reload-api":2}],13:[function(require,module,exports){
+},{"vue":5,"vue-hot-reload-api":2}],15:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -14896,7 +15059,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-43a1eac6", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":5,"vue-hot-reload-api":2}],14:[function(require,module,exports){
+},{"vue":5,"vue-hot-reload-api":2}],16:[function(require,module,exports){
 'use strict';
 
 var _MenuItem = require('./MenuItem2.vue');
@@ -14925,7 +15088,7 @@ module.exports = {
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<li v-link-active=\"\" v-if=\"!isParent\">\n\t<a v-link=\"{name:item.url, activeClass:'active'}\"><i :class=\"item.iconClass\"></i> {{item.name}}</a>\n</li>\n<li v-else=\"\" class=\"treeview\">\n\t<a href=\"#\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span> <i class=\"fa fa-angle-left pull-right\"></i></a>\n\t<ul class=\"treeview-menu\">\n\t\t<crea-menu v-for=\"itemenu in item.children\" :item=\"itemenu\" :is-active=\"\n\t\titemenu.active\" :is-parent=\"itemenu.children.length>0\"></crea-menu>\n\t</ul>\n</li>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<li v-link-active=\"\" v-if=\"!isParent\">\n\t<a v-link=\"{name:item.url, activeClass:'active'}\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span></a>\n</li>\n<li v-else=\"\" class=\"treeview\">\n\t<a href=\"#\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span> <i class=\"fa fa-angle-left pull-right\"></i></a>\n\t<ul class=\"treeview-menu\">\n\t\t<crea-menu v-for=\"itemenu in item.children\" :item=\"itemenu\" :is-active=\"\n\t\titemenu.active\" :is-parent=\"itemenu.children.length>0\"></crea-menu>\n\t</ul>\n</li>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -14936,7 +15099,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-656197c9", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./MenuItem2.vue":15,"vue":5,"vue-hot-reload-api":2}],15:[function(require,module,exports){
+},{"./MenuItem2.vue":17,"vue":5,"vue-hot-reload-api":2}],17:[function(require,module,exports){
 'use strict';
 
 var _MenuItem = require('./MenuItem.vue');
@@ -14965,7 +15128,7 @@ module.exports = {
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<li v-link-active=\"\" v-if=\"!isParent\">\n\t<a v-link=\"{name:item.url, activeClass:'active'}\"><i :class=\"item.iconClass\"></i> {{item.name}}</a>\n</li>\n<li v-else=\"\" class=\"treeview\">\n\t<a href=\"#\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span> <i class=\"fa fa-angle-left pull-right\"></i></a>\n\t<ul class=\"treeview-menu\">\n\t\t<crea-menu v-for=\"itemenu in item.children\" :item=\"itemenu\" :is-active=\"\n\t\titemenu.active\" :is-parent=\"itemenu.children.length>0\"></crea-menu>\n\t</ul>\n</li>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<li v-link-active=\"\" v-if=\"!isParent\">\n\t<a v-link=\"{name:item.url, activeClass:'active'}\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span></a>\n</li>\n<li v-else=\"\" class=\"treeview\">\n\t<a href=\"#\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span> <i class=\"fa fa-angle-left pull-right\"></i></a>\n\t<ul class=\"treeview-menu\">\n\t\t<crea-menu v-for=\"itemenu in item.children\" :item=\"itemenu\" :is-active=\"\n\t\titemenu.active\" :is-parent=\"itemenu.children.length>0\"></crea-menu>\n\t</ul>\n</li>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -14976,7 +15139,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-46e90ab9", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./MenuItem.vue":14,"vue":5,"vue-hot-reload-api":2}],16:[function(require,module,exports){
+},{"./MenuItem.vue":16,"vue":5,"vue-hot-reload-api":2}],18:[function(require,module,exports){
 'use strict';
 
 var _MenuItem = require('./MenuItem.vue');
@@ -15050,7 +15213,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-6e8a0ef5", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./MenuItem.vue":14,"vue":5,"vue-hot-reload-api":2}],17:[function(require,module,exports){
+},{"./MenuItem.vue":16,"vue":5,"vue-hot-reload-api":2}],19:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -15074,6 +15237,45 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-010ff41c", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":5,"vue-hot-reload-api":2}]},{},[6]);
+},{"vue":5,"vue-hot-reload-api":2}],20:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+exports.default = function (Vue) {
+    Vue.transition('bounce', {
+        enterClass: 'bounceInLeft',
+        leaveClass: 'bounceOutRight'
+    });
+
+    Vue.transition('flip', {
+        enterClass: 'flipInX',
+        leaveClass: 'flipOutX'
+    });
+
+    Vue.transition('lightSpeed', {
+        enterClass: 'lightSpeedIn',
+        leaveClass: 'lightSpeedOut'
+    });
+
+    Vue.transition('fade', {
+        enterClass: 'fadeIn',
+        leaveClass: 'fadeOut'
+    });
+
+    Vue.transition('slide', {
+        enterClass: 'slideInUp',
+        leaveClass: 'slideOutUp'
+    });
+
+    Vue.transition('zoom', {
+        enterClass: 'zoomIn',
+        leaveClass: 'zoomOut'
+    });
+};
+
+},{}]},{},[7]);
 
 //# sourceMappingURL=build.js.map
