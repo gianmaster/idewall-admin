@@ -28,8 +28,9 @@ desired effect
 |---------------------------------------------------------|
 -->
 
-<body class="skin-blue sidebar-mini">
+<body id="app" class="@{{ body_class }}">
 
+<!--
 <div class="wrapper" id="thefuckingapp">
 	
 		
@@ -38,6 +39,8 @@ desired effect
 
 
 </div>
+
+-->
 
 @section('scripts')
     @include('layouts.partials.scripts')

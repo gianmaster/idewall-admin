@@ -4,7 +4,7 @@
 		<!-- Your Page Content Here -->
 
 		<!-- Modo listar -->
-		<div class="row" v-if="mode == 'listar'" trasition="flip">
+		<div class="row animated" v-if="mode == 'listar'">
 			<div class="col-xs-12">
 				<button class="btn btn-primary btn-flat" @click.prevent="mode='crear'"><i class="fa fa-plus"></i> Nuevo</button>
 			</div>	
@@ -44,7 +44,7 @@
 		</div>
 
 		<!-- Modo creacion / edicion -->
-		<div class="row" v-if="mode == 'crear' || mode == 'editar'" trasition="flip">
+		<div class="row animated" v-if="mode == 'crear' || mode == 'editar'" transition="fade">
 			<div class="col-sm-6 col-xs-12">
 				<div class="form-group">
 					<label for="nombre">Nombre</label>
@@ -72,7 +72,7 @@
 		</div>
 
 		<!-- Modo lectura -->
-		<div class="row" v-if="mode == 'visualizar'" trasition="flip">
+		<div class="row" v-if="mode == 'visualizar'" transition="fade">
 			<div class="col-xs-12">
 				<label for="name">Nombre</label>
 				<p>{{newModel.name}}</p>
@@ -147,7 +147,23 @@
 				});
 			},
 			eveDelete: function(_id){
-				alert(`Se elimina el id ${_id}`);
+				if(confirm('¿Estás seguro?')){
+					var self = this;
+					this.$http.delete(`${BASE_URL}/users/${_id}`).then((resp) => {
+						Lobibox.notify('success', {
+							msg: 'Se eliminó el usuario correctamente!',
+							sound: false
+						});
+						self.listar();
+						self.mode = 'listar';
+					}, (err) => {
+						console.warn(err);
+						Lobibox.notify('error', {
+							msg: 'Se presento un error al querer realizar esta acción',
+							sound: false
+						});
+					});
+				}
 			},
 			eveEdit: function(_id){
 				this.ver(_id);

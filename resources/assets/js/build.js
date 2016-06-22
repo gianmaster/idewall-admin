@@ -1,70 +1,43 @@
 import Vue from 'vue';
-import Resource from 'vue-resource';
-import Router from 'vue-router';
+import VueRouter from 'vue-router';
+import VueResource from 'vue-resource';
 
-import transitions from './components/transitions';
-
-//Aditional componentes - no necesary VUE, but no use Jquery
-
-Vue.use(Router);
-Vue.use(Resource);
-
-transitions(Vue);
-
-let App = Vue.extend({});
-
-Vue.http.options.root = '/api';
+// install router
+Vue.use(VueResource);
 Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#csrf_token').getAttribute('value');
 
+// install router
+Vue.use(VueRouter);
 
-//load my components
-//import App from './components/layouts/Layout.vue';
-import Layout from './components/layouts/LayoutNew.vue';
-Vue.component('pincheApp', Layout);
-
-
-//router instant
-let router = new Router();
-//content views
-import HomeView from './components/app_logic/HelloView.vue';
-import NotFoundView from './components/layouts/errors/404.vue';
-import UsersView from './components/app_logic/Users/list.vue';
-//config routes
-router.map({
-	'/':{
-		component: UsersView,
-		name: "home",
-	},
-	'other':{
-		component: HomeView,
-		name: "otro"
-	},
-	'profile':{
-		component: NotFoundView,
-		name: 'profile',
-		subRoutes: {
-			'/edit' : {
-				component: NotFoundView,
-				name: 'custom1',	
-			},
-			'/create' : {
-				component: NotFoundView,
-				name: 'custom2',	
-			},
-
-		}
-	}
-	
-});
-
+// routing
 /*
-new Vue({
-	el: "#thefuckingapp",
-	components: {
-		pincheApp: App
-	}
-});
+const router = new VueRouter({
+  history: true, 
+  saveScrollPosition: true
+})
 */
+const router = new VueRouter();
 
-router.start(App, '#thefuckingapp');
+router.map({
+  '*' : {
+    component: require('./finalComponents/reusable/notFound.vue')
+  },
+  '/': {
+    component: require('./components2/dashboard.vue')
+  },
+  '/usuarios': {
+    component: require('./finalComponents/app/usuariosView.vue')
+  },
+  '/user/new': {
+    component: require('./components2/users/new.vue')
+  }
+});
 
+
+//bootstrap
+const App = Vue.extend(require('./finalComponents/layoutView.vue'));
+
+router.start(App, '#app');
+
+//solo para hacer debug
+window.router = router;

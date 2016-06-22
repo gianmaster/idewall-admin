@@ -92,6 +92,6 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return response()->json(array('data' => User::destroy($id)));
     }
 }
