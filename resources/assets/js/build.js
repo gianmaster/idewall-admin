@@ -1,13 +1,24 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VueResource from 'vue-resource';
+import VueFilter from 'vue-filter';
+import ExternalComponents from './config/externalComponents';
+
+//global filters
+Vue.use(VueFilter);
 
 // install router
 Vue.use(VueResource);
 Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#csrf_token').getAttribute('value');
 
+ExternalComponents(Vue);
+
 // install router
 Vue.use(VueRouter);
+
+//external components
+const progress = require('vue-progressbar');
+Vue.use(progress);
 
 // routing
 /*
@@ -16,11 +27,12 @@ const router = new VueRouter({
   saveScrollPosition: true
 })
 */
+
 const router = new VueRouter();
 
 router.map({
   '*' : {
-    component: require('./finalComponents/reusable/notFound.vue')
+    component: require('./finalComponents/layout/notfound.vue')
   },
   '/': {
     component: require('./components2/dashboard.vue')

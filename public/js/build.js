@@ -120,6 +120,1005 @@ process.chdir = function (dir) {
 process.umask = function() { return 0; };
 
 },{}],2:[function(require,module,exports){
+/**
+ * vue-filter.js v0.1.4
+ * (c) 2016 wy-ei
+ * MIT License.
+ */
+(function () {
+    'use strict';
+
+    var ArrayProto = Array.prototype;
+    var ObjProto = Object.prototype;
+    var slice = ArrayProto.slice;
+    var toString = ObjProto.toString;
+    var util = {};
+
+    util.isArray = function(obj) {
+        return Array.isArray(obj);
+    };
+
+    var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
+    util.isArrayLike = function(obj) {
+        var length = obj['length'];
+        return typeof length === 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
+    };
+
+    util.isObject = function(obj) {
+        var type = typeof obj;
+        return type === 'function' || type === 'object' && !!obj;
+    };
+
+
+    util.each = function(obj, callback) {
+        var i,
+            len;
+        if (util.isArray(obj)) {
+            for (i = 0, len = obj.length; i < len; i++) {
+                if (callback(obj[i], i, obj) === false) {
+                    break;
+                }
+            }
+        } else {
+            for (i in obj) {
+                if (callback(obj[i], i, obj) === false) {
+                    break;
+                }
+            }
+        }
+        return obj;
+    };
+
+    util.each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error'], function(name) {
+        util['is' + name] = function(obj) {
+            return toString.call(obj) === '[object ' + name + ']';
+        };
+    });
+
+    util.keys = function(obj) {
+        if (!util.isObject(obj)) {
+            return [];
+        }
+        if (Object.keys) {
+            return Object.keys(obj);
+        }
+        var keys = [];
+        for (var key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                keys.push(key);
+            }
+        }
+        return keys;
+    };
+
+    util.values = function(obj) {
+        var keys = util.keys(obj);
+        var length = keys.length;
+        var values = Array(length);
+        for (var i = 0; i < length; i++) {
+            values[i] = obj[keys[i]];
+        }
+        return values;
+    };
+
+    util.toArray = function(obj) {
+        if (!obj) {
+            return [];
+        }
+        if (util.isArrayLike(obj)) {
+            return slice.call(obj);
+        }
+        return util.values(obj);
+    };
+
+    util.map = function(obj, cb) {
+        var keys = !util.isArrayLike(obj) && util.keys(obj),
+            length = (keys || obj).length,
+            results = Array(length);
+        for (var index = 0; index < length; index++) {
+            var currentKey = keys ? keys[index] : index;
+            results[index] = cb(obj[currentKey], currentKey, obj);
+        }
+        return results;
+    };
+
+    util.get = function(obj, accessor) {
+        var ret = undefined;
+        if (!util.isObject(obj)) {
+            return obj;
+        }
+        if (accessor == undefined) {
+            return obj;
+        }
+        if (util.isString(accessor)) {
+            accessor = accessor.split('.');
+            ret = obj;
+            try {
+                for (var i = 0; i < accessor.length; i++) {
+                    ret = ret[accessor[i]];
+                }
+            } catch (e) {
+                ret = undefined;
+            }
+        } else if (util.isFunction(accessor)) {
+            ret = accessor(obj);
+        }
+        return ret;
+    };
+
+    /**
+     * Returns the item at the specified index location in an array or a string.
+     *
+     * {{ ['a','b','c'] | at 1 }} => 'b'
+     * {{ 'hello' | at 1 }} => 'e'
+     */
+
+    function at(arr, index) {
+        if (util.isArrayLike(arr)) {
+            return arr[index];
+        } else {
+            return arr;
+        }
+    }
+
+    /**
+     * Concatenates an array into another one.
+     *
+     * {{ [1,2,3] | concat [4,5,6] }} => [1,2,3,4,5,6]
+     */
+
+    function concat(arr1, arr2) {
+        if (util.isArray(arr1)) {
+            if (util.isArray(arr2)) {
+                return arr1.concat(arr2);
+            } else {
+                return arr1.concat(util.toArray(arr2));
+            }
+        } else {
+            if (util.isArray(arr2)) {
+                return util.toArray(arr1).concat(arr2);
+            } else {
+                return util.toArray(arr1).concat(util.toArray(arr2));
+            }
+        }
+    }
+
+    /**
+     * Returns the first element of an array,or first charactor of a string.
+     *
+     * {{ ['a','b','c'] | first }} => 'a'
+     * {{ 'hello' | first }} => 'h'
+     */
+
+    function first(value) {
+        if (util.isArrayLike(value)) {
+            return value[0];
+        } else {
+            return value;
+        }
+    }
+
+    /**
+     * Joins the elements of an array with the character passed as the parameter.
+     * The result is a single string.
+     *
+     * {{ ['a','b','c'] | join '-' }} => 'a-b-c'
+     */
+
+    function join(arr, c) {
+        if (util.isArray(arr)) {
+            return arr.join(c);
+        } else if (util.isArrayLike(arr)) {
+            return util.toArray(arr).join(c);
+        } else {
+            return arr;
+        }
+    }
+
+    /**
+     *  Returns the last element of an array,or last charactor of a string.
+     *
+     * {{ ['a','b','c'] | last }} => 'c'
+     * {{ 'hello' | last }} => 'o'
+     */
+
+    function last(value) {
+        if (util.isArrayLike(value)) {
+            return value[value.length - 1];
+        } else {
+            return value;
+        }
+    }
+
+    /*
+     * returns a new collection of the results of each expression execution.
+     *
+     * {{ [1,2,3] | map increase }}
+     *
+     * new Vue({
+     *   ...
+     *   methods:{
+     *     increase:function(val){return val+1;}
+     *   }
+     * })
+     */
+
+    function map(arr, cb) {
+        return util.map(arr, cb);
+    }
+
+    /*
+     * get a random value from a collection
+     *
+     * {{ [1,2,3,4] | random }} => 1 or 2 or 3 or 4
+     */
+
+    function random(collection) {
+        if (!collection) {
+            return undefined;
+        }
+        if (util.isObject(collection)) {
+            collection = util.toArray(collection);
+        }
+        if (util.isArrayLike(collection) && collection.length != 0) {
+            var i = Math.floor(collection.length * Math.random());
+            return collection[i];
+        } else {
+            // not arrayLike and object or is a empty array or object
+            return collection;
+        }
+    }
+
+    /**
+     * reverse an array or a string
+     *
+     * {{ 'abc' | reverse }} => 'cba'
+     * {{ [1,2,3] | reverse }} => [3,2,1]
+     */
+
+    function reverse(arr) {
+        if (util.isArray(arr)) {
+            // make a copy
+            arr = arr.concat();
+            return arr.reverse();
+        } else if (util.isString(arr)) {
+            return arr.split('').reverse().join('');
+        } else {
+            return arr;
+        }
+    }
+
+    /**
+     * Returns the size of a string or an array.
+     *
+     * {{ ['a','b','c'] | size }} => 3
+     * {{ 'hello' | size }} => 5
+     */
+
+    function size(arr) {
+        var length = arr['length'];
+        return length ? length : 0;
+    }
+
+    /**
+     *  Return a new collection from a given length
+     *
+     *  {{ [] | range 4 }} => [0,1,2,3]
+     */
+
+    function range(arr, n) {
+        arr = [];
+        for (var i = 0; i < n; i++) {
+            arr.push(i);
+        }
+        return arr;
+    }
+
+    /**
+     * Checks if given expression or value is present in the collection
+     *
+     * {{ [2,3,4] | contains 3}} => true;
+     *
+     */
+
+    function contains(arr, item) {
+        var ret = false;
+        if (util.isArrayLike(arr)) {
+            if (util.isFunction(item)) {
+                var fun = item;
+                util.each(arr, function(val) {
+                    if (fun(val) === true) {
+                        ret = true;
+                        // stop each
+                        return false;
+                    }
+                });
+            } else {
+                util.each(arr, function(val) {
+                    if (val === item) {
+                        ret = true;
+                        // stop each
+                        return false;
+                    }
+                });
+            }
+        }
+        return ret;
+    }
+
+
+
+    var collectionFilters = Object.freeze({
+        at: at,
+        concat: concat,
+        first: first,
+        join: join,
+        last: last,
+        map: map,
+        random: random,
+        reverse: reverse,
+        size: size,
+        range: range,
+        contains: contains
+    });
+
+    /**
+     * all method in Math without random
+     *
+     * {{ -1.2 | abs }}  => 1.2
+     * {{ 1 | acos }}  => 0
+     * {{ 1.3 | ceil }} => 2
+     * {{ 3 | pow 2 }} => 9  i.e: Math.pow(3,2)
+     */
+
+    var base = {};
+
+    ['abs', 'acos', 'asin', 'atan', 'atan2', 'ceil', 'cos', 'exp', 'floor',
+        'log', 'pow', 'round', 'sin', 'sqrt', 'tan'
+    ]
+    .forEach(function(method) {
+        base[method] = function(value, n) {
+            if (typeof value === 'number') {
+                return Math[method](value, n);
+            } else {
+                return value;
+            }
+        };
+    });
+
+    /**
+     * Divides an output by a number
+     *
+     * {{ 10 | divide 4 }} => 2.5
+     */
+
+    function divide(value, n) {
+        if (util.isNumber(value)) {
+            return value / n;
+        } else {
+            return value;
+        }
+    }
+
+
+    /**
+     * Subtracts a number from an output.
+     *
+     * {{ 12 | minus 2 }} => 10
+     */
+
+    function minus(value, n) {
+        if (util.isNumber(value)) {
+            return value - n;
+        } else {
+            return value;
+        }
+    }
+
+    /**
+     * Adds a number to an output.
+     *
+     * {{ 10 | plus 2 }} => 12
+     */
+
+    function plus(value, n) {
+        if (util.isNumber(value)) {
+            return value + n;
+        } else {
+            return value;
+        }
+    }
+
+    /**
+     * Multiplies an output by a number.
+     *
+     * {{ 10 | multiply 2 }} => 20
+     */
+
+    function multiply(value, n) {
+        if (util.isNumber(value)) {
+            return value * n;
+        } else {
+            return value;
+        }
+    }
+
+    /**
+     * Divides an output by a number and returns the remainder.
+     *
+     * {{ 10 | mod 2 }} => 20
+     */
+
+    function mod(value, n) {
+        if (util.isNumber(value)) {
+            return value % n;
+        } else {
+            return value;
+        }
+    }
+
+    /**
+     * return maximum value in an array.It will compare two item by a certain key
+     * if key provide.
+     *
+     * {{ [13,22,3,24 ] | max }} => 24
+     * {{ list | max 'age' }} => {name:'james',age:24}
+     * list:[
+     *  {name:'james',age:24},
+     *  {name:'ron',age:12}
+     * ]
+     */
+
+
+    function max(arr, key) {
+        var ret, max, computed;
+        if (util.isArray(arr)) {
+            max = -Infinity;
+            util.each(arr, function(val) {
+                computed = util.get(val, key);
+                if (computed > max) {
+                    max = computed;
+                    ret = val;
+                }
+            });
+            return ret;
+        } else {
+            return arr;
+        }
+    }
+
+    /**
+     * return minimum value in an array.It will compare two item by a certain key
+     * if key provide.
+     *
+     * {{ [13,22,3,24 ] | min }} => 3
+     * {{ list | min 'age' }} => {name:'ron',age:12}
+     * list:[
+     *  {name:'james',age:24},
+     *  {name:'ron',age:12}
+     * ]
+     */
+
+    function min(arr, key) {
+        var ret, min, computed;
+        if (util.isArray(arr)) {
+            min = Infinity;
+            util.each(arr, function(val) {
+                computed = util.get(val, key);
+                if (computed < min) {
+                    min = computed;
+                    ret = val;
+                }
+            });
+            return ret;
+        } else {
+            return arr;
+        }
+    }
+
+    function sum(arr, initial) {
+        if (util.isArrayLike(arr) && !util.isString(arr)) {
+            var ret = initial || 0;
+            util.each(arr, function(val) {
+                if (!util.isNumber(val)) {
+                    ret = undefined;
+                    // stop each
+                    return false;
+                } else {
+                    ret = ret + val;
+                }
+            });
+            return ret;
+        } else {
+            return arr;
+        }
+    }
+
+    /**
+     * return mean value of a array
+     *
+     * {{ [1,2,3,4] | mean }} => 2.5
+     */
+
+    function mean(arr) {
+        if (util.isArray(arr)) {
+            var sum = arr.reduce(function(prev, curr) {
+                return prev + curr;
+            }, 0);
+
+            var len = arr.length;
+            if (util.isNumber(sum) && len != 0) {
+                return sum / len;
+            } else {
+                return 0;
+            }
+        } else {
+            return arr;
+        }
+    }
+
+    var abs = base.abs;
+    var acos = base.acos;
+    var asin = base.asin;
+    var atan = base.atan;
+    var atan2 = base.atan2;
+    var ceil = base.ceil;
+    var cos = base.cos;
+    var exp = base.exp;
+    var floor = base.floor;
+    var log = base.log;
+    var pow = base.pow;
+    var round = base.round;
+    var sin = base.sin;
+    var sqrt = base.sqrt;
+    var tan = base.tan;
+
+
+
+    var mathFilters = Object.freeze({
+        abs: abs,
+        acos: acos,
+        asin: asin,
+        atan: atan,
+        atan2: atan2,
+        ceil: ceil,
+        cos: cos,
+        exp: exp,
+        floor: floor,
+        log: log,
+        pow: pow,
+        round: round,
+        sin: sin,
+        sqrt: sqrt,
+        tan: tan,
+        max: max,
+        min: min,
+        mean: mean,
+        sum: sum,
+        plus: plus,
+        minus: minus,
+        multiply: multiply,
+        divide: divide,
+        mod: mod
+    });
+
+    /**
+     * Appends characters to a string.
+     *
+     * {{ 'sky' | append '.jpg' }} => 'sky.jpg'
+     */
+
+    function append(str, postfix) {
+        if (!str && str !== 0) {
+            str = '';
+        } else {
+            str = str.toString();
+        }
+        return str + postfix;
+    }
+
+    /**
+     * Converts a string into CamelCase.
+     *
+     * {{ some_else | camelcase }} => SomeElse
+     * {{ some-else | camelcase }} => SomeElse
+     */
+
+    function camelcase(str) {
+        var re = /(?:^|[-_\/])(\w)/g;
+        return str.toString().replace(re, function(_, c) {
+            return c.toUpperCase();
+        });
+    }
+
+    /**
+     * Prepends characters to a string.
+     *
+     * {{ 'world' | prepend 'hello ' }} => 'hello world'
+     */
+
+    function prepend(str, prefix) {
+        if (!str && str !== 0) {
+            str = '';
+        } else {
+            str = str.toString();
+        }
+        return prefix + str;
+    }
+
+    /**
+     * Removes all occurrences of a substring from a string.
+     *
+     * {{ 'Hello JavaScript' | remove 'Hello' }} => ' JavaScript'
+     */
+
+    function remove(str, substr) {
+        if (util.isString(str)) {
+            str = str.split(substr).join('');
+        }
+        return str;
+    }
+
+    /**
+     * The split filter takes on a substring as a parameter.
+     * The substring is used as a delimiter to divide a string into an array.
+     *
+     * {{ 'a-b-c-d' | split '-' }} => [a,b,c,d]
+     */
+
+    function split(str, separator) {
+        separator = separator || '';
+        if (util.isString(str)) {
+            return str.split(separator);
+        } else {
+            return str;
+        }
+    }
+
+    /**
+     * Test if a string match a pattern
+     *
+     * {{ "http://vuejs.org" | test /^http/ }} => true
+     */
+
+    function test(str, re, flag) {
+        re = new RegExp(re, flag);
+        return re.test(str);
+    }
+
+    /**
+     * Strips tabs, spaces, and newlines (all whitespace)
+     * from the left or right or both side of a string.
+     * which depends on second argument. if it is 'r' will only
+     * trim right side,if it is 'l' will only trim left side
+     * otherwise trim both left and right side.
+     *
+     * {{ '   some spaces   ' | trim }} => 'some spaces'
+     * {{ '   some spaces   ' | trim 'r' }} => '   some spaces'
+     * {{ '   some spaces   ' | trim 'l' }} => 'some spaces   '
+     */
+
+    function trim(str, rightOrleft) {
+        if (util.isString(str)) {
+            var re;
+            if (rightOrleft == 'r') {
+                re = /\s+$/;
+            } else if (rightOrleft == 'l') {
+                re = /^\s+/;
+            } else {
+                re = /^\s+|\s+$/g;
+            }
+            return str.replace(re, '');
+        } else {
+            return str;
+        }
+    }
+
+    /**
+     * truncate text to a specified length.
+     *
+     * {{ 'this is a big city!' | truncate 10 '...' }} => this is...
+     */
+
+    function truncate(str, length, truncation) {
+        length = length || 30;
+        truncation = typeof truncation === 'string' ? truncation : '...';
+        return (str.length + truncation.length > length ? str.slice(0, length - truncation.length) : str) + truncation;
+    }
+
+    /**
+     * return a string by repeat a char n times
+     */
+
+    function padding(size,ch){
+        var str = '';
+        if(!ch && ch !== 0){
+            ch = ' ';
+        }
+        while(size !== 0){
+            if(size & 1 === 1){
+                str += ch;
+            }
+            ch += ch;
+            size >>>= 1;
+        }
+        return str;
+    }
+
+
+    /**
+     * leftPad
+     *
+     * {{ 'abc' | leftPad 5 '*' }} => '**abc'
+     */
+    function leftPad(str,size,ch){
+        size = +size || 0;
+        var padLength = size - str.length;
+        if(padLength <= 0){
+            return str;
+        }
+        return padding(padLength,ch).concat(str);
+    }
+
+
+    /**
+     * rightPad
+     *
+     * {{ 'abc' | leftPad 5 '*' }} => 'abc**'
+     */
+    function rightPad(str,size,ch){
+        size = +size || 0;
+        var padLength = size - str.length;
+        if(padLength <= 0){
+            return str;
+        }
+        return str.concat(padding(padLength,ch));
+    }
+
+    /**
+     * Appends characters to a string.
+     *
+     * {{ 'abc' | repeat 3 }} => 'abcabcabc'
+     */
+
+    function repeat(str, times) {
+        times = times ? Number(times) : 0;
+        if(times != times){ // NAN
+            times = 0;
+        }
+
+        times = Math.floor(times);
+
+        if(times <= -1){
+            times = 0;
+        }
+        
+        str = '' + str;
+
+        var ret = '';
+        while(times !== 0){
+            if(times & 1 === 1){
+                ret += str;
+            }
+            str += str;
+            times >>>= 1;
+        }
+        return ret;
+    }
+
+
+
+    var stringFilters = Object.freeze({
+        append: append,
+        camelcase: camelcase,
+        prepend: prepend,
+        remove: remove,
+        split: split,
+        test: test,
+        trim: trim,
+        truncate: truncate,
+        leftPad: leftPad,
+        rightPad: rightPad,
+        repeat: repeat
+    });
+
+    /**
+     * Converts a timestamp into another date format.
+     *
+     */
+    var weekdays = ['Sunday', 'Monday', 'Tuesday',
+        'Wednesday', 'Thursday', 'Friday', 'Saturday'
+    ];
+    var months = ['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+
+    function date(date, formatString) {
+        var d = new Date(date);
+
+        var zeroize = function(value, length) {
+
+            if (!length) length = 2;
+
+            value = '' + value;
+
+            for (var i = 0, zeros = ''; i < (length - value.length); i++) {
+                zeros += '0';
+            }
+
+            return zeros + value;
+        };
+
+        function getDays() {
+            var days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
+                year = d.getFullYear(),
+                month = d.getMonth(),
+                day = d.getDate();
+
+            if (year % 100 == 0 && year % 400 == 0 || year % 4 == 0) {
+                days[1] = 29;
+            }
+            var n = 0;
+            for (var i = 0; i < month; i++) {
+                n += days[i];
+            }
+            return n + day;
+        }
+
+        function cb(c) {
+            var ret = '';
+            switch (c) {
+            case '%a':
+                ret = weekdays[d.getDay()].slice(0, 3);
+                break;
+            case '%A':
+                ret = weekdays[d.getDay()];
+                break;
+            case '%b':
+                ret = months[d.getMonth()].slice(0, 3);
+                break;
+            case '%B':
+                ret = months[d.getMonth()];
+                break;
+            case '%c':
+                ret = d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
+                break;
+            case '%d':
+                var day = d.getDate();
+                ret = zeroize(day);
+                break;
+            case '%-d':
+                ret = d.getDate();
+                break;
+            case '%D':
+                ret = '%m/%d/%Y';
+                break;
+            case '%e':
+                ret = d.getDate();
+                break;
+            case '%F':
+                ret = '%Y-%m-%d';
+                break;
+            case '%H':
+                var hours = d.getHours();
+                ret = zeroize(hours);
+                break;
+            case '%I':
+                ret = d.getHours() % 12;
+                break;
+            case '%j':
+                ret = zeroize(getDays(), 3);
+                break;
+            case 'k':
+                ret = d.getHours();
+                break;
+            case '%m':
+                var month = d.getMonth() + 1;
+                ret = zeroize(month, 2);
+                break;
+            case '%M':
+                ret = zeroize(d.getMinutes(), 2);
+                break;
+            case '%s':
+                ret = zeroize(d.getSeconds(), 2);
+                break;
+            case '%p':
+                ret = d.getHours() < 12 ? 'AM' : 'PM';
+                break;
+            case '%r':
+                ret = '%I:%M:%s %p';
+                break;
+            case '%R':
+                ret = '%H:%M';
+                break;
+            case '%T':
+                ret = '%H:%M:%s';
+                break;
+            case '%U':
+                ret = Math.ceil(getDays() / 7);
+                break;
+            case '%w':
+                ret = d.getDay();
+                break;
+            case '%x':
+                ret = '%m/%d/%y';
+                break;
+            case '%X':
+                ret = '%h:%M:%s';
+                break;
+            case '%y':
+                ret = d.getFullYear() % 100;
+                break;
+            case '%Y':
+                ret = d.getFullYear();
+                break;
+            default:
+                ret = c;
+            }
+            return ret;
+        }
+        var re = /%-?[\w]/g;
+        if (!formatString) {
+            formatString = '%c';
+        }
+        formatString = formatString.replace(re, cb);
+        formatString = formatString.replace(re, cb);
+        return formatString;
+    }
+
+    /**
+     * Sets a default value for any variable with no assigned value
+     *
+     * The default value is returned if the variable resolves to null ,undefined or an empty string "".
+     * A string containing whitespace characters and a number has value 0 will not resolve to the default value.
+     *
+     */
+    function defaults(value, dft) {
+        // undefined and null and empty string
+        if (value == null || value === '') {
+            return dft;
+        } else {
+            return value;
+        }
+    }
+
+
+
+    var otherFilters = Object.freeze({
+        date: date,
+        defaults: defaults
+    });
+
+    function install(Vue) {
+        util.each(collectionFilters, function(value, key) {
+            Vue.filter(key, value);
+        });
+
+        util.each(mathFilters, function(value, key) {
+            Vue.filter(key, value);
+        });
+
+        util.each(stringFilters, function(value, key) {
+            Vue.filter(key, value);
+        });
+
+        util.each(otherFilters, function(value, key) {
+            Vue.filter(key, value);
+        });
+    }
+
+    if (typeof exports == 'object') {
+        module.exports = install;
+    } else if (typeof define == 'function' && define.amd) {
+        define([], function() {
+            return install;
+        });
+    } else if (window.Vue) {
+        Vue.use(install);
+    }
+
+}());
+},{}],3:[function(require,module,exports){
 var Vue // late bind
 var map = Object.create(null)
 var shimmed = false
@@ -419,7 +1418,67 @@ function format (id) {
   return id.match(/[^\/]+\.vue$/)[0]
 }
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
+'use strict';
+module.exports.install = function (Vue, options) {
+  var progressHolder = null;
+  Vue.prototype.$progress = {
+    setHolder: function setHolder(it) {
+      this.progressHolder = it;
+    },
+    start: function start(time) {
+      var _this = this;
+
+      if (time == undefined) {
+        time = 3000;
+      }
+      this.progressHolder.percent = 0;
+      this.progressHolder.options.show = true;
+      this.progressHolder.options.canSuccess = true;
+      var cut = 10000 / Math.floor(time);
+      var timer = setInterval(function () {
+        _this.increase(cut * Math.random());
+        if (_this.progressHolder.percent > 95) {
+          _this.finish();
+          clearInterval(timer);
+        }
+      }, 100);
+    },
+    set: function set(num) {
+      this.progressHolder.options.show = true;
+      this.progressHolder.options.canSuccess = true;
+      this.progressHolder.percent = Math.floor(num);
+    },
+    get: function get(num) {
+      return Math.floor(this.progressHolder.percent);
+    },
+    increase: function increase(num) {
+      this.progressHolder.percent = this.progressHolder.percent + Math.floor(num);
+    },
+    decrease: function decrease(num) {
+      this.progressHolder.percent = this.progressHolder.percent - Math.floor(num);
+    },
+    finish: function finish() {
+      var _this2 = this;
+
+      this.progressHolder.percent = 100;
+      setTimeout(function () {
+        _this2.progressHolder.options.show = false;
+      }, 800);
+    },
+    failed: function failed() {
+      var _this3 = this;
+
+      this.progressHolder.options.canSuccess = false;
+      this.progressHolder.percent = 100;
+      setTimeout(function () {
+        _this3.progressHolder.options.show = false;
+      }, 800);
+    }
+  };
+};
+
+},{}],5:[function(require,module,exports){
 /*!
  * vue-resource v0.7.4
  * https://github.com/vuejs/vue-resource
@@ -1796,7 +2855,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 module.exports = plugin;
-},{}],4:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /*!
  * vue-router v0.7.13
  * (c) 2016 Evan You
@@ -4506,7 +5565,7 @@ module.exports = plugin;
   return Router;
 
 }));
-},{}],5:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 (function (process,global){
 /*!
  * Vue.js v1.0.24
@@ -14539,7 +15598,7 @@ setTimeout(function () {
 
 module.exports = Vue;
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":1}],6:[function(require,module,exports){
+},{"_process":1}],8:[function(require,module,exports){
 var inserted = exports.cache = {}
 
 exports.insert = function (css) {
@@ -14559,7 +15618,765 @@ exports.insert = function (css) {
   return elem
 }
 
-},{}],7:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
+var __vueify_insert__ = require("vueify/lib/insert-css")
+var __vueify_style__ = __vueify_insert__.insert("\n.vuetable th.sortable:hover {\n  color: #2185d0;\n  cursor: pointer;\n}\n.vuetable-actions {\n  width: 15%;\n  padding: 12px 0px;\n  text-align: center;\n}\n.vuetable-pagination {\n  background: #f9fafb !important;\n}\n.vuetable-pagination-info {\n  margin-top: auto;\n  margin-bottom: auto;\n}\n")
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    props: {
+        'wrapperClass': {
+            type: String,
+            default: function _default() {
+                return null;
+            }
+        },
+        'tableWrapper': {
+            type: String,
+            default: function _default() {
+                return null;
+            }
+        },
+        'tableClass': {
+            type: String,
+            default: function _default() {
+                return 'ui blue striped selectable celled stackable attached table';
+            }
+        },
+        'loadingClass': {
+            type: String,
+            default: function _default() {
+                return 'loading';
+            }
+        },
+        'dataPath': {
+            type: String,
+            default: function _default() {
+                return 'data';
+            }
+        },
+        'paginationPath': {
+            type: String,
+            default: function _default() {
+                return 'links.pagination';
+            }
+        },
+        'fields': {
+            type: Array,
+            required: true
+        },
+        'apiUrl': {
+            type: String,
+            required: true
+        },
+        'sortOrder': {
+            type: Object,
+            default: function _default() {
+                return {
+                    field: '',
+                    direction: 'asc'
+                };
+            }
+        },
+        'perPage': {
+            type: Number,
+            coerce: function coerce(val) {
+                return parseInt(val);
+            },
+            default: function _default() {
+                return 10;
+            }
+        },
+        'ascendingIcon': {
+            type: String,
+            default: function _default() {
+                return 'blue chevron up icon';
+            }
+        },
+        'descendingIcon': {
+            type: String,
+            default: function _default() {
+                return 'blue chevron down icon';
+            }
+        },
+        'appendParams': {
+            type: Array,
+            default: function _default() {
+                return [];
+            }
+        },
+        'showPagination': {
+            type: Boolean,
+            default: function _default() {
+                return true;
+            }
+        },
+        'paginationComponent': {
+            type: String,
+            default: function _default() {
+                return 'vuetable-pagination';
+            }
+        },
+        'paginationInfoTemplate': {
+            type: String,
+            default: function _default() {
+                return "Displaying {from} to {to} of {total} items";
+            }
+        },
+        'paginationInfoNoDataTemplate': {
+            type: String,
+            default: function _default() {
+                return 'No relevant data';
+            }
+        },
+        'paginationClass': {
+            type: String,
+            default: function _default() {
+                return 'ui bottom attached segment grid';
+            }
+        },
+        'paginationInfoClass': {
+            type: String,
+            default: function _default() {
+                return 'left floated left aligned six wide column';
+            }
+        },
+        'paginationComponentClass': {
+            type: String,
+            default: function _default() {
+                return 'right floated right aligned six wide column';
+            }
+        },
+        'paginationConfig': {
+            type: String,
+            default: function _default() {
+                return 'paginationConfig';
+            }
+        },
+        itemActions: {
+            type: Array,
+            default: function _default() {
+                return [];
+            }
+        },
+        queryParams: {
+            type: Object,
+            default: function _default() {
+                return {
+                    sort: 'sort',
+                    page: 'page',
+                    perPage: 'per_page'
+                };
+            }
+        },
+        loadOnStart: {
+            type: Boolean,
+            default: function _default() {
+                return true;
+            }
+        },
+        selectedTo: {
+            type: Array,
+            default: function _default() {
+                return [];
+            }
+        },
+        httpData: {
+            type: Object,
+            default: function _default() {
+                return {};
+            }
+        },
+        httpOptions: {
+            type: Object,
+            default: function _default() {
+                return {};
+            }
+        }
+    },
+    data: function data() {
+        return {
+            version: '1.1.1',
+            eventPrefix: 'vuetable:',
+            tableData: null,
+            tablePagination: null,
+            currentPage: 1
+        };
+    },
+    directives: {
+        'attr': {
+            update: function update(value) {
+                for (var i in value) {
+                    this.el.setAttribute(i, value[i]);
+                }
+            }
+        }
+    },
+    computed: {
+        sortIcon: function sortIcon() {
+            return this.sortOrder.direction == 'asc' ? this.ascendingIcon : this.descendingIcon;
+        },
+        paginationInfo: function paginationInfo() {
+            if (this.tablePagination == null || this.tablePagination.total == 0) {
+                return this.paginationInfoNoDataTemplate;
+            }
+
+            return this.paginationInfoTemplate.replace('{from}', this.tablePagination.from || 0).replace('{to}', this.tablePagination.to || 0).replace('{total}', this.tablePagination.total || 0);
+        }
+    },
+    methods: {
+        normalizeFields: function normalizeFields() {
+            var self = this;
+            var obj;
+            this.fields.forEach(function (field, i) {
+                if (typeof field === 'string') {
+                    obj = {
+                        name: field,
+                        title: self.setTitle(field),
+                        titleClass: '',
+                        dataClass: '',
+                        callback: null,
+                        visible: true
+                    };
+                } else {
+                    obj = {
+                        name: field.name,
+                        title: field.title === undefined ? self.setTitle(field.name) : field.title,
+                        sortField: field.sortField,
+                        titleClass: field.titleClass === undefined ? '' : field.titleClass,
+                        dataClass: field.dataClass === undefined ? '' : field.dataClass,
+                        callback: field.callback === undefined ? '' : field.callback,
+                        visible: field.visible === undefined ? true : field.visible
+                    };
+                }
+                self.fields.$set(i, obj);
+            });
+        },
+        setTitle: function setTitle(str) {
+            if (this.isSpecialField(str)) {
+                return '';
+            }
+
+            return this.titleCase(str);
+        },
+        titleCase: function titleCase(str) {
+            return str.replace(/\w+/g, function (txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
+        },
+        loadData: function loadData() {
+            var wrapper = document.querySelector(this.tableWrapper);
+            this.showLoadingAnimation(wrapper);
+
+            var params = [this.queryParams.sort + '=' + this.getSortParam(), this.queryParams.page + '=' + this.currentPage, this.queryParams.perPage + '=' + this.perPage];
+
+            var url = this.apiUrl + '?' + params.join('&');
+            if (this.appendParams.length > 0) {
+                url += '&' + this.appendParams.join('&');
+            }
+            var self = this;
+            this.$http.get(url, this.httpData, this.httpOptions).then(function (response) {
+                self.tableData = self.getObjectValue(response.data, self.dataPath, null);
+                self.tablePagination = self.getObjectValue(response.data, self.paginationPath, null);
+                if (self.tablePagination === null) {
+                    console.warn('vuetable: pagination-path "' + self.paginationPath + '"" not found. ' + 'It looks like the data returned from the sever does not have pagination information.');
+                }
+
+                self.dispatchEvent('load-success', response);
+                self.broadcastEvent('load-success', self.tablePagination);
+
+                self.hideLoadingAnimation(wrapper);
+            }, function (response) {
+                self.dispatchEvent('load-error', response);
+                self.broadcastEvent('load-error', response);
+
+                self.hideLoadingAnimation(wrapper);
+            });
+        },
+        showLoadingAnimation: function showLoadingAnimation(wrapper) {
+            if (wrapper !== null) {
+                this.addClass(wrapper, this.loadingClass);
+            }
+            this.dispatchEvent('loading');
+        },
+        hideLoadingAnimation: function hideLoadingAnimation(wrapper) {
+            if (wrapper !== null) {
+                this.removeClass(wrapper, this.loadingClass);
+            }
+            this.dispatchEvent('loaded');
+        },
+        getTitle: function getTitle(field) {
+            if (typeof field.title === 'undefined') {
+                return field.name.replace('.', ' ');
+            }
+            return field.title;
+        },
+        getSortParam: function getSortParam() {
+            if (!this.sortOrder || this.sortOrder.field == '') {
+                return '';
+            }
+
+            var fieldName = typeof this.sortOrder.sortField === 'undefined' ? this.sortOrder.field : this.sortOrder.sortField;
+
+            return fieldName + '|' + this.sortOrder.direction;
+        },
+        addClass: function addClass(el, className) {
+            if (el.classList) el.classList.add(className);else el.className += ' ' + className;
+        },
+        removeClass: function removeClass(el, className) {
+            if (el.classList) el.classList.remove(className);else el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+        },
+        dispatchEvent: function dispatchEvent(eventName, args) {
+            this.$dispatch(this.eventPrefix + eventName, args);
+        },
+        broadcastEvent: function broadcastEvent(eventName, args) {
+            this.$broadcast(this.eventPrefix + eventName, args);
+        },
+        orderBy: function orderBy(field) {
+            if (!this.isSortable(field)) {
+                return;
+            }
+
+            if (this.sortOrder.field == field.name) {
+                // change sort direction
+                this.sortOrder.direction = this.sortOrder.direction == 'asc' ? 'desc' : 'asc';
+            } else {
+                // reset sort direction
+                this.sortOrder.direction = 'asc';
+            }
+            this.sortOrder.field = field.name;
+            this.sortOrder.sortField = field.sortField;
+            this.currentPage = 1; // reset page index
+            this.loadData();
+        },
+        isSortable: function isSortable(field) {
+            return !(typeof field.sortField == 'undefined');
+        },
+        isCurrentSortField: function isCurrentSortField(field) {
+            if (!this.isSortable(field)) {
+                return false;
+            }
+
+            return this.sortOrder.field == field.name;
+        },
+        gotoPreviousPage: function gotoPreviousPage() {
+            if (this.currentPage > 1) {
+                this.currentPage--;
+                this.loadData();
+            }
+        },
+        gotoNextPage: function gotoNextPage() {
+            if (this.currentPage < this.tablePagination.last_page) {
+                this.currentPage++;
+                this.loadData();
+            }
+        },
+        gotoPage: function gotoPage(page) {
+            if (page != this.currentPage && page > 0 && page <= this.tablePagination.last_page) {
+                this.currentPage = page;
+                this.loadData();
+            }
+        },
+        isSpecialField: function isSpecialField(fieldName) {
+            return fieldName.startsWith('__');
+        },
+        hasCallback: function hasCallback(item) {
+            return item.callback ? true : false;
+        },
+        callCallback: function callCallback(field, item) {
+            if (!this.hasCallback(field)) return;
+
+            var args = field.callback.split('|');
+            var func = args.shift();
+
+            if (typeof this.$parent[func] == 'function') {
+                return args.length > 0 ? this.$parent[func].apply(this.$parent, [this.getObjectValue(item, field.name)].concat(args)) : this.$parent[func].call(this.$parent, this.getObjectValue(item, field.name));
+            }
+
+            return null;
+        },
+        getObjectValue: function getObjectValue(object, path, defaultValue) {
+            defaultValue = typeof defaultValue == 'undefined' ? null : defaultValue;
+
+            var obj = object;
+            if (path.trim() != '') {
+                var keys = path.split('.');
+                keys.forEach(function (key) {
+                    if (typeof obj[key] != 'undefined' && obj[key] !== null) {
+                        obj = obj[key];
+                    } else {
+                        obj = defaultValue;
+                        return;
+                    }
+                });
+            }
+            return obj;
+        },
+        callAction: function callAction(action, data) {
+            this.$dispatch(this.eventPrefix + 'action', action, data);
+        },
+        addParam: function addParam(param) {
+            this.appendParams.push(param);
+        },
+        toggleCheckbox: function toggleCheckbox(isChecked, dataItem, fieldName) {
+            var idColumn = this.extractArgs(fieldName);
+            if (idColumn === undefined) {
+                console.warn('You did not provide reference id column with "__checkbox:<column_name>" field!');
+                return;
+            }
+            if (isChecked) {
+                this.selectedTo.push(dataItem[idColumn]);
+            } else {
+                this.selectedTo.$remove(dataItem[idColumn]);
+            }
+        },
+        toggleAllCheckboxes: function toggleAllCheckboxes(isChecked, fieldName) {
+            var self = this;
+            var idColumn = this.extractArgs(fieldName);
+
+            if (isChecked) {
+                this.tableData.forEach(function (dataItem) {
+                    if (!self.isSelectedRow(dataItem, fieldName)) {
+                        self.selectedTo.push(dataItem[idColumn]);
+                    }
+                });
+            } else {
+                this.tableData.forEach(function (dataItem) {
+                    self.selectedTo.$remove(dataItem[idColumn]);
+                });
+            }
+        },
+        isSelectedRow: function isSelectedRow(dataItem, fieldName) {
+            return this.selectedTo.indexOf(dataItem[this.extractArgs(fieldName)]) >= 0;
+        },
+        extractName: function extractName(string) {
+            return string.split(':')[0].trim();
+        },
+        extractArgs: function extractArgs(string) {
+            return string.split(':')[1];
+        },
+        onRowChanged: function onRowChanged(dataItem) {
+            this.dispatchEvent('row-changed', dataItem);
+            return true;
+        },
+        onRowClicked: function onRowClicked(dataItem, event) {
+            this.$dispatch(this.eventPrefix + 'row-clicked', dataItem, event);
+            return true;
+        },
+        onCellDoubleClicked: function onCellDoubleClicked(dataItem, field, event) {
+            this.$dispatch(this.eventPrefix + 'cell-dblclicked', dataItem, field, event);
+        },
+        callPaginationConfig: function callPaginationConfig() {
+            if (typeof this.$parent[this.paginationConfig] === 'function') {
+                this.$parent[this.paginationConfig].call(this.$parent, this.$refs.pagination.$options.name);
+            }
+        }
+    },
+    events: {
+        'vuetable-pagination:change-page': function vuetablePaginationChangePage(page) {
+            if (page == 'prev') {
+                this.gotoPreviousPage();
+            } else if (page == 'next') {
+                this.gotoNextPage();
+            } else {
+                this.gotoPage(page);
+            }
+        },
+        'vuetable:reload': function vuetableReload() {
+            this.loadData();
+        },
+        'vuetable:refresh': function vuetableRefresh() {
+            this.currentPage = 1;
+            this.loadData();
+        },
+        'vuetable:goto-page': function vuetableGotoPage(page) {
+            this.$emit('vuetable-pagination:change-page', page);
+        },
+        'vuetable:set-options': function vuetableSetOptions(options) {
+            for (var n in options) {
+                this.$set(n, options[n]);
+            }
+        }
+    },
+    created: function created() {
+        this.normalizeFields();
+        if (this.loadOnStart) {
+            this.loadData();
+        }
+        this.$nextTick(function () {
+            this.callPaginationConfig();
+        });
+    }
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"{{wrapperClass}}\">\n    <table class=\"vuetable {{tableClass}}\">\n        <thead>\n            <tr>\n                <template v-for=\"field in fields\">\n                    <template v-if=\"field.visible\">\n                        <template v-if=\"isSpecialField(field.name)\">\n                            <th v-if=\"extractName(field.name) == '__checkbox'\" class=\"{{field.titleClass || ''}}\">\n                                <input type=\"checkbox\" @change=\"toggleAllCheckboxes($event.target.checked, field.name)\">\n                            </th>\n                            <th v-else=\"\" id=\"{{field.name}}\" class=\"{{field.titleClass || ''}}\">\n                                {{field.title || ''}}\n                            </th>\n                        </template>\n                        <template v-else=\"\">\n                            <th @click=\"orderBy(field)\" id=\"_{{field.name}}\" class=\"{{field.titleClass || ''}} {{isSortable(field) ? 'sortable' : ''}}\">\n                                {{getTitle(field) | capitalize}}&nbsp;\n                                <i v-if=\"isCurrentSortField(field)\" class=\"{{ sortIcon }}\"></i>\n                            </th>\n                        </template>\n                    </template>\n                </template>\n            </tr>\n        </thead>\n        <tbody v-cloak=\"\">\n            <tr v-for=\"(itemNumber, item) in tableData\" @click=\"onRowClicked(item, $event)\">\n                <template v-if=\"onRowChanged(item)\"></template>\n                <template v-for=\"field in fields\">\n                    <template v-if=\"field.visible\">\n                        <template v-if=\"isSpecialField(field.name)\">\n                            <td v-if=\"extractName(field.name) == '__sequence'\" class=\"vuetable-sequence {{field.dataClass}}\" v-html=\"tablePagination.from + itemNumber\">\n                            </td>\n                            <td v-if=\"extractName(field.name) == '__checkbox'\" class=\"vuetable-checkboxes {{field.dataClass}}\">\n                                <input type=\"checkbox\" @change=\"toggleCheckbox($event.target.checked, item, field.name)\" :checked=\"isSelectedRow(item, field.name)\">\n                            </td>\n                            <td v-if=\"field.name == '__actions'\" class=\"vuetable-actions {{field.dataClass}}\">\n                                <template v-for=\"action in itemActions\">\n                                    <button class=\"{{ action.class }}\" @click=\"callAction(action.name, item)\" v-attr=\"action.extra\">\n                                        <i class=\"{{ action.icon }}\"></i> {{ action.label }}\n                                    </button>\n                                </template>\n                            </td>\n                        </template>\n                        <template v-else=\"\">\n                            <td v-if=\"hasCallback(field)\" class=\"{{field.dataClass}}\" @dblclick=\"onCellDoubleClicked(item, field, $event)\">\n                                {{{ callCallback(field, item) }}}\n                            </td>\n                            <td v-else=\"\" class=\"{{field.dataClass}}\" @dblclick=\"onCellDoubleClicked(item, field, $event)\">\n                                {{{ getObjectValue(item, field.name, \"\") }}}\n                            </td>\n                        </template>\n                    </template>\n                </template>\n            </tr>\n        </tbody>\n    </table>\n    <div v-if=\"showPagination\" class=\"vuetable-pagination {{paginationClass}}\">\n        <div class=\"vuetable-pagination-info {{paginationInfoClass}}\" v-html=\"paginationInfo\">\n        </div>\n        <div v-show=\"tablePagination &amp;&amp; tablePagination.last_page > 1\" class=\"vuetable-pagination-component {{paginationComponentClass}}\">\n            <component v-ref:pagination=\"\" :is=\"paginationComponent\"></component>\n        </div>\n    </div>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.dispose(function () {
+    __vueify_insert__.cache["\n.vuetable th.sortable:hover {\n  color: #2185d0;\n  cursor: pointer;\n}\n.vuetable-actions {\n  width: 15%;\n  padding: 12px 0px;\n  text-align: center;\n}\n.vuetable-pagination {\n  background: #f9fafb !important;\n}\n.vuetable-pagination-info {\n  margin-top: auto;\n  margin-bottom: auto;\n}\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-4945ae0f", module.exports)
+  } else {
+    hotAPI.update("_v-4945ae0f", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":7,"vue-hot-reload-api":3,"vueify/lib/insert-css":8}],10:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _VuetablePaginationMixin = require('./VuetablePaginationMixin.vue');
+
+var _VuetablePaginationMixin2 = _interopRequireDefault(_VuetablePaginationMixin);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    mixins: [_VuetablePaginationMixin2.default]
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"{{wrapperClass}}\">\n    <a @click=\"loadPage(1)\" class=\"btn-nav {{linkClass}} {{isOnFirstPage ? disabledClass : ''}}\">\n            <i v-if=\"icons.first != ''\" class=\"{{icons.first}}\"></i>\n            <span v-else=\"\">«</span>\n    </a>\n    <a @click=\"loadPage('prev')\" class=\"btn-nav {{linkClass}} {{isOnFirstPage ? disabledClass : ''}}\">\n            <i v-if=\"icons.next != ''\" class=\"{{icons.prev}}\"></i>\n            <span v-else=\"\">&nbsp;‹</span>\n    </a>\n    <template v-if=\"notEnoughPages\">\n        <template v-for=\"n in totalPage\">\n            <a @click=\"loadPage(n+1)\" class=\"{{pageClass}} {{isCurrentPage(n+1) ? activeClass : ''}}\">\n                    {{ n+1 }}\n            </a>\n        </template>\n    </template>\n    <template v-else=\"\">\n       <template v-for=\"n in windowSize\">\n           <a @click=\"loadPage(windowStart+n)\" class=\"{{pageClass}} {{isCurrentPage(windowStart+n) ? activeClass : ''}}\">\n                {{ windowStart+n }}\n           </a>\n       </template>\n    </template>\n    <a @click=\"loadPage('next')\" class=\"btn-nav {{linkClass}} {{isOnLastPage ? disabledClass : ''}}\">\n        <i v-if=\"icons.next != ''\" class=\"{{icons.next}}\"></i>\n        <span v-else=\"\">›&nbsp;</span>\n    </a>\n    <a @click=\"loadPage(totalPage)\" class=\"btn-nav {{linkClass}} {{isOnLastPage ? disabledClass : ''}}\">\n        <i v-if=\"icons.last != ''\" class=\"{{icons.last}}\"></i>\n        <span v-else=\"\">»</span>\n    </a>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-65fdac09", module.exports)
+  } else {
+    hotAPI.update("_v-65fdac09", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"./VuetablePaginationMixin.vue":13,"vue":7,"vue-hot-reload-api":3}],11:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _VuetablePaginationMixin = require('./VuetablePaginationMixin.vue');
+
+var _VuetablePaginationMixin2 = _interopRequireDefault(_VuetablePaginationMixin);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    mixins: [_VuetablePaginationMixin2.default],
+    methods: {
+        loadPage: function loadPage(page) {
+            this.$dispatch('vuetable-pagination:change-page', page);
+        }
+    }
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<nav>\n    <ul class=\"pagination\">\n        <li class=\"{{isOnFirstPage ? disabledClass : ''}}\">\n            <a @click=\"loadPage('prev')\"><i class=\"glyphicon glyphicon-chevron-left\"></i></a>\n        </li>\n        <template v-for=\"n in totalPage\">\n            <li class=\"{{isCurrentPage(n+1) ? ' active' : ''}}\">\n                <a @click=\"loadPage(n+1)\"> {{ n+1 }}</a>\n            </li>\n        </template>\n        <li class=\"{{isOnLastPage ? disabledClass : ''}}\">\n            <a @click=\"loadPage('next')\"><i class=\"glyphicon glyphicon-chevron-right\"></i></a>\n        </li>\n    </ul>\n</nav>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-1b9edf95", module.exports)
+  } else {
+    hotAPI.update("_v-1b9edf95", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"./VuetablePaginationMixin.vue":13,"vue":7,"vue-hot-reload-api":3}],12:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _VuetablePaginationMixin = require('./VuetablePaginationMixin.vue');
+
+var _VuetablePaginationMixin2 = _interopRequireDefault(_VuetablePaginationMixin);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    mixins: [_VuetablePaginationMixin2.default],
+    props: {
+        'dropdownClass': {
+            type: String,
+            default: function _default() {
+                return 'ui search dropdown';
+            }
+        },
+        'pageText': {
+            type: String,
+            default: function _default() {
+                return 'Page';
+            }
+        }
+    },
+    methods: {
+        loadPage: function loadPage(page) {
+            // update dropdown value
+            if (page == 'prev' && !this.isOnFirstPage) {
+                this.setDropdownToPage(this.tablePagination.current_page - 1);
+            } else if (page == 'next' && !this.isOnLastPage) {
+                this.setDropdownToPage(this.tablePagination.current_page + 1);
+            }
+
+            this.$dispatch('vuetable-pagination:change-page', page);
+        },
+        setDropdownToPage: function setDropdownToPage(page) {
+            this.$nextTick(function () {
+                document.getElementById('vuetable-pagination-dropdown').value = page;
+            });
+        },
+        selectPage: function selectPage(event) {
+            this.$dispatch('vuetable-pagination:change-page', event.target.selectedIndex + 1);
+        }
+    },
+    events: {
+        'vuetable:load-success': function vuetableLoadSuccess(tablePagination) {
+            this.tablePagination = tablePagination;
+            this.setDropdownToPage(tablePagination.current_page);
+        }
+    }
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"{{wrapperClass}}\">\n    <a @click=\"loadPage('prev')\" class=\"{{linkClass}} {{isOnFirstPage ? disabledClass : ''}}\">\n        <i :class=\"icons.prev\"></i>\n    </a>\n    <select id=\"vuetable-pagination-dropdown\" class=\"{{dropdownClass}}\" @change=\"selectPage($event)\">\n        <template v-for=\"n in totalPage\">\n            <option class=\"{{pageClass}}\" value=\"{{n+1}}\">\n                {{pageText}} {{n+1}}\n            </option>\n        </template>\n    </select>\n    <a @click=\"loadPage('next')\" class=\"{{linkClass}} {{isOnLastPage ? disabledClass : ''}}\">\n        <i :class=\"icons.next\"></i>\n    </a>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-cc3c5a8c", module.exports)
+  } else {
+    hotAPI.update("_v-cc3c5a8c", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"./VuetablePaginationMixin.vue":13,"vue":7,"vue-hot-reload-api":3}],13:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    props: {
+        'wrapperClass': {
+            type: String,
+            default: function _default() {
+                return 'ui right floated pagination menu';
+            }
+        },
+        'activeClass': {
+            type: String,
+            default: function _default() {
+                return 'active large';
+            }
+        },
+        'disabledClass': {
+            type: String,
+            default: function _default() {
+                return 'disabled';
+            }
+        },
+        'pageClass': {
+            type: String,
+            default: function _default() {
+                return 'item';
+            }
+        },
+        'linkClass': {
+            type: String,
+            default: function _default() {
+                return 'icon item';
+            }
+        },
+        'icons': {
+            type: Object,
+            default: function _default() {
+                return {
+                    first: 'angle double left icon',
+                    prev: 'left chevron icon',
+                    next: 'right chevron icon',
+                    last: 'angle double right icon'
+                };
+            }
+        },
+        'onEachSide': {
+            type: Number,
+            coerce: function coerce(value) {
+                return parseInt(value);
+            },
+            default: function _default() {
+                return 2;
+            }
+        }
+    },
+    data: function data() {
+        return {
+            tablePagination: null
+        };
+    },
+    computed: {
+        totalPage: function totalPage() {
+            return this.tablePagination == null ? 0 : this.tablePagination.last_page;
+        },
+        isOnFirstPage: function isOnFirstPage() {
+            return this.tablePagination == null ? false : this.tablePagination.current_page == 1;
+        },
+        isOnLastPage: function isOnLastPage() {
+            return this.tablePagination == null ? false : this.tablePagination.current_page == this.tablePagination.last_page;
+        },
+        notEnoughPages: function notEnoughPages() {
+            return this.totalPage < this.onEachSide * 2 + 4;
+        },
+        windowSize: function windowSize() {
+            return this.onEachSide * 2 + 1;
+        },
+        windowStart: function windowStart() {
+            if (this.tablePagination.current_page <= this.onEachSide) {
+                return 1;
+            } else if (this.tablePagination.current_page >= this.totalPage - this.onEachSide) {
+                return this.totalPage - this.onEachSide * 2;
+            }
+
+            return this.tablePagination.current_page - this.onEachSide;
+        }
+    },
+    methods: {
+        loadPage: function loadPage(page) {
+            this.$dispatch('vuetable-pagination:change-page', page);
+        },
+        isCurrentPage: function isCurrentPage(page) {
+            return page == this.tablePagination.current_page;
+        }
+    },
+    events: {
+        'vuetable:load-success': function vuetableLoadSuccess(tablePagination) {
+            this.tablePagination = tablePagination;
+        },
+        'vuetable-pagination:set-options': function vuetablePaginationSetOptions(options) {
+            for (var n in options) {
+                this.$set(n, options[n]);
+            }
+        }
+    }
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-8ae308b0", module.exports)
+  } else {
+    hotAPI.update("_v-8ae308b0", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":7,"vue-hot-reload-api":3}],14:[function(require,module,exports){
 'use strict';
 
 var _vue = require('vue');
@@ -14574,14 +16391,31 @@ var _vueResource = require('vue-resource');
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
+var _vueFilter = require('vue-filter');
+
+var _vueFilter2 = _interopRequireDefault(_vueFilter);
+
+var _externalComponents = require('./config/externalComponents');
+
+var _externalComponents2 = _interopRequireDefault(_externalComponents);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//global filters
+_vue2.default.use(_vueFilter2.default);
 
 // install router
 _vue2.default.use(_vueResource2.default);
 _vue2.default.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#csrf_token').getAttribute('value');
 
+(0, _externalComponents2.default)(_vue2.default);
+
 // install router
 _vue2.default.use(_vueRouter2.default);
+
+//external components
+var progress = require('vue-progressbar');
+_vue2.default.use(progress);
 
 // routing
 /*
@@ -14590,11 +16424,12 @@ const router = new VueRouter({
   saveScrollPosition: true
 })
 */
+
 var router = new _vueRouter2.default();
 
 router.map({
   '*': {
-    component: require('./finalComponents/reusable/notFound.vue')
+    component: require('./finalComponents/layout/notfound.vue')
   },
   '/': {
     component: require('./components2/dashboard.vue')
@@ -14615,7 +16450,7 @@ router.start(App, '#app');
 //solo para hacer debug
 window.router = router;
 
-},{"./components2/dashboard.vue":8,"./components2/users/new.vue":9,"./finalComponents/app/usuariosView.vue":11,"./finalComponents/layoutView.vue":12,"./finalComponents/reusable/notFound.vue":20,"vue":5,"vue-resource":3,"vue-router":4}],8:[function(require,module,exports){
+},{"./components2/dashboard.vue":15,"./components2/users/new.vue":16,"./config/externalComponents":17,"./finalComponents/app/usuariosView.vue":19,"./finalComponents/layout/notfound.vue":26,"./finalComponents/layoutView.vue":20,"vue":7,"vue-filter":2,"vue-progressbar":4,"vue-resource":5,"vue-router":6}],15:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -14642,7 +16477,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-3fe5a91e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":5,"vue-hot-reload-api":2}],9:[function(require,module,exports){
+},{"vue":7,"vue-hot-reload-api":3}],16:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -14669,7 +16504,39 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-7653af54", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":5,"vue-hot-reload-api":2}],10:[function(require,module,exports){
+},{"vue":7,"vue-hot-reload-api":3}],17:[function(require,module,exports){
+'use strict';
+
+var _Vuetable = require('vuetable/src/components/Vuetable.vue');
+
+var _Vuetable2 = _interopRequireDefault(_Vuetable);
+
+var _VuetablePagination = require('vuetable/src/components/VuetablePagination.vue');
+
+var _VuetablePagination2 = _interopRequireDefault(_VuetablePagination);
+
+var _VuetablePaginationDropdown = require('vuetable/src/components/VuetablePaginationDropdown.vue');
+
+var _VuetablePaginationDropdown2 = _interopRequireDefault(_VuetablePaginationDropdown);
+
+var _VuetablePaginationBootstrap = require('vuetable/src/components/VuetablePaginationBootstrap.vue');
+
+var _VuetablePaginationBootstrap2 = _interopRequireDefault(_VuetablePaginationBootstrap);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Esto se lo debe hacer luego de tener cargada la instancia de vue-resource
+ */
+
+module.exports = function (Vue) {
+  Vue.component('vuetable', _Vuetable2.default);
+  Vue.component('vuetable-pagination', _VuetablePagination2.default);
+  Vue.component('vuetable-pagination-dropdown', _VuetablePaginationDropdown2.default);
+  Vue.component('vuetable-pagination-bootstrap', _VuetablePaginationBootstrap2.default);
+};
+
+},{"vuetable/src/components/Vuetable.vue":9,"vuetable/src/components/VuetablePagination.vue":10,"vuetable/src/components/VuetablePaginationBootstrap.vue":11,"vuetable/src/components/VuetablePaginationDropdown.vue":12}],18:[function(require,module,exports){
 'use strict';
 
 module.exports = [{
@@ -14694,7 +16561,7 @@ module.exports = [{
   }]
 }];
 
-},{}],11:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n")
 'use strict';
@@ -14703,40 +16570,96 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
+var _pagination = require('../reusable/pagination.vue');
+
+var _pagination2 = _interopRequireDefault(_pagination);
+
+var _loading = require('../reusable/loading.vue');
+
+var _loading2 = _interopRequireDefault(_loading);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var BASE_URL = '/admin_lte/public/api';
 
 exports.default = {
 	name: 'Usuarios',
+	components: {
+		'app-loading': _loading2.default,
+		'vuetable-pagination-bootstrap': _pagination2.default
+	},
 	data: function data() {
 		return {
 			newModel: {},
 			models: [],
-			mode: 'listar'
+			mode: 'listar',
+			loading: false,
+			columns: [{
+				name: 'name',
+				title: 'Nombre Completo'
+			}, //sortField: 'name'
+			{
+				name: 'email',
+				title: 'Correo'
+			}, //sortField: 'email'
+			{
+				name: 'created_at',
+				title: 'Fecha creación',
+				callback: "dateToChar|%Y-%m-%d %T"
+				//sortField: 'created_at'
+			}, {
+				name: 'updated_at',
+				title: 'Fecha modificación',
+				callback: "dateToChar|%Y-%m-%d %T"
+				//sortField: 'updated_at'
+			}],
+			paginationInfoTemplate: 'Montrar: {from} de {to} de {total} registros'
 		};
 	},
 
 	route: {
 		data: function data(transition) {
-			this.$parent.$parent.$data.title = 'Usuarios';
+			var self = this;
+			self.$parent.$parent.$data.title = 'Usuarios';
 			transition.next();
+			//self.$parent.$parent.$data.title = 'Usuarios';
+			//	transition.next();
+			/*
+   setTimeout(function () {
+   	self.$parent.$parent.$data.title = 'Usuarios';
+   	transition.next();
+   }, 800);
+   */
 		}
 	},
 	ready: function ready() {
+		this.loading = true;
 		this.listar();
+		this.toggleMode('listar');
+		this.$parent.listPath = ['Usuarios'];
+		//opciones para la tabla
+		this.$broadcast('vuetable:set-options', {
+			'tableClass': "table table-bordered table-striped table-hover",
+			'ascendingIcon': "glyphicon glyphicon-chevron-up",
+			'descendingIcon': "glyphicon glyphicon-chevron-down"
+		});
 	},
 
 	methods: {
 		crear: function crear(model) {
+			var _this = this;
+
 			var self = this;
+			self.loading = true;
 			this.$http.post(BASE_URL + '/users', this.newModel).then(function (resp) {
 				Lobibox.notify('success', {
 					msg: 'Se creo el usuario correctamente!',
 					sound: false
 				});
 				self.listar();
-				self.mode = 'listar';
+				_this.toggleMode('listar');
 			}, function (err) {
+				self.loading = false;
 				console.warn(err);
 				Lobibox.notify('error', {
 					msg: 'Se presento un error al querer realizar esta acción',
@@ -14745,19 +16668,21 @@ exports.default = {
 			});
 		},
 		modificar: function modificar(_id) {
-			var _this = this;
+			var _this2 = this;
 
 			var self = this;
+			self.loading = true;
 			this.$http.put(BASE_URL + '/users/' + _id, this.newModel).then(function (resp) {
 				Lobibox.notify('success', {
 					msg: 'Se creo el usuario correctamente!',
 					sound: false
 				});
 				self.listar();
-				self.mode = 'listar';
-				_this.newModel = {};
+				_this2.toggleMode('listar');
+				_this2.newModel = {};
 			}, function (err) {
 				console.warn(err);
+				self.loading = false;
 				Lobibox.notify('error', {
 					msg: 'Se presento un error al querer realizar esta acción',
 					sound: false
@@ -14765,7 +16690,10 @@ exports.default = {
 			});
 		},
 		eveDelete: function eveDelete(_id) {
+			var _this3 = this;
+
 			if (confirm('¿Estás seguro?')) {
+				this.loading = true;
 				var self = this;
 				this.$http.delete(BASE_URL + '/users/' + _id).then(function (resp) {
 					Lobibox.notify('success', {
@@ -14773,7 +16701,7 @@ exports.default = {
 						sound: false
 					});
 					self.listar();
-					self.mode = 'listar';
+					_this3.toggleMode('listar');
 				}, function (err) {
 					console.warn(err);
 					Lobibox.notify('error', {
@@ -14784,40 +16712,54 @@ exports.default = {
 			}
 		},
 		eveEdit: function eveEdit(_id) {
+			this.loading = true;
 			this.ver(_id);
-			this.mode = 'editar';
+			this.toggleMode('editar');
 		},
 		eveView: function eveView(_id) {
+			this.loading = true;
 			this.ver(_id);
-			this.mode = 'visualizar';
+			this.toggleMode('visualizar');
 		},
 		listar: function listar() {
-			var _this2 = this;
+			var _this4 = this;
 
 			this.$http.get(BASE_URL + '/users').then(function (resp) {
-				_this2.models = resp.data.data;
+				_this4.models = resp.data.data;
+				_this4.loading = false;
 			}, function (err) {
 				console.warn(err);
+				_this4.loading = false;
 			});
 		},
 		ver: function ver(_id) {
-			var _this3 = this;
+			var _this5 = this;
 
 			this.$http.get(BASE_URL + '/users/' + _id).then(function (resp) {
-				_this3.newModel = resp.data.data;
+				_this5.newModel = resp.data.data;
+				_this5.loading = false;
 			}, function (err) {
 				console.warn(err);
+				_this5.loading = false;
 			});
 		},
 		cancel: function cancel() {
 			this.newModel = {};
-			this.mode = 'listar';
+			this.toggleMode('listar');
+		},
+
+		toggleMode: function toggleMode(mode) {
+			this.mode = this.$parent.description = mode;
+		},
+
+		dateToChar: function dateToChar(date, format) {
+			return date ? this.$options.filters.date(date, format) : 'Vacio';
 		}
 	}
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<!-- Modo listar -->\n<div class=\"row\" v-show=\"mode == 'listar'\">\n\t<div class=\"col-xs-12\">\n\t\t<button class=\"btn btn-primary btn-flat\" @click.prevent=\"mode='crear'\"><i class=\"fa fa-plus\"></i> Nuevo</button>\n\t</div>\t\n\n\t<div class=\"col-xs-12\">\n\t\t<table class=\"table table-responsive\">\n\t\t\t<thead>\n\t\t\t\t<tr>\n\t\t\t\t\t<th class=\"text-center\">Nombre</th>\n\t\t\t\t\t<th class=\"text-center\">Correo</th>\n\t\t\t\t\t<th class=\"text-center\">Acciones</th>\n\t\t\t\t</tr>\n\t\t\t</thead>\n\t\t\t<tbody>\n\t\t\t\t<tr v-for=\"model in models\">\n\t\t\t\t\t<td>{{model.name}}</td>\n\t\t\t\t\t<td>{{model.email}}</td>\n\n\t\t\t\t\t<td class=\"text-center\">\n\n\t\t\t\t\t\t<div class=\"btn-group\">\n\n\t\t\t\t\t\t\t<a class=\"btn btn-default btn-xs\" href=\"\" @click.prevent=\"eveView(model.id)\"><i class=\"fa fa-eye\" data-toggle=\"tooltip\" title=\"Ver este usuario a detalle\" style=\"font-size: 1.2em;\"></i></a>\n\n\t\t\t\t\t\t\t<a class=\"btn btn-default btn-xs\" href=\"\" @click.prevent=\"eveEdit(model.id)\"><i class=\"fa fa-edit\" data-toggle=\"tooltip\" title=\"Editar este usuario\" style=\"font-size: 1.2em;\"></i></a>\n\n\t\t\t\t\t\t\t<a class=\"btn btn-danger btn-xs\" href=\"\" @click.prevent=\"eveDelete(model.id)\"><i class=\"fa fa-trash\" data-toggle=\"tooltip\" title=\"Eliminar este usuario\" style=\"font-size: 1.2em;\"></i></a>\n\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t</td>\n\n\t\t\t\t</tr>\n\t\t\t</tbody>\n\t\t</table>\n\t</div>\n</div>\n\n<!-- Modo creacion / edicion -->\n<div class=\"row\" v-show=\"mode == 'crear' || mode == 'editar'\">\n\t<div class=\"col-sm-6 col-xs-12\">\n\t\t<div class=\"form-group\">\n\t\t\t<label for=\"nombre\">Nombre</label>\n\t\t\t<input type=\"text\" id=\"nombre\" v-model=\"newModel.name\" class=\"form-control\">\n\t\t</div>\n\t</div>\n\t<div class=\"col-sm-6 col-xs-12\">\n\t\t<div class=\"form-group\">\n\t\t\t<label for=\"correo\">Email</label>\n\t\t\t<input type=\"email\" id=\"correo\" v-model=\"newModel.email\" class=\"form-control\">\n\t\t</div>\n\t</div>\n\t<div class=\"col-sm-6 col-xs-12\" v-if=\"mode == 'crear'\">\n\t\t<div class=\"form-group\">\n\t\t\t<label for=\"correo\">Contraseña</label>\n\t\t\t<input type=\"password\" id=\"pass\" v-model=\"newModel.password\" class=\"form-control\">\n\t\t</div>\n\t</div>\n\n\t<div class=\"col-xs-12\">\n\t\t<button v-if=\"mode == 'crear'\" class=\"btn btn-success btn-flat\" @click.prevent=\"crear(newModel)\"><i class=\"fa fa-save\"></i> Guardar</button>\n\t\t<button v-if=\"mode == 'editar'\" class=\"btn btn-success btn-flat\" @click.prevent=\"modificar(newModel.id)\"><i class=\"fa fa-save\"></i> Guardar Cambios</button>\n\t\t<button class=\"btn btn-default btn-flat\" @click.prevent=\"cancel\">Cancelar</button>\n\t</div>\n</div>\n\n<!-- Modo lectura -->\n<div class=\"row\" v-show=\"mode == 'visualizar'\">\n\t<div class=\"col-xs-12\">\n\t\t<label for=\"name\">Nombre</label>\n\t\t<p>{{newModel.name}}</p>\n\t</div>\n\t<div class=\"col-xs-12\">\n\t\t<label for=\"email\">Correo</label>\n\t\t<p>{{newModel.email}}</p>\n\t</div>\n\t<div class=\"col-xs-12\">\n\t\t<button class=\"btn btn-default btn-flat\" @click.prevent=\"cancel\"><i class=\"fa fa-arrow-circle-left\"></i> Regresar</button>\n\t</div>\n</div>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div v-if=\"loading\">\n\t<app-loading></app-loading>\n</div>\n\n<div v-else=\"\">\n\t<!-- Modo listar -->\n\t<div class=\"row\" v-show=\"mode == 'listar'\">\n\t\t<div class=\"col-xs-12\">\n\t\t\t<button class=\"btn btn-primary btn-flat\" @click.prevent=\"toggleMode('crear')\"><i class=\"fa fa-plus\"></i> Nuevo</button>\n\t\t</div>\t\n\n\t\t<div class=\"col-xs-12\">\n\n\t\t\t<div class=\"row\">\n\t\t\t\t<div class=\"col-md-5\">\n\t\t\t\t\t<div class=\"form-inline form-group\">\n\t\t\t\t\t\t<label>Search:</label>\n\t\t\t\t\t\t<input v-model=\"searchFor\" class=\"form-control\" @keyup.enter=\"setFilter\">\n\t\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"setFilter\">Go</button>\n\t\t\t\t\t\t<button class=\"btn btn-default\" @click=\"resetFilter\">Reset</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"col-md-7\">\n\t\t\t\t\t<div class=\"dropdown form-inline pull-right\">\n\t\t\t\t\t\t<label>Pagination:</label>\n\t\t\t\t\t\t<select class=\"form-control\" v-model=\"paginationComponent\">\n\t\t\t\t\t\t\t<option value=\"vuetable-pagination\">vuetable-pagination</option>\n\t\t\t\t\t\t\t<option value=\"vuetable-pagination-dropdown\">vuetable-pagination-dropdown</option>\n\t\t\t\t\t\t</select>\n\t\t\t\t\t\t<label>Per Page:</label>\n\t\t\t\t\t\t<select class=\"form-control\" v-model=\"perPage\">\n\t\t\t\t\t\t\t<option value=\"10\">10</option>\n\t\t\t\t\t\t\t<option value=\"15\">15</option>\n\t\t\t\t\t\t\t<option value=\"20\">20</option>\n\t\t\t\t\t\t\t<option value=\"25\">25</option>\n\t\t\t\t\t\t</select>\n\t\t\t\t\t\t<button class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\">\n\t\t\t\t\t\t\t<i class=\"glyphicon glyphicon-cog\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t\t<ul class=\"dropdown-menu\">\n\t\t\t\t\t\t\t<li v-for=\"field in fields\">\n\t\t\t\t\t\t\t\t<span class=\"checkbox\">\n\t\t\t\t\t\t\t\t\t<label>\n\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"field.visible\">\n\t\t\t\t\t\t\t\t\t\t{{ field.title == '' ? field.name.replace('__', '') : field.title | capitalize }}\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\n\t\t\t<vuetable api-url=\"/admin_lte/public/api/users\" :fields=\"columns\" pagination-path=\"\" per-page=\"2\" pagination-info-no-data-template=\"No hay resultados\" ascending-icon=\"glyphicon glyphicon-chevron-up\" descending-icon=\"glyphicon glyphicon-chevron-down\" pagination-class=\"\" pagination-info-class=\"\" pagination-component-class=\"\" pagination-component=\"vuetable-pagination-bootstrap\" :pagination-component=\"paginationComponent\" :item-actions=\"itemActions\" :per-page=\"perPage\" :append-params=\"moreParams\" wrapper-class=\"vuetable-wrapper \" table-wrapper=\".vuetable-wrapper\" loading-class=\"loading\"></vuetable>\n\n\t        <vuetable-pagination-bootstrap></vuetable-pagination-bootstrap>\n\t\t</div>\n\t</div>\n\n\t<div class=\"row\" v-show=\"mode == 'listarsh'\">\n\t\t<div class=\"col-xs-12\">\n\t\t\t<button class=\"btn btn-primary btn-flat\" @click.prevent=\"toggleMode('crear')\"><i class=\"fa fa-plus\"></i> Nuevo</button>\n\t\t</div>\t\n\n\t\t<div class=\"col-xs-12\">\n\t\t\t<table class=\"table table-responsive\">\n\t\t\t\t<thead>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<th class=\"text-center\">Nombre</th>\n\t\t\t\t\t\t<th class=\"text-center\">Correo</th>\n\t\t\t\t\t\t<th class=\"text-center\">Acciones</th>\n\t\t\t\t\t</tr>\n\t\t\t\t</thead>\n\t\t\t\t<tbody>\n\t\t\t\t\t<tr v-for=\"model in models\">\n\t\t\t\t\t\t<td>{{model.name}}</td>\n\t\t\t\t\t\t<td>{{model.email}}</td>\n\n\t\t\t\t\t\t<td class=\"text-center\">\n\n\t\t\t\t\t\t\t<div class=\"btn-group\">\n\n\t\t\t\t\t\t\t\t<a class=\"btn btn-default btn-xs\" href=\"\" @click.prevent=\"eveView(model.id)\"><i class=\"fa fa-eye\" data-toggle=\"tooltip\" title=\"Ver este usuario a detalle\" style=\"font-size: 1.2em;\"></i></a>\n\n\t\t\t\t\t\t\t\t<a class=\"btn btn-default btn-xs\" href=\"\" @click.prevent=\"eveEdit(model.id)\"><i class=\"fa fa-edit\" data-toggle=\"tooltip\" title=\"Editar este usuario\" style=\"font-size: 1.2em;\"></i></a>\n\n\t\t\t\t\t\t\t\t<a class=\"btn btn-danger btn-xs\" href=\"\" @click.prevent=\"eveDelete(model.id)\"><i class=\"fa fa-trash\" data-toggle=\"tooltip\" title=\"Eliminar este usuario\" style=\"font-size: 1.2em;\"></i></a>\n\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</td>\n\n\t\t\t\t\t</tr>\n\t\t\t\t</tbody>\n\t\t\t</table>\n\t\t</div>\n\t</div>\n\n\t<!-- Modo creacion / edicion -->\n\t<div class=\"row\" v-show=\"mode == 'crear' || mode == 'editar'\">\n\t\t<div class=\"col-sm-6 col-xs-12\">\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label for=\"nombre\">Nombre</label>\n\t\t\t\t<input type=\"text\" id=\"nombre\" v-model=\"newModel.name\" class=\"form-control\">\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"col-sm-6 col-xs-12\">\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label for=\"correo\">Email</label>\n\t\t\t\t<input type=\"email\" id=\"correo\" v-model=\"newModel.email\" class=\"form-control\">\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"col-sm-6 col-xs-12\" v-if=\"mode == 'crear'\">\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label for=\"correo\">Contraseña</label>\n\t\t\t\t<input type=\"password\" id=\"pass\" v-model=\"newModel.password\" class=\"form-control\">\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"col-xs-12\">\n\t\t\t<button v-if=\"mode == 'crear'\" class=\"btn btn-success btn-flat\" @click.prevent=\"crear(newModel)\"><i class=\"fa fa-save\"></i> Guardar</button>\n\t\t\t<button v-if=\"mode == 'editar'\" class=\"btn btn-success btn-flat\" @click.prevent=\"modificar(newModel.id)\"><i class=\"fa fa-save\"></i> Guardar Cambios</button>\n\t\t\t<button class=\"btn btn-default btn-flat\" @click.prevent=\"cancel\">Cancelar</button>\n\t\t</div>\n\t</div>\n\n\t<!-- Modo lectura -->\n\t<div class=\"row\" v-show=\"mode == 'visualizar'\">\n\t\t<div class=\"col-xs-12\">\n\t\t\t<label for=\"name\">Nombre</label>\n\t\t\t<p>{{newModel.name}}</p>\n\t\t</div>\n\t\t<div class=\"col-xs-12\">\n\t\t\t<label for=\"email\">Correo</label>\n\t\t\t<p>{{newModel.email}}</p>\n\t\t</div>\n\t\t<div class=\"col-xs-12\">\n\t\t\t<button class=\"btn btn-default btn-flat\" @click.prevent=\"cancel\"><i class=\"fa fa-arrow-circle-left\"></i> Regresar</button>\n\t\t</div>\n\t</div>\n</div>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -14832,7 +16774,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-a088d68a", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":5,"vue-hot-reload-api":2,"vueify/lib/insert-css":6}],12:[function(require,module,exports){
+},{"../reusable/loading.vue":28,"../reusable/pagination.vue":30,"vue":7,"vue-hot-reload-api":3,"vueify/lib/insert-css":8}],20:[function(require,module,exports){
 'use strict';
 
 var menu = require('../config/menus.js');
@@ -14868,11 +16810,12 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-32136a05", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../config/menus.js":10,"./layout/content.vue":13,"./layout/control.vue":14,"./layout/footer.vue":15,"./layout/header.vue":16,"./layout/menu.vue":17,"vue":5,"vue-hot-reload-api":2}],13:[function(require,module,exports){
+},{"../config/menus.js":18,"./layout/content.vue":21,"./layout/control.vue":22,"./layout/footer.vue":23,"./layout/header.vue":24,"./layout/menu.vue":25,"vue":7,"vue-hot-reload-api":3}],21:[function(require,module,exports){
 'use strict';
 
 module.exports = {
 	name: 'Content',
+
 	props: {
 		title: String,
 		description: {
@@ -14886,9 +16829,10 @@ module.exports = {
 			}
 		}
 	}
+
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<!-- Content Wrapper. Contains page content -->\n<div class=\"content-wrapper\">\n\t<!-- Content Header (Page header) -->\n\t<section class=\"content-header\">\n\t\t<h1>\n\t\t\t{{title}}\n\t\t\t<small>{{description}}</small>\n\t\t</h1>\n\t\t<ol class=\"breadcrumb\">\n\t\t\t<li><a href=\"#\"><i class=\"fa fa-dashboard\"></i> Home</a></li>\n\t\t\t<li v-show=\"$index > 0\" v-for=\"item in listPath\" :class=\"{'active': listPath.length-1 == $index}\" track-by=\"$index\">{{item}}</li>\n\t\t</ol>\n\t</section>\n\n\t<!-- Main content -->\n\t<section class=\"content\">\n\n\t\t<!--<router-view class=\"animated\" transition=\"fade\" transition-mode=\"out-in\" keep-alive></router-view>-->\n\t\t<router-view></router-view>\n\n\t</section>\n\t<!-- /.content -->\n</div>\n<!-- /.content-wrapper -->\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<!-- Content Wrapper. Contains page content -->\n<div v-else=\"\" class=\"content-wrapper\">\n\t<!-- Content Header (Page header) -->\n\t<section class=\"content-header\">\n\t\t<h1>\n\t\t\t{{title}}\n\t\t\t<small>{{description}}</small>\n\t\t</h1>\n\t\t<ol class=\"breadcrumb\">\n\t\t\t<li><a href=\"#\"><i class=\"fa fa-dashboard\"></i> Home</a></li>\n\t\t\t<li v-show=\"listPath.length > 0\" v-for=\"item in listPath\" :class=\"{'active': listPath.length-1 == $index}\" track-by=\"$index\">{{item}}</li>\n\t\t</ol>\n\t</section>\n\n\t<!-- Main content -->\n\t<section class=\"content\">\n\n\t\t<!--<router-view class=\"animated\" transition=\"fade\" transition-mode=\"out-in\" keep-alive></router-view>-->\n\t\t<router-view></router-view>\n\n\t</section>\n\t<!-- /.content -->\n</div>\n<!-- /.content-wrapper -->\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -14899,7 +16843,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-b5cce046", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":5,"vue-hot-reload-api":2}],14:[function(require,module,exports){
+},{"vue":7,"vue-hot-reload-api":3}],22:[function(require,module,exports){
 "use strict";
 if (module.exports.__esModule) module.exports = module.exports.default
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t<!-- Control Sidebar -->\n\t<aside class=\"control-sidebar control-sidebar-dark\">\n\t\t<!-- Create the tabs -->\n\t\t<ul class=\"nav nav-tabs nav-justified control-sidebar-tabs\">\n\t\t\t<li class=\"active\"><a href=\"#control-sidebar-home-tab\" data-toggle=\"tab\"><i class=\"fa fa-home\"></i></a></li>\n\t\t\t<li><a href=\"#control-sidebar-settings-tab\" data-toggle=\"tab\"><i class=\"fa fa-gears\"></i></a></li>\n\t\t</ul>\n\t\t<!-- Tab panes -->\n\t\t<div class=\"tab-content\">\n\t\t\t<!-- Home tab content -->\n\t\t\t<div class=\"tab-pane active\" id=\"control-sidebar-home-tab\">\n\t\t\t\t<h3 class=\"control-sidebar-heading\">Actividad reciente</h3>\n\t\t\t\t<ul class=\"control-sidebar-menu\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<a href=\"javascript::;\">\n\t\t\t\t\t\t\t<i class=\"menu-icon fa fa-birthday-cake bg-red\"></i>\n\t\t\t\t\t\t\t<div class=\"menu-info\">\n\t\t\t\t\t\t\t\t<h4 class=\"control-sidebar-subheading\">Cumpleaños</h4>\n\t\t\t\t\t\t\t\t<p>01-07-1990</p>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</li>\n\t\t\t\t</ul><!-- /.control-sidebar-menu -->\n\n\t\t\t\t<h3 class=\"control-sidebar-heading\">Progreso</h3>\n\t\t\t\t<ul class=\"control-sidebar-menu\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<a href=\"javascript::;\">\n\t\t\t\t\t\t\t<h4 class=\"control-sidebar-subheading\">\n\t\t\t\t\t\t\t\tCustom Template\n\t\t\t\t\t\t\t\t<span class=\"label label-danger pull-right\">70%</span>\n\t\t\t\t\t\t\t</h4>\n\t\t\t\t\t\t\t<div class=\"progress progress-xxs\">\n\t\t\t\t\t\t\t\t<div class=\"progress-bar progress-bar-danger\" style=\"width: 70%\"></div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</li>\n\t\t\t\t</ul><!-- /.control-sidebar-menu -->\n\n\t\t\t</div><!-- /.tab-pane -->\n\t\t\t<!-- Stats tab content -->\n\t\t\t<div class=\"tab-pane\" id=\"control-sidebar-stats-tab\">Status</div><!-- /.tab-pane -->\n\t\t\t<!-- Settings tab content -->\n\t\t\t<div class=\"tab-pane\" id=\"control-sidebar-settings-tab\">\n\t\t\t\t<form method=\"post\">\n\t\t\t\t\t<h3 class=\"control-sidebar-heading\">Ajustes Generales</h3>\n\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t<label class=\"control-sidebar-subheading\">\n\t\t\t\t\t\t\tPanel de reporte\n\t\t\t\t\t\t\t<input type=\"checkbox\" class=\"pull-right\">\n\t\t\t\t\t\t</label>\n\t\t\t\t\t\t<p>\n\t\t\t\t\t\t\tAjustes de información\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div><!-- /.form-group -->\n\t\t\t\t</form>\n\t\t\t</div><!-- /.tab-pane -->\n\t\t</div>\n</aside><!-- /.control-sidebar\n\n<!-- Add the sidebar's background. This div must be placed\n\timmediately after the control sidebar -->\n\t<div class=\"control-sidebar-bg\"></div>\n"
@@ -14913,7 +16857,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-560eaec1", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":5,"vue-hot-reload-api":2}],15:[function(require,module,exports){
+},{"vue":7,"vue-hot-reload-api":3}],23:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -14964,7 +16908,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-31dc8832", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":5,"vue-hot-reload-api":2}],16:[function(require,module,exports){
+},{"vue":7,"vue-hot-reload-api":3}],24:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -15033,7 +16977,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-08441fd9", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":5,"vue-hot-reload-api":2}],17:[function(require,module,exports){
+},{"vue":7,"vue-hot-reload-api":3}],25:[function(require,module,exports){
 'use strict';
 
 var _menuItem = require('../reusable/menuItem.vue');
@@ -15093,7 +17037,32 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-1de556ab", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../reusable/menuItem.vue":19,"vue":5,"vue-hot-reload-api":2}],18:[function(require,module,exports){
+},{"../reusable/menuItem.vue":29,"vue":7,"vue-hot-reload-api":3}],26:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.default = {
+	methods: {
+		nothingToDoHere: function nothingToDoHere() {
+			alert('Nothing to do here, go to Home');
+		}
+	}
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"row\">\n\t<div class=\"col-xs-12\">\n\t\t<div class=\"error-page\">\n\t\t\t<h2 class=\"headline text-yellow\"> 404</h2>\n\t\t\t<div class=\"error-content\">\n\t\t\t\t<h3><i class=\"fa fa-warning text-yellow\"></i> Oops! Recurso no encontrado.</h3>\n\t\t\t\t<p>\n\t\t\t\t\tPágina o recurso no encontrado\n\t\t\t\t\tIr a la página de inicio <a v-link=\"{path: '/'}\">Home</a> \n\t\t\t\t</p>\n\t\t\t\t<form class=\"search-form\" @submit=\"nothingToDoHere\">\n\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t<input type=\"text\" name=\"search\" class=\"form-control\" placeholder=\"Buscar...\">\n\t\t\t\t\t\t<div class=\"input-group-btn\">\n\t\t\t\t\t\t\t<button type=\"submit\" name=\"submit\" class=\"btn btn-warning btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div><!-- /.input-group -->\n\t\t\t\t</form>\n\t\t\t</div><!-- /.error-content -->\n\t\t</div><!-- /.error-page -->\t\t\n\t</div>\n</div>\n\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-6a67a7db", module.exports)
+  } else {
+    hotAPI.update("_v-6a67a7db", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":7,"vue-hot-reload-api":3}],27:[function(require,module,exports){
 'use strict';
 
 var _menuItem = require('./menuItem.vue');
@@ -15115,10 +17084,16 @@ module.exports = {
 			type: Boolean,
 			required: true
 		}
+	},
+	methods: {
+		toggleMenu: function toggleMenu(event) {
+			$('li.pageLink').removeClass('active');
+			event.toElement.parentElement.className = 'pageLink active';
+		}
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<li v-link-active=\"\" v-if=\"!isParent\">\n\t<a v-link=\"{path:item.link, activeClass:'active'}\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span></a>\n</li>\n<li v-else=\"\" class=\"treeview\">\n\t<a href=\"#\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span> <i class=\"fa fa-angle-left pull-right\"></i></a>\n\t<ul class=\"treeview-menu\">\n\t\t<crea-menu v-for=\"itemenu in item.children\" :item=\"itemenu\" :is-parent=\"itemenu.children.length>0\"></crea-menu>\n\t</ul>\n</li>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<li @click=\"toggleMenu\" class=\"pageLink\" v-if=\"!isParent\">\n\t<a v-link=\"{path:item.link}\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span></a>\n</li>\n<li v-else=\"\" class=\"treeview\">\n\t<a href=\"#\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span> <i class=\"fa fa-angle-left pull-right\"></i></a>\n\t<ul class=\"treeview-menu\">\n\t\t<crea-menu v-for=\"itemenu in item.children\" :item=\"itemenu\" :is-parent=\"itemenu.children.length>0\"></crea-menu>\n\t</ul>\n</li>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15129,7 +17104,31 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-5c925152", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./menuItem.vue":19,"vue":5,"vue-hot-reload-api":2}],19:[function(require,module,exports){
+},{"./menuItem.vue":29,"vue":7,"vue-hot-reload-api":3}],28:[function(require,module,exports){
+var __vueify_insert__ = require("vueify/lib/insert-css")
+var __vueify_style__ = __vueify_insert__.insert("\n* {margin: 0;padding:0;}\n.mask-loading {\n\twidows: 100%;\n\tbackground-color: #ecf0f5;\n}\n.spinner {\n\twidth: 50px;\n\theight: 50px;\n\tposition: relative;\n\tmargin: 0 auto;\n}\n\n.double-bounce1, .double-bounce2 {\n\twidth: 100%;\n\theight: 100%;\n\tborder-radius: 50%;\n\tbackground-color: #3c8dbc;\n\topacity: 0.6;\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\n\t-webkit-animation: sk-bounce 2.0s infinite ease-in-out;\n\tanimation: sk-bounce 2.0s infinite ease-in-out;\n}\n\n.double-bounce2 {\n\t-webkit-animation-delay: -1.0s;\n\tanimation-delay: -1.0s;\n}\n\n@-webkit-keyframes sk-bounce {\n\t0%, 100% { -webkit-transform: scale(0.0) }\n\t50% { -webkit-transform: scale(1.0) }\n}\n\n@keyframes sk-bounce {\n\t0%, 100% { \n\t\ttransform: scale(0.0);\n\t\t-webkit-transform: scale(0.0);\n\t} 50% { \n\t\ttransform: scale(1.0);\n\t\t-webkit-transform: scale(1.0);\n\t}\n}\n")
+"use strict";
+
+var o = $('.content-wrapper');
+$(".mask-loading").css("height", o.height());
+$(".spinner").css("top", o.height() / 2 - 25);
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"mask-loading\">\n\t<div class=\"spinner\">\n\t\t<div class=\"double-bounce1\"></div>\n\t\t<div class=\"double-bounce2\"></div>\n\t</div>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.dispose(function () {
+    __vueify_insert__.cache["\n* {margin: 0;padding:0;}\n.mask-loading {\n\twidows: 100%;\n\tbackground-color: #ecf0f5;\n}\n.spinner {\n\twidth: 50px;\n\theight: 50px;\n\tposition: relative;\n\tmargin: 0 auto;\n}\n\n.double-bounce1, .double-bounce2 {\n\twidth: 100%;\n\theight: 100%;\n\tborder-radius: 50%;\n\tbackground-color: #3c8dbc;\n\topacity: 0.6;\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\n\t-webkit-animation: sk-bounce 2.0s infinite ease-in-out;\n\tanimation: sk-bounce 2.0s infinite ease-in-out;\n}\n\n.double-bounce2 {\n\t-webkit-animation-delay: -1.0s;\n\tanimation-delay: -1.0s;\n}\n\n@-webkit-keyframes sk-bounce {\n\t0%, 100% { -webkit-transform: scale(0.0) }\n\t50% { -webkit-transform: scale(1.0) }\n}\n\n@keyframes sk-bounce {\n\t0%, 100% { \n\t\ttransform: scale(0.0);\n\t\t-webkit-transform: scale(0.0);\n\t} 50% { \n\t\ttransform: scale(1.0);\n\t\t-webkit-transform: scale(1.0);\n\t}\n}\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-2e1b703e", module.exports)
+  } else {
+    hotAPI.update("_v-2e1b703e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":7,"vue-hot-reload-api":3,"vueify/lib/insert-css":8}],29:[function(require,module,exports){
 'use strict';
 
 var _crossMenuItem = require('./crossMenuItem.vue');
@@ -15151,10 +17150,16 @@ module.exports = {
 			type: Boolean,
 			required: true
 		}
+	},
+	methods: {
+		toggleMenu: function toggleMenu(event) {
+			$('li.pageLink').removeClass('active');
+			event.toElement.parentElement.className = 'pageLink active';
+		}
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<li v-link-active=\"\" v-if=\"!isParent\">\n\t<a v-link=\"{path:item.link, activeClass:'active'}\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span></a>\n</li>\n<li v-else=\"\" class=\"treeview\">\n\t<a href=\"#\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span> <i class=\"fa fa-angle-left pull-right\"></i></a>\n\t<ul class=\"treeview-menu\">\n\t\t<crea-menu v-for=\"itemenu in item.children\" :item=\"itemenu\" :is-parent=\"itemenu.children.length>0\"></crea-menu>\n\t</ul>\n</li>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<li @click=\"toggleMenu\" class=\"pageLink\" v-if=\"!isParent\">\n\t<a v-link=\"{path:item.link}\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span></a>\n</li>\n<li v-else=\"\" class=\"treeview\">\n\t<a href=\"#\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span> <i class=\"fa fa-angle-left pull-right\"></i></a>\n\t<ul class=\"treeview-menu\">\n\t\t<crea-menu v-for=\"itemenu in item.children\" :item=\"itemenu\" :is-parent=\"itemenu.children.length>0\"></crea-menu>\n\t</ul>\n</li>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15165,18 +17170,18 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-24e6b386", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./crossMenuItem.vue":18,"vue":5,"vue-hot-reload-api":2}],20:[function(require,module,exports){
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"row\">\n  <div class=\"col-sm-12 col-md-12\">\n    <h3>Sorry, Page Not Found</h3>\n    <p class=\"text-center\">\n      <i class=\"fa fa-3x fa-frown-o\"></i> \n    </p>\n    <h2 class=\"text-center\">404 Page Not Found</h2>\n  </div>\n</div>\n"
+},{"./crossMenuItem.vue":27,"vue":7,"vue-hot-reload-api":3}],30:[function(require,module,exports){
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<nav id=\"vuetable-pagination-bootstrap-template\">\n        <ul class=\"pagination\">\n            <li class=\"{{isOnFirstPage ? disabledClass : ''}}\">\n                <a @click=\"loadPage('prev')\"><i class=\"glyphicon glyphicon-chevron-left\"></i></a>\n            </li>\n            <template v-for=\"n in totalPage\">\n                <li class=\"{{isCurrentPage(n+1) ? ' active' : ''}}\">\n                    <a @click=\"loadPage(n+1)\"> {{ n+1 }}</a>\n                </li>\n            </template>\n            <li class=\"{{isOnLastPage ? disabledClass : ''}}\">\n                <a @click=\"loadPage('next')\"><i class=\"glyphicon glyphicon-chevron-right\"></i></a>\n            </li>\n        </ul>\n    </nav>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-12f589cc", module.exports)
+    hotAPI.createRecord("_v-76718405", module.exports)
   } else {
-    hotAPI.update("_v-12f589cc", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-76718405", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":5,"vue-hot-reload-api":2}]},{},[7]);
+},{"vue":7,"vue-hot-reload-api":3}]},{},[14]);
 
 //# sourceMappingURL=build.js.map

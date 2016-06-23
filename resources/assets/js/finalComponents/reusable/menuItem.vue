@@ -1,6 +1,6 @@
 <template>
-	<li v-link-active v-if="!isParent">
-		<a v-link="{path:item.link, activeClass:'active'}"><i :class="item.iconClass"></i> <span>{{item.name}}</span></a>
+	<li @click="toggleMenu" class="pageLink" v-if="!isParent">
+		<a v-link="{path:item.link}"><i :class="item.iconClass"></i> <span>{{item.name}}</span></a>
 	</li>
 	<li v-else class="treeview">
 		<a href="#"><i :class='item.iconClass'></i> <span>{{item.name}}</span> <i class="fa fa-angle-left pull-right"></i></a>
@@ -12,7 +12,7 @@
 
 <script>
 
-import MenuItem from './crossMenuItem.vue';
+	import MenuItem from './crossMenuItem.vue';
 
 	module.exports = {
 		components: {
@@ -26,6 +26,12 @@ import MenuItem from './crossMenuItem.vue';
 			isParent: {
 				type: Boolean,
 				required: true
+			}
+		},
+		methods: {
+			toggleMenu: function (event) {
+				$('li.pageLink').removeClass('active');
+				event.toElement.parentElement.className = 'pageLink active';
 			}
 		}
 	}

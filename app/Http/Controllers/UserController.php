@@ -17,7 +17,34 @@ class UserController extends Controller
      */
     public function index()
     {
-        return response()->json(array('data' => User::all()));
+        $request = request();
+
+        if (request()->has('sort')) {
+            list($sortCol, $sortDir) = explode('|', request()->sort);
+            $query = User::orderBy($sortCol, $sortDir);
+        } else {
+            $query = User::orderBy('id', 'asc');
+        }
+
+        if ($request->exists('filter')) {
+            $query->where(function($q) use($request) {
+                $value = "%{$request->filter}%";
+                $q->where('name', 'like', $value)
+                ->orWhere('email', 'like', $value);
+            });
+        }
+
+        $perPage = request()->has('per_page') ? (int) request()->per_page : null;
+
+        return response()->json(
+            $query->paginate($perPage)
+            )
+        ->header('Access-Control-Allow-Origin', '*')
+        ->header('Access-Control-Allow-Methods', 'GET');
+
+        //$perPage = isset($_GET['per_page']) ? $_GET['per_page'] : 10;
+        //return response()->json(User::paginate($perPage));
+        //return response()->json(array('data' => User::all()));
     }
 
     /**
