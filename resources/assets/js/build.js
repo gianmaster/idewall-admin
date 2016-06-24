@@ -1,11 +1,14 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VueResource from 'vue-resource';
-import VueFilter from 'vue-filter';
+//import VueFilter from 'vue-filter';
 import ExternalComponents from './config/externalComponents';
 
+
+Vue.config.debug = true;
+
 //global filters
-Vue.use(VueFilter);
+//Vue.use(VueFilter);
 
 // install router
 Vue.use(VueResource);
@@ -40,8 +43,8 @@ router.map({
   '/usuarios': {
     component: require('./finalComponents/app/usuariosView.vue')
   },
-  '/user/new': {
-    component: require('./components2/users/new.vue')
+  '/sdk': {
+    component: require('./finalComponents/app/testVueTable.vue')
   }
 });
 

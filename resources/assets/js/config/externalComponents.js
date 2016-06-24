@@ -9,8 +9,8 @@
 
  module.exports = function(Vue){
  	Vue.component('vuetable', Vuetable);
- 	Vue.component('vuetable-pagination', VuetablePagination)
- 	Vue.component('vuetable-pagination-dropdown', VuetablePaginationDropdown)
- 	Vue.component('vuetable-pagination-bootstrap', VuetablePaginationBootstrap)
+ 	Vue.component('vuetable-pagination', VuetablePagination);
+ 	Vue.component('vuetable-pagination-dropdown', VuetablePaginationDropdown);
+ 	Vue.component('vuetable-pagination-bootstrap', VuetablePaginationBootstrap);
  }
 

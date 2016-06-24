@@ -6,84 +6,8 @@
 
 	<div v-else>
 		<!-- Modo listar -->
+
 		<div class="row" v-show="mode == 'listar'">
-			<div class="col-xs-12">
-				<button class="btn btn-primary btn-flat" @click.prevent="toggleMode('crear')"><i class="fa fa-plus"></i> Nuevo</button>
-			</div>	
-
-			<div class="col-xs-12">
-
-				<div class="row">
-					<div class="col-md-5">
-						<div class="form-inline form-group">
-							<label>Search:</label>
-							<input v-model="searchFor" class="form-control" @keyup.enter="setFilter">
-							<button class="btn btn-primary" @click="setFilter">Go</button>
-							<button class="btn btn-default" @click="resetFilter">Reset</button>
-						</div>
-					</div>
-					<div class="col-md-7">
-						<div class="dropdown form-inline pull-right">
-							<label>Pagination:</label>
-							<select class="form-control" v-model="paginationComponent">
-								<option value="vuetable-pagination">vuetable-pagination</option>
-								<option value="vuetable-pagination-dropdown">vuetable-pagination-dropdown</option>
-							</select>
-							<label>Per Page:</label>
-							<select class="form-control" v-model="perPage">
-								<option value=10>10</option>
-								<option value=15>15</option>
-								<option value=20>20</option>
-								<option value=25>25</option>
-							</select>
-							<button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-								<i class="glyphicon glyphicon-cog"></i>
-							</button>
-							<ul class="dropdown-menu">
-								<li v-for="field in fields">
-									<span class="checkbox">
-										<label>
-											<input type="checkbox" v-model="field.visible">
-											{{ field.title == '' ? field.name.replace('__', '') : field.title | capitalize }}
-										</label>
-									</span>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-
-				<vuetable
-		            api-url="/admin_lte/public/api/users"
-		            :fields="columns"
-		            pagination-path=""
-		            per-page=2
-        			pagination-info-no-data-template="No hay resultados"
-        			ascending-icon="glyphicon glyphicon-chevron-up"
-		            descending-icon="glyphicon glyphicon-chevron-down"
-		            pagination-class=""
-		            pagination-info-class=""
-		            pagination-component-class=""
-		            pagination-component="vuetable-pagination-bootstrap"
-		            ascending-icon="glyphicon glyphicon-chevron-up"
-	                descending-icon="glyphicon glyphicon-chevron-down"
-	                pagination-class=""
-	                pagination-info-class=""
-	                pagination-component-class=""
-	                :pagination-component="paginationComponent"
-	                :item-actions="itemActions"
-	                :per-page="perPage"
-	                :append-params="moreParams"
-	                wrapper-class="vuetable-wrapper "
-	                table-wrapper=".vuetable-wrapper"
-	                loading-class="loading"
-		        ></vuetable>
-
-		        <vuetable-pagination-bootstrap></vuetable-pagination-bootstrap>
-			</div>
-		</div>
-
-		<div class="row" v-show="mode == 'listarsh'">
 			<div class="col-xs-12">
 				<button class="btn btn-primary btn-flat" @click.prevent="toggleMode('crear')"><i class="fa fa-plus"></i> Nuevo</button>
 			</div>	
@@ -216,6 +140,13 @@
 					}
 	            ],
 	            paginationInfoTemplate: 'Montrar: {from} de {to} de {total} registros',
+	            paginationConfig: {
+	            	wrapperClass: 'pagination',
+                    icons: { first: '', prev: '', next: '', last: ''},
+                    activeClass: 'active',
+                    linkClass: 'btn btn-default',
+                    pageClass: 'btn btn-default'
+	            }
 			}
 		},
 		route: {
@@ -238,12 +169,7 @@
 			this.listar();
 			this.toggleMode('listar');
 			this.$parent.listPath = ['Usuarios'];
-			//opciones para la tabla
-			this.$broadcast('vuetable:set-options', {
-				'tableClass' : "table table-bordered table-striped table-hover",
-				'ascendingIcon' : "glyphicon glyphicon-chevron-up",
-				'descendingIcon' : "glyphicon glyphicon-chevron-down"
-			})
+			
 		},
 		methods: {
 			crear: function(model){
