@@ -16252,7 +16252,7 @@ if (module.hot) {(function () {  module.hot.accept()
 })()}
 },{"vue":21,"vue-hot-reload-api":17}],41:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n.font-success{\n\tcolor: #00a65a;\n}\n\n.font-error{\n\tcolor: #dd4b39;\n}\n")
+var __vueify_style__ = __vueify_insert__.insert("\n.font-success{\n\tcolor: #00a65a;\n}\n\n.font-error{\n\tcolor: #dd4b39;\n}\n\n.pagination{\n\tmargin: 0 !important;\n}\n\n.cool-table-loading-icon{\n\tposition: absolute;\n\tmargin-left: 45%;\n\tmargin-top: 50%;\n}\n\n.cool-table-sortable{\n\tcursor: pointer;\n}\n.cool-table-sortable:hover{\n\tcolor: #2185d0;\n}\n\n.loading-mask{\t\n\tz-index: 99;\t\n\tposition: absolute;\n\twidth: 100%;\n\tbackground: rgba(236, 240, 245, 0.31);\n}\n.l-open{\n\tdisplay: inherit;\n}\n\n.l-close{\n\tdisplay: none;\t\n}\n")
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16306,26 +16306,43 @@ function arrayToScema(listModels) {
 }
 
 exports.default = {
+	computed: {
+		lastActive: function lastActive() {
+			return this.pagination.current_page == this.pagination.last_page ? 'disabled' : '';
+		},
+		firstActive: function firstActive() {
+			return this.pagination.current_page == 1 ? 'disabled' : '';
+		}
+
+	},
 	props: {
 		optionToolbar: {
 			type: Object,
 			default: function _default() {
 				return {
-					iconClass: 'glyphicon glyphicon-cog',
-					label: 'Campos visibles'
+					iconClass: 'fa fa-plus',
+					iconClassOptions: 'fa fa-cogs',
+					label: 'Nuevo',
+					labelOptions: 'Campos visibles',
+					nameEmit: 'create-event',
+					btnClass: 'btn btn-primary btn-flat'
 				};
 			}
 		},
 		tableClass: { type: String, default: 'table table-bordered table-striped' },
 		requireHeader: { type: Boolean, default: true },
 		divSeparatorClass: { type: String, default: 'col-xs-12' },
-		endpoint: { type: String, default: '/admin_lte/public/api/users' },
+		url: { type: String, default: '/admin_lte/public/api/users' },
+		search_filter: { type: String, default: '' },
+		endpoint: { type: String, default: '' },
 		sortable: {
 			type: Object,
 			default: function _default() {
 				return {
 					ascendingIcon: 'glyphicon glyphicon-chevron-up',
-					descendingIcon: 'glyphicon glyphicon-chevron-down'
+					descendingIcon: 'glyphicon glyphicon-chevron-down',
+					column: 'id',
+					order: 'asc'
 				};
 			}
 		},
@@ -16333,13 +16350,23 @@ exports.default = {
 			type: Array, default: function _default() {
 				return [{
 					field: 'name',
-					hidden: true
+					hidden: false
 				}, {
 					field: 'email',
-					hidden: true
+					hidden: false
+				}, {
+					field: 'created_at',
+					title: 'Fecha Creación',
+					hidden: false
+				}, {
+					title: 'Fecha Modificación',
+					field: 'updated_at',
+					hidden: false
 				}, {
 					title: 'Acciones',
-					hidden: true,
+					titleClass: 'text-center',
+					hidden: false,
+					fieldClass: 'text-center',
 					itemActions: [{
 						nameEmit: 'view-event',
 						btnClass: 'btn btn-default btn-xs',
@@ -16363,25 +16390,29 @@ exports.default = {
 			type: Object,
 			default: function _default() {
 				return {
-					templateNoRegister: 'No hay registros',
-					templateRegister: 'Mostrando: {0} - {1} de {2} registros',
-					first: "Ir al Inicio",
-					previous: "Previa",
-					next: "Siguiente",
-					last: "Ir al Final",
-					refresh: "Actualizar",
+					loadingIconClass: 'fa fa-spinner fa-spin fa-3x fa-fw cool-table-loading-icon',
+					showText: 'Mostrando',
+					of: 'de',
+					refresh: 'Actualizar',
+					noData: 'No hay registros',
+					register: 'Registros',
+					next: '>',
+					back: '<',
+					last: '>>',
+					first: '<<',
 					searchable: false,
-					data: {
-						total: 150,
-						per_page: 15,
-						current_page: 1,
-						last_page: 10,
-						next_page_url: "http:\/\/vuetable.ratiw.net\/api\/users?page=2",
-						prev_page_url: null,
-						from: 1,
-						to: 15,
-						per_page_list: [10, 15, 20, 15, 50]
-					}
+					per_page_list: [5, 10, 15, 20, 30, 50],
+					total: 150,
+					per_page: 5,
+					current_page: 1,
+					last_page: 10,
+					next_page_url: "http:\/\/vuetable.ratiw.net\/api\/users?page=2",
+					prev_page_url: null,
+					from: 1,
+					to: 15,
+					data: [],
+					moreTemp: 1,
+					limitPaginate: 5
 				};
 			}
 		},
@@ -16393,27 +16424,113 @@ exports.default = {
 		}
 	},
 	methods: {
+		updateEndpoint: function updateEndpoint() {
+			var _pagination = this.pagination;
+			var per_page = _pagination.per_page;
+			var current_page = _pagination.current_page;
+			var search_filter = this.search_filter;
+			var url = this.url;
+			var _sortable = this.sortable;
+			var column = _sortable.column;
+			var order = _sortable.order;
+
+			this.endpoint = url + '?per_page=' + per_page + '&page=' + current_page + '&sort=' + column + '|' + order + '&filter=' + search_filter;
+		},
+		orderColumn: function orderColumn(column) {
+			if (this.sortable.column == column) {
+				this.sortable.order = this.sortable.order == 'asc' ? 'desc' : 'asc';
+			} else {
+				this.sortable.order = 'asc';
+				this.sortable.column = column;
+			}
+			this.loadData();
+		},
+		isActive: function isActive(index) {
+			return this.pagination.current_page == index ? 'active' : '';
+		},
+		paginate: function paginate(numPage) {
+			if (this.pagination.current_page != numPage) {
+				if (numPage == this.pagination.last_page) {
+					this.pagination.moreTemp = parseInt(numPage / this.pagination.limitPaginate) + 1;
+				}
+				if (numPage == 1) {
+					this.pagination.moreTemp = 1;
+				}
+				this.pagination.current_page = numPage;
+				this.loadData();
+			}
+		},
+		paginateNext: function paginateNext() {
+			if (this.pagination.next_page_url != null) {
+				this.pagination.current_page % this.pagination.limitPaginate === 0 ? this.pagination.moreTemp++ : null;
+				this.pagination.current_page++;
+				this.loadData();
+			}
+		},
+		paginatePrev: function paginatePrev() {
+			if (this.pagination.prev_page_url != null) {
+				this.pagination.current_page % this.pagination.limitPaginate === 1 ? this.pagination.moreTemp-- : null;
+				this.pagination.current_page--;
+				this.loadData();
+			}
+		},
+		pagScroll: function pagScroll(type) {
+			if (type == 'next') {
+				this.pagination.moreTemp++;
+				this.pagination.current_page = (this.pagination.moreTemp - 1) * this.pagination.limitPaginate + 1;
+			} else {
+				this.pagination.moreTemp--;
+				this.pagination.current_page = (this.pagination.moreTemp - 1) * this.pagination.limitPaginate + this.pagination.limitPaginate;
+			}
+			this.loadData();
+		},
+		changePerPage: function changePerPage() {
+			this.loadData();
+		},
+		loadingAnimation: function loadingAnimation(type) {
+			var query = '.' + this.tableClass.split(' ').join('.');
+			var elem = document.querySelector(query);
+			var loadElem = document.querySelector('.loading-mask');
+			var loadIcon = document.querySelector('.cool-table-loading-icon');
+			if (type == 'open') {
+				var axisY = parseInt(elem.scrollHeight / 2);
+				loadElem.style.height = axisY * 2 + 'px';
+				loadIcon.style.marginTop = axisY + 'px';
+				loadElem.className = 'loading-mask l-open';
+			} else {
+				loadElem.className = 'loading-mask l-close';
+			}
+		},
+		numToShow: function numToShow(num) {
+			return (this.pagination.moreTemp - 1) * this.pagination.limitPaginate < num && num < this.pagination.moreTemp * this.pagination.limitPaginate + 1;
+		},
 		toggleColumns: function toggleColumns(idx) {
-			console.log('el index es ' + idx, this.columns[idx].hidden);
 			this.columns[idx].hidden = !this.columns[idx].hidden;
 		},
-		loadData: function loadData(url) {
+		loadData: function loadData() {
+			this.loadingAnimation('open');
+			this.updateEndpoint();
 			var self = this;
-			console.log('entra pero vale caca', url);
-			self.$http.get(url).then(function (resp) {
-				console.log('esta es la data', resp);
+			self.$http.get(this.endpoint).then(function (resp) {
 				self.data = resp.data.data;
+				(0, _assign2.default)(self.pagination, resp.data);
+				self.loadingAnimation('close');
 			}, function (err) {
-				console.warn(err, 'error while try to load the endpoit', url);
+				console.warn(err, 'error while try to load the endpoit', self.endpoint);
+				self.loadingAnimation('close');
 			});
+		},
+		search: function search() {
+			this.loadData();
 		},
 		dispacher: function dispacher(event, model) {
 			this.$dispatch(event, model);
 		}
 
 	},
+
 	ready: function ready() {
-		this.loadData(this.endpoint);
+		this.loadData(this.endpoint + '?per_page=' + this.pagination.per_page);
 	},
 	created: function created() {
 		arrayToScema(this.columns);
@@ -16425,13 +16542,13 @@ exports.default = {
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t<div v-if=\"optionToolbar\" :class=\"divSeparatorClass\">\n\t\t<button class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"true\" :title=\"optionToolbar.label\">\n\t\t\t<i :class=\"optionToolbar.iconClass\"></i>\n\t\t</button>\n\t\t<ul class=\"dropdown-menu\">\n\t\t\t<li v-for=\"(idx, col) in columns\">\n\t\t\t\t<span class=\"checkbox\">\n\t\t\t\t\t<label @click=\"toggleColumns(idx)\">\n\t\t\t\t\t\t<strong>{{ col.title }} <i class=\"fa fa-check font-success\" v-if=\"!col.hidden\"></i><i class=\"fa fa-close font-error\" v-else=\"\"></i></strong>\n\t\t\t\t\t\t<!--\n\t\t\t\t\t\t<i class=\"fa fa-check\" v-if=\"col.hidden\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-close\" v-else></i>\n\t\t\t\t\t\t-->\n\t\t\t\t\t</label>\n\t\t\t\t</span>\n\t\t\t</li>\t\n\t\t</ul>\n\t</div>\n\n\t<div :class=\"divSeparatorClass\">\n\t\t<table :class=\"tableClass\">\n\t\t\t<thead v-if=\"requireHeader\">\n\t\t\t\t<tr>\n\t\t\t\t\t<th v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.titleClass\">{{col.title}}</th>\n\t\t\t\t</tr>\n\t\t\t</thead>\n\t\t\t\n\t\t\t<tbody>\n\t\t\t\t<tr v-for=\"item in data\">\n\n\t\t\t\t\t<td v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.fieldClass\">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div v-if=\"!col.itemActions\">{{ item[col.field] }}</div>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div v-else=\"\" class=\"btn-group\">\n\n\t\t\t\t\t\t\t<a v-for=\"act in col.itemActions\" :class=\"act.btnClass\" href=\"\" @click.prevent=\"dispacher(act.nameEmit, item)\">\n\t\t\t\t\t\t\t\t<i :class=\"act.iconClass\" data-toggle=\"tooltip\" :title=\"act.label\"></i>\n\t\t\t\t\t\t\t</a>\n\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!--\n\t\t\t\t\t\t<pre>{{item | json }}</pre>\n\t\t\t\t\t-->\n\n\t\t\t\t</td>\n\n\t\t\t</tr>\n\t\t</tbody>\n\t\t\n\t</table>\n</div>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n\t<!-- Head Confi toolbar -->\n\t<div class=\"box box-primary\">\n\t\t<div class=\"box-header with-border\" v-if=\"optionToolbar\">\n\t\t\t<div class=\"col-sm-2 col-xs-12\" v-if=\"optionToolbar\">\n\t\t\t\t<button :class=\"optionToolbar.btnClass\" @click.prevent=\"dispacher(optionToolbar.nameEmit)\"><i :class=\"optionToolbar.iconClass\"></i> {{optionToolbar.label}}</button>\n\t\t\t</div>\n\t\t\t<div class=\"col-xs-6 col-sm-6\">\n\t\t\t\t<form action=\"#\" method=\"get\" @submit.prevent=\"search\">\n\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t<input type=\"text\" name=\"filter\" v-model=\"search_filter\" class=\"form-control\" placeholder=\"Buscar...\">\n\t\t\t\t\t\t<span class=\"input-group-btn\">\n\t\t\t\t\t\t\t<button type=\"submit\" name=\"search_table\" id=\"search-btn\" class=\"btn btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t</div>\n\t\t\t\t</form>\n\t\t\t</div>\n\t\t\t<div class=\"col-xs-4 col-sm-3\">\n\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t<select class=\"form-control\" v-model=\"pagination.per_page\" @change=\"changePerPage\">\n\t\t\t\t\t\t<option value=\"\" disabled=\"\">Rigistros por página</option>\n\t\t\t\t\t\t<option v-for=\"item in pagination.per_page_list | orderBy item\" track-by=\"$index\" :value=\"item\">{{item}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"col-xs-2 col-sm-1\">\n\t\t\t\t<button class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"true\" :title=\"optionToolbar.labelOptions\">\n\t\t\t\t\t<i :class=\"optionToolbar.iconClassOptions\"></i>\n\t\t\t\t</button>\n\t\t\t\t<ul class=\"dropdown-menu pull-right\">\n\t\t\t\t\t<li v-for=\"(idx, col) in columns\">\n\t\t\t\t\t\t<span class=\"checkbox\">\n\t\t\t\t\t\t\t<label @click=\"toggleColumns(idx)\">\n\t\t\t\t\t\t\t\t<strong>{{ col.title }} <i class=\"fa fa-check font-success\" v-if=\"!col.hidden\"></i><i class=\"fa fa-close font-error\" v-else=\"\"></i></strong>\n\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Body table -->\n\t\t<div class=\"box-body table-responsive\">\n\t\t\t<div class=\"loading-mask l-close\">\n\t\t\t\t<i :class=\"pagination.loadingIconClass\"></i>\n\t\t\t\t<span class=\"sr-only\">Loading...</span>\n\t\t\t</div>\n\t\t\t<table :class=\"tableClass\">\n\t\t\t\t\n\t\t\t\t<thead v-if=\"requireHeader\">\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<th v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.titleClass\">\n\t\t\t\t\t\t\t<template v-if=\"sortable &amp;&amp; !col.itemActions\">\n\t\t\t\t\t\t\t\t<div class=\"cool-table-sortable\" @click.prevent=\"orderColumn(col.field)\">\n\t\t\t\t\t\t\t\t\t<span>{{col.title}}</span>\n\t\t\t\t\t\t\t\t\t<template v-if=\"sortable.column == col.field &amp;&amp; sortable.order == 'desc'\">\n\t\t\t\t\t\t\t\t\t\t<span class=\"pull-right\"><i :class=\"sortable.descendingIcon\"></i></span>\n\t\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t\t\t<template v-else=\"\">\n\t\t\t\t\t\t\t\t\t\t<span class=\"pull-right\"><i :class=\"sortable.ascendingIcon\"></i></span>\n\t\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t<template v-else=\"\">\n\t\t\t\t\t\t\t\t{{col.title}}\n\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t</th>\n\t\t\t\t\t</tr>\n\t\t\t\t</thead>\n\n\t\t\t\t<tbody>\n\t\t\t\t\t<tr v-for=\"item in data\">\n\n\t\t\t\t\t\t<td v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.fieldClass\">\n\n\t\t\t\t\t\t\t<div v-if=\"!col.itemActions\">{{ item[col.field] }}</div>\n\n\t\t\t\t\t\t\t<div v-else=\"\" class=\"btn-group\">\n\n\t\t\t\t\t\t\t\t<a v-for=\"act in col.itemActions\" :class=\"act.btnClass\" href=\"\" @click.prevent=\"dispacher(act.nameEmit, item)\">\n\t\t\t\t\t\t\t\t\t<i :class=\"act.iconClass\" data-toggle=\"tooltip\" :title=\"act.label\"></i>\n\t\t\t\t\t\t\t\t</a>\n\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</td>\n\n\t\t\t\t\t</tr>\n\t\t\t\t</tbody>\n\n\t\t\t</table>\n\t\t</div>\n\n\t\t<!-- Footer pagination -->\n\t\t<div class=\"box-footer\" v-if=\"pagination\">\n\t\t\t<div class=\"row\" v-if=\"pagination.data.length>0\">\n\t\t\t\t<div class=\"col-xs-12 col-sm-8\">\n\t\t\t\t\t<nav>\n\t\t\t\t\t\t<ul class=\"pagination pagination-sm\">\n\t\t\t\t\t\t\t<li class=\"{{firstActive}}\" @click.prevent=\"paginate(1)\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Previous\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.first}}</span>\n\t\t\t\t\t\t\t\t</a><!-- begin -->\n\t\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t\t<li class=\"{{firstActive}}\" @click.prevent=\"paginatePrev\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Previous\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.back}}</span>\n\t\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t\t<li v-if=\"pagination.current_page>pagination.limitPaginate\" @click.prevent=\"pagScroll('prev')\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Prev\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">...</span>\n\t\t\t\t\t\t\t\t</a><!-- more back -->\n\t\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t\t<li v-for=\"pag in 5, pagination.last_page\" class=\"{{isActive(pag+1)}}\" @click.prevent=\"paginate(pag+1)\" v-if=\"numToShow(pag+1)\"><a href=\"#\">{{pag + 1}}</a></li>\n\n\t\t\t\t\t\t\t<li v-if=\"pagination.moreTemp < (pagination.last_page/pagination.limitPaginate)\" @click.prevent=\"pagScroll('next')\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">...</span>\n\t\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t\t</li><!-- more next -->\n\n\t\t\t\t\t\t\t<li class=\"{{lastActive}}\" @click.prevent=\"paginateNext\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.next}}</span>\n\t\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t\t<li class=\"{{lastActive}}\" @click.prevent=\"paginate(pagination.last_page)\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.last}}</span>\n\t\t\t\t\t\t\t\t</a><!-- end -->\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</nav>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"col-xs-12 col-sm-4 text-right\" v-if=\"pagination\">\n\t\t\t\t\t<span>{{pagination.showText}}: {{pagination.from}} - {{pagination.to}} {{pagination.of}} {{pagination.total}} {{pagination.register}}</span>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"row\" v-else=\"\">\n\t\t\t\t<div class=\"col-xs-12 text-center\">\n\t\t\t\t\t<span>{{pagination.noData}}</span>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t</div>\n\n\t<!--\n\t<div v-if=\"optionToolbar\" :class=\"divSeparatorClass\">\n\t\t<div class=\"col-xs-7\">\n\t\t\t<form action=\"#\" method=\"get\">\n\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t<input type=\"text\" name=\"table_q\" class=\"form-control\" placeholder=\"Buscar...\">\n\t\t\t\t\t<span class=\"input-group-btn\">\n\t\t\t\t\t\t<button type=\"submit\" name=\"search_table\" id=\"search-btn\" class=\"btn btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t\t</span>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\t\t<div class=\"col-xs-4\">\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<select class=\"form-control\" v-model=\"pagination.data.per_page\">\n\t\t\t\t\t<option value=\"\" disabled>Rigistros por página</option>\n\t\t\t\t\t<option v-for=\"item in pagination.data.per_page_list | orderBy item\"  track-by=\"$index\" :value=\"item\">{{item}}</option>\n\t\t\t\t</select>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"col-xs-1\">\n\t\t\t<button class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"true\" :title=\"optionToolbar.label\">\n\t\t\t\t<i :class=\"optionToolbar.iconClass\"></i>\n\t\t\t</button>\n\t\t\t<ul class=\"dropdown-menu\">\n\t\t\t\t<li v-for=\"(idx, col) in columns\">\n\t\t\t\t\t<span class=\"checkbox\">\n\t\t\t\t\t\t<label @click=\"toggleColumns(idx)\">\n\t\t\t\t\t\t\t<strong>{{ col.title }} <i class=\"fa fa-check font-success\" v-if=\"!col.hidden\"></i><i class=\"fa fa-close font-error\" v-else></i></strong>\n\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</span>\n\t\t\t\t</li>\n\t\t\t</ul>\n\t\t</div>\n\t</div>\n\n\t<div :class=\"divSeparatorClass\">\n\t\t<table :class=\"tableClass\">\n\t\t\t<thead v-if=\"requireHeader\">\n\t\t\t\t<tr>\n\t\t\t\t\t<th v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.titleClass\">{{col.title}}</th>\n\t\t\t\t</tr>\n\t\t\t</thead>\n\t\t\t\n\t\t\t<tbody>\n\t\t\t\t<tr v-for=\"item in data\">\n\n\t\t\t\t\t<td v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.fieldClass\">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div v-if=\"!col.itemActions\">{{ item[col.field] }}</div>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div v-else class=\"btn-group\">\n\n\t\t\t\t\t\t\t<a v-for=\"act in col.itemActions\" :class=\"act.btnClass\" href=\"\" @click.prevent=\"dispacher(act.nameEmit, item)\" >\n\t\t\t\t\t\t\t\t<i :class=\"act.iconClass\" data-toggle=\"tooltip\" :title=\"act.label\"></i>\n\t\t\t\t\t\t\t</a>\n\n\t\t\t\t\t\t</div>\n\n\n\n\t\t\t\t</td>\n\n\t\t\t</tr>\n\t\t</tbody>\n\t\t\n\t</table>\n</div>\n-->\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\n.font-success{\n\tcolor: #00a65a;\n}\n\n.font-error{\n\tcolor: #dd4b39;\n}\n"] = false
+    __vueify_insert__.cache["\n.font-success{\n\tcolor: #00a65a;\n}\n\n.font-error{\n\tcolor: #dd4b39;\n}\n\n.pagination{\n\tmargin: 0 !important;\n}\n\n.cool-table-loading-icon{\n\tposition: absolute;\n\tmargin-left: 45%;\n\tmargin-top: 50%;\n}\n\n.cool-table-sortable{\n\tcursor: pointer;\n}\n.cool-table-sortable:hover{\n\tcolor: #2185d0;\n}\n\n.loading-mask{\t\n\tz-index: 99;\t\n\tposition: absolute;\n\twidth: 100%;\n\tbackground: rgba(236, 240, 245, 0.31);\n}\n.l-open{\n\tdisplay: inherit;\n}\n\n.l-close{\n\tdisplay: none;\t\n}\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
