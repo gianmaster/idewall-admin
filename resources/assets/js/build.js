@@ -45,7 +45,11 @@ router.map({
   },
   '/sdk': {
     component: require('./finalComponents/app/testVueTable.vue')
+  },
+  '/paginate': {
+    component: require('./finalComponents/app/testPagination.vue')
   }
+  
 });
 
 

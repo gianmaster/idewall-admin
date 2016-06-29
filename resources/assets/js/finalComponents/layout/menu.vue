@@ -94,6 +94,12 @@ module.exports = {
 						link: '/sdk',
 						children: []
 					},
+					{
+						iconClass: 'fa fa-link',
+						name: 'Otra version de pagineo',
+						link: '/paginate',
+						children: []
+					},
 					]
 				},
 				

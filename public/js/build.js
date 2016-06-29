@@ -15611,7 +15611,11 @@ router.map({
   },
   '/sdk': {
     component: require('./finalComponents/app/testVueTable.vue')
+  },
+  '/paginate': {
+    component: require('./finalComponents/app/testPagination.vue')
   }
+
 });
 
 //bootstrap
@@ -15622,7 +15626,7 @@ router.start(App, '#app');
 //solo para hacer debug
 window.router = router;
 
-},{"./components2/dashboard.vue":29,"./config/externalComponents":30,"./finalComponents/app/testVueTable.vue":32,"./finalComponents/app/usuariosView.vue":33,"./finalComponents/layout/notfound.vue":40,"./finalComponents/layoutView.vue":34,"vue":21,"vue-progressbar":18,"vue-resource":19,"vue-router":20}],29:[function(require,module,exports){
+},{"./components2/dashboard.vue":29,"./config/externalComponents":30,"./finalComponents/app/testPagination.vue":32,"./finalComponents/app/testVueTable.vue":33,"./finalComponents/app/usuariosView.vue":34,"./finalComponents/layout/notfound.vue":41,"./finalComponents/layoutView.vue":35,"vue":21,"vue-progressbar":18,"vue-resource":19,"vue-router":20}],29:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -15717,6 +15721,50 @@ var _loading = require('../reusable/loading.vue');
 
 var _loading2 = _interopRequireDefault(_loading);
 
+var _coolPagination = require('../reusable/cool-pagination.vue');
+
+var _coolPagination2 = _interopRequireDefault(_coolPagination);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+	data: function data() {
+		return {
+			datos: [],
+			loading: false,
+			url: '/admin_lte/public/api/users',
+			fullPaginate: true
+		};
+	},
+
+	components: {
+		'cool-pagination': _coolPagination2.default,
+		'app-loading': _loading2.default
+	}
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n\n\n<div class=\"row\">\n\t<div v-if=\"loading===true\" style=\"min-height: 200px;\">\n\t\t<app-loading></app-loading>\n\t</div>\n\t<div v-else=\"\" class=\"col-xs-12\">\n\t\t<ul class=\"list-group\">\n\t\t\t<li class=\"list-group-item\" v-for=\"item in datos\">{{item.name}} | <a href=\"javascript:;\">{{item.email}}</a></li>\n\t\t</ul>\n\t</div>\n</div>\n<div class=\"row\">\n\t<cool-pagination :data.sync=\"datos\" params=\"&amp;per_page=5\" :is-loading.sync=\"loading\" :full-paginate=\"fullPaginate\" :url=\"url\"></cool-pagination>\t\n</div>\n\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-67c5b806", module.exports)
+  } else {
+    hotAPI.update("_v-67c5b806", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"../reusable/cool-pagination.vue":42,"../reusable/loading.vue":45,"vue":21,"vue-hot-reload-api":17}],33:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _loading = require('../reusable/loading.vue');
+
+var _loading2 = _interopRequireDefault(_loading);
+
 var _coolTable = require('../reusable/cool-table.vue');
 
 var _coolTable2 = _interopRequireDefault(_coolTable);
@@ -15748,7 +15796,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-f0c05bea", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../reusable/cool-table.vue":41,"../reusable/loading.vue":43,"vue":21,"vue-hot-reload-api":17}],33:[function(require,module,exports){
+},{"../reusable/cool-table.vue":43,"../reusable/loading.vue":45,"vue":21,"vue-hot-reload-api":17}],34:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n")
 'use strict';
@@ -15962,7 +16010,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-a088d68a", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../reusable/loading.vue":43,"../reusable/pagination.vue":45,"vue":21,"vue-hot-reload-api":17,"vueify/lib/insert-css":22}],34:[function(require,module,exports){
+},{"../reusable/loading.vue":45,"../reusable/pagination.vue":47,"vue":21,"vue-hot-reload-api":17,"vueify/lib/insert-css":22}],35:[function(require,module,exports){
 'use strict';
 
 var menu = require('../config/menus.js');
@@ -15998,7 +16046,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-32136a05", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../config/menus.js":31,"./layout/content.vue":35,"./layout/control.vue":36,"./layout/footer.vue":37,"./layout/header.vue":38,"./layout/menu.vue":39,"vue":21,"vue-hot-reload-api":17}],35:[function(require,module,exports){
+},{"../config/menus.js":31,"./layout/content.vue":36,"./layout/control.vue":37,"./layout/footer.vue":38,"./layout/header.vue":39,"./layout/menu.vue":40,"vue":21,"vue-hot-reload-api":17}],36:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -16031,7 +16079,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-b5cce046", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":21,"vue-hot-reload-api":17}],36:[function(require,module,exports){
+},{"vue":21,"vue-hot-reload-api":17}],37:[function(require,module,exports){
 "use strict";
 if (module.exports.__esModule) module.exports = module.exports.default
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t<!-- Control Sidebar -->\n\t<aside class=\"control-sidebar control-sidebar-dark\">\n\t\t<!-- Create the tabs -->\n\t\t<ul class=\"nav nav-tabs nav-justified control-sidebar-tabs\">\n\t\t\t<li class=\"active\"><a href=\"#control-sidebar-home-tab\" data-toggle=\"tab\"><i class=\"fa fa-home\"></i></a></li>\n\t\t\t<li><a href=\"#control-sidebar-settings-tab\" data-toggle=\"tab\"><i class=\"fa fa-gears\"></i></a></li>\n\t\t</ul>\n\t\t<!-- Tab panes -->\n\t\t<div class=\"tab-content\">\n\t\t\t<!-- Home tab content -->\n\t\t\t<div class=\"tab-pane active\" id=\"control-sidebar-home-tab\">\n\t\t\t\t<h3 class=\"control-sidebar-heading\">Actividad reciente</h3>\n\t\t\t\t<ul class=\"control-sidebar-menu\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<a href=\"javascript::;\">\n\t\t\t\t\t\t\t<i class=\"menu-icon fa fa-birthday-cake bg-red\"></i>\n\t\t\t\t\t\t\t<div class=\"menu-info\">\n\t\t\t\t\t\t\t\t<h4 class=\"control-sidebar-subheading\">Cumpleaños</h4>\n\t\t\t\t\t\t\t\t<p>01-07-1990</p>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</li>\n\t\t\t\t</ul><!-- /.control-sidebar-menu -->\n\n\t\t\t\t<h3 class=\"control-sidebar-heading\">Progreso</h3>\n\t\t\t\t<ul class=\"control-sidebar-menu\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<a href=\"javascript::;\">\n\t\t\t\t\t\t\t<h4 class=\"control-sidebar-subheading\">\n\t\t\t\t\t\t\t\tCustom Template\n\t\t\t\t\t\t\t\t<span class=\"label label-danger pull-right\">70%</span>\n\t\t\t\t\t\t\t</h4>\n\t\t\t\t\t\t\t<div class=\"progress progress-xxs\">\n\t\t\t\t\t\t\t\t<div class=\"progress-bar progress-bar-danger\" style=\"width: 70%\"></div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</li>\n\t\t\t\t</ul><!-- /.control-sidebar-menu -->\n\n\t\t\t</div><!-- /.tab-pane -->\n\t\t\t<!-- Stats tab content -->\n\t\t\t<div class=\"tab-pane\" id=\"control-sidebar-stats-tab\">Status</div><!-- /.tab-pane -->\n\t\t\t<!-- Settings tab content -->\n\t\t\t<div class=\"tab-pane\" id=\"control-sidebar-settings-tab\">\n\t\t\t\t<form method=\"post\">\n\t\t\t\t\t<h3 class=\"control-sidebar-heading\">Ajustes Generales</h3>\n\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t<label class=\"control-sidebar-subheading\">\n\t\t\t\t\t\t\tPanel de reporte\n\t\t\t\t\t\t\t<input type=\"checkbox\" class=\"pull-right\">\n\t\t\t\t\t\t</label>\n\t\t\t\t\t\t<p>\n\t\t\t\t\t\t\tAjustes de información\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div><!-- /.form-group -->\n\t\t\t\t</form>\n\t\t\t</div><!-- /.tab-pane -->\n\t\t</div>\n</aside><!-- /.control-sidebar\n\n<!-- Add the sidebar's background. This div must be placed\n\timmediately after the control sidebar -->\n\t<div class=\"control-sidebar-bg\"></div>\n"
@@ -16045,7 +16093,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-560eaec1", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":21,"vue-hot-reload-api":17}],37:[function(require,module,exports){
+},{"vue":21,"vue-hot-reload-api":17}],38:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -16096,7 +16144,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-31dc8832", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":21,"vue-hot-reload-api":17}],38:[function(require,module,exports){
+},{"vue":21,"vue-hot-reload-api":17}],39:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -16165,7 +16213,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-08441fd9", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":21,"vue-hot-reload-api":17}],39:[function(require,module,exports){
+},{"vue":21,"vue-hot-reload-api":17}],40:[function(require,module,exports){
 'use strict';
 
 var _menuItem = require('../reusable/menuItem.vue');
@@ -16206,6 +16254,11 @@ module.exports = {
 					name: 'Reportes',
 					link: '/sdk',
 					children: []
+				}, {
+					iconClass: 'fa fa-link',
+					name: 'Otra version de pagineo',
+					link: '/paginate',
+					children: []
 				}]
 			}]
 		};
@@ -16225,7 +16278,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-1de556ab", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../reusable/menuItem.vue":44,"vue":21,"vue-hot-reload-api":17}],40:[function(require,module,exports){
+},{"../reusable/menuItem.vue":46,"vue":21,"vue-hot-reload-api":17}],41:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16250,7 +16303,273 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-6a67a7db", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":21,"vue-hot-reload-api":17}],41:[function(require,module,exports){
+},{"vue":21,"vue-hot-reload-api":17}],42:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _assign = require('babel-runtime/core-js/object/assign');
+
+var _assign2 = _interopRequireDefault(_assign);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+	ready: function ready() {
+		this.loadData();
+	},
+
+	computed: {
+		lastActive: function lastActive() {
+			return this.current_page == this.last_page ? 'disabled' : '';
+		},
+		firstActive: function firstActive() {
+			return this.current_page == 1 ? 'disabled' : '';
+		}
+
+	},
+
+	methods: {
+		isActive: function isActive(index) {
+			return this.current_page == index ? 'active' : '';
+		},
+		paginate: function paginate(numPage) {
+			if (this.current_page != numPage) {
+				if (numPage == this.last_page) {
+					this.moreTemp = parseInt(numPage / this.limitPaginate) + 1;
+				}
+				if (numPage == 1) {
+					this.moreTemp = 1;
+				}
+				this.current_page = numPage;
+				this.loadData();
+			}
+		},
+		paginateNext: function paginateNext() {
+			if (this.next_page_url != null) {
+				this.current_page % this.limitPaginate === 0 ? this.moreTemp++ : null;
+				this.current_page++;
+				this.loadData();
+			}
+		},
+		paginatePrev: function paginatePrev() {
+			if (this.prev_page_url != null) {
+				this.current_page % this.limitPaginate === 1 ? this.moreTemp-- : null;
+				this.current_page--;
+				this.loadData();
+			}
+		},
+		pagScroll: function pagScroll(type) {
+			if (type == 'next') {
+				this.moreTemp++;
+				this.current_page = (this.moreTemp - 1) * this.limitPaginate + 1;
+			} else {
+				this.moreTemp--;
+				this.current_page = (this.moreTemp - 1) * this.limitPaginate + this.limitPaginate;
+			}
+			this.loadData();
+		},
+		numToShow: function numToShow(num) {
+			return (this.moreTemp - 1) * this.limitPaginate < num && num < this.moreTemp * this.limitPaginate + 1;
+		},
+		//MAIN METHOD LOAD DATA
+		loadData: function loadData() {
+			var self = this;
+			self.isError = false;
+			self.isLoading = true;
+			self.$http.get(self.url + '?page=' + self.current_page + self.params).then(function (resp) {
+				self.data = resp.data.data;
+				(0, _assign2.default)(self, resp.data);
+				self.isError = false;
+				self.isLoading = false;
+			}, function (err) {
+				console.warn(err, 'error while try to load the endpoit', '' + self.url + self.params);
+				self.isError = true;
+				self.isLoading = false;
+			});
+		}
+	},
+
+	props: {
+		//endpoint
+		url: {
+			type: String,
+			required: true
+		},
+		params: {
+			type: String,
+			required: false,
+			default: ''
+		},
+		fullPaginate: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		isLoading: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		isError: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		//default class for bootstrap
+		paginateContentClass: {
+			type: String,
+			required: false,
+			default: "col-xs-12 col-sm-8"
+		},
+		infoContentClass: {
+			type: String,
+			required: false,
+			default: "col-xs-12 col-sm-4 text-right"
+		},
+		noDataContentClass: {
+			type: String,
+			required: false,
+			default: "col-xs-12 text-center"
+		},
+		showText: {
+			type: String,
+			required: false,
+			default: 'Mostrando'
+		},
+		ofText: {
+			type: String,
+			required: false,
+			default: 'de'
+		},
+		refreshText: {
+			type: String,
+			required: false,
+			default: 'Actualizar'
+		},
+		noDataText: {
+			type: String,
+			required: false,
+			default: 'No hay registros'
+		},
+		registerText: {
+			type: String,
+			required: false,
+			default: 'Registros'
+		},
+		nextText: {
+			type: String,
+			required: false,
+			default: '>'
+		},
+		backText: {
+			type: String,
+			required: false,
+			default: '<'
+		},
+		lastText: {
+			type: String,
+			required: false,
+			default: '>>'
+		},
+		firstText: {
+			type: String,
+			required: false,
+			default: '<<'
+		},
+		filter_search: {
+			type: String,
+			required: false,
+			default: ''
+		},
+		per_page_list: {
+			type: Array,
+			required: false,
+			default: function _default() {
+				return [5, 10, 15, 20, 30, 50];
+			}
+		},
+		//logic data attributes - laravel paginate struct
+
+		data: {
+			type: Array,
+			required: false,
+			default: function _default() {
+				return [];
+			}
+		},
+		moreTemp: {
+			type: Number,
+			required: false,
+			default: 1
+		},
+		limitPaginate: {
+			type: Number,
+			required: false,
+			default: 5
+		}
+	},
+
+	data: function data() {
+		return {
+			total: {
+				type: Number,
+				required: false,
+				default: 0
+			},
+			per_page: {
+				type: Number,
+				required: false,
+				default: 5
+			},
+			current_page: {
+				type: Number,
+				required: false,
+				default: 1
+			},
+			last_page: {
+				type: Number,
+				required: false,
+				default: 2
+			},
+			next_page_url: {
+				type: String,
+				required: false,
+				default: ""
+			},
+			prev_page_url: {
+				type: String,
+				required: false,
+				default: ""
+			},
+			from: {
+				type: Number,
+				required: false,
+				default: 1
+			},
+			to: {
+				type: Number,
+				required: false,
+				default: 15
+			}
+		};
+	}
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div :class=\"paginateContentClass\">\n\t<nav>\n\t\t<ul class=\"pagination pagination-sm\">\n\t\t\t<li class=\"{{firstActive}}\" @click.prevent=\"paginate(1)\">\n\t\t\t\t<a href=\"#\" aria-label=\"Previous\">\n\t\t\t\t\t<span aria-hidden=\"true\">{{firstText}}</span>\n\t\t\t\t</a><!-- begin -->\n\t\t\t</li>\n\n\t\t\t<li class=\"{{firstActive}}\" @click.prevent=\"paginatePrev\">\n\t\t\t\t<a href=\"#\" aria-label=\"Previous\">\n\t\t\t\t\t<span aria-hidden=\"true\">{{backText}}</span>\n\t\t\t\t</a>\n\t\t\t</li>\n\n\t\t\t<li v-if=\"current_page>limitPaginate\" @click.prevent=\"pagScroll('prev')\">\n\t\t\t\t<a href=\"#\" aria-label=\"Prev\">\n\t\t\t\t\t<span aria-hidden=\"true\">...</span>\n\t\t\t\t</a><!-- more back -->\n\t\t\t</li>\n\n\t\t\t<li v-for=\"pag in last_page\" class=\"{{isActive(pag+1)}}\" @click.prevent=\"paginate(pag+1)\" v-if=\"numToShow(pag+1)\"><a href=\"#\">{{pag + 1}}</a></li>\n\n\t\t\t<li v-if=\"moreTemp < (last_page/limitPaginate)\" @click.prevent=\"pagScroll('next')\">\n\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t<span aria-hidden=\"true\">...</span>\n\t\t\t\t</a>\n\t\t\t</li><!-- more next -->\n\n\t\t\t<li class=\"{{lastActive}}\" @click.prevent=\"paginateNext\">\n\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t<span aria-hidden=\"true\">{{nextText}}</span>\n\t\t\t\t</a>\n\t\t\t</li>\n\n\t\t\t<li class=\"{{lastActive}}\" @click.prevent=\"paginate(last_page)\">\n\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t<span aria-hidden=\"true\">{{lastText}}</span>\n\t\t\t\t</a><!-- end -->\n\t\t\t</li>\n\t\t</ul>\n\t</nav>\n</div>\n\n<div :class=\"infoContentClass\" v-if=\"infoContentClass\">\n\t<span>{{showText}}: {{from}} - {{to}} {{ofText}} {{total}} {{registerText}}</span>\n</div>\n\n<div :class=\"noDataContentClass\" v-if=\"data.lenght<=0\">\n\t<span>{{noDataText}}</span>\n</div>\n\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-29db4543", module.exports)
+  } else {
+    hotAPI.update("_v-29db4543", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"babel-runtime/core-js/object/assign":1,"vue":21,"vue-hot-reload-api":17}],43:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n.font-success{\n\tcolor: #00a65a;\n}\n\n.font-error{\n\tcolor: #dd4b39;\n}\n\n.pagination{\n\tmargin: 0 !important;\n}\n\n.cool-table-loading-icon{\n\tposition: absolute;\n\tmargin-left: 45%;\n\tmargin-top: 50%;\n}\n\n.cool-table-sortable{\n\tcursor: pointer;\n}\n.cool-table-sortable:hover{\n\tcolor: #2185d0;\n}\n\n.loading-mask{\t\n\tz-index: 99;\t\n\tposition: absolute;\n\twidth: 100%;\n\tbackground: rgba(236, 240, 245, 0.31);\n}\n.l-open{\n\tdisplay: inherit;\n}\n\n.l-close{\n\tdisplay: none;\t\n}\n")
 'use strict';
@@ -16557,7 +16876,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-5b39ce96", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"babel-runtime/core-js/object/assign":1,"vue":21,"vue-hot-reload-api":17,"vueify/lib/insert-css":22}],42:[function(require,module,exports){
+},{"babel-runtime/core-js/object/assign":1,"vue":21,"vue-hot-reload-api":17,"vueify/lib/insert-css":22}],44:[function(require,module,exports){
 'use strict';
 
 var _menuItem = require('./menuItem.vue');
@@ -16599,7 +16918,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-5c925152", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./menuItem.vue":44,"vue":21,"vue-hot-reload-api":17}],43:[function(require,module,exports){
+},{"./menuItem.vue":46,"vue":21,"vue-hot-reload-api":17}],45:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n* {margin: 0;padding:0;}\n.mask-loading {\n\twidows: 100%;\n\tbackground-color: #ecf0f5;\n}\n.spinner {\n\twidth: 50px;\n\theight: 50px;\n\tposition: relative;\n\tmargin: 0 auto;\n}\n\n.double-bounce1, .double-bounce2 {\n\twidth: 100%;\n\theight: 100%;\n\tborder-radius: 50%;\n\tbackground-color: #3c8dbc;\n\topacity: 0.6;\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\n\t-webkit-animation: sk-bounce 2.0s infinite ease-in-out;\n\tanimation: sk-bounce 2.0s infinite ease-in-out;\n}\n\n.double-bounce2 {\n\t-webkit-animation-delay: -1.0s;\n\tanimation-delay: -1.0s;\n}\n\n@-webkit-keyframes sk-bounce {\n\t0%, 100% { -webkit-transform: scale(0.0) }\n\t50% { -webkit-transform: scale(1.0) }\n}\n\n@keyframes sk-bounce {\n\t0%, 100% { \n\t\ttransform: scale(0.0);\n\t\t-webkit-transform: scale(0.0);\n\t} 50% { \n\t\ttransform: scale(1.0);\n\t\t-webkit-transform: scale(1.0);\n\t}\n}\n")
 "use strict";
@@ -16623,7 +16942,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-2e1b703e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":21,"vue-hot-reload-api":17,"vueify/lib/insert-css":22}],44:[function(require,module,exports){
+},{"vue":21,"vue-hot-reload-api":17,"vueify/lib/insert-css":22}],46:[function(require,module,exports){
 'use strict';
 
 var _crossMenuItem = require('./crossMenuItem.vue');
@@ -16665,7 +16984,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-24e6b386", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./crossMenuItem.vue":42,"vue":21,"vue-hot-reload-api":17}],45:[function(require,module,exports){
+},{"./crossMenuItem.vue":44,"vue":21,"vue-hot-reload-api":17}],47:[function(require,module,exports){
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<nav id=\"vuetable-pagination-bootstrap-template\">\n        <ul class=\"pagination\">\n            <li class=\"{{isOnFirstPage ? disabledClass : ''}}\">\n                <a @click=\"loadPage('prev')\"><i class=\"glyphicon glyphicon-chevron-left\"></i></a>\n            </li>\n            <template v-for=\"n in totalPage\">\n                <li class=\"{{isCurrentPage(n+1) ? ' active' : ''}}\">\n                    <a @click=\"loadPage(n+1)\"> {{ n+1 }}</a>\n                </li>\n            </template>\n            <li class=\"{{isOnLastPage ? disabledClass : ''}}\">\n                <a @click=\"loadPage('next')\"><i class=\"glyphicon glyphicon-chevron-right\"></i></a>\n            </li>\n        </ul>\n    </nav>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
