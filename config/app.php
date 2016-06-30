@@ -162,6 +162,11 @@ return [
          */
         Acacha\AdminLTETemplateLaravel\Providers\AdminLTETemplateServiceProvider::class,
 
+        /**
+         * Pretus -> para el patron repositorios
+         * */
+        Prettus\Repository\Providers\RepositoryServiceProvider::class,
+
     ],
 
     /*

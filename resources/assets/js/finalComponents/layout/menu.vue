@@ -78,6 +78,12 @@ module.exports = {
 					children: []
 				},
 				{
+					iconClass: 'fa fa-th-list',
+					name: 'Menu',
+					link: '/menu',
+					children: []
+				},
+				{
 					iconClass: 'fa fa-calendar',
 					name: 'Usuarios',
 					link: '#',

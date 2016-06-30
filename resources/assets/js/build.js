@@ -43,6 +43,9 @@ router.map({
   '/usuarios': {
     component: require('./finalComponents/app/usuariosView.vue')
   },
+  '/menu': {
+    component: require('./finalComponents/app/testMantenedorMenu.vue')
+  },
   '/sdk': {
     component: require('./finalComponents/app/testVueTable.vue')
   },

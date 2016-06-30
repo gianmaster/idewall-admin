@@ -54,11 +54,13 @@
 							<template v-if="sortable && !col.itemActions">
 								<div class="cool-table-sortable" @click.prevent="orderColumn(col.field)">
 									<span>{{col.title}}</span>
-									<template v-if="sortable.column == col.field && sortable.order == 'desc'">
-										<span class="pull-right"><i :class="sortable.descendingIcon"></i></span>
-									</template>
-									<template v-else>
-										<span class="pull-right"><i :class="sortable.ascendingIcon"></i></span>
+									<template v-if="sortable.column == col.field">
+										<template v-if="sortable.order == 'desc'">
+											<span class="pull-right"><i :class="sortable.descendingIcon"></i></span>
+										</template>
+										<template v-else>
+											<span class="pull-right"><i :class="sortable.ascendingIcon"></i></span>
+										</template>
 									</template>
 								</div>
 							</template>
