@@ -17,4 +17,8 @@ Route::get('/', function () {
 
 Route::group(['prefix' => 'api'], function(){
 	Route::resource('users', 'UserController');
+
+	Route::resource('menu', 'MenuTestController');
 });
+
+
