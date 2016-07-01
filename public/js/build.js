@@ -16303,8 +16303,24 @@ module.exports = {
 			default: "Root User"
 		}
 	},
+	methods: {
+		hasChildren: function hasChildren(nodo) {
+			if (typeof nodo === 'undefined') return false;
+			return nodo.length > 0;
+		}
+	},
+	ready: function ready() {
+		// let self = this;
+		// self.$http.get(self.urlMenu).then(function(resp){
+		// 	console.log(resp.data);
+		// 	self.menu=resp.data.data;
+		// }, function(err){
+		// 	console.warn(err);
+		// });
+	},
 	data: function data() {
 		return {
+			urlMenu: '/admin_lte/public/api/menu',
 			menu: [{
 				iconClass: 'fa fa-dashboard',
 				name: 'Dashboard',
@@ -16342,7 +16358,7 @@ module.exports = {
 
 //configs
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<!-- Left side column. contains the logo and sidebar -->\n<aside class=\"main-sidebar\">\n\n\t<!-- sidebar: style can be found in sidebar.less -->\n\t<section class=\"sidebar\">\n\n\t\t<!-- Sidebar user panel (optional) -->\n\t\t<div class=\"user-panel\">\n\t\t\t<div class=\"pull-left image\">\n\t\t\t\t<img src=\"img/user2-160x160.jpg\" class=\"img-circle\" alt=\"User Image\">\n\t\t\t</div>\n\t\t\t<div class=\"pull-left info\">\n\t\t\t\t<p>{{ username }}</p>\n\t\t\t\t<!-- Status -->\n\t\t\t\t<a href=\"#\"><i class=\"fa fa-circle text-success\"></i> Online</a>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- search form (Optional) -->\n\t\t<form action=\"#\" method=\"get\" class=\"sidebar-form\">\n\t\t\t<div class=\"input-group\">\n\t\t\t\t<input type=\"text\" name=\"q\" class=\"form-control\" placeholder=\"Search...\">\n\t\t\t\t<span class=\"input-group-btn\">\n\t\t\t\t\t<button type=\"submit\" name=\"search\" id=\"search-btn\" class=\"btn btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t</span>\n\t\t\t</div>\n\t\t</form>\n\t\t<!-- /.search form -->\n\n\t\t<!-- Sidebar Menu -->\n\t\t<ul class=\"sidebar-menu\">\n\t\t\t<li class=\"header\">MAIN NAVIGATION</li>\n\t\t\t<menu-item v-for=\"itemenu in menu\" :item=\"itemenu\" :is-parent=\"itemenu.children.length>0\"></menu-item>\n\t\t\t<!--\n\t\t\t<li v-link-active><a v-link=\"{name:'home', activeClass:'active'}\"><i class='fa fa-link'></i> <span>Dashboard</span></a></li>\n\t\t\t<li v-link-active><a v-link=\"{name: 'otro', activeClass:'active'}\"><i class='fa fa-link'></i> <span>Opción 1</span></a></li>\n\t\t\t<li class=\"treeview\">\n\t\t\t\t<a href=\"#\"><i class='fa fa-link'></i> <span>Multiopción</span> <i class=\"fa fa-angle-left pull-right\"></i></a>\n\t\t\t\t<ul class=\"treeview-menu\">\n\t\t\t\t\t<li><a href=\"#level1\">Subnivel 1</a></li>\n\t\t\t\t\t<li><a href=\"#level2\">Subnivel 2</a></li>\n\t\t\t\t</ul>\n\t\t\t</li>\n\t\t\t-->\n\t\t</ul>\n\t\t\n\t\t<!-- /.sidebar-menu -->\n\t</section>\n\t<!-- /.sidebar -->\n</aside>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<!-- Left side column. contains the logo and sidebar -->\n<aside class=\"main-sidebar\">\n\n\t<!-- sidebar: style can be found in sidebar.less -->\n\t<section class=\"sidebar\">\n\n\t\t<!-- Sidebar user panel (optional) -->\n\t\t<div class=\"user-panel\">\n\t\t\t<div class=\"pull-left image\">\n\t\t\t\t<img src=\"img/user2-160x160.jpg\" class=\"img-circle\" alt=\"User Image\">\n\t\t\t</div>\n\t\t\t<div class=\"pull-left info\">\n\t\t\t\t<p>{{ username }}</p>\n\t\t\t\t<!-- Status -->\n\t\t\t\t<a href=\"#\"><i class=\"fa fa-circle text-success\"></i> Online</a>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- search form (Optional) -->\n\t\t<form action=\"#\" method=\"get\" class=\"sidebar-form\">\n\t\t\t<div class=\"input-group\">\n\t\t\t\t<input type=\"text\" name=\"q\" class=\"form-control\" placeholder=\"Search...\">\n\t\t\t\t<span class=\"input-group-btn\">\n\t\t\t\t\t<button type=\"submit\" name=\"search\" id=\"search-btn\" class=\"btn btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t</span>\n\t\t\t</div>\n\t\t</form>\n\t\t<!-- /.search form -->\n\n\t\t<!-- Sidebar Menu -->\n\t\t<ul class=\"sidebar-menu\">\n\t\t\t<li class=\"header\">MAIN NAVIGATION</li>\n\t\t\t<menu-item v-for=\"itemenu in menu\" :item=\"itemenu\" :is-parent=\"hasChildren(itemenu.children)\"></menu-item>\n\t\t\t\n\t\t</ul>\n\t\t\n\t\t<!-- /.sidebar-menu -->\n\t</section>\n\t<!-- /.sidebar -->\n</aside>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16978,11 +16994,15 @@ module.exports = {
 		toggleMenu: function toggleMenu(event) {
 			$('li.pageLink').removeClass('active');
 			event.toElement.parentElement.className = 'pageLink active';
+		},
+		hasChildren: function hasChildren(nodo) {
+			if (typeof nodo === 'undefined') return false;
+			return nodo.length > 0;
 		}
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<li @click=\"toggleMenu\" class=\"pageLink\" v-if=\"!isParent\">\n\t<a v-link=\"{path:item.link}\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span></a>\n</li>\n<li v-else=\"\" class=\"treeview\">\n\t<a href=\"#\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span> <i class=\"fa fa-angle-left pull-right\"></i></a>\n\t<ul class=\"treeview-menu\">\n\t\t<crea-menu v-for=\"itemenu in item.children\" :item=\"itemenu\" :is-parent=\"itemenu.children.length>0\"></crea-menu>\n\t</ul>\n</li>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<li @click=\"toggleMenu\" class=\"pageLink\" v-if=\"!isParent\">\n\t<a v-link=\"{path:item.link}\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span></a>\n</li>\n<li v-else=\"\" class=\"treeview\">\n\t<a href=\"#\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span> <i class=\"fa fa-angle-left pull-right\"></i></a>\n\t<ul class=\"treeview-menu\">\n\t\t<crea-menu v-for=\"itemenu in item.children\" :item=\"itemenu\" :is-parent=\"hasChildren(itemenu.children)\"></crea-menu>\n\t</ul>\n</li>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -17044,11 +17064,15 @@ module.exports = {
 		toggleMenu: function toggleMenu(event) {
 			$('li.pageLink').removeClass('active');
 			event.toElement.parentElement.className = 'pageLink active';
+		},
+		hasChildren: function hasChildren(nodo) {
+			if (typeof nodo === 'undefined') return false;
+			return nodo.length > 0;
 		}
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<li @click=\"toggleMenu\" class=\"pageLink\" v-if=\"!isParent\">\n\t<a v-link=\"{path:item.link}\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span></a>\n</li>\n<li v-else=\"\" class=\"treeview\">\n\t<a href=\"#\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span> <i class=\"fa fa-angle-left pull-right\"></i></a>\n\t<ul class=\"treeview-menu\">\n\t\t<crea-menu v-for=\"itemenu in item.children\" :item=\"itemenu\" :is-parent=\"itemenu.children.length>0\"></crea-menu>\n\t</ul>\n</li>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<li @click=\"toggleMenu\" class=\"pageLink\" v-if=\"!isParent\">\n\t<a v-link=\"{path:item.link}\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span></a>\n</li>\n<li v-else=\"\" class=\"treeview\">\n\t<a href=\"#\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span> <i class=\"fa fa-angle-left pull-right\"></i></a>\n\t<ul class=\"treeview-menu\">\n\t\t<crea-menu v-for=\"itemenu in item.children\" :item=\"itemenu\" :is-parent=\"hasChildren(itemenu.children)\"></crea-menu>\n\t</ul>\n</li>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)

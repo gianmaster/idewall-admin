@@ -24,7 +24,7 @@ class MenuTestController extends Controller
      */
     public function index()
     {
-        return response()->json(array('data' => $this->repository->all()));
+        return response()->json($this->repository->findByField('cod_padre', null));
         //return response()->json(array('data' => $this->repository->findByField('nombre','menu')));
     }
 

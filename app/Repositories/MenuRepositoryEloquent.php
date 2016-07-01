@@ -2,11 +2,12 @@
 
 namespace App\Repositories;
 
-use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\MenuRepository;
 use App\Entities\Menu;
 use App\Validators\MenuValidator;
+use App\Repositories\MenuRepository;
+use App\Presenters\MenuPresenter;
+use Prettus\Repository\Eloquent\BaseRepository;
+use Prettus\Repository\Criteria\RequestCriteria;
 
 /**
  * Class MenuRepositoryEloquent
@@ -35,6 +36,28 @@ class MenuRepositoryEloquent extends BaseRepository implements MenuRepository
         return MenuValidator::class;
     }
 
+    /**
+     * Specify Searchable fields
+     * */
+    protected $fieldSearchable = [
+        'nombre',
+        'titulo',
+        //'titulo' => 'like', //with condition
+    ];
+
+
+    /**
+    * Specify Presenter function
+    *
+    * @return mixed
+    */
+    public function presenter()
+    {
+
+        return MenuPresenter::class;
+    }
+
+    
 
     /**
      * Boot up the repository, pushing criteria

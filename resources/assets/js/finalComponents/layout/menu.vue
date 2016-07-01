@@ -31,18 +31,8 @@
 			<!-- Sidebar Menu -->
 			<ul class="sidebar-menu">
 				<li class="header">MAIN NAVIGATION</li>
-				<menu-item v-for="itemenu in menu" :item="itemenu" :is-parent="itemenu.children.length>0"></menu-item>
-				<!--
-				<li v-link-active><a v-link="{name:'home', activeClass:'active'}"><i class='fa fa-link'></i> <span>Dashboard</span></a></li>
-				<li v-link-active><a v-link="{name: 'otro', activeClass:'active'}"><i class='fa fa-link'></i> <span>Opción 1</span></a></li>
-				<li class="treeview">
-					<a href="#"><i class='fa fa-link'></i> <span>Multiopción</span> <i class="fa fa-angle-left pull-right"></i></a>
-					<ul class="treeview-menu">
-						<li><a href="#level1">Subnivel 1</a></li>
-						<li><a href="#level2">Subnivel 2</a></li>
-					</ul>
-				</li>
-				-->
+				<menu-item v-for="itemenu in menu" :item="itemenu" :is-parent="hasChildren(itemenu.children)"></menu-item>
+				
 			</ul>
 			
 			<!-- /.sidebar-menu -->
@@ -68,8 +58,25 @@ module.exports = {
 			default: "Root User"
 		}
 	},
+	methods: {
+		hasChildren: function(nodo){
+			if(typeof nodo === 'undefined')
+				return false;
+			return nodo.length>0;
+		}
+	},
+	ready(){
+		// let self = this;
+		// self.$http.get(self.urlMenu).then(function(resp){
+		// 	console.log(resp.data);
+		// 	self.menu=resp.data.data;
+		// }, function(err){
+		// 	console.warn(err);
+		// });
+	},
 	data(){
 		return {
+			urlMenu: '/admin_lte/public/api/menu',
 			menu: [
 				{
 					iconClass: 'fa fa-dashboard',

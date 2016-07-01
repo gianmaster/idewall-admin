@@ -5,7 +5,7 @@
 	<li v-else class="treeview">
 		<a href="#"><i :class='item.iconClass'></i> <span>{{item.name}}</span> <i class="fa fa-angle-left pull-right"></i></a>
 		<ul class="treeview-menu">
-			<crea-menu v-for="itemenu in item.children" :item="itemenu"  :is-parent="itemenu.children.length>0" ></crea-menu>
+			<crea-menu v-for="itemenu in item.children" :item="itemenu"  :is-parent="hasChildren(itemenu.children)" ></crea-menu>
 		</ul>
 	</li>
 </template>
@@ -32,6 +32,11 @@ import MenuItem from './menuItem.vue';
 			toggleMenu: function (event) {
 				$('li.pageLink').removeClass('active');
 				event.toElement.parentElement.className = 'pageLink active';
+			},
+			hasChildren: function(nodo){
+				if(typeof nodo === 'undefined')
+					return false;
+				return nodo.length>0;
 			}
 		}
 	}

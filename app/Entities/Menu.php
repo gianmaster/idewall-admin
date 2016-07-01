@@ -14,4 +14,8 @@ class Menu extends Model implements Transformable
     //
     protected $fillable = ['nombre', 'titulo', 'url', 'iconclass', 'cod_padre', 'orden'];
 
+   	public function children(){
+   		return $this->hasMany(Menu::class, 'cod_padre', 'id');
+   	}
+
 }

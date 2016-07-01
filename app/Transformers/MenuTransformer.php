@@ -22,11 +22,15 @@ class MenuTransformer extends TransformerAbstract
     {
         return [
             'id'         => (int) $model->id,
-
             /* place your other model properties here */
-
-            'created_at' => $model->created_at,
-            'updated_at' => $model->updated_at
+            'name'       => $model->titulo,
+            'link'       => $model->url,
+            'iconClass' => $model->iconclass,
+            'orden'     => $model->orden,
+            'cod_padre' => $model->cod_padre,
+            'children' => $model->children,
+            'fecha_creacion' => (string)($model->created_at),
+            'fecha_modificacion' => (string)$model->updated_at
         ];
     }
 }
