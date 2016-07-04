@@ -12,12 +12,16 @@
 
 		</div>
 
+		<crear-editar></crear-editar>
+
 	</div>
 	
 </template>
 
 
 <script>
+
+	import crearEditar from './mantenedor-menu/crear-editar.vue';
 
 	import Loading from '../reusable/loading.vue';
 	import manegement from '../reusable/menuManagement.vue';
@@ -49,6 +53,7 @@
 		components: {
 			'app-loading' : Loading,
 			'app-menu-management' : manegement,
+			'crear-editar' : crearEditar
 		},
 		route: {
 			data: function(transition){

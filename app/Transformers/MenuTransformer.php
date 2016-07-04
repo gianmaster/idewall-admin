@@ -20,7 +20,7 @@ class MenuTransformer extends TransformerAbstract
      */
     public function transform(Menu $model)
     {
-        return [
+        $newModel = [
             'id'         => (int) $model->id,
             /* place your other model properties here */
             'name'       => $model->titulo,
@@ -32,5 +32,13 @@ class MenuTransformer extends TransformerAbstract
             'fecha_creacion' => (string)($model->created_at),
             'fecha_modificacion' => (string)$model->updated_at
         ];
+
+        if (isset($newModel['children'])) {//convierto los hijos en transformaciones
+            foreach ($newModel['children'] as $key => $value) {
+                $newModel['children'][$key] = $this->transform($value);
+            }
+        }
+
+        return $newModel;
     }
 }

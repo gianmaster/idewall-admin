@@ -15629,7 +15629,7 @@ router.start(App, '#app');
 //solo para hacer debug
 window.router = router;
 
-},{"./components2/dashboard.vue":29,"./config/externalComponents":30,"./finalComponents/app/testMantenedorMenu.vue":32,"./finalComponents/app/testPagination.vue":33,"./finalComponents/app/testVueTable.vue":34,"./finalComponents/app/usuariosView.vue":35,"./finalComponents/layout/notfound.vue":42,"./finalComponents/layoutView.vue":36,"vue":21,"vue-progressbar":18,"vue-resource":19,"vue-router":20}],29:[function(require,module,exports){
+},{"./components2/dashboard.vue":29,"./config/externalComponents":30,"./finalComponents/app/testMantenedorMenu.vue":33,"./finalComponents/app/testPagination.vue":34,"./finalComponents/app/testVueTable.vue":35,"./finalComponents/app/usuariosView.vue":36,"./finalComponents/layout/notfound.vue":43,"./finalComponents/layoutView.vue":37,"vue":21,"vue-progressbar":18,"vue-resource":19,"vue-router":20}],29:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -15720,6 +15720,47 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
+var _selectList = require('../../reusable/select-list.vue');
+
+var _selectList2 = _interopRequireDefault(_selectList);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+	components: {
+		'select-list': _selectList2.default
+	},
+	data: function data() {
+		return {
+			newModel: {
+				cod_padre: ''
+			},
+			mode: '' };
+	}
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"row\">\n\t<div class=\"col-xs-12\">\n\t\t<label for=\"\">Menu padre</label>\n\t\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"newModel.cod_padre\" value-key=\"id\" label-key=\"name\" url=\"/admin_lte/public/api/menu\"></select-list>\n\t</div>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-0c21ee87", module.exports)
+  } else {
+    hotAPI.update("_v-0c21ee87", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"../../reusable/select-list.vue":51,"vue":21,"vue-hot-reload-api":17}],33:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _crearEditar = require('./mantenedor-menu/crear-editar.vue');
+
+var _crearEditar2 = _interopRequireDefault(_crearEditar);
+
 var _loading = require('../reusable/loading.vue');
 
 var _loading2 = _interopRequireDefault(_loading);
@@ -15758,7 +15799,8 @@ exports.default = {
 	},
 	components: {
 		'app-loading': _loading2.default,
-		'app-menu-management': _menuManagement2.default
+		'app-menu-management': _menuManagement2.default,
+		'crear-editar': _crearEditar2.default
 	},
 	route: {
 		data: function data(transition) {
@@ -15769,7 +15811,7 @@ exports.default = {
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div v-if=\"loading\">\n\t<app-loading></app-loading>\n</div>\n\n<div v-else=\"\" class=\"row\">\n\t\n\t<div class=\"col-xs-12\">\n\t\t\n\t\t<app-menu-management :caption=\"title\"></app-menu-management>\n\n\t</div>\n\n</div>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div v-if=\"loading\">\n\t<app-loading></app-loading>\n</div>\n\n<div v-else=\"\" class=\"row\">\n\t\n\t<div class=\"col-xs-12\">\n\t\t\n\t\t<app-menu-management :caption=\"title\"></app-menu-management>\n\n\t</div>\n\n\t<crear-editar></crear-editar>\n\n</div>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15780,7 +15822,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-518362a7", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../reusable/loading.vue":46,"../reusable/menuManagement.vue":48,"vue":21,"vue-hot-reload-api":17}],33:[function(require,module,exports){
+},{"../reusable/loading.vue":47,"../reusable/menuManagement.vue":49,"./mantenedor-menu/crear-editar.vue":32,"vue":21,"vue-hot-reload-api":17}],34:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15824,7 +15866,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-67c5b806", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../reusable/cool-pagination.vue":43,"../reusable/loading.vue":46,"vue":21,"vue-hot-reload-api":17}],34:[function(require,module,exports){
+},{"../reusable/cool-pagination.vue":44,"../reusable/loading.vue":47,"vue":21,"vue-hot-reload-api":17}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15866,7 +15908,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-f0c05bea", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../reusable/cool-table.vue":44,"../reusable/loading.vue":46,"vue":21,"vue-hot-reload-api":17}],35:[function(require,module,exports){
+},{"../reusable/cool-table.vue":45,"../reusable/loading.vue":47,"vue":21,"vue-hot-reload-api":17}],36:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n")
 'use strict';
@@ -16080,7 +16122,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-a088d68a", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../reusable/loading.vue":46,"../reusable/pagination.vue":49,"vue":21,"vue-hot-reload-api":17,"vueify/lib/insert-css":22}],36:[function(require,module,exports){
+},{"../reusable/loading.vue":47,"../reusable/pagination.vue":50,"vue":21,"vue-hot-reload-api":17,"vueify/lib/insert-css":22}],37:[function(require,module,exports){
 'use strict';
 
 var menu = require('../config/menus.js');
@@ -16116,7 +16158,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-32136a05", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../config/menus.js":31,"./layout/content.vue":37,"./layout/control.vue":38,"./layout/footer.vue":39,"./layout/header.vue":40,"./layout/menu.vue":41,"vue":21,"vue-hot-reload-api":17}],37:[function(require,module,exports){
+},{"../config/menus.js":31,"./layout/content.vue":38,"./layout/control.vue":39,"./layout/footer.vue":40,"./layout/header.vue":41,"./layout/menu.vue":42,"vue":21,"vue-hot-reload-api":17}],38:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -16149,7 +16191,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-b5cce046", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":21,"vue-hot-reload-api":17}],38:[function(require,module,exports){
+},{"vue":21,"vue-hot-reload-api":17}],39:[function(require,module,exports){
 "use strict";
 if (module.exports.__esModule) module.exports = module.exports.default
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t<!-- Control Sidebar -->\n\t<aside class=\"control-sidebar control-sidebar-dark\">\n\t\t<!-- Create the tabs -->\n\t\t<ul class=\"nav nav-tabs nav-justified control-sidebar-tabs\">\n\t\t\t<li class=\"active\"><a href=\"#control-sidebar-home-tab\" data-toggle=\"tab\"><i class=\"fa fa-home\"></i></a></li>\n\t\t\t<li><a href=\"#control-sidebar-settings-tab\" data-toggle=\"tab\"><i class=\"fa fa-gears\"></i></a></li>\n\t\t</ul>\n\t\t<!-- Tab panes -->\n\t\t<div class=\"tab-content\">\n\t\t\t<!-- Home tab content -->\n\t\t\t<div class=\"tab-pane active\" id=\"control-sidebar-home-tab\">\n\t\t\t\t<h3 class=\"control-sidebar-heading\">Actividad reciente</h3>\n\t\t\t\t<ul class=\"control-sidebar-menu\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<a href=\"javascript::;\">\n\t\t\t\t\t\t\t<i class=\"menu-icon fa fa-birthday-cake bg-red\"></i>\n\t\t\t\t\t\t\t<div class=\"menu-info\">\n\t\t\t\t\t\t\t\t<h4 class=\"control-sidebar-subheading\">Cumpleaños</h4>\n\t\t\t\t\t\t\t\t<p>01-07-1990</p>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</li>\n\t\t\t\t</ul><!-- /.control-sidebar-menu -->\n\n\t\t\t\t<h3 class=\"control-sidebar-heading\">Progreso</h3>\n\t\t\t\t<ul class=\"control-sidebar-menu\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<a href=\"javascript::;\">\n\t\t\t\t\t\t\t<h4 class=\"control-sidebar-subheading\">\n\t\t\t\t\t\t\t\tCustom Template\n\t\t\t\t\t\t\t\t<span class=\"label label-danger pull-right\">70%</span>\n\t\t\t\t\t\t\t</h4>\n\t\t\t\t\t\t\t<div class=\"progress progress-xxs\">\n\t\t\t\t\t\t\t\t<div class=\"progress-bar progress-bar-danger\" style=\"width: 70%\"></div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</li>\n\t\t\t\t</ul><!-- /.control-sidebar-menu -->\n\n\t\t\t</div><!-- /.tab-pane -->\n\t\t\t<!-- Stats tab content -->\n\t\t\t<div class=\"tab-pane\" id=\"control-sidebar-stats-tab\">Status</div><!-- /.tab-pane -->\n\t\t\t<!-- Settings tab content -->\n\t\t\t<div class=\"tab-pane\" id=\"control-sidebar-settings-tab\">\n\t\t\t\t<form method=\"post\">\n\t\t\t\t\t<h3 class=\"control-sidebar-heading\">Ajustes Generales</h3>\n\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t<label class=\"control-sidebar-subheading\">\n\t\t\t\t\t\t\tPanel de reporte\n\t\t\t\t\t\t\t<input type=\"checkbox\" class=\"pull-right\">\n\t\t\t\t\t\t</label>\n\t\t\t\t\t\t<p>\n\t\t\t\t\t\t\tAjustes de información\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div><!-- /.form-group -->\n\t\t\t\t</form>\n\t\t\t</div><!-- /.tab-pane -->\n\t\t</div>\n</aside><!-- /.control-sidebar\n\n<!-- Add the sidebar's background. This div must be placed\n\timmediately after the control sidebar -->\n\t<div class=\"control-sidebar-bg\"></div>\n"
@@ -16163,7 +16205,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-560eaec1", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":21,"vue-hot-reload-api":17}],39:[function(require,module,exports){
+},{"vue":21,"vue-hot-reload-api":17}],40:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -16214,7 +16256,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-31dc8832", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":21,"vue-hot-reload-api":17}],40:[function(require,module,exports){
+},{"vue":21,"vue-hot-reload-api":17}],41:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -16283,7 +16325,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-08441fd9", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":21,"vue-hot-reload-api":17}],41:[function(require,module,exports){
+},{"vue":21,"vue-hot-reload-api":17}],42:[function(require,module,exports){
 'use strict';
 
 var _menuItem = require('../reusable/menuItem.vue');
@@ -16369,7 +16411,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-1de556ab", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../reusable/menuItem.vue":47,"vue":21,"vue-hot-reload-api":17}],42:[function(require,module,exports){
+},{"../reusable/menuItem.vue":48,"vue":21,"vue-hot-reload-api":17}],43:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16394,7 +16436,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-6a67a7db", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":21,"vue-hot-reload-api":17}],43:[function(require,module,exports){
+},{"vue":21,"vue-hot-reload-api":17}],44:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16660,7 +16702,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-29db4543", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"babel-runtime/core-js/object/assign":1,"vue":21,"vue-hot-reload-api":17}],44:[function(require,module,exports){
+},{"babel-runtime/core-js/object/assign":1,"vue":21,"vue-hot-reload-api":17}],45:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n.font-success{\n\tcolor: #00a65a;\n}\n\n.font-error{\n\tcolor: #dd4b39;\n}\n\n.pagination{\n\tmargin: 0 !important;\n}\n\n.cool-table-loading-icon{\n\tposition: absolute;\n\tmargin-left: 45%;\n\tmargin-top: 50%;\n}\n\n.cool-table-sortable{\n\tcursor: pointer;\n}\n.cool-table-sortable:hover{\n\tcolor: #2185d0;\n}\n\n.loading-mask{\t\n\tz-index: 99;\t\n\tposition: absolute;\n\twidth: 100%;\n\tbackground: rgba(236, 240, 245, 0.31);\n}\n.l-open{\n\tdisplay: inherit;\n}\n\n.l-close{\n\tdisplay: none;\t\n}\n")
 'use strict';
@@ -16967,7 +17009,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-5b39ce96", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"babel-runtime/core-js/object/assign":1,"vue":21,"vue-hot-reload-api":17,"vueify/lib/insert-css":22}],45:[function(require,module,exports){
+},{"babel-runtime/core-js/object/assign":1,"vue":21,"vue-hot-reload-api":17,"vueify/lib/insert-css":22}],46:[function(require,module,exports){
 'use strict';
 
 var _menuItem = require('./menuItem.vue');
@@ -17013,7 +17055,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-5c925152", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./menuItem.vue":47,"vue":21,"vue-hot-reload-api":17}],46:[function(require,module,exports){
+},{"./menuItem.vue":48,"vue":21,"vue-hot-reload-api":17}],47:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n* {margin: 0;padding:0;}\n.mask-loading {\n\twidows: 100%;\n\tbackground-color: #ecf0f5;\n}\n.spinner {\n\twidth: 50px;\n\theight: 50px;\n\tposition: relative;\n\tmargin: 0 auto;\n}\n\n.double-bounce1, .double-bounce2 {\n\twidth: 100%;\n\theight: 100%;\n\tborder-radius: 50%;\n\tbackground-color: #3c8dbc;\n\topacity: 0.6;\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\n\t-webkit-animation: sk-bounce 2.0s infinite ease-in-out;\n\tanimation: sk-bounce 2.0s infinite ease-in-out;\n}\n\n.double-bounce2 {\n\t-webkit-animation-delay: -1.0s;\n\tanimation-delay: -1.0s;\n}\n\n@-webkit-keyframes sk-bounce {\n\t0%, 100% { -webkit-transform: scale(0.0) }\n\t50% { -webkit-transform: scale(1.0) }\n}\n\n@keyframes sk-bounce {\n\t0%, 100% { \n\t\ttransform: scale(0.0);\n\t\t-webkit-transform: scale(0.0);\n\t} 50% { \n\t\ttransform: scale(1.0);\n\t\t-webkit-transform: scale(1.0);\n\t}\n}\n")
 "use strict";
@@ -17037,7 +17079,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-2e1b703e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":21,"vue-hot-reload-api":17,"vueify/lib/insert-css":22}],47:[function(require,module,exports){
+},{"vue":21,"vue-hot-reload-api":17,"vueify/lib/insert-css":22}],48:[function(require,module,exports){
 'use strict';
 
 var _crossMenuItem = require('./crossMenuItem.vue');
@@ -17083,7 +17125,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-24e6b386", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./crossMenuItem.vue":45,"vue":21,"vue-hot-reload-api":17}],48:[function(require,module,exports){
+},{"./crossMenuItem.vue":46,"vue":21,"vue-hot-reload-api":17}],49:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\t#menu-content {\n\t\tbackground:white;\n\t\tfont:normal normal 13px/1.4 Segoe,\"Segoe UI\",Calibri,Helmet,FreeSans,Sans-Serif;\n\t\tpadding:50px;\n\t}\n\n\n/**\n * Framework starts from here ...\n * ------------------------------\n */\n\n .tree,\n .tree ul {\n \tmargin:0 0 0 1em; /* indentation */\n \tpadding:0;\n \tlist-style:none;\n \tcolor:#369;\n \tposition:relative;\n }\n\n .tree ul {margin-left:.5em} /* (indentation/2) */\n\n .tree:before,\n .tree ul:before {\n \tcontent:\"\";\n \tdisplay:block;\n \twidth:0;\n \tposition:absolute;\n \ttop:0;\n \tbottom:0;\n \tleft:0;\n \tborder-left:1px solid;\n }\n\n .tree li {\n \tmargin:0;\n \tpadding:0 1.5em; /* indentation + .5em */\n \tline-height:2em; /* default list item's `line-height` */\n \tposition:relative;\n }\n\n .tree li:before {\n \tcontent:\"\";\n \tdisplay:block;\n \twidth:10px; /* same with indentation */\n \theight:0;\n \tborder-top:1px solid;\n \tmargin-top:-1px; /* border top width */\n \tposition:absolute;\n \ttop:1em; /* (line-height/2) */\n \tleft:0;\n }\n\n .tree li:last-child:before {\n \tbackground:white; /* same with body background */\n \theight:auto;\n \ttop:1em; /* (line-height/2) */\n \tbottom:0;\n }\n\n .edit-option, .delete-option{\n \tcolor: #336699;\n }\n .edit-option:hover{\n \tcursor: pointer;\n \tcolor: orange;\n }\n\n .delete-option:hover{\n \tcursor: pointer;\n \tcolor: red;\n }\n")
 'use strict';
@@ -17092,17 +17134,38 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 exports.default = {
+	ready: function ready() {
+		var self = this;
+		self.$http.get(self.url).then(function (resp) {
+			self.data = resp.data.data;
+		}, function (err) {
+			console.warn(err);
+		});
+	},
+
 	name: 'management-menu',
 	props: {
 		caption: {
 			type: String,
 			required: false,
 			default: ''
+		},
+		url: {
+			type: String,
+			required: false,
+			default: '/admin_lte/public/api/menu'
+		},
+		data: {
+			type: Array,
+			required: false,
+			default: function _default() {
+				return [];
+			}
 		}
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div id=\"menu-content\">\n\t<p>{{caption}}</p>\n\t<ul class=\"tree\">\n\t\t<li><strong>Animals</strong> - <i class=\"fa fa-pencil edit-option\" data-toggle=\"tooltip\" title=\"Editar\"></i> - <i class=\"fa fa-trash delete-option\" data-toggle=\"tooltip\" title=\"Eliminar\"></i>\n\t\t\t<ul>\n\t\t\t\t<li>Birds</li>\n\t\t\t\t<li>Mammals\n\t\t\t\t\t<ul>\n\t\t\t\t\t\t<li>Elephant</li>\n\t\t\t\t\t\t<li>Mouse</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</li>\n\t\t\t\t<li>Reptiles</li>\n\t\t\t</ul>\n\t\t</li>\n\t\t<li><strong>Plants</strong>\n\t\t\t<ul>\n\t\t\t\t<li>Flowers\n\t\t\t\t\t<ul>\n\t\t\t\t\t\t<li>Rose</li>\n\t\t\t\t\t\t<li>Tulip\n\t\t\t\t\t\t\t<ul>\n\t\t\t\t\t\t\t\t<li>List item 1</li>\n\t\t\t\t\t\t\t\t<li>List item 2\n\t\t\t\t\t\t\t\t\t<ul>\n\t\t\t\t\t\t\t\t\t\t<li>List item 2.1</li>\n\t\t\t\t\t\t\t\t\t\t<li>List item 2.2</li>\n\t\t\t\t\t\t\t\t\t\t<li>List item 2.3</li>\n\t\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t\t<li>List item 3</li>\n\t\t\t\t\t\t\t\t<li>List item 4</li>\n\t\t\t\t\t\t\t\t<li>List item 5\n\t\t\t\t\t\t\t\t\t<ul>\n\t\t\t\t\t\t\t\t\t\t<li>List item 5.1</li>\n\t\t\t\t\t\t\t\t\t\t<li>List item 5.2\n\t\t\t\t\t\t\t\t\t\t\t<ul>\n\t\t\t\t\t\t\t\t\t\t\t\t<li>List item 5.2.1</li>\n\t\t\t\t\t\t\t\t\t\t\t\t<li>List item 5.2.2</li>\n\t\t\t\t\t\t\t\t\t\t\t\t<li>List item 5.2.3</li>\n\t\t\t\t\t\t\t\t\t\t\t\t<li>List item 5.2.4</li>\n\t\t\t\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t\t<li>List item 6</li>\n\t\t\t\t\t\t\t\t<li>List item 7</li>\n\t\t\t\t\t\t\t\t<li>List item 8</li>\n\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</li>\n\t\t\t\t<li><strong>Trees</strong></li>\n\t\t\t</ul>\n\t\t</li>\n\t</ul>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div id=\"menu-content\">\n\t<p>{{caption}}</p>\n\t<ul class=\"tree\">\n\t\t<li v-for=\"item in data\"><strong>{{item.name}}</strong> - <i class=\"fa fa-pencil edit-option\" data-toggle=\"tooltip\" title=\"Editar\"></i> - <i class=\"fa fa-trash delete-option\" data-toggle=\"tooltip\" title=\"Eliminar\"></i>\n\t\t\t<ul v-if=\"item.children.length>0\">\n\t\t\t\t<li v-for=\"it in item.children\">{{it.name}} - <i class=\"fa fa-pencil edit-option\" data-toggle=\"tooltip\" title=\"Editar\"></i> - <i class=\"fa fa-trash delete-option\" data-toggle=\"tooltip\" title=\"Eliminar\"></i></li>\n\t\t\t</ul>\n\t\t</li>\n\t\t\n\t</ul>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -17117,7 +17180,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-b1e79426", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":21,"vue-hot-reload-api":17,"vueify/lib/insert-css":22}],49:[function(require,module,exports){
+},{"vue":21,"vue-hot-reload-api":17,"vueify/lib/insert-css":22}],50:[function(require,module,exports){
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<nav id=\"vuetable-pagination-bootstrap-template\">\n        <ul class=\"pagination\">\n            <li class=\"{{isOnFirstPage ? disabledClass : ''}}\">\n                <a @click=\"loadPage('prev')\"><i class=\"glyphicon glyphicon-chevron-left\"></i></a>\n            </li>\n            <template v-for=\"n in totalPage\">\n                <li class=\"{{isCurrentPage(n+1) ? ' active' : ''}}\">\n                    <a @click=\"loadPage(n+1)\"> {{ n+1 }}</a>\n                </li>\n            </template>\n            <li class=\"{{isOnLastPage ? disabledClass : ''}}\">\n                <a @click=\"loadPage('next')\"><i class=\"glyphicon glyphicon-chevron-right\"></i></a>\n            </li>\n        </ul>\n    </nav>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
@@ -17127,6 +17190,81 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.createRecord("_v-76718405", module.exports)
   } else {
     hotAPI.update("_v-76718405", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":21,"vue-hot-reload-api":17}],51:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.default = {
+	name: 'select-list',
+	ready: function ready() {
+		var self = this;
+		this.$http.get(this.url).then(function (resp) {
+			self.data = resp.data.data;
+		}, function (err) {
+			console.warn(err);
+		});
+	},
+
+	props: {
+		className: {
+			type: String,
+			required: false,
+			default: null
+		},
+		labelKey: {
+			type: String,
+			required: false,
+			default: null
+		},
+		valueKey: {
+			type: String,
+			required: false,
+			default: null
+		},
+		data: {
+			type: Array,
+			required: false,
+			default: function _default() {
+				return [];
+			}
+		},
+		url: {
+			type: String,
+			reqruired: false,
+			default: null
+		},
+		selectLabel: {
+			type: String,
+			required: false,
+			default: null
+		},
+		noDataLabel: {
+			type: String,
+			required: false,
+			default: 'No hay datos'
+		},
+		selectValue: {
+			type: String,
+			required: true
+		}
+
+	},
+	methods: {}
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<select name=\"\" id=\"\" v-model=\"selectValue\" :class=\"className\">\n\t<option v-if=\"selectLabel\" disabled=\"\">{{selectLabel}}</option>\n\t<option v-if=\"labelKey &amp;&amp; valueKey\" v-for=\"item in data\" :value=\"item[valueKey]\">{{item.titulo}}</option>\n\t<option v-else=\"\" v-for=\"item in data\" :value=\"item\">{{item}}</option>\n</select>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-19b5f174", module.exports)
+  } else {
+    hotAPI.update("_v-19b5f174", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":21,"vue-hot-reload-api":17}]},{},[28]);

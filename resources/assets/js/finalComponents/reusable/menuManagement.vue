@@ -2,58 +2,12 @@
 	<div id="menu-content">
 		<p>{{caption}}</p>
 		<ul class="tree">
-			<li><strong>Animals</strong> - <i class="fa fa-pencil edit-option" data-toggle="tooltip" title="Editar"></i> - <i class="fa fa-trash delete-option" data-toggle="tooltip" title="Eliminar"></i>
-				<ul>
-					<li>Birds</li>
-					<li>Mammals
-						<ul>
-							<li>Elephant</li>
-							<li>Mouse</li>
-						</ul>
-					</li>
-					<li>Reptiles</li>
+			<li v-for="item in data"><strong>{{item.name}}</strong> - <i class="fa fa-pencil edit-option" data-toggle="tooltip" title="Editar"></i> - <i class="fa fa-trash delete-option" data-toggle="tooltip" title="Eliminar"></i>
+				<ul v-if="item.children.length>0">
+					<li v-for="it in item.children">{{it.name}} - <i class="fa fa-pencil edit-option" data-toggle="tooltip" title="Editar"></i> - <i class="fa fa-trash delete-option" data-toggle="tooltip" title="Eliminar"></i></li>
 				</ul>
 			</li>
-			<li><strong>Plants</strong>
-				<ul>
-					<li>Flowers
-						<ul>
-							<li>Rose</li>
-							<li>Tulip
-								<ul>
-									<li>List item 1</li>
-									<li>List item 2
-										<ul>
-											<li>List item 2.1</li>
-											<li>List item 2.2</li>
-											<li>List item 2.3</li>
-										</ul>
-									</li>
-									<li>List item 3</li>
-									<li>List item 4</li>
-									<li>List item 5
-										<ul>
-											<li>List item 5.1</li>
-											<li>List item 5.2
-												<ul>
-													<li>List item 5.2.1</li>
-													<li>List item 5.2.2</li>
-													<li>List item 5.2.3</li>
-													<li>List item 5.2.4</li>
-												</ul>
-											</li>
-										</ul>
-									</li>
-									<li>List item 6</li>
-									<li>List item 7</li>
-									<li>List item 8</li>
-								</ul>
-							</li>
-						</ul>
-					</li>
-					<li><strong>Trees</strong></li>
-				</ul>
-			</li>
+			
 		</ul>
 	</div>
 </template>
@@ -137,14 +91,35 @@
 <script>
 	
 export default {
+	ready: function(){
+		let self = this;
+		self.$http.get(self.url).then(function(resp){
+			self.data = resp.data.data;
+		}, function(err){
+			console.warn(err);
+		});
+	},
+
 	name: 'management-menu',
 	props: {
 		caption: {
 			type: String,
 			required: false,
 			default : ''
+		},
+		url: {
+			type: String,
+			required: false,
+			default: '/admin_lte/public/api/menu',
+		},
+		data: {
+			type: Array,
+			required: false,
+			default: function(){
+				return [];
+			}
 		}
-	}
+	},
 }
 
 </script>
