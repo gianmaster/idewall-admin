@@ -67,6 +67,7 @@ class UserController extends Controller
     {
         $input = $request->only(['name', 'email', 'password']);
         $input['password'] = bcrypt($input['password']);
+        $input['rol'] = 1;
         $user = User::create($input);
         return response()->json(array('data' => $user));
     }

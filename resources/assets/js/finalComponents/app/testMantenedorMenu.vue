@@ -7,17 +7,21 @@
 	<div v-else class="row">
 		
 		<div class="col-xs-12">
-			
-			<app-menu-management :caption="title"></app-menu-management>
+
+			<template v-if="mode=='listar'">
+				<app-menu-management :caption="title"></app-menu-management>
+				<button class="btn btn-info btn-sm btn-flat" @click.prevent="toggleMode('crear')"><i class="fa fa-plus"></i> Agregar Nuevo</button>
+			</template>
+
+			<template v-if="mode=='crear'">
+				<crear-editar></crear-editar>
+			</template>
 
 		</div>
-
-		<crear-editar></crear-editar>
 
 	</div>
 	
 </template>
-
 
 <script>
 

@@ -101,7 +101,7 @@
 	import Pagination from '../reusable/pagination.vue';
 	import Loading from '../reusable/loading.vue';
 
-	const BASE_URL = '/admin_lte/public/api';
+	const BASE_URL = 'api';
 
 	export default{
 		name: 'Usuarios',

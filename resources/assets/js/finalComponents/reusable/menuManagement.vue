@@ -16,7 +16,7 @@
 	#menu-content {
 		background:white;
 		font:normal normal 13px/1.4 Segoe,"Segoe UI",Calibri,Helmet,FreeSans,Sans-Serif;
-		padding:50px;
+		padding:10px;
 	}
 
 
@@ -110,7 +110,7 @@ export default {
 		url: {
 			type: String,
 			required: false,
-			default: '/admin_lte/public/api/menu',
+			default: 'api/menu',
 		},
 		data: {
 			type: Array,

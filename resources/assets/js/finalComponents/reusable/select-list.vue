@@ -1,8 +1,14 @@
 <template>
 	<select name="" id="" v-model="selectValue" :class="className">
+
 		<option v-if="selectLabel" disabled>{{selectLabel}}</option>
-		<option v-if="labelKey && valueKey" v-for="item in data" :value="item[valueKey]">{{item.titulo}}</option>
-		<option v-else v-for="item in data" :value="item">{{item}}</option>
+		<template v-if="labelKey && valueKey">
+			<option v-for="item in data" :value="item[valueKey]">{{item[labelKey]}}</option>
+		</template>
+		<template v-else>
+			<option v-for="item in data" :value="item">{{item}}</option>
+		</template>
+
 	</select>
 </template>
 
@@ -57,7 +63,7 @@
 				default: 'No hay datos'
 			},
 			selectValue: {
-				type: String,
+				type: String | Number,
 				required: true
 			}
 

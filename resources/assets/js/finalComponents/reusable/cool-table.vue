@@ -341,7 +341,7 @@
 			tableClass: { type: String, default: 'table table-bordered table-striped'},
 			requireHeader: {type: Boolean, default: true},
 			divSeparatorClass: {type: String, default: 'col-xs-12'},
-			url: {type: String, default: '/admin_lte/public/api/users'},
+			url: {type: String, default: 'api/users'},
 			search_filter: {type: String, default: ''},
 			endpoint: {type: String, default: ''},
 			sortable: {
@@ -498,6 +498,8 @@
 				this.loadData();
 			},
 			changePerPage: function(){
+				this.pagination.moreTemp=1;
+				this.pagination.current_page=1;
 				this.loadData();	
 			},
 			loadingAnimation: function(type){
