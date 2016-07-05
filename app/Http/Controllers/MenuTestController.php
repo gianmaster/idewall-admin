@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Repositories\MenuRepositoryEloquent;
 use Illuminate\Http\Request;
+use App\Entities\Menu;
 
 use App\Http\Requests;
 
@@ -46,7 +47,9 @@ class MenuTestController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $input = $request->only(['nombre', 'titulo', 'url', 'iconclass', 'cod_padre', 'orden']);
+        $menu = Menu::create($input);
+        return response()->json(array('data' => $menu));
     }
 
     /**

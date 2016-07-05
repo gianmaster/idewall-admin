@@ -18,12 +18,11 @@
 		ready: function(){
 			let self = this;
 			this.$http.get(this.url).then(function(resp){
-				self.data= resp.data.data;
+				self.data = resp.data.data;
 			}, function(err){
 				console.warn(err);
 			});
 		},
-		
 		props:{
 			className: {
 				type: String,
