@@ -78,69 +78,12 @@ module.exports = {
 		return {
 			urlMenu: '/admin_lte/public/api/menu',
 			menu: [
-				{
-					iconClass: 'fa fa-dashboard',
-					name: 'Dashboard',
-					link: '/',
-					children: []
-				},
-				{
-					iconClass: 'fa fa-th-list',
-					name: 'Menu',
-					link: '/menu',
-					children: []
-				},
-				{
-						iconClass: 'fa fa-books',
-						name: 'Materias',
-						link: '/materias',
-						children: [
-							{
-								iconClass: 'fa fa-link',
-								name: 'Crear',
-								link: '/materias/create',
-								children: []
-							},
-							{
-								iconClass: 'fa fa-link',
-								name: 'Modificar',
-								link: '/materias/edit/2',
-								children: []
-							},
-							{
-								iconClass: 'fa fa-link',
-								name: 'Visualizar',
-								link: '/materias/view/54',
-								children: []
-							}
-						]
-					},
-				{
-					iconClass: 'fa fa-calendar',
-					name: 'Usuarios',
-					link: '#',
-					children: [
-					{
-						iconClass: 'fa fa-link',
-						name: 'Listado CRUD',
-						link: '/usuarios',
-						children: []
-					},
-					{
-						iconClass: 'fa fa-link',
-						name: 'Reportes',
-						link: '/sdk',
-						children: []
-					},
-					{
-						iconClass: 'fa fa-link',
-						name: 'Otra version de pagineo',
-						link: '/paginate',
-						children: []
-					}
-					]
-				},
-				
+			{
+				iconClass: 'fa fa-book',
+				name: 'Materias',
+				link: '/materias',
+				children: []
+			}
 			]
 		}
 	}

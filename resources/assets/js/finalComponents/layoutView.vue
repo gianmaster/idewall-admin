@@ -25,11 +25,11 @@
     },
     replace: false,
     components: {
-      'app-header' : require('./layout/header.vue'),
-      'app-menu': require('./layout/menu.vue'),
-      'app-content': require('./layout/content.vue'),
-      'app-control': require('./layout/control.vue'),
-      'app-footer': require('./layout/footer.vue'),
+      'app-header' : require('./new-layout/header.vue'),
+      'app-menu': require('./new-layout/menu.vue'),
+      'app-content': require('./new-layout/content.vue'),
+      'app-control': require('./new-layout/control.vue'),
+      'app-footer': require('./new-layout/footer.vue'),
     }
   }
   
