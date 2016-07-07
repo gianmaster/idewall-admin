@@ -1,175 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-module.exports = { "default": require("core-js/library/fn/object/assign"), __esModule: true };
-},{"core-js/library/fn/object/assign":2}],2:[function(require,module,exports){
-require('../../modules/es6.object.assign');
-module.exports = require('../../modules/$.core').Object.assign;
-},{"../../modules/$.core":5,"../../modules/es6.object.assign":15}],3:[function(require,module,exports){
-module.exports = function(it){
-  if(typeof it != 'function')throw TypeError(it + ' is not a function!');
-  return it;
-};
-},{}],4:[function(require,module,exports){
-var toString = {}.toString;
-
-module.exports = function(it){
-  return toString.call(it).slice(8, -1);
-};
-},{}],5:[function(require,module,exports){
-var core = module.exports = {version: '1.2.6'};
-if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
-},{}],6:[function(require,module,exports){
-// optional / simple context binding
-var aFunction = require('./$.a-function');
-module.exports = function(fn, that, length){
-  aFunction(fn);
-  if(that === undefined)return fn;
-  switch(length){
-    case 1: return function(a){
-      return fn.call(that, a);
-    };
-    case 2: return function(a, b){
-      return fn.call(that, a, b);
-    };
-    case 3: return function(a, b, c){
-      return fn.call(that, a, b, c);
-    };
-  }
-  return function(/* ...args */){
-    return fn.apply(that, arguments);
-  };
-};
-},{"./$.a-function":3}],7:[function(require,module,exports){
-// 7.2.1 RequireObjectCoercible(argument)
-module.exports = function(it){
-  if(it == undefined)throw TypeError("Can't call method on  " + it);
-  return it;
-};
-},{}],8:[function(require,module,exports){
-var global    = require('./$.global')
-  , core      = require('./$.core')
-  , ctx       = require('./$.ctx')
-  , PROTOTYPE = 'prototype';
-
-var $export = function(type, name, source){
-  var IS_FORCED = type & $export.F
-    , IS_GLOBAL = type & $export.G
-    , IS_STATIC = type & $export.S
-    , IS_PROTO  = type & $export.P
-    , IS_BIND   = type & $export.B
-    , IS_WRAP   = type & $export.W
-    , exports   = IS_GLOBAL ? core : core[name] || (core[name] = {})
-    , target    = IS_GLOBAL ? global : IS_STATIC ? global[name] : (global[name] || {})[PROTOTYPE]
-    , key, own, out;
-  if(IS_GLOBAL)source = name;
-  for(key in source){
-    // contains in native
-    own = !IS_FORCED && target && key in target;
-    if(own && key in exports)continue;
-    // export native or passed
-    out = own ? target[key] : source[key];
-    // prevent global pollution for namespaces
-    exports[key] = IS_GLOBAL && typeof target[key] != 'function' ? source[key]
-    // bind timers to global for call from export context
-    : IS_BIND && own ? ctx(out, global)
-    // wrap global constructors for prevent change them in library
-    : IS_WRAP && target[key] == out ? (function(C){
-      var F = function(param){
-        return this instanceof C ? new C(param) : C(param);
-      };
-      F[PROTOTYPE] = C[PROTOTYPE];
-      return F;
-    // make static versions for prototype methods
-    })(out) : IS_PROTO && typeof out == 'function' ? ctx(Function.call, out) : out;
-    if(IS_PROTO)(exports[PROTOTYPE] || (exports[PROTOTYPE] = {}))[key] = out;
-  }
-};
-// type bitmap
-$export.F = 1;  // forced
-$export.G = 2;  // global
-$export.S = 4;  // static
-$export.P = 8;  // proto
-$export.B = 16; // bind
-$export.W = 32; // wrap
-module.exports = $export;
-},{"./$.core":5,"./$.ctx":6,"./$.global":10}],9:[function(require,module,exports){
-module.exports = function(exec){
-  try {
-    return !!exec();
-  } catch(e){
-    return true;
-  }
-};
-},{}],10:[function(require,module,exports){
-// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
-var global = module.exports = typeof window != 'undefined' && window.Math == Math
-  ? window : typeof self != 'undefined' && self.Math == Math ? self : Function('return this')();
-if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
-},{}],11:[function(require,module,exports){
-// fallback for non-array-like ES3 and non-enumerable old V8 strings
-var cof = require('./$.cof');
-module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
-  return cof(it) == 'String' ? it.split('') : Object(it);
-};
-},{"./$.cof":4}],12:[function(require,module,exports){
-var $Object = Object;
-module.exports = {
-  create:     $Object.create,
-  getProto:   $Object.getPrototypeOf,
-  isEnum:     {}.propertyIsEnumerable,
-  getDesc:    $Object.getOwnPropertyDescriptor,
-  setDesc:    $Object.defineProperty,
-  setDescs:   $Object.defineProperties,
-  getKeys:    $Object.keys,
-  getNames:   $Object.getOwnPropertyNames,
-  getSymbols: $Object.getOwnPropertySymbols,
-  each:       [].forEach
-};
-},{}],13:[function(require,module,exports){
-// 19.1.2.1 Object.assign(target, source, ...)
-var $        = require('./$')
-  , toObject = require('./$.to-object')
-  , IObject  = require('./$.iobject');
-
-// should work with symbols and should have deterministic property order (V8 bug)
-module.exports = require('./$.fails')(function(){
-  var a = Object.assign
-    , A = {}
-    , B = {}
-    , S = Symbol()
-    , K = 'abcdefghijklmnopqrst';
-  A[S] = 7;
-  K.split('').forEach(function(k){ B[k] = k; });
-  return a({}, A)[S] != 7 || Object.keys(a({}, B)).join('') != K;
-}) ? function assign(target, source){ // eslint-disable-line no-unused-vars
-  var T     = toObject(target)
-    , $$    = arguments
-    , $$len = $$.length
-    , index = 1
-    , getKeys    = $.getKeys
-    , getSymbols = $.getSymbols
-    , isEnum     = $.isEnum;
-  while($$len > index){
-    var S      = IObject($$[index++])
-      , keys   = getSymbols ? getKeys(S).concat(getSymbols(S)) : getKeys(S)
-      , length = keys.length
-      , j      = 0
-      , key;
-    while(length > j)if(isEnum.call(S, key = keys[j++]))T[key] = S[key];
-  }
-  return T;
-} : Object.assign;
-},{"./$":12,"./$.fails":9,"./$.iobject":11,"./$.to-object":14}],14:[function(require,module,exports){
-// 7.1.13 ToObject(argument)
-var defined = require('./$.defined');
-module.exports = function(it){
-  return Object(defined(it));
-};
-},{"./$.defined":7}],15:[function(require,module,exports){
-// 19.1.3.1 Object.assign(target, source)
-var $export = require('./$.export');
-
-$export($export.S + $export.F, 'Object', {assign: require('./$.object-assign')});
-},{"./$.export":8,"./$.object-assign":13}],16:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -290,7 +119,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],17:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 var Vue // late bind
 var map = Object.create(null)
 var shimmed = false
@@ -590,7 +419,7 @@ function format (id) {
   return id.match(/[^\/]+\.vue$/)[0]
 }
 
-},{}],18:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 'use strict';
 module.exports.install = function (Vue, options) {
   var progressHolder = null;
@@ -650,7 +479,7 @@ module.exports.install = function (Vue, options) {
   };
 };
 
-},{}],19:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 /*!
  * vue-resource v0.7.4
  * https://github.com/vuejs/vue-resource
@@ -2027,7 +1856,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 module.exports = plugin;
-},{}],20:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 /*!
  * vue-router v0.7.13
  * (c) 2016 Evan You
@@ -4737,7 +4566,7 @@ module.exports = plugin;
   return Router;
 
 }));
-},{}],21:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 (function (process,global){
 /*!
  * Vue.js v1.0.25
@@ -14808,7 +14637,7 @@ setTimeout(function () {
 
 module.exports = Vue;
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":16}],22:[function(require,module,exports){
+},{"_process":1}],7:[function(require,module,exports){
 var inserted = exports.cache = {}
 
 exports.insert = function (css) {
@@ -14828,7 +14657,7 @@ exports.insert = function (css) {
   return elem
 }
 
-},{}],23:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n.vuetable th.sortable:hover {\n  color: #2185d0;\n  cursor: pointer;\n}\n.vuetable-actions {\n  width: 15%;\n  padding: 12px 0px;\n  text-align: center;\n}\n.vuetable-pagination {\n  background: #f9fafb !important;\n}\n.vuetable-pagination-info {\n  margin-top: auto;\n  margin-bottom: auto;\n}\n")
 'use strict';
@@ -15337,7 +15166,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-1d5bd7d1", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":21,"vue-hot-reload-api":17,"vueify/lib/insert-css":22}],24:[function(require,module,exports){
+},{"vue":6,"vue-hot-reload-api":2,"vueify/lib/insert-css":7}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15365,7 +15194,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-0c840b4b", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./VuetablePaginationMixin.vue":27,"vue":21,"vue-hot-reload-api":17}],25:[function(require,module,exports){
+},{"./VuetablePaginationMixin.vue":12,"vue":6,"vue-hot-reload-api":2}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15398,7 +15227,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-b07aeada", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./VuetablePaginationMixin.vue":27,"vue":21,"vue-hot-reload-api":17}],26:[function(require,module,exports){
+},{"./VuetablePaginationMixin.vue":12,"vue":6,"vue-hot-reload-api":2}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15466,7 +15295,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-0d846008", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./VuetablePaginationMixin.vue":27,"vue":21,"vue-hot-reload-api":17}],27:[function(require,module,exports){
+},{"./VuetablePaginationMixin.vue":12,"vue":6,"vue-hot-reload-api":2}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15586,7 +15415,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-766954b4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":21,"vue-hot-reload-api":17}],28:[function(require,module,exports){
+},{"vue":6,"vue-hot-reload-api":2}],13:[function(require,module,exports){
 'use strict';
 
 var _vue = require('vue');
@@ -15635,27 +15464,31 @@ const router = new VueRouter({
 })
 */
 
+var subrutas = require('./finalComponents/app/materias/index.js');
+console.log(subrutas);
+
 var router = new _vueRouter2.default();
 
 router.map({
   '*': {
-    component: require('./finalComponents/layout/notfound.vue')
-  },
-  '/': {
-    component: require('./components2/dashboard.vue')
-  },
-  '/usuarios': {
-    component: require('./finalComponents/app/usuariosView.vue')
-  },
-  '/menu': {
-    component: require('./finalComponents/app/testMantenedorMenu.vue')
-  },
-  '/sdk': {
-    component: require('./finalComponents/app/testVueTable.vue')
-  },
-  '/paginate': {
-    component: require('./finalComponents/app/testPagination.vue')
-  }
+    component: require('./finalComponents/reusable/notFound.vue')
+  }, /*
+     '/': {
+     component: require('./components2/dashboard.vue')
+     },
+     '/usuarios': {
+     component: require('./finalComponents/app/usuariosView.vue')
+     },
+     '/menu': {
+     component: require('./finalComponents/app/testMantenedorMenu.vue')
+     },
+     '/sdk': {
+     component: require('./finalComponents/app/testVueTable.vue')
+     },
+     '/paginate': {
+     component: require('./finalComponents/app/testPagination.vue')
+     },*/
+  '/materias': subrutas
 
 });
 
@@ -15667,34 +15500,7 @@ router.start(App, '#app');
 //solo para hacer debug
 window.router = router;
 
-},{"./components2/dashboard.vue":29,"./config/externalComponents":30,"./finalComponents/app/testMantenedorMenu.vue":33,"./finalComponents/app/testPagination.vue":34,"./finalComponents/app/testVueTable.vue":35,"./finalComponents/app/usuariosView.vue":36,"./finalComponents/layout/notfound.vue":43,"./finalComponents/layoutView.vue":37,"vue":21,"vue-progressbar":18,"vue-resource":19,"vue-router":20}],29:[function(require,module,exports){
-"use strict";
-
-module.exports = {
-  name: "Dashboard",
-  data: function data() {
-    return {};
-  },
-  route: {
-    activate: function activate(t) {
-      this.$parent.$parent.$data.title = 'Dashboard';
-      t.next();
-    }
-  }
-};
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"row\">\n  <div class=\"col-sm-12 col-md-12\">\n    <h3>Welcome !!!</h3>\n    <p>\n      Lorem ipsum Ad non ut aliquip Duis minim sit ex esse eiusmod anim minim \n      esse qui mollit elit do pariatur deserunt eu eiusmod tempor tempor sunt \n      fugiat ad dolore reprehenderit do labore ex.\n    </p>\n  </div>\n</div>\n"
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  if (!module.hot.data) {
-    hotAPI.createRecord("_v-6f8b03e0", module.exports)
-  } else {
-    hotAPI.update("_v-6f8b03e0", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
-},{"vue":21,"vue-hot-reload-api":17}],30:[function(require,module,exports){
+},{"./config/externalComponents":14,"./finalComponents/app/materias/index.js":18,"./finalComponents/layoutView.vue":22,"./finalComponents/reusable/notFound.vue":31,"vue":6,"vue-progressbar":3,"vue-resource":4,"vue-router":5}],14:[function(require,module,exports){
 'use strict';
 
 var _Vuetable = require('vuetable/src/components/Vuetable.vue');
@@ -15726,7 +15532,7 @@ module.exports = function (Vue) {
   Vue.component('vuetable-pagination-bootstrap', _VuetablePaginationBootstrap2.default);
 };
 
-},{"vuetable/src/components/Vuetable.vue":23,"vuetable/src/components/VuetablePagination.vue":24,"vuetable/src/components/VuetablePaginationBootstrap.vue":25,"vuetable/src/components/VuetablePaginationDropdown.vue":26}],31:[function(require,module,exports){
+},{"vuetable/src/components/Vuetable.vue":8,"vuetable/src/components/VuetablePagination.vue":9,"vuetable/src/components/VuetablePaginationBootstrap.vue":10,"vuetable/src/components/VuetablePaginationDropdown.vue":11}],15:[function(require,module,exports){
 'use strict';
 
 module.exports = [{
@@ -15751,431 +15557,138 @@ module.exports = [{
   }]
 }];
 
-},{}],32:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<h3>Crear</h3>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus nulla veniam animi sequi dolorem quae repellat incidunt fuga. Deserunt commodi repellat maiores voluptate, non ullam placeat accusantium quo culpa temporibus.</p>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-5510c697", module.exports)
+  } else {
+    hotAPI.update("_v-5510c697", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":6,"vue-hot-reload-api":2}],17:[function(require,module,exports){
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<h3>Modificar</h3>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus nulla veniam animi sequi dolorem quae repellat incidunt fuga. Deserunt commodi repellat maiores voluptate, non ullam placeat accusantium quo culpa temporibus.</p>\n<pre>{{$route.params.model_id|json}}</pre>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-41e980ee", module.exports)
+  } else {
+    hotAPI.update("_v-41e980ee", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":6,"vue-hot-reload-api":2}],18:[function(require,module,exports){
+'use strict';
+
+var _index = require('./index.vue');
+
+var _index2 = _interopRequireDefault(_index);
+
+var _listView = require('./list-view.vue');
+
+var _listView2 = _interopRequireDefault(_listView);
+
+var _createView = require('./create-view.vue');
+
+var _createView2 = _interopRequireDefault(_createView);
+
+var _editView = require('./edit-view.vue');
+
+var _editView2 = _interopRequireDefault(_editView);
+
+var _readView = require('./read-view.vue');
+
+var _readView2 = _interopRequireDefault(_readView);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+module.exports = {
+   component: _index2.default,
+   subRoutes: {
+      '/': {
+         component: _listView2.default,
+         name: 'Listar'
+      },
+      '/create': {
+         name: 'Crear',
+         component: _createView2.default
+      },
+      '/edit/:model_id': {
+         name: 'Edición',
+         component: _editView2.default
+      },
+      '/view/:model_id': {
+         name: 'Ver',
+         component: _readView2.default
+      }
+   }
+};
+
+},{"./create-view.vue":16,"./edit-view.vue":17,"./index.vue":19,"./list-view.vue":20,"./read-view.vue":21}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _selectList = require('../../reusable/select-list.vue');
+var _contentHeader = require('../../new-layout/content-header.vue');
 
-var _selectList2 = _interopRequireDefault(_selectList);
+var _contentHeader2 = _interopRequireDefault(_contentHeader);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
+	name: 'content-materias',
 	components: {
-		'select-list': _selectList2.default
+		'content-header': _contentHeader2.default
 	},
 	data: function data() {
 		return {
-			newModel: {
-				cod_padre: '',
-				mode: ''
-			}
+			path: ['Materias']
 		};
-	},
-
-	methods: {
-		addMenu: function addMenu() {
-			var _this = this;
-			this.$http.post('api/menu', this.newModel).then(function (resp) {
-				console.log(resp);
-				alert('Se agrego el menu correctamente');
-				_this.$parent.mode = _this.mode = 'listar';
-			}, function (err) {
-				console.warn(err);
-			});
-		}
 	}
-
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"row\">\n\t<form action=\"\" @submit.prevent=\"addMenu\">\n\t\t<div class=\"col-sm-6 col-xs-12\">\n\t\t\t<label>Menu padre</label>\n\t\t\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"newModel.cod_padre\" value-key=\"id\" label-key=\"name\" url=\"api/menu\" select-label=\"Seleccione...\"></select-list>\n\t\t</div>\n\n\t\t<div class=\"col-sm-6 col-xs-12\">\n\t\t\t<label>Titulo</label>\n\t\t\t<input type=\"text\" class=\"form-control\" v-model=\"newModel.titulo\" minlength=\"3\"> \n\t\t\t<input type=\"hidden\" class=\"form-control\" :value=\"newModel.titulo\" v-model=\"newModel.nombre\"> \n\t\t</div>\n\n\t\t<div class=\"col-sm-6 col-xs-12\">\n\t\t\t<label>Font-Awesome - Icono</label>\n\t\t\t<input type=\"text\" class=\"form-control\" v-model=\"newModel.iconclass\" minlength=\"3\"> \n\t\t</div>\n\n\t\t<div class=\"col-sm-6 col-xs-12\">\n\t\t\t<label>Url</label> <small>(Opcional)</small>\n\t\t\t<input type=\"text\" class=\"form-control\" v-model=\"newModel.url\" minlength=\"3\"> \n\t\t</div>\n\n\t\t<div class=\"col-sm-6 col-xs-12\">\n\t\t\t<label>orden</label>\n\t\t\t<input type=\"number\" class=\"form-control\" v-model=\"newModel.orden\" min=\"0\"> \n\t\t</div>\n\n\t\t<div class=\"clearfix\"></div>\n\n\t\t<div class=\"col-xs-12\">\n\t\t\t<div class=\"content\">\n\t\t\t\t<button class=\"btn btn-success btn-flat\" type=\"submit\">Guardar</button>\t\t\t\t\n\t\t\t\t<button class=\"btn btn-default btn-flat\" @click.prevent=\"mode='listar';\" type=\"reset\">Volver</button>\n\t\t\t</div>\n\t\t\t\n\t\t</div>\n\n\t</form>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<!-- Main content -->\n\t\n\t<content-header title=\"Materias\" :list-path=\"path\"></content-header>\n\n\t<section class=\"content\">\n\t\t<!--<router-view class=\"animated\" transition=\"fade\" transition-mode=\"out-in\" keep-alive></router-view>-->\n\t\t<router-view></router-view>\n\n\t</section>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-385bea85", module.exports)
+    hotAPI.createRecord("_v-11a0ab53", module.exports)
   } else {
-    hotAPI.update("_v-385bea85", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-11a0ab53", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/select-list.vue":51,"vue":21,"vue-hot-reload-api":17}],33:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _crearEditar = require('./mantenedor-menu/crear-editar.vue');
-
-var _crearEditar2 = _interopRequireDefault(_crearEditar);
-
-var _loading = require('../reusable/loading.vue');
-
-var _loading2 = _interopRequireDefault(_loading);
-
-var _menuManagement = require('../reusable/menuManagement.vue');
-
-var _menuManagement2 = _interopRequireDefault(_menuManagement);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-	data: function data() {
-		return {
-			datos: [],
-			loading: false,
-			mode: 'listar'
-		};
-	},
-
-	ready: function ready() {
-		this.loadData();
-	},
-	methods: {
-		loadData: function loadData() {
-			var self = this;
-			self.loading = true;
-			setTimeout(function () {
-				self.loading = false;
-				console.log('data cargada xD');
-			}, 1200);
-		},
-
-		toggleMode: function toggleMode(mode) {
-			this.mode = this.$parent.description = mode;
-		}
-	},
-	components: {
-		'app-loading': _loading2.default,
-		'app-menu-management': _menuManagement2.default,
-		'crear-editar': _crearEditar2.default
-	},
-	route: {
-		data: function data(transition) {
-			this.$parent.$parent.$data.title = 'Menu';
-			this.toggleMode(this.mode);
-			transition.next();
-		}
-	}
-};
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div v-if=\"loading\">\n\t<app-loading></app-loading>\n</div>\n\n<div v-else=\"\" class=\"row\">\n\t\n\t<div class=\"col-xs-12\">\n\n\t\t<template v-if=\"mode=='listar'\">\n\t\t\t<app-menu-management :caption=\"title\"></app-menu-management>\n\t\t\t<button class=\"btn btn-info btn-sm btn-flat\" @click.prevent=\"toggleMode('crear')\"><i class=\"fa fa-plus\"></i> Agregar Nuevo</button>\n\t\t</template>\n\n\t\t<template v-if=\"mode=='crear'\">\n\t\t\t<crear-editar></crear-editar>\n\t\t</template>\n\n\t</div>\n\n</div>\n\n"
+},{"../../new-layout/content-header.vue":23,"vue":6,"vue-hot-reload-api":2}],20:[function(require,module,exports){
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<h3>Listar</h3>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam est reprehenderit fugiat cumque alias, sed fugit ab natus eum maxime perferendis dolorum facere mollitia in error. Quia minima laboriosam, blanditiis.</p>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-008aa425", module.exports)
+    hotAPI.createRecord("_v-5c07a375", module.exports)
   } else {
-    hotAPI.update("_v-008aa425", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-5c07a375", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../reusable/loading.vue":47,"../reusable/menuManagement.vue":49,"./mantenedor-menu/crear-editar.vue":32,"vue":21,"vue-hot-reload-api":17}],34:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _loading = require('../reusable/loading.vue');
-
-var _loading2 = _interopRequireDefault(_loading);
-
-var _coolPagination = require('../reusable/cool-pagination.vue');
-
-var _coolPagination2 = _interopRequireDefault(_coolPagination);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-	data: function data() {
-		return {
-			datos: [],
-			loading: false,
-			url: '/admin_lte/public/api/users',
-			fullPaginate: true
-		};
-	},
-
-	components: {
-		'cool-pagination': _coolPagination2.default,
-		'app-loading': _loading2.default
-	}
-};
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n\n\n<div class=\"row\">\n\t<div v-if=\"loading===true\" style=\"min-height: 200px;\">\n\t\t<app-loading></app-loading>\n\t</div>\n\t<div v-else=\"\" class=\"col-xs-12\">\n\t\t<ul class=\"list-group\">\n\t\t\t<li class=\"list-group-item\" v-for=\"item in datos\">{{item.name}} | <a href=\"javascript:;\">{{item.email}}</a></li>\n\t\t</ul>\n\t</div>\n</div>\n<div class=\"row\">\n\t<cool-pagination :data.sync=\"datos\" params=\"&amp;per_page=5\" :is-loading.sync=\"loading\" :full-paginate=\"fullPaginate\" :url=\"url\"></cool-pagination>\t\n</div>\n\n"
+},{"vue":6,"vue-hot-reload-api":2}],21:[function(require,module,exports){
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<h3>Visualización</h3>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem voluptate laborum, a accusamus. Cum aperiam dignissimos iste, placeat facere repudiandae vel, doloribus voluptatibus perferendis esse illo, dicta. Inventore, possimus, illum!</p>\n<pre>{{$route.params.model_id|json}}</pre>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-138cd47b", module.exports)
+    hotAPI.createRecord("_v-17a7917d", module.exports)
   } else {
-    hotAPI.update("_v-138cd47b", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-17a7917d", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../reusable/cool-pagination.vue":44,"../reusable/loading.vue":47,"vue":21,"vue-hot-reload-api":17}],35:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _loading = require('../reusable/loading.vue');
-
-var _loading2 = _interopRequireDefault(_loading);
-
-var _coolTable = require('../reusable/cool-table.vue');
-
-var _coolTable2 = _interopRequireDefault(_coolTable);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-	data: function data() {
-		return {
-			datos: [],
-			loading: false
-		};
-	},
-
-	components: {
-		'cool-table': _coolTable2.default,
-		'app-loading': _loading2.default
-	}
-};
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div v-if=\"loading\">\n\t<app-loading></app-loading>\n</div>\n\n<div v-else=\"\">\n\t<cool-table :data=\"datos\"></cool-table>\n</div>\n\n"
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  if (!module.hot.data) {
-    hotAPI.createRecord("_v-50c4ebee", module.exports)
-  } else {
-    hotAPI.update("_v-50c4ebee", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
-},{"../reusable/cool-table.vue":45,"../reusable/loading.vue":47,"vue":21,"vue-hot-reload-api":17}],36:[function(require,module,exports){
-var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n\n")
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _pagination = require('../reusable/pagination.vue');
-
-var _pagination2 = _interopRequireDefault(_pagination);
-
-var _loading = require('../reusable/loading.vue');
-
-var _loading2 = _interopRequireDefault(_loading);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var BASE_URL = 'api';
-
-exports.default = {
-	name: 'Usuarios',
-	components: {
-		'app-loading': _loading2.default,
-		'vuetable-pagination-bootstrap': _pagination2.default
-	},
-	data: function data() {
-		return {
-			newModel: {},
-			models: [],
-			mode: 'listar',
-			loading: false,
-			columns: [{
-				name: 'name',
-				title: 'Nombre Completo'
-			}, //sortField: 'name'
-			{
-				name: 'email',
-				title: 'Correo'
-			}, //sortField: 'email'
-			{
-				name: 'created_at',
-				title: 'Fecha creación',
-				callback: "dateToChar|%Y-%m-%d %T"
-				//sortField: 'created_at'
-			}, {
-				name: 'updated_at',
-				title: 'Fecha modificación',
-				callback: "dateToChar|%Y-%m-%d %T"
-				//sortField: 'updated_at'
-			}],
-			paginationInfoTemplate: 'Montrar: {from} de {to} de {total} registros',
-			paginationConfig: {
-				wrapperClass: 'pagination',
-				icons: { first: '', prev: '', next: '', last: '' },
-				activeClass: 'active',
-				linkClass: 'btn btn-default',
-				pageClass: 'btn btn-default'
-			}
-		};
-	},
-
-	route: {
-		data: function data(transition) {
-			var self = this;
-			self.$parent.$parent.$data.title = 'Usuarios';
-			transition.next();
-			//self.$parent.$parent.$data.title = 'Usuarios';
-			//	transition.next();
-			/*
-   setTimeout(function () {
-   	self.$parent.$parent.$data.title = 'Usuarios';
-   	transition.next();
-   }, 800);
-   */
-		}
-	},
-	ready: function ready() {
-		this.loading = true;
-		this.listar();
-		this.toggleMode('listar');
-		this.$parent.listPath = ['Usuarios'];
-	},
-
-	methods: {
-		crear: function crear(model) {
-			var _this = this;
-
-			var self = this;
-			self.loading = true;
-			this.$http.post(BASE_URL + '/users', this.newModel).then(function (resp) {
-				Lobibox.notify('success', {
-					msg: 'Se creo el usuario correctamente!',
-					sound: false
-				});
-				self.listar();
-				_this.toggleMode('listar');
-			}, function (err) {
-				self.loading = false;
-				console.warn(err);
-				Lobibox.notify('error', {
-					msg: 'Se presento un error al querer realizar esta acción',
-					sound: false
-				});
-			});
-		},
-		modificar: function modificar(_id) {
-			var _this2 = this;
-
-			var self = this;
-			self.loading = true;
-			this.$http.put(BASE_URL + '/users/' + _id, this.newModel).then(function (resp) {
-				Lobibox.notify('success', {
-					msg: 'Se creo el usuario correctamente!',
-					sound: false
-				});
-				self.listar();
-				_this2.toggleMode('listar');
-				_this2.newModel = {};
-			}, function (err) {
-				console.warn(err);
-				self.loading = false;
-				Lobibox.notify('error', {
-					msg: 'Se presento un error al querer realizar esta acción',
-					sound: false
-				});
-			});
-		},
-		eveDelete: function eveDelete(_id) {
-			var _this3 = this;
-
-			if (confirm('¿Estás seguro?')) {
-				this.loading = true;
-				var self = this;
-				this.$http.delete(BASE_URL + '/users/' + _id).then(function (resp) {
-					Lobibox.notify('success', {
-						msg: 'Se eliminó el usuario correctamente!',
-						sound: false
-					});
-					self.listar();
-					_this3.toggleMode('listar');
-				}, function (err) {
-					console.warn(err);
-					Lobibox.notify('error', {
-						msg: 'Se presento un error al querer realizar esta acción',
-						sound: false
-					});
-				});
-			}
-		},
-		eveEdit: function eveEdit(_id) {
-			this.loading = true;
-			this.ver(_id);
-			this.toggleMode('editar');
-		},
-		eveView: function eveView(_id) {
-			this.loading = true;
-			this.ver(_id);
-			this.toggleMode('visualizar');
-		},
-		listar: function listar() {
-			var _this4 = this;
-
-			this.$http.get(BASE_URL + '/users').then(function (resp) {
-				_this4.models = resp.data.data;
-				_this4.loading = false;
-			}, function (err) {
-				console.warn(err);
-				_this4.loading = false;
-			});
-		},
-		ver: function ver(_id) {
-			var _this5 = this;
-
-			this.$http.get(BASE_URL + '/users/' + _id).then(function (resp) {
-				_this5.newModel = resp.data.data;
-				_this5.loading = false;
-			}, function (err) {
-				console.warn(err);
-				_this5.loading = false;
-			});
-		},
-		cancel: function cancel() {
-			this.newModel = {};
-			this.toggleMode('listar');
-		},
-
-		toggleMode: function toggleMode(mode) {
-			this.mode = this.$parent.description = mode;
-		},
-
-		dateToChar: function dateToChar(date, format) {
-			return date ? this.$options.filters.date(date, format) : 'Vacio';
-		}
-	}
-
-};
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div v-if=\"loading\">\n\t<app-loading></app-loading>\n</div>\n\n<div v-else=\"\">\n\t<!-- Modo listar -->\n\n\t<div class=\"row\" v-show=\"mode == 'listar'\">\n\t\t<div class=\"col-xs-12\">\n\t\t\t<button class=\"btn btn-primary btn-flat\" @click.prevent=\"toggleMode('crear')\"><i class=\"fa fa-plus\"></i> Nuevo</button>\n\t\t</div>\t\n\n\t\t<div class=\"col-xs-12\">\n\t\t\t<table class=\"table table-responsive\">\n\t\t\t\t<thead>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<th class=\"text-center\">Nombre</th>\n\t\t\t\t\t\t<th class=\"text-center\">Correo</th>\n\t\t\t\t\t\t<th class=\"text-center\">Acciones</th>\n\t\t\t\t\t</tr>\n\t\t\t\t</thead>\n\t\t\t\t<tbody>\n\t\t\t\t\t<tr v-for=\"model in models\">\n\t\t\t\t\t\t<td>{{model.name}}</td>\n\t\t\t\t\t\t<td>{{model.email}}</td>\n\n\t\t\t\t\t\t<td class=\"text-center\">\n\n\t\t\t\t\t\t\t<div class=\"btn-group\">\n\n\t\t\t\t\t\t\t\t<a class=\"btn btn-default btn-xs\" href=\"\" @click.prevent=\"eveView(model.id)\"><i class=\"fa fa-eye\" data-toggle=\"tooltip\" title=\"Ver este usuario a detalle\" style=\"font-size: 1.2em;\"></i></a>\n\n\t\t\t\t\t\t\t\t<a class=\"btn btn-default btn-xs\" href=\"\" @click.prevent=\"eveEdit(model.id)\"><i class=\"fa fa-edit\" data-toggle=\"tooltip\" title=\"Editar este usuario\" style=\"font-size: 1.2em;\"></i></a>\n\n\t\t\t\t\t\t\t\t<a class=\"btn btn-danger btn-xs\" href=\"\" @click.prevent=\"eveDelete(model.id)\"><i class=\"fa fa-trash\" data-toggle=\"tooltip\" title=\"Eliminar este usuario\" style=\"font-size: 1.2em;\"></i></a>\n\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</td>\n\n\t\t\t\t\t</tr>\n\t\t\t\t</tbody>\n\t\t\t</table>\n\t\t</div>\n\t</div>\n\n\t<!-- Modo creacion / edicion -->\n\t<div class=\"row\" v-show=\"mode == 'crear' || mode == 'editar'\">\n\t\t<div class=\"col-sm-6 col-xs-12\">\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label for=\"nombre\">Nombre</label>\n\t\t\t\t<input type=\"text\" id=\"nombre\" v-model=\"newModel.name\" class=\"form-control\">\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"col-sm-6 col-xs-12\">\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label for=\"correo\">Email</label>\n\t\t\t\t<input type=\"email\" id=\"correo\" v-model=\"newModel.email\" class=\"form-control\">\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"col-sm-6 col-xs-12\" v-if=\"mode == 'crear'\">\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label for=\"correo\">Contraseña</label>\n\t\t\t\t<input type=\"password\" id=\"pass\" v-model=\"newModel.password\" class=\"form-control\">\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"col-xs-12\">\n\t\t\t<button v-if=\"mode == 'crear'\" class=\"btn btn-success btn-flat\" @click.prevent=\"crear(newModel)\"><i class=\"fa fa-save\"></i> Guardar</button>\n\t\t\t<button v-if=\"mode == 'editar'\" class=\"btn btn-success btn-flat\" @click.prevent=\"modificar(newModel.id)\"><i class=\"fa fa-save\"></i> Guardar Cambios</button>\n\t\t\t<button class=\"btn btn-default btn-flat\" @click.prevent=\"cancel\">Cancelar</button>\n\t\t</div>\n\t</div>\n\n\t<!-- Modo lectura -->\n\t<div class=\"row\" v-show=\"mode == 'visualizar'\">\n\t\t<div class=\"col-xs-12\">\n\t\t\t<label for=\"name\">Nombre</label>\n\t\t\t<p>{{newModel.name}}</p>\n\t\t</div>\n\t\t<div class=\"col-xs-12\">\n\t\t\t<label for=\"email\">Correo</label>\n\t\t\t<p>{{newModel.email}}</p>\n\t\t</div>\n\t\t<div class=\"col-xs-12\">\n\t\t\t<button class=\"btn btn-default btn-flat\" @click.prevent=\"cancel\"><i class=\"fa fa-arrow-circle-left\"></i> Regresar</button>\n\t\t</div>\n\t</div>\n</div>\n\n"
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  module.hot.dispose(function () {
-    __vueify_insert__.cache["\n\n"] = false
-    document.head.removeChild(__vueify_style__)
-  })
-  if (!module.hot.data) {
-    hotAPI.createRecord("_v-008d668e", module.exports)
-  } else {
-    hotAPI.update("_v-008d668e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
-},{"../reusable/loading.vue":47,"../reusable/pagination.vue":50,"vue":21,"vue-hot-reload-api":17,"vueify/lib/insert-css":22}],37:[function(require,module,exports){
+},{"vue":6,"vue-hot-reload-api":2}],22:[function(require,module,exports){
 'use strict';
 
 var menu = require('../config/menus.js');
@@ -16186,17 +15699,17 @@ module.exports = {
     return {
       title: null,
       login: true,
-      body_class: "hold-transition skin-blue sidebar-mini fixed",
+      body_class: "skin-blue sidebar-mini fixed",
       menus: menu || [] //esto deberia ser cargado una vez logoneado
     };
   },
   replace: false,
   components: {
-    'app-header': require('./layout/header.vue'),
-    'app-menu': require('./layout/menu.vue'),
-    'app-content': require('./layout/content.vue'),
-    'app-control': require('./layout/control.vue'),
-    'app-footer': require('./layout/footer.vue')
+    'app-header': require('./new-layout/header.vue'),
+    'app-menu': require('./new-layout/menu.vue'),
+    'app-content': require('./new-layout/content.vue'),
+    'app-control': require('./new-layout/control.vue'),
+    'app-footer': require('./new-layout/footer.vue')
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
@@ -16211,40 +15724,58 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-3e7b0efa", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../config/menus.js":31,"./layout/content.vue":38,"./layout/control.vue":39,"./layout/footer.vue":40,"./layout/header.vue":41,"./layout/menu.vue":42,"vue":21,"vue-hot-reload-api":17}],38:[function(require,module,exports){
-'use strict';
+},{"../config/menus.js":15,"./new-layout/content.vue":24,"./new-layout/control.vue":25,"./new-layout/footer.vue":26,"./new-layout/header.vue":27,"./new-layout/menu.vue":28,"vue":6,"vue-hot-reload-api":2}],23:[function(require,module,exports){
+"use strict";
 
-module.exports = {
-	name: 'Content',
-
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.default = {
 	props: {
-		title: String,
-		description: {
+		title: {
 			type: String,
-			default: ''
+			required: true
 		},
 		listPath: {
 			type: Array,
+			required: false,
 			default: function _default() {
 				return [];
 			}
 		}
 	}
-
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<!-- Content Wrapper. Contains page content -->\n<div v-else=\"\" class=\"content-wrapper\">\n\t<!-- Content Header (Page header) -->\n\t<section class=\"content-header\">\n\t\t<h1>\n\t\t\t{{title}}\n\t\t\t<small>{{description}}</small>\n\t\t</h1>\n\t\t<ol class=\"breadcrumb\">\n\t\t\t<li><a href=\"#\"><i class=\"fa fa-dashboard\"></i> Home</a></li>\n\t\t\t<li v-show=\"listPath.length > 0\" v-for=\"item in listPath\" :class=\"{'active': listPath.length-1 == $index}\" track-by=\"$index\">{{item}}</li>\n\t\t</ol>\n\t</section>\n\n\t<!-- Main content -->\n\t<section class=\"content\">\n\n\t\t<!--<router-view class=\"animated\" transition=\"fade\" transition-mode=\"out-in\" keep-alive></router-view>-->\n\t\t<router-view></router-view>\n\n\t</section>\n\t<!-- /.content -->\n</div>\n<!-- /.content-wrapper -->\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<section class=\"content-header\">\n\t<h1>\n\t\t{{title}}\n\t\t<small>{{$route.name}}</small>\n\t</h1>\n\t<ol class=\"breadcrumb\">\n\t\t<li><a href=\"#\"><i class=\"fa fa-dashboard\"></i> Dashboard</a></li>\n\t\t<li v-show=\"listPath.length > 0\" v-for=\"item in listPath\" :class=\"{'active': listPath.length-1 == $index}\" track-by=\"$index\">{{item}}</li>\n\t</ol>\n</section>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-30812f5b", module.exports)
+    hotAPI.createRecord("_v-154a0082", module.exports)
   } else {
-    hotAPI.update("_v-30812f5b", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-154a0082", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":21,"vue-hot-reload-api":17}],39:[function(require,module,exports){
+},{"vue":6,"vue-hot-reload-api":2}],24:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+	name: 'Content'
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<!-- Content Wrapper. Contains page content -->\n<div v-else=\"\" class=\"content-wrapper\">\n\t<router-view></router-view>\n\t<!-- /.content -->\n</div>\n<!-- /.content-wrapper -->\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-3f6872a8", module.exports)
+  } else {
+    hotAPI.update("_v-3f6872a8", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":6,"vue-hot-reload-api":2}],25:[function(require,module,exports){
 "use strict";
 if (module.exports.__esModule) module.exports = module.exports.default
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t<!-- Control Sidebar -->\n\t<aside class=\"control-sidebar control-sidebar-dark\">\n\t\t<!-- Create the tabs -->\n\t\t<ul class=\"nav nav-tabs nav-justified control-sidebar-tabs\">\n\t\t\t<li class=\"active\"><a href=\"#control-sidebar-home-tab\" data-toggle=\"tab\"><i class=\"fa fa-home\"></i></a></li>\n\t\t\t<li><a href=\"#control-sidebar-settings-tab\" data-toggle=\"tab\"><i class=\"fa fa-gears\"></i></a></li>\n\t\t</ul>\n\t\t<!-- Tab panes -->\n\t\t<div class=\"tab-content\">\n\t\t\t<!-- Home tab content -->\n\t\t\t<div class=\"tab-pane active\" id=\"control-sidebar-home-tab\">\n\t\t\t\t<h3 class=\"control-sidebar-heading\">Actividad reciente</h3>\n\t\t\t\t<ul class=\"control-sidebar-menu\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<a href=\"javascript::;\">\n\t\t\t\t\t\t\t<i class=\"menu-icon fa fa-birthday-cake bg-red\"></i>\n\t\t\t\t\t\t\t<div class=\"menu-info\">\n\t\t\t\t\t\t\t\t<h4 class=\"control-sidebar-subheading\">Cumpleaños</h4>\n\t\t\t\t\t\t\t\t<p>01-07-1990</p>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</li>\n\t\t\t\t</ul><!-- /.control-sidebar-menu -->\n\n\t\t\t\t<h3 class=\"control-sidebar-heading\">Progreso</h3>\n\t\t\t\t<ul class=\"control-sidebar-menu\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<a href=\"javascript::;\">\n\t\t\t\t\t\t\t<h4 class=\"control-sidebar-subheading\">\n\t\t\t\t\t\t\t\tCustom Template\n\t\t\t\t\t\t\t\t<span class=\"label label-danger pull-right\">70%</span>\n\t\t\t\t\t\t\t</h4>\n\t\t\t\t\t\t\t<div class=\"progress progress-xxs\">\n\t\t\t\t\t\t\t\t<div class=\"progress-bar progress-bar-danger\" style=\"width: 70%\"></div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</li>\n\t\t\t\t</ul><!-- /.control-sidebar-menu -->\n\n\t\t\t</div><!-- /.tab-pane -->\n\t\t\t<!-- Stats tab content -->\n\t\t\t<div class=\"tab-pane\" id=\"control-sidebar-stats-tab\">Status</div><!-- /.tab-pane -->\n\t\t\t<!-- Settings tab content -->\n\t\t\t<div class=\"tab-pane\" id=\"control-sidebar-settings-tab\">\n\t\t\t\t<form method=\"post\">\n\t\t\t\t\t<h3 class=\"control-sidebar-heading\">Ajustes Generales</h3>\n\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t<label class=\"control-sidebar-subheading\">\n\t\t\t\t\t\t\tPanel de reporte\n\t\t\t\t\t\t\t<input type=\"checkbox\" class=\"pull-right\">\n\t\t\t\t\t\t</label>\n\t\t\t\t\t\t<p>\n\t\t\t\t\t\t\tAjustes de información\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div><!-- /.form-group -->\n\t\t\t\t</form>\n\t\t\t</div><!-- /.tab-pane -->\n\t\t</div>\n</aside><!-- /.control-sidebar\n\n<!-- Add the sidebar's background. This div must be placed\n\timmediately after the control sidebar -->\n\t<div class=\"control-sidebar-bg\"></div>\n"
@@ -16253,12 +15784,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-3d136382", module.exports)
+    hotAPI.createRecord("_v-1f44dce8", module.exports)
   } else {
-    hotAPI.update("_v-3d136382", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-1f44dce8", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":21,"vue-hot-reload-api":17}],40:[function(require,module,exports){
+},{"vue":6,"vue-hot-reload-api":2}],26:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -16304,12 +15835,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-0c9934a9", module.exports)
+    hotAPI.createRecord("_v-59745888", module.exports)
   } else {
-    hotAPI.update("_v-0c9934a9", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-59745888", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":21,"vue-hot-reload-api":17}],41:[function(require,module,exports){
+},{"vue":6,"vue-hot-reload-api":2}],27:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -16318,7 +15849,7 @@ module.exports = {
     username: {
       type: String,
       required: false,
-      default: "Root User"
+      default: "Giancarlos Cercado"
     },
     notifications: {
       required: false,
@@ -16367,25 +15898,32 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  \n  <!-- Main Header -->\n<header class=\"main-header\">\n\n    <!-- Logo -->\n    <a href=\"#\" class=\"logo\">\n        <!-- mini logo for sidebar mini 50x50 pixels -->\n        <span class=\"logo-mini\"><b>{{shortLogo[0]}}</b>{{shortLogo[1]}}</span>\n        <!-- logo for regular state and mobile devices -->\n        <span class=\"logo-lg\"><b>{{largeLogo[0]}}</b>{{largeLogo[1]}}</span>\n    </a>\n\n    <!-- Header Navbar -->\n    <nav class=\"navbar navbar-static-top\" role=\"navigation\">\n        <!-- Sidebar toggle button-->\n        <a href=\"#\" class=\"sidebar-toggle\" data-toggle=\"offcanvas\" role=\"button\">\n            <span class=\"sr-only\">no aparece, solo lectura</span>\n        </a>\n        <!-- Navbar Right Menu -->\n        <div class=\"navbar-custom-menu\">\n            <ul class=\"nav navbar-nav\">\n                <!-- Messages: style can be found in dropdown.less-->\n                <li class=\"dropdown messages-menu\" v-if=\"messages.length>0\">\n                    <!-- Menu toggle button -->\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <i class=\"fa fa-envelope-o\"></i>\n                        <span class=\"label label-success\">4</span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <li class=\"header\">Mensajes</li>\n                        <li>\n                            <!-- inner menu: contains the messages -->\n                            <ul class=\"menu\">\n                                <li><!-- start message -->\n                                    <a href=\"#\">\n                                        <div class=\"pull-left\">\n                                            <!-- User Image -->\n                                            <img src=\"img/user2-160x160.jpg\" class=\"img-circle\" alt=\"User Image\">\n                                        </div>\n                                        <!-- Message title and timestamp -->\n                                        <h4>\n                                            Mensajes\n                                            <small><i class=\"fa fa-clock-o\"></i> 5 mins</small>\n                                        </h4>\n                                        <!-- The message -->\n                                        <p>Estos son los mensajes</p>\n                                    </a>\n                                </li><!-- end message -->\n                            </ul><!-- /.menu -->\n                        </li>\n                        <li class=\"footer\"><a href=\"#\">Ver todos los mensajes</a></li>\n                    </ul>\n                </li><!-- /.messages-menu -->\n\n                <!-- Notifications Menu -->\n                <li class=\"dropdown notifications-menu\" v-if=\"notifications.length>0\">\n                    <!-- Menu toggle button -->\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <i class=\"fa fa-bell-o\"></i>\n                        <span class=\"label label-warning\">10</span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <li class=\"header\">Notificaciones</li>\n                        <li>\n                            <!-- Inner Menu: contains the notifications -->\n                            <ul class=\"menu\">\n                                <li><!-- start notification -->\n                                    <a href=\"#\">\n                                        <i class=\"fa fa-users text-aqua\"></i> Esta es una notificacion\n                                    </a>\n                                </li><!-- end notification -->\n                            </ul>\n                        </li>\n                        <li class=\"footer\"><a href=\"#\">Ver todos las notificaciones</a></li>\n                    </ul>\n                </li>\n                <!-- Tasks Menu -->\n                <li class=\"dropdown tasks-menu\" v-if=\"tasks.length>0\">\n                    <!-- Menu Toggle Button -->\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <i class=\"fa fa-flag-o\"></i>\n                        <span class=\"label label-danger\">9</span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <li class=\"header\">Tareas</li>\n                        <li>\n                            <!-- Inner menu: contains the tasks -->\n                            <ul class=\"menu\">\n                                <li><!-- Task item -->\n                                    <a href=\"#\">\n                                        <!-- Task title and progress text -->\n                                        <h3>\n                                            Esta es una tarea\n                                            <small class=\"pull-right\">20%</small>\n                                        </h3>\n                                        <!-- The progress bar -->\n                                        <div class=\"progress xs\">\n                                            <!-- Change the css width attribute to simulate progress -->\n                                            <div class=\"progress-bar progress-bar-aqua\" style=\"width: 20%\" role=\"progressbar\" aria-valuenow=\"20\" aria-valuemin=\"0\" aria-valuemax=\"100\">\n                                                <span class=\"sr-only\">20% completo</span>\n                                            </div>\n                                        </div>\n                                    </a>\n                                </li><!-- end task item -->\n                            </ul>\n                        </li>\n                        <li class=\"footer\">\n                            <a href=\"#\">Ver todas las tareas</a>\n                        </li>\n                    </ul>\n                </li>\n                \n                <!-- User Account Menu -->\n                <li class=\"dropdown user user-menu\">\n                    <!-- Menu Toggle Button -->\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <!-- The user image in the navbar-->\n                        <img src=\"img/user2-160x160.jpg\" class=\"user-image\" alt=\"User Image\">\n                        <!-- hidden-xs hides the username on small devices so only the image appears. -->\n                        <span class=\"hidden-xs\">{{username}}</span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <!-- The user image in the menu -->\n                        <li class=\"user-header\">\n                            <img src=\"img/user2-160x160.jpg\" class=\"img-circle\" alt=\"User Image\">\n                            <p>\n                                {{username}}\n                                <small>Miembro desde Nov. 2012</small>\n                            </p>\n                        </li>\n                        <!-- Menu Body -->\n                        <li class=\"user-body\">\n                            <div class=\"col-xs-4 text-center\">\n                                <a href=\"#\">Seguidores</a>\n                            </div>\n                            <div class=\"col-xs-4 text-center\">\n                                <a href=\"#\">Ventas</a>\n                            </div>\n                            <div class=\"col-xs-4 text-center\">\n                                <a href=\"#\">Seguidores</a>\n                            </div>\n                        </li>\n                        <!-- Menu Footer-->\n                        <li class=\"user-footer\">\n                            <div class=\"pull-left\">\n                                <a href=\"#\" class=\"btn btn-default btn-flat\">Perfil</a>\n                            </div>\n                            <div class=\"pull-right\">\n                                <a href=\"#\" class=\"btn btn-default btn-flat\">Salir</a>\n                            </div>\n                        </li>\n                    </ul>\n                </li>\n\n                <!-- Control Sidebar Toggle Button -->\n                <li v-if=\"control\">\n                    <a href=\"#\" data-toggle=\"control-sidebar\"><i class=\"fa fa-gears\"></i></a>\n                </li>\n                \n            </ul>\n        </div>\n    </nav>\n</header>\n\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  \n  <!-- Main Header -->\n<header class=\"main-header\">\n\n    <!-- Logo -->\n    <a href=\"#\" class=\"logo\">\n        <!-- mini logo for sidebar mini 50x50 pixels -->\n        <span class=\"logo-mini\"><b>{{shortLogo[0]}}</b>{{shortLogo[1]}}</span>\n        <!-- logo for regular state and mobile devices -->\n        <span class=\"logo-lg\"><b>{{largeLogo[0]}}</b>{{largeLogo[1]}}</span>\n    </a>\n\n    <!-- Header Navbar -->\n    <nav class=\"navbar navbar-static-top\" role=\"navigation\">\n        <!-- Sidebar toggle button-->\n        <a href=\"#\" class=\"sidebar-toggle\" data-toggle=\"offcanvas\" role=\"button\">\n            <span class=\"sr-only\">no aparece, solo lectura</span>\n        </a>\n        <!-- Navbar Right Menu -->\n        <div class=\"navbar-custom-menu\">\n            <ul class=\"nav navbar-nav\">\n                <!-- Messages: style can be found in dropdown.less-->\n                <li class=\"dropdown messages-menu\" v-if=\"messages.length>0\">\n                    <!-- Menu toggle button -->\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <i class=\"fa fa-envelope-o\"></i>\n                        <span class=\"label label-success\">4</span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <li class=\"header\">Mensajes</li>\n                        <li>\n                            <!-- inner menu: contains the messages -->\n                            <ul class=\"menu\">\n                                <li><!-- start message -->\n                                    <a href=\"#\">\n                                        <div class=\"pull-left\">\n                                            <!-- User Image -->\n                                            <img src=\"img/user2-160x160.jpg\" class=\"img-circle\" alt=\"User Image\">\n                                        </div>\n                                        <!-- Message title and timestamp -->\n                                        <h4>\n                                            Mensajes\n                                            <small><i class=\"fa fa-clock-o\"></i> 5 mins</small>\n                                        </h4>\n                                        <!-- The message -->\n                                        <p>Estos son los mensajes</p>\n                                    </a>\n                                </li><!-- end message -->\n                            </ul><!-- /.menu -->\n                        </li>\n                        <li class=\"footer\"><a href=\"#\">Ver todos los mensajes</a></li>\n                    </ul>\n                </li><!-- /.messages-menu -->\n\n                <!-- Notifications Menu -->\n                <li class=\"dropdown notifications-menu\" v-if=\"notifications.length>0\">\n                    <!-- Menu toggle button -->\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <i class=\"fa fa-bell-o\"></i>\n                        <span class=\"label label-warning\">10</span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <li class=\"header\">Notificaciones</li>\n                        <li>\n                            <!-- Inner Menu: contains the notifications -->\n                            <ul class=\"menu\">\n                                <li><!-- start notification -->\n                                    <a href=\"#\">\n                                        <i class=\"fa fa-users text-aqua\"></i> Esta es una notificacion\n                                    </a>\n                                </li><!-- end notification -->\n                            </ul>\n                        </li>\n                        <li class=\"footer\"><a href=\"#\">Ver todos las notificaciones</a></li>\n                    </ul>\n                </li>\n                <!-- Tasks Menu -->\n                <li class=\"dropdown tasks-menu\" v-if=\"tasks.length>0\">\n                    <!-- Menu Toggle Button -->\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <i class=\"fa fa-flag-o\"></i>\n                        <span class=\"label label-danger\">9</span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <li class=\"header\">Tareas</li>\n                        <li>\n                            <!-- Inner menu: contains the tasks -->\n                            <ul class=\"menu\">\n                                <li><!-- Task item -->\n                                    <a href=\"#\">\n                                        <!-- Task title and progress text -->\n                                        <h3>\n                                            Esta es una tarea\n                                            <small class=\"pull-right\">20%</small>\n                                        </h3>\n                                        <!-- The progress bar -->\n                                        <div class=\"progress xs\">\n                                            <!-- Change the css width attribute to simulate progress -->\n                                            <div class=\"progress-bar progress-bar-aqua\" style=\"width: 20%\" role=\"progressbar\" aria-valuenow=\"20\" aria-valuemin=\"0\" aria-valuemax=\"100\">\n                                                <span class=\"sr-only\">20% completo</span>\n                                            </div>\n                                        </div>\n                                    </a>\n                                </li><!-- end task item -->\n                            </ul>\n                        </li>\n                        <li class=\"footer\">\n                            <a href=\"#\">Ver todas las tareas</a>\n                        </li>\n                    </ul>\n                </li>\n                \n                <!-- User Account Menu -->\n                <li class=\"dropdown user user-menu\">\n                    <!-- Menu Toggle Button -->\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <!-- The user image in the navbar-->\n                        <img src=\"img/user2-160x160.jpg\" class=\"user-image\" alt=\"User Image\">\n                        <!-- hidden-xs hides the username on small devices so only the image appears. -->\n                        <span class=\"hidden-xs\">{{username}}</span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <!-- The user image in the menu -->\n                        <li class=\"user-header\">\n                            <img src=\"img/user2-160x160.jpg\" class=\"img-circle\" alt=\"User Image\">\n                            <p>\n                                {{username}}\n                                <small>Miembro desde Nov. 2012</small>\n                            </p>\n                        </li>\n                        <!-- Menu Body -->\n\n                        <!-- Menu Footer-->\n                        <li class=\"user-footer\">\n                            <div class=\"pull-left\">\n                                <a href=\"/account\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-user\"></i> Perfil</a>\n                            </div>\n                            <div class=\"pull-right\">\n                                <a href=\"/logout\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-sign-out\"></i> Salir</a>\n                            </div>\n                        </li>\n                    </ul>\n                </li>\n\n                <!-- Control Sidebar Toggle Button -->\n                <li v-if=\"control\">\n                    <a href=\"#\" data-toggle=\"control-sidebar\"><i class=\"fa fa-gears\"></i></a>\n                </li>\n                \n            </ul>\n        </div>\n    </nav>\n</header>\n\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-2dcb989b", module.exports)
+    hotAPI.createRecord("_v-170f90a4", module.exports)
   } else {
-    hotAPI.update("_v-2dcb989b", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-170f90a4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":21,"vue-hot-reload-api":17}],42:[function(require,module,exports){
+},{"vue":6,"vue-hot-reload-api":2}],28:[function(require,module,exports){
 'use strict';
+
+var _reusable_functions = require('../../util/reusable_functions');
+
+var _reusable_functions2 = _interopRequireDefault(_reusable_functions);
 
 var _menuItem = require('../reusable/menuItem.vue');
 
 var _menuItem2 = _interopRequireDefault(_menuItem);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//configs
+
 
 module.exports = {
 	components: {
@@ -16402,59 +15940,30 @@ module.exports = {
 		hasChildren: function hasChildren(nodo) {
 			if (typeof nodo === 'undefined') return false;
 			return nodo.length > 0;
-		},
-		loadMenu: function loadMenu() {
-			var self = this;
-			self.$http.get(self.urlMenu).then(function (resp) {
-				console.log(resp.data);
-				self.menu = resp.data.data;
-			}, function (err) {
-				console.warn(err);
-			});
 		}
 	},
 	ready: function ready() {
-		this.loadMenu();
+		var self = this;
+		self.$http.get(self.urlMenu).then(function (resp) {
+			_reusable_functions2.default.niceAlert('info', 'Se cargo correctamente el Menu');
+			self.menu = resp.data.data;
+		}, function (err) {
+			_reusable_functions2.default.niceAlert('error', 'no se pudo cargar el Menu');
+			console.warn(err);
+		});
 	},
 	data: function data() {
 		return {
 			urlMenu: 'api/menu',
 			menu: [{
-				iconClass: 'fa fa-dashboard',
-				name: 'Dashboard',
-				link: '/',
+				iconClass: 'fa fa-book',
+				name: 'Materias',
+				link: '/materias',
 				children: []
-			}, {
-				iconClass: 'fa fa-th-list',
-				name: 'Menu',
-				link: '/menu',
-				children: []
-			}, {
-				iconClass: 'fa fa-calendar',
-				name: 'Usuarios',
-				link: '#',
-				children: [{
-					iconClass: 'fa fa-link',
-					name: 'Listado CRUD',
-					link: '/usuarios',
-					children: []
-				}, {
-					iconClass: 'fa fa-link',
-					name: 'Reportes',
-					link: '/sdk',
-					children: []
-				}, {
-					iconClass: 'fa fa-link',
-					name: 'Otra version de pagineo',
-					link: '/paginate',
-					children: []
-				}]
 			}]
 		};
 	}
 };
-
-//configs
 if (module.exports.__esModule) module.exports = module.exports.default
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<!-- Left side column. contains the logo and sidebar -->\n<aside class=\"main-sidebar\">\n\n\t<!-- sidebar: style can be found in sidebar.less -->\n\t<section class=\"sidebar\">\n\n\t\t<!-- Sidebar user panel (optional) -->\n\t\t<div class=\"user-panel\">\n\t\t\t<div class=\"pull-left image\">\n\t\t\t\t<img src=\"img/user2-160x160.jpg\" class=\"img-circle\" alt=\"User Image\">\n\t\t\t</div>\n\t\t\t<div class=\"pull-left info\">\n\t\t\t\t<p>{{ username }}</p>\n\t\t\t\t<!-- Status -->\n\t\t\t\t<a href=\"#\"><i class=\"fa fa-circle text-success\"></i> Online</a>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- search form (Optional) -->\n\t\t<form action=\"#\" method=\"get\" class=\"sidebar-form\">\n\t\t\t<div class=\"input-group\">\n\t\t\t\t<input type=\"text\" name=\"q\" class=\"form-control\" placeholder=\"Search...\">\n\t\t\t\t<span class=\"input-group-btn\">\n\t\t\t\t\t<button type=\"submit\" name=\"search\" id=\"search-btn\" class=\"btn btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t</span>\n\t\t\t</div>\n\t\t</form>\n\t\t<!-- /.search form -->\n\n\t\t<!-- Sidebar Menu -->\n\t\t<ul class=\"sidebar-menu\">\n\t\t\t<li class=\"header\">MAIN NAVIGATION</li>\n\t\t\t<menu-item v-for=\"itemenu in menu\" :item=\"itemenu\" :is-parent=\"hasChildren(itemenu.children)\"></menu-item>\n\t\t\t\n\t\t</ul>\n\t\t\n\t\t<!-- /.sidebar-menu -->\n\t</section>\n\t<!-- /.sidebar -->\n</aside>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
@@ -16462,612 +15971,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-451817ed", module.exports)
+    hotAPI.createRecord("_v-33114080", module.exports)
   } else {
-    hotAPI.update("_v-451817ed", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-33114080", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../reusable/menuItem.vue":48,"vue":21,"vue-hot-reload-api":17}],43:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.default = {
-	methods: {
-		nothingToDoHere: function nothingToDoHere() {
-			alert('Nothing to do here, go to Home');
-		}
-	}
-};
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"row\">\n\t<div class=\"col-xs-12\">\n\t\t<div class=\"error-page\">\n\t\t\t<h2 class=\"headline text-yellow\"> 404</h2>\n\t\t\t<div class=\"error-content\">\n\t\t\t\t<h3><i class=\"fa fa-warning text-yellow\"></i> Oops! Recurso no encontrado.</h3>\n\t\t\t\t<p>\n\t\t\t\t\tPágina o recurso no encontrado\n\t\t\t\t\tIr a la página de inicio <a v-link=\"{path: '/'}\">Home</a> \n\t\t\t\t</p>\n\t\t\t\t<form class=\"search-form\" @submit=\"nothingToDoHere\">\n\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t<input type=\"text\" name=\"search\" class=\"form-control\" placeholder=\"Buscar...\">\n\t\t\t\t\t\t<div class=\"input-group-btn\">\n\t\t\t\t\t\t\t<button type=\"submit\" name=\"submit\" class=\"btn btn-warning btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div><!-- /.input-group -->\n\t\t\t\t</form>\n\t\t\t</div><!-- /.error-content -->\n\t\t</div><!-- /.error-page -->\t\t\n\t</div>\n</div>\n\n"
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  if (!module.hot.data) {
-    hotAPI.createRecord("_v-4bf3f81d", module.exports)
-  } else {
-    hotAPI.update("_v-4bf3f81d", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
-},{"vue":21,"vue-hot-reload-api":17}],44:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _assign = require('babel-runtime/core-js/object/assign');
-
-var _assign2 = _interopRequireDefault(_assign);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-	ready: function ready() {
-		this.loadData();
-	},
-
-	computed: {
-		lastActive: function lastActive() {
-			return this.current_page == this.last_page ? 'disabled' : '';
-		},
-		firstActive: function firstActive() {
-			return this.current_page == 1 ? 'disabled' : '';
-		}
-
-	},
-
-	methods: {
-		isActive: function isActive(index) {
-			return this.current_page == index ? 'active' : '';
-		},
-		paginate: function paginate(numPage) {
-			if (this.current_page != numPage) {
-				if (numPage == this.last_page) {
-					this.moreTemp = parseInt(numPage / this.limitPaginate) + 1;
-				}
-				if (numPage == 1) {
-					this.moreTemp = 1;
-				}
-				this.current_page = numPage;
-				this.loadData();
-			}
-		},
-		paginateNext: function paginateNext() {
-			if (this.next_page_url != null) {
-				this.current_page % this.limitPaginate === 0 ? this.moreTemp++ : null;
-				this.current_page++;
-				this.loadData();
-			}
-		},
-		paginatePrev: function paginatePrev() {
-			if (this.prev_page_url != null) {
-				this.current_page % this.limitPaginate === 1 ? this.moreTemp-- : null;
-				this.current_page--;
-				this.loadData();
-			}
-		},
-		pagScroll: function pagScroll(type) {
-			if (type == 'next') {
-				this.moreTemp++;
-				this.current_page = (this.moreTemp - 1) * this.limitPaginate + 1;
-			} else {
-				this.moreTemp--;
-				this.current_page = (this.moreTemp - 1) * this.limitPaginate + this.limitPaginate;
-			}
-			this.loadData();
-		},
-		numToShow: function numToShow(num) {
-			return (this.moreTemp - 1) * this.limitPaginate < num && num < this.moreTemp * this.limitPaginate + 1;
-		},
-		//MAIN METHOD LOAD DATA
-		loadData: function loadData() {
-			var self = this;
-			self.isError = false;
-			self.isLoading = true;
-			self.$http.get(self.url + '?page=' + self.current_page + self.params).then(function (resp) {
-				self.data = resp.data.data;
-				(0, _assign2.default)(self, resp.data);
-				self.isError = false;
-				self.isLoading = false;
-			}, function (err) {
-				console.warn(err, 'error while try to load the endpoit', '' + self.url + self.params);
-				self.isError = true;
-				self.isLoading = false;
-			});
-		}
-	},
-
-	props: {
-		//endpoint
-		url: {
-			type: String,
-			required: true
-		},
-		params: {
-			type: String,
-			required: false,
-			default: ''
-		},
-		fullPaginate: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
-		isLoading: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
-		isError: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
-		//default class for bootstrap
-		paginateContentClass: {
-			type: String,
-			required: false,
-			default: "col-xs-12 col-sm-8"
-		},
-		infoContentClass: {
-			type: String,
-			required: false,
-			default: "col-xs-12 col-sm-4 text-right"
-		},
-		noDataContentClass: {
-			type: String,
-			required: false,
-			default: "col-xs-12 text-center"
-		},
-		showText: {
-			type: String,
-			required: false,
-			default: 'Mostrando'
-		},
-		ofText: {
-			type: String,
-			required: false,
-			default: 'de'
-		},
-		refreshText: {
-			type: String,
-			required: false,
-			default: 'Actualizar'
-		},
-		noDataText: {
-			type: String,
-			required: false,
-			default: 'No hay registros'
-		},
-		registerText: {
-			type: String,
-			required: false,
-			default: 'Registros'
-		},
-		nextText: {
-			type: String,
-			required: false,
-			default: '>'
-		},
-		backText: {
-			type: String,
-			required: false,
-			default: '<'
-		},
-		lastText: {
-			type: String,
-			required: false,
-			default: '>>'
-		},
-		firstText: {
-			type: String,
-			required: false,
-			default: '<<'
-		},
-		filter_search: {
-			type: String,
-			required: false,
-			default: ''
-		},
-		per_page_list: {
-			type: Array,
-			required: false,
-			default: function _default() {
-				return [5, 10, 15, 20, 30, 50];
-			}
-		},
-		//logic data attributes - laravel paginate struct
-
-		data: {
-			type: Array,
-			required: false,
-			default: function _default() {
-				return [];
-			}
-		},
-		moreTemp: {
-			type: Number,
-			required: false,
-			default: 1
-		},
-		limitPaginate: {
-			type: Number,
-			required: false,
-			default: 5
-		}
-	},
-
-	data: function data() {
-		return {
-			total: {
-				type: Number,
-				required: false,
-				default: 0
-			},
-			per_page: {
-				type: Number,
-				required: false,
-				default: 5
-			},
-			current_page: {
-				type: Number,
-				required: false,
-				default: 1
-			},
-			last_page: {
-				type: Number,
-				required: false,
-				default: 2
-			},
-			next_page_url: {
-				type: String,
-				required: false,
-				default: ""
-			},
-			prev_page_url: {
-				type: String,
-				required: false,
-				default: ""
-			},
-			from: {
-				type: Number,
-				required: false,
-				default: 1
-			},
-			to: {
-				type: Number,
-				required: false,
-				default: 15
-			}
-		};
-	}
-};
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div :class=\"paginateContentClass\">\n\t<nav>\n\t\t<ul class=\"pagination pagination-sm\">\n\t\t\t<li class=\"{{firstActive}}\" @click.prevent=\"paginate(1)\">\n\t\t\t\t<a href=\"#\" aria-label=\"Previous\">\n\t\t\t\t\t<span aria-hidden=\"true\">{{firstText}}</span>\n\t\t\t\t</a><!-- begin -->\n\t\t\t</li>\n\n\t\t\t<li class=\"{{firstActive}}\" @click.prevent=\"paginatePrev\">\n\t\t\t\t<a href=\"#\" aria-label=\"Previous\">\n\t\t\t\t\t<span aria-hidden=\"true\">{{backText}}</span>\n\t\t\t\t</a>\n\t\t\t</li>\n\n\t\t\t<li v-if=\"current_page>limitPaginate\" @click.prevent=\"pagScroll('prev')\">\n\t\t\t\t<a href=\"#\" aria-label=\"Prev\">\n\t\t\t\t\t<span aria-hidden=\"true\">...</span>\n\t\t\t\t</a><!-- more back -->\n\t\t\t</li>\n\n\t\t\t<li v-for=\"pag in last_page\" class=\"{{isActive(pag+1)}}\" @click.prevent=\"paginate(pag+1)\" v-if=\"numToShow(pag+1)\"><a href=\"#\">{{pag + 1}}</a></li>\n\n\t\t\t<li v-if=\"moreTemp < (last_page/limitPaginate)\" @click.prevent=\"pagScroll('next')\">\n\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t<span aria-hidden=\"true\">...</span>\n\t\t\t\t</a>\n\t\t\t</li><!-- more next -->\n\n\t\t\t<li class=\"{{lastActive}}\" @click.prevent=\"paginateNext\">\n\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t<span aria-hidden=\"true\">{{nextText}}</span>\n\t\t\t\t</a>\n\t\t\t</li>\n\n\t\t\t<li class=\"{{lastActive}}\" @click.prevent=\"paginate(last_page)\">\n\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t<span aria-hidden=\"true\">{{lastText}}</span>\n\t\t\t\t</a><!-- end -->\n\t\t\t</li>\n\t\t</ul>\n\t</nav>\n</div>\n\n<div :class=\"infoContentClass\" v-if=\"infoContentClass\">\n\t<span>{{showText}}: {{from}} - {{to}} {{ofText}} {{total}} {{registerText}}</span>\n</div>\n\n<div :class=\"noDataContentClass\" v-if=\"data.lenght<=0\">\n\t<span>{{noDataText}}</span>\n</div>\n\n"
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  if (!module.hot.data) {
-    hotAPI.createRecord("_v-34181f41", module.exports)
-  } else {
-    hotAPI.update("_v-34181f41", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
-},{"babel-runtime/core-js/object/assign":1,"vue":21,"vue-hot-reload-api":17}],45:[function(require,module,exports){
-var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n.font-success{\n\tcolor: #00a65a;\n}\n\n.font-error{\n\tcolor: #dd4b39;\n}\n\n.pagination{\n\tmargin: 0 !important;\n}\n\n.cool-table-loading-icon{\n\tposition: absolute;\n\tmargin-left: 45%;\n\tmargin-top: 50%;\n}\n\n.cool-table-sortable{\n\tcursor: pointer;\n}\n.cool-table-sortable:hover{\n\tcolor: #2185d0;\n}\n\n.loading-mask{\t\n\tz-index: 99;\t\n\tposition: absolute;\n\twidth: 100%;\n\tbackground: rgba(236, 240, 245, 0.31);\n}\n.l-open{\n\tdisplay: inherit;\n}\n\n.l-close{\n\tdisplay: none;\t\n}\n")
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _assign = require('babel-runtime/core-js/object/assign');
-
-var _assign2 = _interopRequireDefault(_assign);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function schemaModel(toModel) {
-	if (toModel.field) {
-		(0, _assign2.default)(toModel, {
-			hidden: toModel.hidden ? toModel.hidden : false,
-			field: toModel.field ? toModel.field : '',
-			fieldClass: toModel.fieldClass ? toModel.fieldClass : '',
-			title: toModel.title ? toModel.title : toModel.field.toUpperCase(),
-			titleClass: toModel.titleClass ? toModel.titleClass : '',
-			filterable: toModel.filterable ? toModel.filterable : false,
-			applyFilter: toModel.applyFilter ? toModel.applyFilter : null,
-			template: toModel.template ? toModel.template : null,
-			itemActions: toModel.itemActions ? toModel.itemActions : null
-		});
-	} else {
-		if (toModel.itemActions) {
-			if (toModel.itemActions.length <= 0) {
-				throw 'ModelError: itemActions proptype is required in columns object if is not a field';
-			} else {
-				(0, _assign2.default)(toModel, {
-					hidden: toModel.hidden ? toModel.hidden : false,
-					field: toModel.field ? toModel.field : '',
-					fieldClass: toModel.fieldClass ? toModel.fieldClass : '',
-					title: toModel.title ? toModel.title : toModel.field.toUpperCase(),
-					titleClass: toModel.titleClass ? toModel.titleClass : '',
-					filterable: toModel.filterable ? toModel.filterable : false,
-					applyFilter: toModel.applyFilter ? toModel.applyFilter : null,
-					template: toModel.template ? toModel.template : null,
-					itemActions: toModel.itemActions ? toModel.itemActions : null
-				});
-			}
-		} else throw 'ModelError: field proptype is required in columns object';
-	}
-}
-
-function arrayToScema(listModels) {
-	listModels.forEach(function (element, index) {
-		schemaModel(element);
-	});
-}
-
-exports.default = {
-	computed: {
-		lastActive: function lastActive() {
-			return this.pagination.current_page == this.pagination.last_page ? 'disabled' : '';
-		},
-		firstActive: function firstActive() {
-			return this.pagination.current_page == 1 ? 'disabled' : '';
-		}
-
-	},
-	props: {
-		optionToolbar: {
-			type: Object,
-			default: function _default() {
-				return {
-					iconClass: 'fa fa-plus',
-					iconClassOptions: 'fa fa-cogs',
-					label: 'Nuevo',
-					labelOptions: 'Campos visibles',
-					nameEmit: 'create-event',
-					btnClass: 'btn btn-primary btn-flat'
-				};
-			}
-		},
-		tableClass: { type: String, default: 'table table-bordered table-striped' },
-		requireHeader: { type: Boolean, default: true },
-		divSeparatorClass: { type: String, default: 'col-xs-12' },
-		url: { type: String, default: 'api/users' },
-		search_filter: { type: String, default: '' },
-		endpoint: { type: String, default: '' },
-		sortable: {
-			type: Object,
-			default: function _default() {
-				return {
-					ascendingIcon: 'glyphicon glyphicon-chevron-up',
-					descendingIcon: 'glyphicon glyphicon-chevron-down',
-					column: 'id',
-					order: 'asc'
-				};
-			}
-		},
-		columns: {
-			type: Array, default: function _default() {
-				return [{
-					field: 'name',
-					hidden: false
-				}, {
-					field: 'email',
-					hidden: false
-				}, {
-					field: 'created_at',
-					title: 'Fecha Creación',
-					hidden: false
-				}, {
-					title: 'Fecha Modificación',
-					field: 'updated_at',
-					hidden: false
-				}, {
-					title: 'Acciones',
-					titleClass: 'text-center',
-					hidden: false,
-					fieldClass: 'text-center',
-					itemActions: [{
-						nameEmit: 'view-event',
-						btnClass: 'btn btn-default btn-xs',
-						iconClass: 'fa fa-eye',
-						label: 'Visualizar'
-					}, {
-						nameEmit: 'view-event',
-						btnClass: 'btn btn-default btn-xs',
-						iconClass: 'fa fa-edit',
-						label: 'Editar'
-					}, {
-						nameEmit: 'view-event',
-						btnClass: 'btn btn-danger btn-xs',
-						iconClass: 'fa fa-trash',
-						label: 'Eliminar'
-					}]
-				}];
-			}
-		},
-		pagination: {
-			type: Object,
-			default: function _default() {
-				return {
-					loadingIconClass: 'fa fa-spinner fa-spin fa-3x fa-fw cool-table-loading-icon',
-					showText: 'Mostrando',
-					of: 'de',
-					refresh: 'Actualizar',
-					noData: 'No hay registros',
-					register: 'Registros',
-					next: '>',
-					back: '<',
-					last: '>>',
-					first: '<<',
-					searchable: false,
-					per_page_list: [5, 10, 15, 20, 30, 50],
-					total: 150,
-					per_page: 5,
-					current_page: 1,
-					last_page: 10,
-					next_page_url: "http:\/\/vuetable.ratiw.net\/api\/users?page=2",
-					prev_page_url: null,
-					from: 1,
-					to: 15,
-					data: [],
-					moreTemp: 1,
-					limitPaginate: 5
-				};
-			}
-		},
-		data: {
-			type: Array,
-			deafult: function deafult() {
-				return [];
-			}
-		}
-	},
-	methods: {
-		updateEndpoint: function updateEndpoint() {
-			var _pagination = this.pagination;
-			var per_page = _pagination.per_page;
-			var current_page = _pagination.current_page;
-			var search_filter = this.search_filter;
-			var url = this.url;
-			var _sortable = this.sortable;
-			var column = _sortable.column;
-			var order = _sortable.order;
-
-			this.endpoint = url + '?per_page=' + per_page + '&page=' + current_page + '&sort=' + column + '|' + order + '&filter=' + search_filter;
-		},
-		orderColumn: function orderColumn(column) {
-			if (this.sortable.column == column) {
-				this.sortable.order = this.sortable.order == 'asc' ? 'desc' : 'asc';
-			} else {
-				this.sortable.order = 'asc';
-				this.sortable.column = column;
-			}
-			this.loadData();
-		},
-		isActive: function isActive(index) {
-			return this.pagination.current_page == index ? 'active' : '';
-		},
-		paginate: function paginate(numPage) {
-			if (this.pagination.current_page != numPage) {
-				if (numPage == this.pagination.last_page) {
-					this.pagination.moreTemp = parseInt(numPage / this.pagination.limitPaginate) + 1;
-				}
-				if (numPage == 1) {
-					this.pagination.moreTemp = 1;
-				}
-				this.pagination.current_page = numPage;
-				this.loadData();
-			}
-		},
-		paginateNext: function paginateNext() {
-			if (this.pagination.next_page_url != null) {
-				this.pagination.current_page % this.pagination.limitPaginate === 0 ? this.pagination.moreTemp++ : null;
-				this.pagination.current_page++;
-				this.loadData();
-			}
-		},
-		paginatePrev: function paginatePrev() {
-			if (this.pagination.prev_page_url != null) {
-				this.pagination.current_page % this.pagination.limitPaginate === 1 ? this.pagination.moreTemp-- : null;
-				this.pagination.current_page--;
-				this.loadData();
-			}
-		},
-		pagScroll: function pagScroll(type) {
-			if (type == 'next') {
-				this.pagination.moreTemp++;
-				this.pagination.current_page = (this.pagination.moreTemp - 1) * this.pagination.limitPaginate + 1;
-			} else {
-				this.pagination.moreTemp--;
-				this.pagination.current_page = (this.pagination.moreTemp - 1) * this.pagination.limitPaginate + this.pagination.limitPaginate;
-			}
-			this.loadData();
-		},
-		changePerPage: function changePerPage() {
-			this.pagination.moreTemp = 1;
-			this.pagination.current_page = 1;
-			this.loadData();
-		},
-		loadingAnimation: function loadingAnimation(type) {
-			var query = '.' + this.tableClass.split(' ').join('.');
-			var elem = document.querySelector(query);
-			var loadElem = document.querySelector('.loading-mask');
-			var loadIcon = document.querySelector('.cool-table-loading-icon');
-			if (type == 'open') {
-				var axisY = parseInt(elem.scrollHeight / 2);
-				loadElem.style.height = axisY * 2 + 'px';
-				loadIcon.style.marginTop = axisY + 'px';
-				loadElem.className = 'loading-mask l-open';
-			} else {
-				loadElem.className = 'loading-mask l-close';
-			}
-		},
-		numToShow: function numToShow(num) {
-			return (this.pagination.moreTemp - 1) * this.pagination.limitPaginate < num && num < this.pagination.moreTemp * this.pagination.limitPaginate + 1;
-		},
-		toggleColumns: function toggleColumns(idx) {
-			this.columns[idx].hidden = !this.columns[idx].hidden;
-		},
-		loadData: function loadData() {
-			this.loadingAnimation('open');
-			this.updateEndpoint();
-			var self = this;
-			self.$http.get(this.endpoint).then(function (resp) {
-				self.data = resp.data.data;
-				(0, _assign2.default)(self.pagination, resp.data);
-				self.loadingAnimation('close');
-			}, function (err) {
-				console.warn(err, 'error while try to load the endpoit', self.endpoint);
-				self.loadingAnimation('close');
-			});
-		},
-		search: function search() {
-			this.loadData();
-		},
-		dispacher: function dispacher(event, model) {
-			this.$dispatch(event, model);
-		}
-
-	},
-
-	ready: function ready() {
-		this.loadData(this.endpoint + '?per_page=' + this.pagination.per_page);
-	},
-	created: function created() {
-		arrayToScema(this.columns);
-	},
-	data: function data() {
-		return {
-			otro: 'hola'
-		};
-	}
-};
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n\t<!-- Head Confi toolbar -->\n\t<div class=\"box box-primary\">\n\t\t<div class=\"box-header with-border\" v-if=\"optionToolbar\">\n\t\t\t<div class=\"col-sm-2 col-xs-12\" v-if=\"optionToolbar\">\n\t\t\t\t<button :class=\"optionToolbar.btnClass\" @click.prevent=\"dispacher(optionToolbar.nameEmit)\"><i :class=\"optionToolbar.iconClass\"></i> {{optionToolbar.label}}</button>\n\t\t\t</div>\n\t\t\t<div class=\"col-xs-6 col-sm-6\">\n\t\t\t\t<form action=\"#\" method=\"get\" @submit.prevent=\"search\">\n\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t<input type=\"text\" name=\"filter\" v-model=\"search_filter\" class=\"form-control\" placeholder=\"Buscar...\">\n\t\t\t\t\t\t<span class=\"input-group-btn\">\n\t\t\t\t\t\t\t<button type=\"submit\" name=\"search_table\" id=\"search-btn\" class=\"btn btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t</div>\n\t\t\t\t</form>\n\t\t\t</div>\n\t\t\t<div class=\"col-xs-4 col-sm-3\">\n\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t<select class=\"form-control\" v-model=\"pagination.per_page\" @change=\"changePerPage\">\n\t\t\t\t\t\t<option value=\"\" disabled=\"\">Rigistros por página</option>\n\t\t\t\t\t\t<option v-for=\"item in pagination.per_page_list | orderBy item\" track-by=\"$index\" :value=\"item\">{{item}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"col-xs-2 col-sm-1\">\n\t\t\t\t<button class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"true\" :title=\"optionToolbar.labelOptions\">\n\t\t\t\t\t<i :class=\"optionToolbar.iconClassOptions\"></i>\n\t\t\t\t</button>\n\t\t\t\t<ul class=\"dropdown-menu pull-right\">\n\t\t\t\t\t<li v-for=\"(idx, col) in columns\">\n\t\t\t\t\t\t<span class=\"checkbox\">\n\t\t\t\t\t\t\t<label @click=\"toggleColumns(idx)\">\n\t\t\t\t\t\t\t\t<strong>{{ col.title }} <i class=\"fa fa-check font-success\" v-if=\"!col.hidden\"></i><i class=\"fa fa-close font-error\" v-else=\"\"></i></strong>\n\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Body table -->\n\t\t<div class=\"box-body table-responsive\">\n\t\t\t<div class=\"loading-mask l-close\">\n\t\t\t\t<i :class=\"pagination.loadingIconClass\"></i>\n\t\t\t\t<span class=\"sr-only\">Loading...</span>\n\t\t\t</div>\n\t\t\t<table :class=\"tableClass\">\n\t\t\t\t\n\t\t\t\t<thead v-if=\"requireHeader\">\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<th v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.titleClass\">\n\t\t\t\t\t\t\t<template v-if=\"sortable &amp;&amp; !col.itemActions\">\n\t\t\t\t\t\t\t\t<div class=\"cool-table-sortable\" @click.prevent=\"orderColumn(col.field)\">\n\t\t\t\t\t\t\t\t\t<span>{{col.title}}</span>\n\t\t\t\t\t\t\t\t\t<template v-if=\"sortable.column == col.field\">\n\t\t\t\t\t\t\t\t\t\t<template v-if=\"sortable.order == 'desc'\">\n\t\t\t\t\t\t\t\t\t\t\t<span class=\"pull-right\"><i :class=\"sortable.descendingIcon\"></i></span>\n\t\t\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t\t\t\t<template v-else=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<span class=\"pull-right\"><i :class=\"sortable.ascendingIcon\"></i></span>\n\t\t\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t<template v-else=\"\">\n\t\t\t\t\t\t\t\t{{col.title}}\n\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t</th>\n\t\t\t\t\t</tr>\n\t\t\t\t</thead>\n\n\t\t\t\t<tbody>\n\t\t\t\t\t<tr v-for=\"item in data\">\n\n\t\t\t\t\t\t<td v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.fieldClass\">\n\n\t\t\t\t\t\t\t<div v-if=\"!col.itemActions\">{{ item[col.field] }}</div>\n\n\t\t\t\t\t\t\t<div v-else=\"\" class=\"btn-group\">\n\n\t\t\t\t\t\t\t\t<a v-for=\"act in col.itemActions\" :class=\"act.btnClass\" href=\"\" @click.prevent=\"dispacher(act.nameEmit, item)\">\n\t\t\t\t\t\t\t\t\t<i :class=\"act.iconClass\" data-toggle=\"tooltip\" :title=\"act.label\"></i>\n\t\t\t\t\t\t\t\t</a>\n\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</td>\n\n\t\t\t\t\t</tr>\n\t\t\t\t</tbody>\n\n\t\t\t</table>\n\t\t</div>\n\n\t\t<!-- Footer pagination -->\n\t\t<div class=\"box-footer\" v-if=\"pagination\">\n\t\t\t<div class=\"row\" v-if=\"pagination.data.length>0\">\n\t\t\t\t<div class=\"col-xs-12 col-sm-8\">\n\t\t\t\t\t<nav>\n\t\t\t\t\t\t<ul class=\"pagination pagination-sm\">\n\t\t\t\t\t\t\t<li class=\"{{firstActive}}\" @click.prevent=\"paginate(1)\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Previous\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.first}}</span>\n\t\t\t\t\t\t\t\t</a><!-- begin -->\n\t\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t\t<li class=\"{{firstActive}}\" @click.prevent=\"paginatePrev\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Previous\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.back}}</span>\n\t\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t\t<li v-if=\"pagination.current_page>pagination.limitPaginate\" @click.prevent=\"pagScroll('prev')\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Prev\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">...</span>\n\t\t\t\t\t\t\t\t</a><!-- more back -->\n\t\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t\t<li v-for=\"pag in 5, pagination.last_page\" class=\"{{isActive(pag+1)}}\" @click.prevent=\"paginate(pag+1)\" v-if=\"numToShow(pag+1)\"><a href=\"#\">{{pag + 1}}</a></li>\n\n\t\t\t\t\t\t\t<li v-if=\"pagination.moreTemp < (pagination.last_page/pagination.limitPaginate)\" @click.prevent=\"pagScroll('next')\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">...</span>\n\t\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t\t</li><!-- more next -->\n\n\t\t\t\t\t\t\t<li class=\"{{lastActive}}\" @click.prevent=\"paginateNext\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.next}}</span>\n\t\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t\t<li class=\"{{lastActive}}\" @click.prevent=\"paginate(pagination.last_page)\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.last}}</span>\n\t\t\t\t\t\t\t\t</a><!-- end -->\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</nav>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"col-xs-12 col-sm-4 text-right\" v-if=\"pagination\">\n\t\t\t\t\t<span>{{pagination.showText}}: {{pagination.from}} - {{pagination.to}} {{pagination.of}} {{pagination.total}} {{pagination.register}}</span>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"row\" v-else=\"\">\n\t\t\t\t<div class=\"col-xs-12 text-center\">\n\t\t\t\t\t<span>{{pagination.noData}}</span>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t</div>\n\n\t<!--\n\t<div v-if=\"optionToolbar\" :class=\"divSeparatorClass\">\n\t\t<div class=\"col-xs-7\">\n\t\t\t<form action=\"#\" method=\"get\">\n\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t<input type=\"text\" name=\"table_q\" class=\"form-control\" placeholder=\"Buscar...\">\n\t\t\t\t\t<span class=\"input-group-btn\">\n\t\t\t\t\t\t<button type=\"submit\" name=\"search_table\" id=\"search-btn\" class=\"btn btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t\t</span>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\t\t<div class=\"col-xs-4\">\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<select class=\"form-control\" v-model=\"pagination.data.per_page\">\n\t\t\t\t\t<option value=\"\" disabled>Rigistros por página</option>\n\t\t\t\t\t<option v-for=\"item in pagination.data.per_page_list | orderBy item\"  track-by=\"$index\" :value=\"item\">{{item}}</option>\n\t\t\t\t</select>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"col-xs-1\">\n\t\t\t<button class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"true\" :title=\"optionToolbar.label\">\n\t\t\t\t<i :class=\"optionToolbar.iconClass\"></i>\n\t\t\t</button>\n\t\t\t<ul class=\"dropdown-menu\">\n\t\t\t\t<li v-for=\"(idx, col) in columns\">\n\t\t\t\t\t<span class=\"checkbox\">\n\t\t\t\t\t\t<label @click=\"toggleColumns(idx)\">\n\t\t\t\t\t\t\t<strong>{{ col.title }} <i class=\"fa fa-check font-success\" v-if=\"!col.hidden\"></i><i class=\"fa fa-close font-error\" v-else></i></strong>\n\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</span>\n\t\t\t\t</li>\n\t\t\t</ul>\n\t\t</div>\n\t</div>\n\n\t<div :class=\"divSeparatorClass\">\n\t\t<table :class=\"tableClass\">\n\t\t\t<thead v-if=\"requireHeader\">\n\t\t\t\t<tr>\n\t\t\t\t\t<th v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.titleClass\">{{col.title}}</th>\n\t\t\t\t</tr>\n\t\t\t</thead>\n\t\t\t\n\t\t\t<tbody>\n\t\t\t\t<tr v-for=\"item in data\">\n\n\t\t\t\t\t<td v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.fieldClass\">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div v-if=\"!col.itemActions\">{{ item[col.field] }}</div>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div v-else class=\"btn-group\">\n\n\t\t\t\t\t\t\t<a v-for=\"act in col.itemActions\" :class=\"act.btnClass\" href=\"\" @click.prevent=\"dispacher(act.nameEmit, item)\" >\n\t\t\t\t\t\t\t\t<i :class=\"act.iconClass\" data-toggle=\"tooltip\" :title=\"act.label\"></i>\n\t\t\t\t\t\t\t</a>\n\n\t\t\t\t\t\t</div>\n\n\n\n\t\t\t\t</td>\n\n\t\t\t</tr>\n\t\t</tbody>\n\t\t\n\t</table>\n</div>\n-->\n\n"
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  module.hot.dispose(function () {
-    __vueify_insert__.cache["\n.font-success{\n\tcolor: #00a65a;\n}\n\n.font-error{\n\tcolor: #dd4b39;\n}\n\n.pagination{\n\tmargin: 0 !important;\n}\n\n.cool-table-loading-icon{\n\tposition: absolute;\n\tmargin-left: 45%;\n\tmargin-top: 50%;\n}\n\n.cool-table-sortable{\n\tcursor: pointer;\n}\n.cool-table-sortable:hover{\n\tcolor: #2185d0;\n}\n\n.loading-mask{\t\n\tz-index: 99;\t\n\tposition: absolute;\n\twidth: 100%;\n\tbackground: rgba(236, 240, 245, 0.31);\n}\n.l-open{\n\tdisplay: inherit;\n}\n\n.l-close{\n\tdisplay: none;\t\n}\n"] = false
-    document.head.removeChild(__vueify_style__)
-  })
-  if (!module.hot.data) {
-    hotAPI.createRecord("_v-78e977f7", module.exports)
-  } else {
-    hotAPI.update("_v-78e977f7", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
-},{"babel-runtime/core-js/object/assign":1,"vue":21,"vue-hot-reload-api":17,"vueify/lib/insert-css":22}],46:[function(require,module,exports){
+},{"../../util/reusable_functions":32,"../reusable/menuItem.vue":30,"vue":6,"vue-hot-reload-api":2}],29:[function(require,module,exports){
 'use strict';
 
 var _menuItem = require('./menuItem.vue');
@@ -17113,31 +16022,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-fe83ce56", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./menuItem.vue":48,"vue":21,"vue-hot-reload-api":17}],47:[function(require,module,exports){
-var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n* {margin: 0;padding:0;}\n.mask-loading {\n\twidows: 100%;\n\tbackground-color: #ecf0f5;\n}\n.spinner {\n\twidth: 50px;\n\theight: 50px;\n\tposition: relative;\n\tmargin: 0 auto;\n}\n\n.double-bounce1, .double-bounce2 {\n\twidth: 100%;\n\theight: 100%;\n\tborder-radius: 50%;\n\tbackground-color: #3c8dbc;\n\topacity: 0.6;\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\n\t-webkit-animation: sk-bounce 2.0s infinite ease-in-out;\n\tanimation: sk-bounce 2.0s infinite ease-in-out;\n}\n\n.double-bounce2 {\n\t-webkit-animation-delay: -1.0s;\n\tanimation-delay: -1.0s;\n}\n\n@-webkit-keyframes sk-bounce {\n\t0%, 100% { -webkit-transform: scale(0.0) }\n\t50% { -webkit-transform: scale(1.0) }\n}\n\n@keyframes sk-bounce {\n\t0%, 100% { \n\t\ttransform: scale(0.0);\n\t\t-webkit-transform: scale(0.0);\n\t} 50% { \n\t\ttransform: scale(1.0);\n\t\t-webkit-transform: scale(1.0);\n\t}\n}\n")
-"use strict";
-
-var o = $('.content-wrapper');
-$(".mask-loading").css("height", o.height());
-$(".spinner").css("top", o.height() / 2 - 25);
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"mask-loading\">\n\t<div class=\"spinner\">\n\t\t<div class=\"double-bounce1\"></div>\n\t\t<div class=\"double-bounce2\"></div>\n\t</div>\n</div>\n"
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  module.hot.dispose(function () {
-    __vueify_insert__.cache["\n* {margin: 0;padding:0;}\n.mask-loading {\n\twidows: 100%;\n\tbackground-color: #ecf0f5;\n}\n.spinner {\n\twidth: 50px;\n\theight: 50px;\n\tposition: relative;\n\tmargin: 0 auto;\n}\n\n.double-bounce1, .double-bounce2 {\n\twidth: 100%;\n\theight: 100%;\n\tborder-radius: 50%;\n\tbackground-color: #3c8dbc;\n\topacity: 0.6;\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\n\t-webkit-animation: sk-bounce 2.0s infinite ease-in-out;\n\tanimation: sk-bounce 2.0s infinite ease-in-out;\n}\n\n.double-bounce2 {\n\t-webkit-animation-delay: -1.0s;\n\tanimation-delay: -1.0s;\n}\n\n@-webkit-keyframes sk-bounce {\n\t0%, 100% { -webkit-transform: scale(0.0) }\n\t50% { -webkit-transform: scale(1.0) }\n}\n\n@keyframes sk-bounce {\n\t0%, 100% { \n\t\ttransform: scale(0.0);\n\t\t-webkit-transform: scale(0.0);\n\t} 50% { \n\t\ttransform: scale(1.0);\n\t\t-webkit-transform: scale(1.0);\n\t}\n}\n"] = false
-    document.head.removeChild(__vueify_style__)
-  })
-  if (!module.hot.data) {
-    hotAPI.createRecord("_v-38efffdf", module.exports)
-  } else {
-    hotAPI.update("_v-38efffdf", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
-},{"vue":21,"vue-hot-reload-api":17,"vueify/lib/insert-css":22}],48:[function(require,module,exports){
+},{"./menuItem.vue":30,"vue":6,"vue-hot-reload-api":2}],30:[function(require,module,exports){
 'use strict';
 
 var _crossMenuItem = require('./crossMenuItem.vue');
@@ -17183,147 +16068,33 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-c5742402", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./crossMenuItem.vue":46,"vue":21,"vue-hot-reload-api":17}],49:[function(require,module,exports){
-var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n\t#menu-content {\n\t\tbackground:white;\n\t\tfont:normal normal 13px/1.4 Segoe,\"Segoe UI\",Calibri,Helmet,FreeSans,Sans-Serif;\n\t\tpadding:10px;\n\t}\n\n\n/**\n * Framework starts from here ...\n * ------------------------------\n */\n\n .tree,\n .tree ul {\n \tmargin:0 0 0 1em; /* indentation */\n \tpadding:0;\n \tlist-style:none;\n \tcolor:#369;\n \tposition:relative;\n }\n\n .tree ul {margin-left:.5em} /* (indentation/2) */\n\n .tree:before,\n .tree ul:before {\n \tcontent:\"\";\n \tdisplay:block;\n \twidth:0;\n \tposition:absolute;\n \ttop:0;\n \tbottom:0;\n \tleft:0;\n \tborder-left:1px solid;\n }\n\n .tree li {\n \tmargin:0;\n \tpadding:0 1.5em; /* indentation + .5em */\n \tline-height:2em; /* default list item's `line-height` */\n \tposition:relative;\n }\n\n .tree li:before {\n \tcontent:\"\";\n \tdisplay:block;\n \twidth:10px; /* same with indentation */\n \theight:0;\n \tborder-top:1px solid;\n \tmargin-top:-1px; /* border top width */\n \tposition:absolute;\n \ttop:1em; /* (line-height/2) */\n \tleft:0;\n }\n\n .tree li:last-child:before {\n \tbackground:white; /* same with body background */\n \theight:auto;\n \ttop:1em; /* (line-height/2) */\n \tbottom:0;\n }\n\n .edit-option, .delete-option{\n \tcolor: #336699;\n }\n .edit-option:hover{\n \tcursor: pointer;\n \tcolor: orange;\n }\n\n .delete-option:hover{\n \tcursor: pointer;\n \tcolor: red;\n }\n")
-'use strict';
+},{"./crossMenuItem.vue":29,"vue":6,"vue-hot-reload-api":2}],31:[function(require,module,exports){
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"row\">\n  <div class=\"col-md-12\">\n    <h3 class=\"text-center\">Recurso no encontrado</h3>\n    <p class=\"text-center\">\n      <i class=\"fa fa-3x fa-frown-o\"></i> \n    </p>\n    <h2 class=\"text-center\">404 Page Not Found</h2>\n    <p class=\"text-center\">\n      <a href=\"/\" class=\"\"><i class=\"fa fa-home\"></i> Home</a>\n    </p>\n  </div>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-b382fa48", module.exports)
+  } else {
+    hotAPI.update("_v-b382fa48", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":6,"vue-hot-reload-api":2}],32:[function(require,module,exports){
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+    value: true
 });
 exports.default = {
-	ready: function ready() {
-		var self = this;
-		self.$http.get(self.url).then(function (resp) {
-			self.data = resp.data.data;
-		}, function (err) {
-			console.warn(err);
-		});
-	},
-
-	name: 'management-menu',
-	props: {
-		caption: {
-			type: String,
-			required: false,
-			default: ''
-		},
-		url: {
-			type: String,
-			required: false,
-			default: 'api/menu'
-		},
-		data: {
-			type: Array,
-			required: false,
-			default: function _default() {
-				return [];
-			}
-		}
-	}
+    niceAlert: function niceAlert(type, message) {
+        Lobibox.notify(type, {
+            msg: message,
+            sound: false
+        });
+    }
 };
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div id=\"menu-content\">\n\t<p>{{caption}}</p>\n\t<ul class=\"tree\">\n\t\t<li v-for=\"item in data\"><strong>{{item.name}}</strong> - <i class=\"fa fa-pencil edit-option\" data-toggle=\"tooltip\" title=\"Editar\"></i> - <i class=\"fa fa-trash delete-option\" data-toggle=\"tooltip\" title=\"Eliminar\"></i>\n\t\t\t<ul v-if=\"item.children.length>0\">\n\t\t\t\t<li v-for=\"it in item.children\">{{it.name}} - <i class=\"fa fa-pencil edit-option\" data-toggle=\"tooltip\" title=\"Editar\"></i> - <i class=\"fa fa-trash delete-option\" data-toggle=\"tooltip\" title=\"Eliminar\"></i></li>\n\t\t\t</ul>\n\t\t</li>\n\t\t\n\t</ul>\n</div>\n"
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  module.hot.dispose(function () {
-    __vueify_insert__.cache["\n\t#menu-content {\n\t\tbackground:white;\n\t\tfont:normal normal 13px/1.4 Segoe,\"Segoe UI\",Calibri,Helmet,FreeSans,Sans-Serif;\n\t\tpadding:10px;\n\t}\n\n\n/**\n * Framework starts from here ...\n * ------------------------------\n */\n\n .tree,\n .tree ul {\n \tmargin:0 0 0 1em; /* indentation */\n \tpadding:0;\n \tlist-style:none;\n \tcolor:#369;\n \tposition:relative;\n }\n\n .tree ul {margin-left:.5em} /* (indentation/2) */\n\n .tree:before,\n .tree ul:before {\n \tcontent:\"\";\n \tdisplay:block;\n \twidth:0;\n \tposition:absolute;\n \ttop:0;\n \tbottom:0;\n \tleft:0;\n \tborder-left:1px solid;\n }\n\n .tree li {\n \tmargin:0;\n \tpadding:0 1.5em; /* indentation + .5em */\n \tline-height:2em; /* default list item's `line-height` */\n \tposition:relative;\n }\n\n .tree li:before {\n \tcontent:\"\";\n \tdisplay:block;\n \twidth:10px; /* same with indentation */\n \theight:0;\n \tborder-top:1px solid;\n \tmargin-top:-1px; /* border top width */\n \tposition:absolute;\n \ttop:1em; /* (line-height/2) */\n \tleft:0;\n }\n\n .tree li:last-child:before {\n \tbackground:white; /* same with body background */\n \theight:auto;\n \ttop:1em; /* (line-height/2) */\n \tbottom:0;\n }\n\n .edit-option, .delete-option{\n \tcolor: #336699;\n }\n .edit-option:hover{\n \tcursor: pointer;\n \tcolor: orange;\n }\n\n .delete-option:hover{\n \tcursor: pointer;\n \tcolor: red;\n }\n"] = false
-    document.head.removeChild(__vueify_style__)
-  })
-  if (!module.hot.data) {
-    hotAPI.createRecord("_v-4e25b7a2", module.exports)
-  } else {
-    hotAPI.update("_v-4e25b7a2", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
-},{"vue":21,"vue-hot-reload-api":17,"vueify/lib/insert-css":22}],50:[function(require,module,exports){
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<nav id=\"vuetable-pagination-bootstrap-template\">\n        <ul class=\"pagination\">\n            <li class=\"{{isOnFirstPage ? disabledClass : ''}}\">\n                <a @click=\"loadPage('prev')\"><i class=\"glyphicon glyphicon-chevron-left\"></i></a>\n            </li>\n            <template v-for=\"n in totalPage\">\n                <li class=\"{{isCurrentPage(n+1) ? ' active' : ''}}\">\n                    <a @click=\"loadPage(n+1)\"> {{ n+1 }}</a>\n                </li>\n            </template>\n            <li class=\"{{isOnLastPage ? disabledClass : ''}}\">\n                <a @click=\"loadPage('next')\"><i class=\"glyphicon glyphicon-chevron-right\"></i></a>\n            </li>\n        </ul>\n    </nav>\n"
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  if (!module.hot.data) {
-    hotAPI.createRecord("_v-1cf7e347", module.exports)
-  } else {
-    hotAPI.update("_v-1cf7e347", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
-},{"vue":21,"vue-hot-reload-api":17}],51:[function(require,module,exports){
-'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.default = {
-	name: 'select-list',
-	ready: function ready() {
-		var self = this;
-		this.$http.get(this.url).then(function (resp) {
-			self.data = resp.data.data;
-		}, function (err) {
-			console.warn(err);
-		});
-	},
-	props: {
-		className: {
-			type: String,
-			required: false,
-			default: null
-		},
-		labelKey: {
-			type: String,
-			required: false,
-			default: null
-		},
-		valueKey: {
-			type: String,
-			required: false,
-			default: null
-		},
-		data: {
-			type: Array,
-			required: false,
-			default: function _default() {
-				return [];
-			}
-		},
-		url: {
-			type: String,
-			reqruired: false,
-			default: null
-		},
-		selectLabel: {
-			type: String,
-			required: false,
-			default: null
-		},
-		noDataLabel: {
-			type: String,
-			required: false,
-			default: 'No hay datos'
-		},
-		selectValue: {
-			type: String | Number,
-			required: true
-		}
-
-	},
-	methods: {}
-};
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<select name=\"\" id=\"\" v-model=\"selectValue\" :class=\"className\">\n\n\t<option v-if=\"selectLabel\" disabled=\"\">{{selectLabel}}</option>\n\t<template v-if=\"labelKey &amp;&amp; valueKey\">\n\t\t<option v-for=\"item in data\" :value=\"item[valueKey]\">{{item[labelKey]}}</option>\n\t</template>\n\t<template v-else=\"\">\n\t\t<option v-for=\"item in data\" :value=\"item\">{{item}}</option>\n\t</template>\n\n</select>\n"
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  if (!module.hot.data) {
-    hotAPI.createRecord("_v-43fb7a72", module.exports)
-  } else {
-    hotAPI.update("_v-43fb7a72", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
-},{"vue":21,"vue-hot-reload-api":17}]},{},[28]);
+},{}]},{},[13]);
 
 //# sourceMappingURL=build.js.map

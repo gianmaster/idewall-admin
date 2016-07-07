@@ -11,14 +11,25 @@
 |
 */
 
+/*
 Route::get('/', function () {
     return view('welcome');
 });
+*/
 
-Route::group(['prefix' => 'api'], function(){
-	Route::resource('users', 'UserController');
+Route::resource('/', 'HomeController');
 
-	Route::resource('menu', 'MenuTestController');
+
+Route::group(['middleware' => 'auth'], function(){
+
+	Route::group(['prefix' => 'api'], function(){
+		Route::resource('users', 'UserController');
+
+		Route::resource('menu', 'MenuTestController');
+	});
+
 });
+
+
 
 
