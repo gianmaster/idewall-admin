@@ -1,10 +1,13 @@
 <template>
-	<select v-model="selectValue" :class="className">
+	<select v-if="data.length<=0" :class="className">
+		<option>Cargando.....</option>
+	</select>
+	<select v-else v-model="selectValue" :class="className">
 
 		<option v-if="selectLabel" disabled>{{selectLabel}}</option>
 
 		<template v-if="labelKey && valueKey">
-			<option v-for="item in data" :value="item[valueKey]" >{{item[labelKey]}}</option>
+			<option v-for="item in data" value="{{item[valueKey]}}" >{{item[labelKey]}}</option>
 		</template>
 		<template v-else>
 			<option v-for="item in data" :value="item">{{item}}</option>
