@@ -31,9 +31,6 @@ const router = new VueRouter({
 })
 */
 
-const subrutas = require('./finalComponents/app/materias/index.js');
-console.log(subrutas);
-
 const router = new VueRouter();
 
 router.map({
@@ -55,7 +52,8 @@ router.map({
   '/paginate': {
     component: require('./finalComponents/app/testPagination.vue')
   },*/
-  '/materias': subrutas
+  '/materias': require('./finalComponents/app/materias/index.js'),
+  '/menu': require('./finalComponents/app/mantenedor-menu/index.js'),
   
 });
 

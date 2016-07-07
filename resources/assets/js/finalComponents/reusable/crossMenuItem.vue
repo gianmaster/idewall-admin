@@ -31,7 +31,13 @@ import MenuItem from './menuItem.vue';
 		methods: {
 			toggleMenu: function (event) {
 				$('li.pageLink').removeClass('active');
-				event.toElement.parentElement.className = 'pageLink active';
+				var itemElement = event.toElement.parentElement;
+				if(itemElement.className.indexOf('pageLink')>=0){
+					itemElement.className = 'pageLink active';	
+				}
+				else {
+					itemElement.parentElement.className = 'pageLink active';
+				}
 			},
 			hasChildren: function(nodo){
 				if(typeof nodo === 'undefined')

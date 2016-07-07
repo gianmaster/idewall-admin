@@ -80,7 +80,7 @@ module.exports = {
 	},
 	data(){
 		return {
-			urlMenu: 'api/menu',
+			urlMenu: 'api/menu?orderBy=orden&sorterBy=desc',
 			menu: [
 			{
 				iconClass: 'fa fa-book',

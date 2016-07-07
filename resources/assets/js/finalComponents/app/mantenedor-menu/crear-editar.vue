@@ -47,6 +47,7 @@
 <script>
 
 import selectList from '../../reusable/select-list.vue';
+import fnc from '../../../util/reusable_functions';
 
 	export default{
 		components: {
@@ -55,19 +56,25 @@ import selectList from '../../reusable/select-list.vue';
 		data(){
 			return {
 				newModel: {
-					cod_padre: '',
-					mode: ''
+					id: null,
+					cod_padre: null,
+					titulo: null,
+					nombre: null,
+					iconclass: null,
+					url: null,
+					orden: null
 				},
 			}
 		},
 		methods: {
-			addMenu: function(){
+			createMenu: function(){
 				var _this = this;
 				this.$http.post('api/menu', this.newModel).then(function(resp){
 					console.log(resp);
-					alert('Se agrego el menu correctamente');
+					fnc.niceAlert('success','Se agrego el menú correctamente!');
 					_this.$parent.mode = _this.mode ='listar';
 				}, function(err){
+					fnc.niceAlert('error','Se presento un error al tratar de realizar esta acción!');
 					console.warn(err);
 				})
 			}

@@ -60,7 +60,7 @@ class MenuTestController extends Controller
      */
     public function show($id)
     {
-        //
+        return response()->json(array('data' => Menu::find($id)));
     }
 
     /**
@@ -83,7 +83,19 @@ class MenuTestController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+
+            $input = $request->only(['nombre', 'titulo', 'url', 'iconclass', 'cod_padre', 'orden']);
+            $menu = Menu::where('id', $id)->update($input);
+            return response()->json(array('data' => $menu), 200);
+
+        } catch (Exception $e) {
+            return response()->json(array(
+                'message' => 'Se presento un error al tratar de hacer esta acción', 
+                'dev_message' => $e->getMessage(),
+                'code'  =>  409));    
+        }
+        
     }
 
     /**
@@ -94,6 +106,17 @@ class MenuTestController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+
+            Menu::where('id', $id)->delete();
+            Menu::where('cod_padre', $id)->delete();
+            return response()->json(array('data' => []), 204);
+
+        } catch (Exception $e) {
+            return response()->json(array(
+                'message' => 'Se presento un error al tratar de hacer esta acción', 
+                'dev_message' => $e->getMessage(),
+                'code'  =>  409));
+        }
     }
 }
