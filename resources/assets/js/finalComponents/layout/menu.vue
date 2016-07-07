@@ -63,21 +63,24 @@ module.exports = {
 			if(typeof nodo === 'undefined')
 				return false;
 			return nodo.length>0;
+		},
+		loadMenu: function(){
+			let self = this;
+			self.$http.get(self.urlMenu).then(function(resp){
+				console.log(resp.data);
+				self.menu=resp.data.data;
+			}, function(err){
+				console.warn(err);
+			});
 		}
 	},
 	ready(){
-		// let self = this;
-		// self.$http.get(self.urlMenu).then(function(resp){
-		// 	console.log(resp.data);
-		// 	self.menu=resp.data.data;
-		// }, function(err){
-		// 	console.warn(err);
-		// });
+		 this.loadMenu();
 	},
 	data(){
 		return {
-			urlMenu: '/admin_lte/public/api/menu',
-			menu: [
+			urlMenu: 'api/menu',
+			/*menu: [
 				{
 					iconClass: 'fa fa-dashboard',
 					name: 'Dashboard',
@@ -116,7 +119,7 @@ module.exports = {
 					]
 				},
 				
-			]
+			]*/
 		}
 	}
 }

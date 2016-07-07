@@ -19,7 +19,7 @@
       return {
         title: null,
         login: true,
-        body_class: "hold-transition skin-blue sidebar-mini fixed", 
+        body_class: "skin-blue sidebar-mini fixed",
         menus: menu || [] //esto deberia ser cargado una vez logoneado
       }
     },
