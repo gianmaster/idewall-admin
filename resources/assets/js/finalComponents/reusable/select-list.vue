@@ -1,5 +1,5 @@
 <template>
-	<select v-if="data.length<=0" :class="className">
+	<select v-if="data.length<=0" :class="className" disabled>
 		<option>Cargando.....</option>
 	</select>
 	<select v-else v-model="selectValue" :class="className">

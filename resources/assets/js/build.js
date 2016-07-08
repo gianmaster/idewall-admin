@@ -54,6 +54,9 @@ router.map({
   },*/
   '/materias': require('./finalComponents/app/materias/index.js'),
   '/menu': require('./finalComponents/app/mantenedor-menu/index.js'),
+  '/lockscreen': {
+    component: require('./finalComponents/new-layout/lockscreen.vue')
+  },
   
 });
 

@@ -15448,7 +15448,10 @@ router.map({
      component: require('./finalComponents/app/testPagination.vue')
      },*/
   '/materias': require('./finalComponents/app/materias/index.js'),
-  '/menu': require('./finalComponents/app/mantenedor-menu/index.js')
+  '/menu': require('./finalComponents/app/mantenedor-menu/index.js'),
+  '/lockscreen': {
+    component: require('./finalComponents/new-layout/lockscreen.vue')
+  }
 
 });
 
@@ -15460,7 +15463,7 @@ router.start(App, '#app');
 //solo para hacer debug
 window.router = router;
 
-},{"./config/externalComponents":14,"./finalComponents/app/mantenedor-menu/index.js":19,"./finalComponents/app/materias/index.js":25,"./finalComponents/layoutView.vue":29,"./finalComponents/reusable/notFound.vue":39,"vue":6,"vue-progressbar":3,"vue-resource":4,"vue-router":5}],14:[function(require,module,exports){
+},{"./config/externalComponents":14,"./finalComponents/app/mantenedor-menu/index.js":19,"./finalComponents/app/materias/index.js":25,"./finalComponents/layoutView.vue":29,"./finalComponents/new-layout/lockscreen.vue":35,"./finalComponents/reusable/notFound.vue":40,"vue":6,"vue-progressbar":3,"vue-resource":4,"vue-router":5}],14:[function(require,module,exports){
 'use strict';
 
 var _Vuetable = require('vuetable/src/components/Vuetable.vue');
@@ -15572,7 +15575,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-aa257c00", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../../util/reusable_functions":41,"./form-fields.vue":18,"vue":6,"vue-hot-reload-api":2}],17:[function(require,module,exports){
+},{"../../../util/reusable_functions":42,"./form-fields.vue":18,"vue":6,"vue-hot-reload-api":2}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15638,7 +15641,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-35718132", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../../util/reusable_functions":41,"./form-fields.vue":18,"vue":6,"vue-hot-reload-api":2}],18:[function(require,module,exports){
+},{"../../../util/reusable_functions":42,"./form-fields.vue":18,"vue":6,"vue-hot-reload-api":2}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15707,7 +15710,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-a8cec9e8", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/select-list.vue":40,"vue":6,"vue-hot-reload-api":2}],19:[function(require,module,exports){
+},{"../../reusable/select-list.vue":41,"vue":6,"vue-hot-reload-api":2}],19:[function(require,module,exports){
 'use strict';
 
 var _index = require('./index.vue');
@@ -15821,7 +15824,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-9b2435c4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/menuManagement.vue":38,"vue":6,"vue-hot-reload-api":2}],22:[function(require,module,exports){
+},{"../../reusable/menuManagement.vue":39,"vue":6,"vue-hot-reload-api":2}],22:[function(require,module,exports){
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<h3>Visualización</h3>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem voluptate laborum, a accusamus. Cum aperiam dignissimos iste, placeat facere repudiandae vel, doloribus voluptatibus perferendis esse illo, dicta. Inventore, possimus, illum!</p>\n<pre>{{$route.params.model_id|json}}</pre>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
@@ -15955,7 +15958,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-32136a05", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../config/menus.js":15,"./new-layout/content.vue":31,"./new-layout/control.vue":32,"./new-layout/footer.vue":33,"./new-layout/header.vue":34,"./new-layout/menu.vue":35,"vue":6,"vue-hot-reload-api":2}],30:[function(require,module,exports){
+},{"../config/menus.js":15,"./new-layout/content.vue":31,"./new-layout/control.vue":32,"./new-layout/footer.vue":33,"./new-layout/header.vue":34,"./new-layout/menu.vue":36,"vue":6,"vue-hot-reload-api":2}],30:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16129,7 +16132,7 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  \n  <!-- Main Header -->\n<header class=\"main-header\">\n\n    <!-- Logo -->\n    <a href=\"#\" class=\"logo\">\n        <!-- mini logo for sidebar mini 50x50 pixels -->\n        <span class=\"logo-mini\"><b>{{shortLogo[0]}}</b>{{shortLogo[1]}}</span>\n        <!-- logo for regular state and mobile devices -->\n        <span class=\"logo-lg\"><b>{{largeLogo[0]}}</b>{{largeLogo[1]}}</span>\n    </a>\n\n    <!-- Header Navbar -->\n    <nav class=\"navbar navbar-static-top\" role=\"navigation\">\n        <!-- Sidebar toggle button-->\n        <a href=\"#\" class=\"sidebar-toggle\" data-toggle=\"offcanvas\" role=\"button\">\n            <span class=\"sr-only\">no aparece, solo lectura</span>\n        </a>\n        <!-- Navbar Right Menu -->\n        <div class=\"navbar-custom-menu\">\n            <ul class=\"nav navbar-nav\">\n                <!-- Messages: style can be found in dropdown.less-->\n                <li class=\"dropdown messages-menu\" v-if=\"messages.length>0\">\n                    <!-- Menu toggle button -->\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <i class=\"fa fa-envelope-o\"></i>\n                        <span class=\"label label-success\">4</span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <li class=\"header\">Mensajes</li>\n                        <li>\n                            <!-- inner menu: contains the messages -->\n                            <ul class=\"menu\">\n                                <li><!-- start message -->\n                                    <a href=\"#\">\n                                        <div class=\"pull-left\">\n                                            <!-- User Image -->\n                                            <img src=\"img/user2-160x160.jpg\" class=\"img-circle\" alt=\"User Image\">\n                                        </div>\n                                        <!-- Message title and timestamp -->\n                                        <h4>\n                                            Mensajes\n                                            <small><i class=\"fa fa-clock-o\"></i> 5 mins</small>\n                                        </h4>\n                                        <!-- The message -->\n                                        <p>Estos son los mensajes</p>\n                                    </a>\n                                </li><!-- end message -->\n                            </ul><!-- /.menu -->\n                        </li>\n                        <li class=\"footer\"><a href=\"#\">Ver todos los mensajes</a></li>\n                    </ul>\n                </li><!-- /.messages-menu -->\n\n                <!-- Notifications Menu -->\n                <li class=\"dropdown notifications-menu\" v-if=\"notifications.length>0\">\n                    <!-- Menu toggle button -->\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <i class=\"fa fa-bell-o\"></i>\n                        <span class=\"label label-warning\">10</span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <li class=\"header\">Notificaciones</li>\n                        <li>\n                            <!-- Inner Menu: contains the notifications -->\n                            <ul class=\"menu\">\n                                <li><!-- start notification -->\n                                    <a href=\"#\">\n                                        <i class=\"fa fa-users text-aqua\"></i> Esta es una notificacion\n                                    </a>\n                                </li><!-- end notification -->\n                            </ul>\n                        </li>\n                        <li class=\"footer\"><a href=\"#\">Ver todos las notificaciones</a></li>\n                    </ul>\n                </li>\n                <!-- Tasks Menu -->\n                <li class=\"dropdown tasks-menu\" v-if=\"tasks.length>0\">\n                    <!-- Menu Toggle Button -->\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <i class=\"fa fa-flag-o\"></i>\n                        <span class=\"label label-danger\">9</span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <li class=\"header\">Tareas</li>\n                        <li>\n                            <!-- Inner menu: contains the tasks -->\n                            <ul class=\"menu\">\n                                <li><!-- Task item -->\n                                    <a href=\"#\">\n                                        <!-- Task title and progress text -->\n                                        <h3>\n                                            Esta es una tarea\n                                            <small class=\"pull-right\">20%</small>\n                                        </h3>\n                                        <!-- The progress bar -->\n                                        <div class=\"progress xs\">\n                                            <!-- Change the css width attribute to simulate progress -->\n                                            <div class=\"progress-bar progress-bar-aqua\" style=\"width: 20%\" role=\"progressbar\" aria-valuenow=\"20\" aria-valuemin=\"0\" aria-valuemax=\"100\">\n                                                <span class=\"sr-only\">20% completo</span>\n                                            </div>\n                                        </div>\n                                    </a>\n                                </li><!-- end task item -->\n                            </ul>\n                        </li>\n                        <li class=\"footer\">\n                            <a href=\"#\">Ver todas las tareas</a>\n                        </li>\n                    </ul>\n                </li>\n                \n                <!-- User Account Menu -->\n                <li class=\"dropdown user user-menu\">\n                    <!-- Menu Toggle Button -->\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <!-- The user image in the navbar-->\n                        <img src=\"img/user2-160x160.jpg\" class=\"user-image\" alt=\"User Image\">\n                        <!-- hidden-xs hides the username on small devices so only the image appears. -->\n                        <span class=\"hidden-xs\">{{username}}</span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <!-- The user image in the menu -->\n                        <li class=\"user-header\">\n                            <img src=\"img/user2-160x160.jpg\" class=\"img-circle\" alt=\"User Image\">\n                            <p>\n                                {{username}}\n                                <small>Miembro desde Nov. 2012</small>\n                            </p>\n                        </li>\n                        <!-- Menu Body -->\n\n                        <!-- Menu Footer-->\n                        <li class=\"user-footer\">\n                            <div class=\"pull-left\">\n                                <a href=\"/account\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-user\"></i> Perfil</a>\n                            </div>\n                            <div class=\"pull-right\">\n                                <a href=\"/logout\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-sign-out\"></i> Salir</a>\n                            </div>\n                        </li>\n                    </ul>\n                </li>\n\n                <!-- Control Sidebar Toggle Button -->\n                <li v-if=\"control\">\n                    <a href=\"#\" data-toggle=\"control-sidebar\"><i class=\"fa fa-gears\"></i></a>\n                </li>\n                \n            </ul>\n        </div>\n    </nav>\n</header>\n\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  \n  <!-- Main Header -->\n<header class=\"main-header\">\n\n    <!-- Logo -->\n    <a href=\"#\" class=\"logo\">\n        <!-- mini logo for sidebar mini 50x50 pixels -->\n        <span class=\"logo-mini\"><b>{{shortLogo[0]}}</b>{{shortLogo[1]}}</span>\n        <!-- logo for regular state and mobile devices -->\n        <span class=\"logo-lg\"><b>{{largeLogo[0]}}</b>{{largeLogo[1]}}</span>\n    </a>\n\n    <!-- Header Navbar -->\n    <nav class=\"navbar navbar-static-top\" role=\"navigation\">\n        <!-- Sidebar toggle button-->\n        <a href=\"#\" class=\"sidebar-toggle\" data-toggle=\"offcanvas\" role=\"button\">\n            <span class=\"sr-only\">no aparece, solo lectura</span>\n        </a>\n        <!-- Navbar Right Menu -->\n        <div class=\"navbar-custom-menu\">\n            <ul class=\"nav navbar-nav\">\n                <!-- Messages: style can be found in dropdown.less-->\n                <li class=\"dropdown messages-menu\" v-if=\"messages.length>0\">\n                    <!-- Menu toggle button -->\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <i class=\"fa fa-envelope-o\"></i>\n                        <span class=\"label label-success\">4</span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <li class=\"header\">Mensajes</li>\n                        <li>\n                            <!-- inner menu: contains the messages -->\n                            <ul class=\"menu\">\n                                <li><!-- start message -->\n                                    <a href=\"#\">\n                                        <div class=\"pull-left\">\n                                            <!-- User Image -->\n                                            <img src=\"img/user2-160x160.jpg\" class=\"img-circle\" alt=\"User Image\">\n                                        </div>\n                                        <!-- Message title and timestamp -->\n                                        <h4>\n                                            Mensajes\n                                            <small><i class=\"fa fa-clock-o\"></i> 5 mins</small>\n                                        </h4>\n                                        <!-- The message -->\n                                        <p>Estos son los mensajes</p>\n                                    </a>\n                                </li><!-- end message -->\n                            </ul><!-- /.menu -->\n                        </li>\n                        <li class=\"footer\"><a href=\"#\">Ver todos los mensajes</a></li>\n                    </ul>\n                </li><!-- /.messages-menu -->\n\n                <!-- Notifications Menu -->\n                <li class=\"dropdown notifications-menu\" v-if=\"notifications.length>0\">\n                    <!-- Menu toggle button -->\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <i class=\"fa fa-bell-o\"></i>\n                        <span class=\"label label-warning\">10</span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <li class=\"header\">Notificaciones</li>\n                        <li>\n                            <!-- Inner Menu: contains the notifications -->\n                            <ul class=\"menu\">\n                                <li><!-- start notification -->\n                                    <a href=\"#\">\n                                        <i class=\"fa fa-users text-aqua\"></i> Esta es una notificacion\n                                    </a>\n                                </li><!-- end notification -->\n                            </ul>\n                        </li>\n                        <li class=\"footer\"><a href=\"#\">Ver todos las notificaciones</a></li>\n                    </ul>\n                </li>\n                <!-- Tasks Menu -->\n                <li class=\"dropdown tasks-menu\" v-if=\"tasks.length>0\">\n                    <!-- Menu Toggle Button -->\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <i class=\"fa fa-flag-o\"></i>\n                        <span class=\"label label-danger\">9</span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <li class=\"header\">Tareas</li>\n                        <li>\n                            <!-- Inner menu: contains the tasks -->\n                            <ul class=\"menu\">\n                                <li><!-- Task item -->\n                                    <a href=\"#\">\n                                        <!-- Task title and progress text -->\n                                        <h3>\n                                            Esta es una tarea\n                                            <small class=\"pull-right\">20%</small>\n                                        </h3>\n                                        <!-- The progress bar -->\n                                        <div class=\"progress xs\">\n                                            <!-- Change the css width attribute to simulate progress -->\n                                            <div class=\"progress-bar progress-bar-aqua\" style=\"width: 20%\" role=\"progressbar\" aria-valuenow=\"20\" aria-valuemin=\"0\" aria-valuemax=\"100\">\n                                                <span class=\"sr-only\">20% completo</span>\n                                            </div>\n                                        </div>\n                                    </a>\n                                </li><!-- end task item -->\n                            </ul>\n                        </li>\n                        <li class=\"footer\">\n                            <a href=\"#\">Ver todas las tareas</a>\n                        </li>\n                    </ul>\n                </li>\n                \n                <!-- User Account Menu -->\n                <li class=\"dropdown user user-menu\">\n                    <!-- Menu Toggle Button -->\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <!-- The user image in the navbar-->\n                        <img src=\"img/user2-160x160.jpg\" class=\"user-image\" alt=\"User Image\">\n                        <!-- hidden-xs hides the username on small devices so only the image appears. -->\n                        <span class=\"hidden-xs\">{{username}}</span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <!-- The user image in the menu -->\n                        <li class=\"user-header\">\n                            <img src=\"img/user2-160x160.jpg\" class=\"img-circle\" alt=\"User Image\">\n                            <p>\n                                {{username}}\n                                <small>Miembro desde Nov. 2012</small>\n                            </p>\n                        </li>\n                        <!-- Menu Body -->\n\n                        <!-- Menu Footer-->\n                        <li class=\"user-footer\">\n                            <div class=\"pull-left\">\n                                <a href=\"account\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-user\"></i> Perfil</a>\n                            </div>\n                            <div class=\"pull-right\">\n                                <a href=\"logout\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-sign-out\"></i> Salir</a>\n                            </div>\n                        </li>\n                    </ul>\n                </li>\n\n                <!-- Control Sidebar Toggle Button -->\n                <li v-if=\"control\">\n                    <a href=\"#\" data-toggle=\"control-sidebar\"><i class=\"fa fa-gears\"></i></a>\n                </li>\n                \n            </ul>\n        </div>\n    </nav>\n</header>\n\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16141,6 +16144,38 @@ if (module.hot) {(function () {  module.hot.accept()
   }
 })()}
 },{"vue":6,"vue-hot-reload-api":2}],35:[function(require,module,exports){
+var __vueify_insert__ = require("vueify/lib/insert-css")
+var __vueify_style__ = __vueify_insert__.insert("\n\t.lockscreen-name{\n\t\ttext-align: center;\n    \tfont-weight: 600;\n\t}\n\t.lockscreen-logo{\n\t\tmargin-top: 25px;\n\t}\n\n")
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.default = {
+	name: 'lockscreen',
+	methods: {
+		retrieveLogin: function retrieveLogin() {
+			alert('Recuperando tu sesion');
+		}
+	}
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"lockscreen-logo\">\n\t<a href=\"#\"><i class=\"fa fa-lock fa-3x\"></i><!--<b>Admin</b>LTE</a>-->\n</a></div><a href=\"#\">\n<!-- User name -->\n<div class=\"lockscreen-name\">Giancarlos Cercado</div>\n\n<!-- START LOCK SCREEN ITEM -->\n<div class=\"lockscreen-item\">\n\t<!-- lockscreen image -->\n\t<div class=\"lockscreen-image\">\n\t\t<img src=\"img/user2-160x160.jpg\" alt=\"User Image\">\n\t</div>\n\t<!-- /.lockscreen-image -->\n\n\t<!-- lockscreen credentials (contains the form) -->\n\t<form class=\"lockscreen-credentials\" @submit.prevent=\"retrieveLogin\">\n\t\t<div class=\"input-group\">\n\t\t\t<input type=\"password\" class=\"form-control\" placeholder=\"password\">\n\n\t\t\t<div class=\"input-group-btn\">\n\t\t\t\t<button type=\"submit\" class=\"btn\"><i class=\"fa fa-arrow-right text-muted\"></i></button>\n\t\t\t</div>\n\t\t</div>\n\t</form>\n\t<!-- /.lockscreen credentials -->\n\n</div>\n<!-- /.lockscreen-item -->\n<div class=\"help-block text-center\">\n\tIngresa tu contraseña para recuperar tu sesión\n</div>\n<div class=\"help-block text-center\">\n\tÓ\n</div>\n</a><div class=\"text-center\"><a href=\"#\">\n\t</a><a href=\"login\">Ingresa con otra cuenta de usuario</a>\n</div>\n<!--\n<div class=\"lockscreen-footer text-center\">\n\tCopyright © 2016 <b><a href=\"http://giancarloscercado.com\" class=\"text-black\">Giancarlos Cercado</a></b><br>\n\tAll rights reserved\n</div>\n-->\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.dispose(function () {
+    __vueify_insert__.cache["\n\t.lockscreen-name{\n\t\ttext-align: center;\n    \tfont-weight: 600;\n\t}\n\t.lockscreen-logo{\n\t\tmargin-top: 25px;\n\t}\n\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-ea935394", module.exports)
+  } else {
+    hotAPI.update("_v-ea935394", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":6,"vue-hot-reload-api":2,"vueify/lib/insert-css":7}],36:[function(require,module,exports){
 'use strict';
 
 var _reusable_functions = require('../../util/reusable_functions');
@@ -16176,12 +16211,8 @@ module.exports = {
 	ready: function ready() {
 		var self = this;
 		self.$http.get(self.urlMenu).then(function (resp) {
-			_reusable_functions2.default.niceAlert('info', 'Se cargo correctamente el Menu');
 			self.menu = resp.data.data;
-		}, function (err) {
-			_reusable_functions2.default.niceAlert('error', 'no se pudo cargar el Menu');
-			console.warn(err);
-		});
+		}, _reusable_functions2.default.tryError);
 	},
 	data: function data() {
 		return {
@@ -16207,7 +16238,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-04eb0f7e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../util/reusable_functions":41,"../reusable/menuItem.vue":37,"vue":6,"vue-hot-reload-api":2}],36:[function(require,module,exports){
+},{"../../util/reusable_functions":42,"../reusable/menuItem.vue":38,"vue":6,"vue-hot-reload-api":2}],37:[function(require,module,exports){
 'use strict';
 
 var _menuItem = require('./menuItem.vue');
@@ -16258,7 +16289,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-5c925152", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./menuItem.vue":37,"vue":6,"vue-hot-reload-api":2}],37:[function(require,module,exports){
+},{"./menuItem.vue":38,"vue":6,"vue-hot-reload-api":2}],38:[function(require,module,exports){
 'use strict';
 
 var _crossMenuItem = require('./crossMenuItem.vue');
@@ -16309,7 +16340,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-24e6b386", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./crossMenuItem.vue":36,"vue":6,"vue-hot-reload-api":2}],38:[function(require,module,exports){
+},{"./crossMenuItem.vue":37,"vue":6,"vue-hot-reload-api":2}],39:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\t#menu-content {\n\t\tbackground:white;\n\t\tfont:normal normal 13px/1.4 Segoe,\"Segoe UI\",Calibri,Helmet,FreeSans,Sans-Serif;\n\t\tpadding:10px;\n\t}\n\n\n/**\n * Framework starts from here ...\n * ------------------------------\n */\n\n .tree,\n .tree ul {\n \tmargin:0 0 0 1em; /* indentation */\n \tpadding:0;\n \tlist-style:none;\n \tcolor:#369;\n \tposition:relative;\n }\n\n .tree ul {margin-left:.5em} /* (indentation/2) */\n\n .tree:before,\n .tree ul:before {\n \tcontent:\"\";\n \tdisplay:block;\n \twidth:0;\n \tposition:absolute;\n \ttop:0;\n \tbottom:0;\n \tleft:0;\n \tborder-left:1px solid;\n }\n\n .tree li {\n \tmargin:0;\n \tpadding:0 1.5em; /* indentation + .5em */\n \tline-height:2em; /* default list item's `line-height` */\n \tposition:relative;\n }\n\n .tree li:before {\n \tcontent:\"\";\n \tdisplay:block;\n \twidth:10px; /* same with indentation */\n \theight:0;\n \tborder-top:1px solid;\n \tmargin-top:-1px; /* border top width */\n \tposition:absolute;\n \ttop:1em; /* (line-height/2) */\n \tleft:0;\n }\n\n .tree li:last-child:before {\n \tbackground:white; /* same with body background */\n \theight:auto;\n \ttop:1em; /* (line-height/2) */\n \tbottom:0;\n }\n\n .edit-option, .delete-option{\n \tcolor: #336699;\n }\n .edit-option:hover{\n \tcursor: pointer;\n \tcolor: orange;\n }\n\n .delete-option:hover{\n \tcursor: pointer;\n \tcolor: red;\n }\n\n .add-btn{\n \tpadding: 1px 50px !important;\n }\n")
 'use strict';
@@ -16363,9 +16394,7 @@ exports.default = {
 			var self = this;
 			self.$http.get(self.url).then(function (resp) {
 				self.data = resp.data.data;
-			}, function (err) {
-				console.warn(err);
-			});
+			}, _reusable_functions2.default.tryError);
 		}
 	}
 };
@@ -16385,8 +16414,17 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-b1e79426", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../util/reusable_functions":41,"vue":6,"vue-hot-reload-api":2,"vueify/lib/insert-css":7}],39:[function(require,module,exports){
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"row\">\n  <div class=\"col-md-12\">\n    <h3 class=\"text-center\">Recurso no encontrado</h3>\n    <p class=\"text-center\">\n      <i class=\"fa fa-3x fa-frown-o\"></i> \n    </p>\n    <h2 class=\"text-center\">404 Page Not Found</h2>\n    <p class=\"text-center\">\n      <a href=\"/\" class=\"\"><i class=\"fa fa-home\"></i> Home</a>\n    </p>\n  </div>\n</div>\n"
+},{"../../util/reusable_functions":42,"vue":6,"vue-hot-reload-api":2,"vueify/lib/insert-css":7}],40:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+  name: 'lockscreen'
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"row\">\n  <div class=\"col-md-12\">\n    <h3 class=\"text-center\">Recurso no encontrado</h3>\n    <p class=\"text-center\">\n      <i class=\"fa fa-3x fa-frown-o\"></i> \n    </p>\n    <h2 class=\"text-center\">404 Page Not Found</h2>\n    <p class=\"text-center\">\n      <a v-link=\"{path: '/'}\" class=\"\"><i class=\"fa fa-home\"></i> Home</a>\n    </p>\n  </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16397,7 +16435,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-12f589cc", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":6,"vue-hot-reload-api":2}],40:[function(require,module,exports){
+},{"vue":6,"vue-hot-reload-api":2}],41:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16468,7 +16506,7 @@ exports.default = {
 	methods: {}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<select v-if=\"data.length<=0\" :class=\"className\">\n\t<option>Cargando.....</option>\n</select>\n<select v-else=\"\" v-model=\"selectValue\" :class=\"className\">\n\n\t<option v-if=\"selectLabel\" disabled=\"\">{{selectLabel}}</option>\n\n\t<template v-if=\"labelKey &amp;&amp; valueKey\">\n\t\t<option v-for=\"item in data\" value=\"{{item[valueKey]}}\">{{item[labelKey]}}</option>\n\t</template>\n\t<template v-else=\"\">\n\t\t<option v-for=\"item in data\" :value=\"item\">{{item}}</option>\n\t</template>\n\t<option v-if=\"nullableLabel\" :value=\"nullValue\">{{nullableLabel}}</option>\n\n</select>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<select v-if=\"data.length<=0\" :class=\"className\" disabled=\"\">\n\t<option>Cargando.....</option>\n</select>\n<select v-else=\"\" v-model=\"selectValue\" :class=\"className\">\n\n\t<option v-if=\"selectLabel\" disabled=\"\">{{selectLabel}}</option>\n\n\t<template v-if=\"labelKey &amp;&amp; valueKey\">\n\t\t<option v-for=\"item in data\" value=\"{{item[valueKey]}}\">{{item[labelKey]}}</option>\n\t</template>\n\t<template v-else=\"\">\n\t\t<option v-for=\"item in data\" :value=\"item\">{{item}}</option>\n\t</template>\n\t<option v-if=\"nullableLabel\" :value=\"nullValue\">{{nullableLabel}}</option>\n\n</select>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16479,19 +16517,31 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-19b5f174", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":6,"vue-hot-reload-api":2}],41:[function(require,module,exports){
-"use strict";
+},{"vue":6,"vue-hot-reload-api":2}],42:[function(require,module,exports){
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
+
+function myAlert(type, message) {
+  Lobibox.notify(type, {
+    msg: message,
+    sound: false
+  });
+}
+
 exports.default = {
-    niceAlert: function niceAlert(type, message) {
-        Lobibox.notify(type, {
-            msg: message,
-            sound: false
-        });
+  niceAlert: myAlert,
+  tryError: function tryError(err) {
+    if (err.status == 401) {
+      myAlert('error', 'Su sesión ha expirado, por favor vuelva a ingresar sus credenciales');
+    } else {
+      myAlert('error', 'Se ha presentado un error al tratar de traer los datos del sistema');
     }
+    console.warn('Error al cargar los datos del componete ' + this.name, err);
+    this.$router.go('/lockscreen');
+  }
 };
 
 },{}]},{},[13]);

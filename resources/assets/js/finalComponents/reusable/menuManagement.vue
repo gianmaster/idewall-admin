@@ -136,9 +136,7 @@
 				let self = this;
 				self.$http.get(self.url).then(function(resp){
 					self.data = resp.data.data;
-				}, function(err){
-					console.warn(err);
-				});
+				}, fnc.tryError);
 			}
 		}
 	}

@@ -71,12 +71,8 @@ module.exports = {
 	ready(){
 		let self = this;
 		self.$http.get(self.urlMenu).then(function (resp) {
-			fnc.niceAlert('info', 'Se cargo correctamente el Menu');
 			self.menu = resp.data.data;
-		}, function (err) {
-			fnc.niceAlert('error', 'no se pudo cargar el Menu');
-			console.warn(err);
-		});
+		}, fnc.tryError);
 	},
 	data(){
 		return {

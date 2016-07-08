@@ -7,8 +7,14 @@
       </p>
       <h2 class="text-center">404 Page Not Found</h2>
       <p class="text-center">
-        <a href="/" class=""><i class="fa fa-home"></i> Home</a>
+        <a v-link="{path: '/'}" class=""><i class="fa fa-home"></i> Home</a>
       </p>
     </div>
   </div>
 </template>
+
+<script>
+  export default {
+    name: 'lockscreen'
+  }
+</script>

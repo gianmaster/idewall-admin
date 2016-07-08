@@ -134,10 +134,10 @@
                         <!-- Menu Footer-->
                         <li class="user-footer">
                             <div class="pull-left">
-                                <a href="/account" class="btn btn-default btn-flat"><i class="fa fa-user"></i> Perfil</a>
+                                <a href="account" class="btn btn-default btn-flat"><i class="fa fa-user"></i> Perfil</a>
                             </div>
                             <div class="pull-right">
-                                <a href="/logout" class="btn btn-default btn-flat"><i class="fa fa-sign-out"></i> Salir</a>
+                                <a href="logout" class="btn btn-default btn-flat"><i class="fa fa-sign-out"></i> Salir</a>
                             </div>
                         </li>
                     </ul>
