@@ -47,9 +47,15 @@ class MenuTestController extends Controller
      */
     public function store(Request $request)
     {
-        $input = $request->only(['nombre', 'titulo', 'url', 'iconclass', 'cod_padre', 'orden']);
-        $menu = Menu::create($input);
-        return response()->json(array('data' => $menu));
+        try{
+
+            $input = $request->only(['nombre', 'titulo', 'url', 'iconclass', 'cod_padre', 'orden']);
+            $menu = Menu::create($input);
+            return response()->json(array('data' => $menu));
+
+        }catch(Exception $e){
+            
+        }
     }
 
     /**

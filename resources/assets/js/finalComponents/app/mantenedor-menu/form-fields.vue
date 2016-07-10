@@ -6,8 +6,8 @@
 
 	<div class="col-sm-6 col-xs-12">
 		<label>Título</label>
-		<input type="text" class="form-control" v-model="dataModel.titulo" minlength="3"> 
-		<input type="hidden" class="form-control" :value="dataModel.titulo" v-model="dataModel.nombre"> 
+		<input type="text" class="form-control" v-model="dataModel.titulo" minlength="3" required>
+		<input type="hidden" class="form-control" :value="dataModel.titulo" v-model="dataModel.nombre">
 	</div>
 
 	<div class="col-sm-6 col-xs-12">

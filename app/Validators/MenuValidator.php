@@ -9,7 +9,19 @@ class MenuValidator extends LaravelValidator
 {
 
     protected $rules = [
-        ValidatorInterface::RULE_CREATE => [],
-        ValidatorInterface::RULE_UPDATE => [],
+        ValidatorInterface::RULE_CREATE => [
+            'titulo'    => 'required|max:255',
+            'url'       => 'max:255',
+            'iconclass' => '',
+            'orden'     => 'numeric',
+            'cod_padre' => 'numeric',
+        ],
+        ValidatorInterface::RULE_UPDATE => [
+            'titulo'    => 'required|max:255',
+            'url'       => 'max:255',
+            'iconclass' => '',
+            'orden'     => 'numeric',
+            'cod_padre' => 'numeric',
+        ],
    ];
 }

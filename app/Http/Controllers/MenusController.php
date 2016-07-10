@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Menu;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -13,8 +14,14 @@ use App\Repositories\MenuRepository;
 use App\Validators\MenuValidator;
 
 
+
 class MenusController extends Controller
 {
+
+    protected $requestFields = [
+        'store'     => ['cod_padre', 'url', 'nombre', 'titulo', 'orden', 'iconclass'],
+        'update'    => ['cod_padre', 'url', 'nombre', 'titulo', 'orden', 'iconclass']
+    ];
 
     /**
      * @var MenuRepository
@@ -40,17 +47,11 @@ class MenusController extends Controller
      */
     public function index()
     {
-        $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
-        $menus = $this->repository->all();
+        //$this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
+        //$menus = $this->repository->all();
+        $menus = $this->repository->findByField('cod_padre', null);
 
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'data' => $menus,
-            ]);
-        }
-
-        return view('menus.index', compact('menus'));
+        return response()->json($menus);
     }
 
     /**
@@ -60,35 +61,31 @@ class MenusController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(MenuCreateRequest $request)
+    public function store(Request $request)
     {
 
         try {
 
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
+            $this->validator->with($request->only($this->requestFields['store']))->passesOrFail(ValidatorInterface::RULE_CREATE);
 
             $menu = $this->repository->create($request->all());
 
-            $response = [
-                'message' => 'Menu created.',
-                'data'    => $menu->toArray(),
-            ];
+            return response()->json($menu);
 
-            if ($request->wantsJson()) {
-
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
         } catch (ValidatorException $e) {
             if ($request->wantsJson()) {
                 return response()->json([
-                    'error'   => true,
+                    'dev_message' => $e->getMessage(),
                     'message' => $e->getMessageBag()
-                ]);
+                ], 403);
             }
 
             return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+
+        } catch (Exception $e){
+            return response()->json(array(
+                'message' => 'Se presento un error al tratar de hacer esta acción',
+                'dev_message' => $e->getMessage()), 405);
         }
     }
 
@@ -102,16 +99,11 @@ class MenusController extends Controller
      */
     public function show($id)
     {
-        $menu = $this->repository->find($id);
+        //$menu = $this->repository->find($id);
+        $menu = array('data' => Menu::find($id));
 
-        if (request()->wantsJson()) {
+        return response()->json($menu);
 
-            return response()->json([
-                'data' => $menu,
-            ]);
-        }
-
-        return view('menus.show', compact('menu'));
     }
 
 
@@ -139,38 +131,33 @@ class MenusController extends Controller
      *
      * @return Response
      */
-    public function update(MenuUpdateRequest $request, $id)
+    public function update(Request $request, $id)
     {
 
         try {
 
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
+            $this->validator->with($request->only($this->requestFields['update']))->passesOrFail(ValidatorInterface::RULE_UPDATE);
 
-            $menu = $this->repository->update($id, $request->all());
+            $menu = $this->repository->update($request->only($this->requestFields['update']), $id);
 
-            $response = [
-                'message' => 'Menu updated.',
-                'data'    => $menu->toArray(),
-            ];
+            return response()->json($menu);
 
-            if ($request->wantsJson()) {
-
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
         } catch (ValidatorException $e) {
-
             if ($request->wantsJson()) {
-
                 return response()->json([
-                    'error'   => true,
+                    'dev_message' => $e->getMessage(),
                     'message' => $e->getMessageBag()
-                ]);
+                ], 403);
             }
 
             return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+
+        } catch (Exception $e){
+            return response()->json(array(
+                'message' => 'Se presento un error al tratar de hacer esta acción',
+                'dev_message' => $e->getMessage()), 405);
         }
+
     }
 
 
@@ -183,16 +170,18 @@ class MenusController extends Controller
      */
     public function destroy($id)
     {
-        $deleted = $this->repository->delete($id);
 
-        if (request()->wantsJson()) {
+        try {
 
-            return response()->json([
-                'message' => 'Menu deleted.',
-                'deleted' => $deleted,
-            ]);
+            Menu::where('cod_padre', $id)->delete();
+            $deleted = $this->repository->delete($id);
+            return response()->json(array('data' => $deleted), 204);
+
+        } catch (Exception $e) {
+            return response()->json(array(
+                'message' => 'Se presento un error al tratar de hacer esta acción',
+                'dev_message' => $e->getMessage()),409);
         }
 
-        return redirect()->back()->with('message', 'Menu deleted.');
     }
 }

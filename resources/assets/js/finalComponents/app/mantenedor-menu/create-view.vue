@@ -31,10 +31,7 @@
 				this.$http.post(URL, this.newModel).then(function(resp){
 					fnc.niceAlert('success', 'Se creó el menú correctamente!');
 					this.$router.go('/menu');
-				}, function(err){
-					console.warn(err);
-					fnc.niceAlert('error', err.dev_message);
-				});
+				}, fnc.tryError);
 			}
 		}
 

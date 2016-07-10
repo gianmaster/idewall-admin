@@ -53,7 +53,6 @@ class MenuRepositoryEloquent extends BaseRepository implements MenuRepository
     */
     public function presenter()
     {
-
         return MenuPresenter::class;
     }
 

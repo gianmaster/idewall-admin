@@ -19,13 +19,17 @@ Route::get('/', function () {
 
 Route::resource('/', 'HomeController');
 
+//Route::resource('menu2', 'MenusController');
+
 
 Route::group(['middleware' => 'auth'], function(){
 
 	Route::group(['prefix' => 'api'], function(){
+
 		Route::resource('users', 'UserController');
 
-		Route::resource('menu', 'MenuTestController');
+		Route::resource('menu', 'MenusController');
+
 	});
 
 });
