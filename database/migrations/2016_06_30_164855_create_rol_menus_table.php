@@ -19,7 +19,6 @@ class CreateRolMenusTable extends Migration
 
             $table->integer('menu')->unsigned()->nullable(false);
 
-
             $table->timestamps();
         });
     }

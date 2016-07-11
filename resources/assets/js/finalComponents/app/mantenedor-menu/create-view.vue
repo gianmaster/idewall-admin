@@ -20,7 +20,7 @@
 		data(){
 			return {
 				createMode: true,
-				newModel: {}
+				newModel: {},
 			}
 		},
 		components: {

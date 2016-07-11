@@ -20,8 +20,8 @@ ExternalComponents(Vue);
 Vue.use(VueRouter);
 
 //external components
-const progress = require('vue-progressbar');
-Vue.use(progress);
+//const progress = require('vue-progressbar');
+//Vue.use(progress);
 
 // routing
 /*

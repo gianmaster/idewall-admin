@@ -1,5 +1,7 @@
 <template>
-	<div id="menu-content">
+	<loading-app v-if="loading===true"></loading-app>
+
+	<div id="menu-content" v-else>
 		<p>{{caption}}</p>
 		<ul class="tree">
 			<li v-for="item in data"><strong>{{item.name}}</strong> - <a v-link="{path: '/menu/edit/'+item.id}"><i class="fa fa-pencil edit-option" data-toggle="tooltip" title="Editar"></i></a> - <i class="fa fa-trash delete-option" data-toggle="tooltip" title="Eliminar" @click.prevent="destroy(item.id)"></i>
@@ -98,6 +100,12 @@
 	import fnc from '../../util/reusable_functions';
 
 	export default {
+		name: 'gesto-de-menu',
+		data(){
+			return {
+				loading: true,
+			}
+		},
 		ready: function(){
 			this.load();
 		},
@@ -134,8 +142,10 @@
 			},
 			load: function(){
 				let self = this;
+				self.loading = true;
 				self.$http.get(self.url).then(function(resp){
 					self.data = resp.data.data;
+					self.loading = false;
 				}, fnc.tryError);
 			}
 		}

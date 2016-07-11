@@ -1,5 +1,6 @@
 <template>
-	<div class="row">
+<loading-app v-if="loading===true"></loading-app>
+	<div class="row" v-else>
 		<form action="" @submit.prevent="update">
 			
 			<form-inputs :create-mode="createMode" :data-model.sync="newModel"></form-inputs>
@@ -23,7 +24,8 @@
 		data(){
 			return {
 				createMode: false,
-				newModel: {}
+				newModel: {},
+				loading: true
 			}
 		},
 		components: {
@@ -40,11 +42,14 @@
 				});
 			},
 			read: function(){
+				this.loading = true;
 				this.$http.get(URL + '/' + this.$route.params.model_id).then(function(resp){
 					this.newModel = resp.data.data;
+					this.loading = false;
 				}, function(err){
 					console.warn(err);
 					fnc.niceAlert('error', err.message);
+					this.loading = false;
 				});
 			}
 		}

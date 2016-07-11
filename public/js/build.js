@@ -1,4 +1,50 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+module.exports = { "default": require("core-js/library/fn/object/define-property"), __esModule: true };
+},{"core-js/library/fn/object/define-property":3}],2:[function(require,module,exports){
+"use strict";
+
+exports.__esModule = true;
+
+var _defineProperty = require("../core-js/object/define-property");
+
+var _defineProperty2 = _interopRequireDefault(_defineProperty);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = function (obj, key, value) {
+  if (key in obj) {
+    (0, _defineProperty2.default)(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+};
+},{"../core-js/object/define-property":1}],3:[function(require,module,exports){
+var $ = require('../../modules/$');
+module.exports = function defineProperty(it, key, desc){
+  return $.setDesc(it, key, desc);
+};
+},{"../../modules/$":4}],4:[function(require,module,exports){
+var $Object = Object;
+module.exports = {
+  create:     $Object.create,
+  getProto:   $Object.getPrototypeOf,
+  isEnum:     {}.propertyIsEnumerable,
+  getDesc:    $Object.getOwnPropertyDescriptor,
+  setDesc:    $Object.defineProperty,
+  setDescs:   $Object.defineProperties,
+  getKeys:    $Object.keys,
+  getNames:   $Object.getOwnPropertyNames,
+  getSymbols: $Object.getOwnPropertySymbols,
+  each:       [].forEach
+};
+},{}],5:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -119,7 +165,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],2:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var Vue // late bind
 var map = Object.create(null)
 var shimmed = false
@@ -419,67 +465,7 @@ function format (id) {
   return id.match(/[^\/]+\.vue$/)[0]
 }
 
-},{}],3:[function(require,module,exports){
-'use strict';
-module.exports.install = function (Vue, options) {
-  var progressHolder = null;
-  Vue.prototype.$progress = {
-    setHolder: function setHolder(it) {
-      this.progressHolder = it;
-    },
-    start: function start(time) {
-      var _this = this;
-
-      if (time == undefined) {
-        time = 3000;
-      }
-      this.progressHolder.percent = 0;
-      this.progressHolder.options.show = true;
-      this.progressHolder.options.canSuccess = true;
-      var cut = 10000 / Math.floor(time);
-      var timer = setInterval(function () {
-        _this.increase(cut * Math.random());
-        if (_this.progressHolder.percent > 95) {
-          _this.finish();
-          clearInterval(timer);
-        }
-      }, 100);
-    },
-    set: function set(num) {
-      this.progressHolder.options.show = true;
-      this.progressHolder.options.canSuccess = true;
-      this.progressHolder.percent = Math.floor(num);
-    },
-    get: function get(num) {
-      return Math.floor(this.progressHolder.percent);
-    },
-    increase: function increase(num) {
-      this.progressHolder.percent = this.progressHolder.percent + Math.floor(num);
-    },
-    decrease: function decrease(num) {
-      this.progressHolder.percent = this.progressHolder.percent - Math.floor(num);
-    },
-    finish: function finish() {
-      var _this2 = this;
-
-      this.progressHolder.percent = 100;
-      setTimeout(function () {
-        _this2.progressHolder.options.show = false;
-      }, 800);
-    },
-    failed: function failed() {
-      var _this3 = this;
-
-      this.progressHolder.options.canSuccess = false;
-      this.progressHolder.percent = 100;
-      setTimeout(function () {
-        _this3.progressHolder.options.show = false;
-      }, 800);
-    }
-  };
-};
-
-},{}],4:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 /*!
  * vue-resource v0.7.4
  * https://github.com/vuejs/vue-resource
@@ -1856,7 +1842,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 module.exports = plugin;
-},{}],5:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 /*!
  * vue-router v0.7.13
  * (c) 2016 Evan You
@@ -4566,10 +4552,10 @@ module.exports = plugin;
   return Router;
 
 }));
-},{}],6:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 (function (process,global){
 /*!
- * Vue.js v1.0.25
+ * Vue.js v1.0.24
  * (c) 2016 Evan You
  * Released under the MIT License.
  */
@@ -4968,15 +4954,10 @@ var devtools = inBrowser && window.__VUE_DEVTOOLS_GLOBAL_HOOK__;
 
 // UA sniffing for working around browser-specific quirks
 var UA = inBrowser && window.navigator.userAgent.toLowerCase();
-var isIE = UA && UA.indexOf('trident') > 0;
 var isIE9 = UA && UA.indexOf('msie 9.0') > 0;
 var isAndroid = UA && UA.indexOf('android') > 0;
 var isIos = UA && /(iphone|ipad|ipod|ios)/i.test(UA);
-var iosVersionMatch = isIos && UA.match(/os ([\d_]+)/);
-var iosVersion = iosVersionMatch && iosVersionMatch[1].split('_');
-
-// detecting iOS UIWebView by indexedDB
-var hasMutationObserverBug = iosVersion && Number(iosVersion[0]) >= 9 && Number(iosVersion[1]) >= 3 && !window.indexedDB;
+var isWechat = UA && UA.indexOf('micromessenger') > 0;
 
 var transitionProp = undefined;
 var transitionEndEvent = undefined;
@@ -5017,7 +4998,7 @@ var nextTick = (function () {
   }
 
   /* istanbul ignore if */
-  if (typeof MutationObserver !== 'undefined' && !hasMutationObserverBug) {
+  if (typeof MutationObserver !== 'undefined' && !(isWechat && isIos)) {
     var counter = 1;
     var observer = new MutationObserver(nextTickHandler);
     var textNode = document.createTextNode(counter);
@@ -5089,12 +5070,12 @@ var p = Cache.prototype;
 
 p.put = function (key, value) {
   var removed;
+  if (this.size === this.limit) {
+    removed = this.shift();
+  }
 
   var entry = this.get(key, true);
   if (!entry) {
-    if (this.size === this.limit) {
-      removed = this.shift();
-    }
     entry = {
       key: key
     };
@@ -5339,7 +5320,7 @@ function compileRegex() {
   var unsafeOpen = escapeRegex(config.unsafeDelimiters[0]);
   var unsafeClose = escapeRegex(config.unsafeDelimiters[1]);
   tagRE = new RegExp(unsafeOpen + '((?:.|\\n)+?)' + unsafeClose + '|' + open + '((?:.|\\n)+?)' + close, 'g');
-  htmlRE = new RegExp('^' + unsafeOpen + '((?:.|\\n)+?)' + unsafeClose + '$');
+  htmlRE = new RegExp('^' + unsafeOpen + '.*' + unsafeClose + '$');
   // reset cache
   cache = new Cache(1000);
 }
@@ -6126,8 +6107,7 @@ if (process.env.NODE_ENV !== 'production') {
       return (/HTMLUnknownElement/.test(el.toString()) &&
         // Chrome returns unknown for several HTML5 elements.
         // https://code.google.com/p/chromium/issues/detail?id=540526
-        // Firefox returns unknown for some "Interactive elements."
-        !/^(data|time|rtc|rb|details|dialog|summary)$/.test(tag)
+        !/^(data|time|rtc|rb)$/.test(tag)
       );
     }
   };
@@ -6463,9 +6443,7 @@ function mergeOptions(parent, child, vm) {
   }
   if (child.mixins) {
     for (var i = 0, l = child.mixins.length; i < l; i++) {
-      var mixin = child.mixins[i];
-      var mixinOptions = mixin.prototype instanceof Vue ? mixin.options : mixin;
-      parent = mergeOptions(parent, mixinOptions, vm);
+      parent = mergeOptions(parent, child.mixins[i], vm);
     }
   }
   for (key in parent) {
@@ -6893,13 +6871,10 @@ var util = Object.freeze({
 	hasProto: hasProto,
 	inBrowser: inBrowser,
 	devtools: devtools,
-	isIE: isIE,
 	isIE9: isIE9,
 	isAndroid: isAndroid,
 	isIos: isIos,
-	iosVersionMatch: iosVersionMatch,
-	iosVersion: iosVersion,
-	hasMutationObserverBug: hasMutationObserverBug,
+	isWechat: isWechat,
 	get transitionProp () { return transitionProp; },
 	get transitionEndEvent () { return transitionEndEvent; },
 	get animationProp () { return animationProp; },
@@ -7387,9 +7362,7 @@ var saveRE = /[\{,]\s*[\w\$_]+\s*:|('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\
 var restoreRE = /"(\d+)"/g;
 var pathTestRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['.*?'\]|\[".*?"\]|\[\d+\]|\[[A-Za-z_$][\w$]*\])*$/;
 var identRE = /[^\w$\.](?:[A-Za-z_$][\w$]*)/g;
-var literalValueRE$1 = /^(?:true|false|null|undefined|Infinity|NaN)$/;
-
-function noop() {}
+var booleanLiteralRE = /^(?:true|false)$/;
 
 /**
  * Save / Rewrite / Restore
@@ -7471,7 +7444,7 @@ function compileGetter(exp) {
   // save strings and object literal keys
   var body = exp.replace(saveRE, save).replace(wsRE, '');
   // rewrite all paths
-  // pad 1 space here because the regex matches 1 extra char
+  // pad 1 space here becaue the regex matches 1 extra char
   body = (' ' + body).replace(identRE, rewrite).replace(restoreRE, restore);
   return makeGetterFn(body);
 }
@@ -7492,15 +7465,7 @@ function makeGetterFn(body) {
     return new Function('scope', 'return ' + body + ';');
     /* eslint-enable no-new-func */
   } catch (e) {
-    if (process.env.NODE_ENV !== 'production') {
-      /* istanbul ignore if */
-      if (e.toString().match(/unsafe-eval|CSP/)) {
-        warn('It seems you are using the default build of Vue.js in an environment ' + 'with Content Security Policy that prohibits unsafe-eval. ' + 'Use the CSP-compliant build instead: ' + 'http://vuejs.org/guide/installation.html#CSP-compliant-build');
-      } else {
-        warn('Invalid expression. ' + 'Generated function body: ' + body);
-      }
-    }
-    return noop;
+    process.env.NODE_ENV !== 'production' && warn('Invalid expression. ' + 'Generated function body: ' + body);
   }
 }
 
@@ -7562,8 +7527,8 @@ function parseExpression(exp, needSet) {
 
 function isSimplePath(exp) {
   return pathTestRE.test(exp) &&
-  // don't treat literal values as paths
-  !literalValueRE$1.test(exp) &&
+  // don't treat true/false as paths
+  !booleanLiteralRE.test(exp) &&
   // Math constants e.g. Math.PI, Math.E etc.
   exp.slice(0, 5) !== 'Math.';
 }
@@ -8042,7 +8007,6 @@ function isRealTemplate(node) {
 
 var tagRE$1 = /<([\w:-]+)/;
 var entityRE = /&#?\w+?;/;
-var commentRE = /<!--/;
 
 /**
  * Convert a string template to a DocumentFragment.
@@ -8065,9 +8029,8 @@ function stringToFragment(templateString, raw) {
   var frag = document.createDocumentFragment();
   var tagMatch = templateString.match(tagRE$1);
   var entityMatch = entityRE.test(templateString);
-  var commentMatch = commentRE.test(templateString);
 
-  if (!tagMatch && !entityMatch && !commentMatch) {
+  if (!tagMatch && !entityMatch) {
     // text only, return a single text node.
     frag.appendChild(document.createTextNode(templateString));
   } else {
@@ -9034,7 +8997,7 @@ var vFor = {
    * the filters. This is passed to and called by the watcher.
    *
    * It is necessary for this to be called during the
-   * watcher's dependency collection phase because we want
+   * wathcer's dependency collection phase because we want
    * the v-for to update when the source Object is mutated.
    */
 
@@ -9377,10 +9340,7 @@ var text$2 = {
   },
 
   update: function update(value) {
-    // #3029 only update when the value changes. This prevent
-    // browsers from overwriting values like selectionStart
-    value = _toString(value);
-    if (value !== this.el.value) this.el.value = value;
+    this.el.value = _toString(value);
   },
 
   unbind: function unbind() {
@@ -9429,8 +9389,6 @@ var radio = {
 var select = {
 
   bind: function bind() {
-    var _this = this;
-
     var self = this;
     var el = this.el;
 
@@ -9462,16 +9420,11 @@ var select = {
     // selectedIndex with value -1 to 0 when the element
     // is appended to a new parent, therefore we have to
     // force a DOM update whenever that happens...
-    this.vm.$on('hook:attached', function () {
-      nextTick(_this.forceUpdate);
-    });
+    this.vm.$on('hook:attached', this.forceUpdate);
   },
 
   update: function update(value) {
     var el = this.el;
-    if (!inDoc(el)) {
-      return nextTick(this.forceUpdate);
-    }
     el.selectedIndex = -1;
     var multi = this.multiple && isArray(value);
     var options = el.options;
@@ -10737,7 +10690,7 @@ function processPropValue(vm, prop, rawValue, fn) {
   if (value === undefined) {
     value = getPropDefaultValue(vm, prop);
   }
-  value = coerceProp(prop, value, vm);
+  value = coerceProp(prop, value);
   var coerced = value !== rawValue;
   if (!assertProp(prop, value, vm)) {
     value = undefined;
@@ -10856,17 +10809,13 @@ function assertProp(prop, value, vm) {
  * @return {*}
  */
 
-function coerceProp(prop, value, vm) {
+function coerceProp(prop, value) {
   var coerce = prop.options.coerce;
   if (!coerce) {
     return value;
   }
-  if (typeof coerce === 'function') {
-    return coerce(value);
-  } else {
-    process.env.NODE_ENV !== 'production' && warn('Invalid coerce for prop "' + prop.name + '": expected function, got ' + typeof coerce + '.', vm);
-    return value;
-  }
+  // coerce is a function
+  return coerce(value);
 }
 
 /**
@@ -11398,9 +11347,10 @@ var transition$1 = {
     // resolve on owner vm
     var hooks = resolveAsset(this.vm.$options, 'transitions', id);
     id = id || 'v';
-    oldId = oldId || 'v';
     el.__v_trans = new Transition(el, id, hooks, this.vm);
-    removeClass(el, oldId + '-transition');
+    if (oldId) {
+      removeClass(el, oldId + '-transition');
+    }
     addClass(el, id + '-transition');
   }
 };
@@ -11825,7 +11775,7 @@ function makeTextNodeLinkFn(tokens, frag) {
           if (token.html) {
             replace(node, parseTemplate(value, true));
           } else {
-            node.data = _toString(value);
+            node.data = value;
           }
         } else {
           vm._bindDir(token.descriptor, node, host, scope);
@@ -12809,7 +12759,7 @@ function eventsMixin (Vue) {
   };
 }
 
-function noop$1() {}
+function noop() {}
 
 /**
  * A directive links a DOM element with a piece of data,
@@ -12908,7 +12858,7 @@ Directive.prototype._bind = function () {
         }
       };
     } else {
-      this._update = noop$1;
+      this._update = noop;
     }
     var preProcess = this._preProcess ? bind(this._preProcess, this) : null;
     var postProcess = this._postProcess ? bind(this._postProcess, this) : null;
@@ -14346,7 +14296,7 @@ var filters = {
 
   json: {
     read: function read(value, indent) {
-      return typeof value === 'string' ? value : JSON.stringify(value, null, arguments.length > 1 ? indent : 2);
+      return typeof value === 'string' ? value : JSON.stringify(value, null, Number(indent) || 2);
     },
     write: function write(value) {
       try {
@@ -14604,9 +14554,7 @@ function installGlobalAPI (Vue) {
           }
         }
         if (type === 'component' && isPlainObject(definition)) {
-          if (!definition.name) {
-            definition.name = id;
-          }
+          definition.name = id;
           definition = Vue.extend(definition);
         }
         this.options[type + 's'][id] = definition;
@@ -14621,7 +14569,7 @@ function installGlobalAPI (Vue) {
 
 installGlobalAPI(Vue);
 
-Vue.version = '1.0.25';
+Vue.version = '1.0.24';
 
 // devtools global hook
 /* istanbul ignore next */
@@ -14637,7 +14585,7 @@ setTimeout(function () {
 
 module.exports = Vue;
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":1}],7:[function(require,module,exports){
+},{"_process":5}],10:[function(require,module,exports){
 var inserted = exports.cache = {}
 
 exports.insert = function (css) {
@@ -14657,765 +14605,7 @@ exports.insert = function (css) {
   return elem
 }
 
-},{}],8:[function(require,module,exports){
-var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n.vuetable th.sortable:hover {\n  color: #2185d0;\n  cursor: pointer;\n}\n.vuetable-actions {\n  width: 15%;\n  padding: 12px 0px;\n  text-align: center;\n}\n.vuetable-pagination {\n  background: #f9fafb !important;\n}\n.vuetable-pagination-info {\n  margin-top: auto;\n  margin-bottom: auto;\n}\n")
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = {
-    props: {
-        'wrapperClass': {
-            type: String,
-            default: function _default() {
-                return null;
-            }
-        },
-        'tableWrapper': {
-            type: String,
-            default: function _default() {
-                return null;
-            }
-        },
-        'tableClass': {
-            type: String,
-            default: function _default() {
-                return 'ui blue striped selectable celled stackable attached table';
-            }
-        },
-        'loadingClass': {
-            type: String,
-            default: function _default() {
-                return 'loading';
-            }
-        },
-        'dataPath': {
-            type: String,
-            default: function _default() {
-                return 'data';
-            }
-        },
-        'paginationPath': {
-            type: String,
-            default: function _default() {
-                return 'links.pagination';
-            }
-        },
-        'fields': {
-            type: Array,
-            required: true
-        },
-        'apiUrl': {
-            type: String,
-            required: true
-        },
-        'sortOrder': {
-            type: Object,
-            default: function _default() {
-                return {
-                    field: '',
-                    direction: 'asc'
-                };
-            }
-        },
-        'perPage': {
-            type: Number,
-            coerce: function coerce(val) {
-                return parseInt(val);
-            },
-            default: function _default() {
-                return 10;
-            }
-        },
-        'ascendingIcon': {
-            type: String,
-            default: function _default() {
-                return 'blue chevron up icon';
-            }
-        },
-        'descendingIcon': {
-            type: String,
-            default: function _default() {
-                return 'blue chevron down icon';
-            }
-        },
-        'appendParams': {
-            type: Array,
-            default: function _default() {
-                return [];
-            }
-        },
-        'showPagination': {
-            type: Boolean,
-            default: function _default() {
-                return true;
-            }
-        },
-        'paginationComponent': {
-            type: String,
-            default: function _default() {
-                return 'vuetable-pagination';
-            }
-        },
-        'paginationInfoTemplate': {
-            type: String,
-            default: function _default() {
-                return "Displaying {from} to {to} of {total} items";
-            }
-        },
-        'paginationInfoNoDataTemplate': {
-            type: String,
-            default: function _default() {
-                return 'No relevant data';
-            }
-        },
-        'paginationClass': {
-            type: String,
-            default: function _default() {
-                return 'ui bottom attached segment grid';
-            }
-        },
-        'paginationInfoClass': {
-            type: String,
-            default: function _default() {
-                return 'left floated left aligned six wide column';
-            }
-        },
-        'paginationComponentClass': {
-            type: String,
-            default: function _default() {
-                return 'right floated right aligned six wide column';
-            }
-        },
-        'paginationConfig': {
-            type: String,
-            default: function _default() {
-                return 'paginationConfig';
-            }
-        },
-        itemActions: {
-            type: Array,
-            default: function _default() {
-                return [];
-            }
-        },
-        queryParams: {
-            type: Object,
-            default: function _default() {
-                return {
-                    sort: 'sort',
-                    page: 'page',
-                    perPage: 'per_page'
-                };
-            }
-        },
-        loadOnStart: {
-            type: Boolean,
-            default: function _default() {
-                return true;
-            }
-        },
-        selectedTo: {
-            type: Array,
-            default: function _default() {
-                return [];
-            }
-        },
-        httpData: {
-            type: Object,
-            default: function _default() {
-                return {};
-            }
-        },
-        httpOptions: {
-            type: Object,
-            default: function _default() {
-                return {};
-            }
-        }
-    },
-    data: function data() {
-        return {
-            version: '1.1.1',
-            eventPrefix: 'vuetable:',
-            tableData: null,
-            tablePagination: null,
-            currentPage: 1
-        };
-    },
-    directives: {
-        'attr': {
-            update: function update(value) {
-                for (var i in value) {
-                    this.el.setAttribute(i, value[i]);
-                }
-            }
-        }
-    },
-    computed: {
-        sortIcon: function sortIcon() {
-            return this.sortOrder.direction == 'asc' ? this.ascendingIcon : this.descendingIcon;
-        },
-        paginationInfo: function paginationInfo() {
-            if (this.tablePagination == null || this.tablePagination.total == 0) {
-                return this.paginationInfoNoDataTemplate;
-            }
-
-            return this.paginationInfoTemplate.replace('{from}', this.tablePagination.from || 0).replace('{to}', this.tablePagination.to || 0).replace('{total}', this.tablePagination.total || 0);
-        }
-    },
-    methods: {
-        normalizeFields: function normalizeFields() {
-            var self = this;
-            var obj;
-            this.fields.forEach(function (field, i) {
-                if (typeof field === 'string') {
-                    obj = {
-                        name: field,
-                        title: self.setTitle(field),
-                        titleClass: '',
-                        dataClass: '',
-                        callback: null,
-                        visible: true
-                    };
-                } else {
-                    obj = {
-                        name: field.name,
-                        title: field.title === undefined ? self.setTitle(field.name) : field.title,
-                        sortField: field.sortField,
-                        titleClass: field.titleClass === undefined ? '' : field.titleClass,
-                        dataClass: field.dataClass === undefined ? '' : field.dataClass,
-                        callback: field.callback === undefined ? '' : field.callback,
-                        visible: field.visible === undefined ? true : field.visible
-                    };
-                }
-                self.fields.$set(i, obj);
-            });
-        },
-        setTitle: function setTitle(str) {
-            if (this.isSpecialField(str)) {
-                return '';
-            }
-
-            return this.titleCase(str);
-        },
-        titleCase: function titleCase(str) {
-            return str.replace(/\w+/g, function (txt) {
-                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-            });
-        },
-        loadData: function loadData() {
-            var wrapper = document.querySelector(this.tableWrapper);
-            this.showLoadingAnimation(wrapper);
-
-            var params = [this.queryParams.sort + '=' + this.getSortParam(), this.queryParams.page + '=' + this.currentPage, this.queryParams.perPage + '=' + this.perPage];
-
-            var url = this.apiUrl + '?' + params.join('&');
-            if (this.appendParams.length > 0) {
-                url += '&' + this.appendParams.join('&');
-            }
-            var self = this;
-            this.$http.get(url, this.httpData, this.httpOptions).then(function (response) {
-                self.tableData = self.getObjectValue(response.data, self.dataPath, null);
-                self.tablePagination = self.getObjectValue(response.data, self.paginationPath, null);
-                if (self.tablePagination === null) {
-                    console.warn('vuetable: pagination-path "' + self.paginationPath + '"" not found. ' + 'It looks like the data returned from the sever does not have pagination information.');
-                }
-
-                self.dispatchEvent('load-success', response);
-                self.broadcastEvent('load-success', self.tablePagination);
-
-                self.hideLoadingAnimation(wrapper);
-            }, function (response) {
-                self.dispatchEvent('load-error', response);
-                self.broadcastEvent('load-error', response);
-
-                self.hideLoadingAnimation(wrapper);
-            });
-        },
-        showLoadingAnimation: function showLoadingAnimation(wrapper) {
-            if (wrapper !== null) {
-                this.addClass(wrapper, this.loadingClass);
-            }
-            this.dispatchEvent('loading');
-        },
-        hideLoadingAnimation: function hideLoadingAnimation(wrapper) {
-            if (wrapper !== null) {
-                this.removeClass(wrapper, this.loadingClass);
-            }
-            this.dispatchEvent('loaded');
-        },
-        getTitle: function getTitle(field) {
-            if (typeof field.title === 'undefined') {
-                return field.name.replace('.', ' ');
-            }
-            return field.title;
-        },
-        getSortParam: function getSortParam() {
-            if (!this.sortOrder || this.sortOrder.field == '') {
-                return '';
-            }
-
-            var fieldName = typeof this.sortOrder.sortField === 'undefined' ? this.sortOrder.field : this.sortOrder.sortField;
-
-            return fieldName + '|' + this.sortOrder.direction;
-        },
-        addClass: function addClass(el, className) {
-            if (el.classList) el.classList.add(className);else el.className += ' ' + className;
-        },
-        removeClass: function removeClass(el, className) {
-            if (el.classList) el.classList.remove(className);else el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
-        },
-        dispatchEvent: function dispatchEvent(eventName, args) {
-            this.$dispatch(this.eventPrefix + eventName, args);
-        },
-        broadcastEvent: function broadcastEvent(eventName, args) {
-            this.$broadcast(this.eventPrefix + eventName, args);
-        },
-        orderBy: function orderBy(field) {
-            if (!this.isSortable(field)) {
-                return;
-            }
-
-            if (this.sortOrder.field == field.name) {
-                // change sort direction
-                this.sortOrder.direction = this.sortOrder.direction == 'asc' ? 'desc' : 'asc';
-            } else {
-                // reset sort direction
-                this.sortOrder.direction = 'asc';
-            }
-            this.sortOrder.field = field.name;
-            this.sortOrder.sortField = field.sortField;
-            this.currentPage = 1; // reset page index
-            this.loadData();
-        },
-        isSortable: function isSortable(field) {
-            return !(typeof field.sortField == 'undefined');
-        },
-        isCurrentSortField: function isCurrentSortField(field) {
-            if (!this.isSortable(field)) {
-                return false;
-            }
-
-            return this.sortOrder.field == field.name;
-        },
-        gotoPreviousPage: function gotoPreviousPage() {
-            if (this.currentPage > 1) {
-                this.currentPage--;
-                this.loadData();
-            }
-        },
-        gotoNextPage: function gotoNextPage() {
-            if (this.currentPage < this.tablePagination.last_page) {
-                this.currentPage++;
-                this.loadData();
-            }
-        },
-        gotoPage: function gotoPage(page) {
-            if (page != this.currentPage && page > 0 && page <= this.tablePagination.last_page) {
-                this.currentPage = page;
-                this.loadData();
-            }
-        },
-        isSpecialField: function isSpecialField(fieldName) {
-            return fieldName.startsWith('__');
-        },
-        hasCallback: function hasCallback(item) {
-            return item.callback ? true : false;
-        },
-        callCallback: function callCallback(field, item) {
-            if (!this.hasCallback(field)) return;
-
-            var args = field.callback.split('|');
-            var func = args.shift();
-
-            if (typeof this.$parent[func] == 'function') {
-                return args.length > 0 ? this.$parent[func].apply(this.$parent, [this.getObjectValue(item, field.name)].concat(args)) : this.$parent[func].call(this.$parent, this.getObjectValue(item, field.name));
-            }
-
-            return null;
-        },
-        getObjectValue: function getObjectValue(object, path, defaultValue) {
-            defaultValue = typeof defaultValue == 'undefined' ? null : defaultValue;
-
-            var obj = object;
-            if (path.trim() != '') {
-                var keys = path.split('.');
-                keys.forEach(function (key) {
-                    if (typeof obj[key] != 'undefined' && obj[key] !== null) {
-                        obj = obj[key];
-                    } else {
-                        obj = defaultValue;
-                        return;
-                    }
-                });
-            }
-            return obj;
-        },
-        callAction: function callAction(action, data) {
-            this.$dispatch(this.eventPrefix + 'action', action, data);
-        },
-        addParam: function addParam(param) {
-            this.appendParams.push(param);
-        },
-        toggleCheckbox: function toggleCheckbox(isChecked, dataItem, fieldName) {
-            var idColumn = this.extractArgs(fieldName);
-            if (idColumn === undefined) {
-                console.warn('You did not provide reference id column with "__checkbox:<column_name>" field!');
-                return;
-            }
-            if (isChecked) {
-                this.selectedTo.push(dataItem[idColumn]);
-            } else {
-                this.selectedTo.$remove(dataItem[idColumn]);
-            }
-        },
-        toggleAllCheckboxes: function toggleAllCheckboxes(isChecked, fieldName) {
-            var self = this;
-            var idColumn = this.extractArgs(fieldName);
-
-            if (isChecked) {
-                this.tableData.forEach(function (dataItem) {
-                    if (!self.isSelectedRow(dataItem, fieldName)) {
-                        self.selectedTo.push(dataItem[idColumn]);
-                    }
-                });
-            } else {
-                this.tableData.forEach(function (dataItem) {
-                    self.selectedTo.$remove(dataItem[idColumn]);
-                });
-            }
-        },
-        isSelectedRow: function isSelectedRow(dataItem, fieldName) {
-            return this.selectedTo.indexOf(dataItem[this.extractArgs(fieldName)]) >= 0;
-        },
-        extractName: function extractName(string) {
-            return string.split(':')[0].trim();
-        },
-        extractArgs: function extractArgs(string) {
-            return string.split(':')[1];
-        },
-        onRowChanged: function onRowChanged(dataItem) {
-            this.dispatchEvent('row-changed', dataItem);
-            return true;
-        },
-        onRowClicked: function onRowClicked(dataItem, event) {
-            this.$dispatch(this.eventPrefix + 'row-clicked', dataItem, event);
-            return true;
-        },
-        onCellDoubleClicked: function onCellDoubleClicked(dataItem, field, event) {
-            this.$dispatch(this.eventPrefix + 'cell-dblclicked', dataItem, field, event);
-        },
-        callPaginationConfig: function callPaginationConfig() {
-            if (typeof this.$parent[this.paginationConfig] === 'function') {
-                this.$parent[this.paginationConfig].call(this.$parent, this.$refs.pagination.$options.name);
-            }
-        }
-    },
-    events: {
-        'vuetable-pagination:change-page': function vuetablePaginationChangePage(page) {
-            if (page == 'prev') {
-                this.gotoPreviousPage();
-            } else if (page == 'next') {
-                this.gotoNextPage();
-            } else {
-                this.gotoPage(page);
-            }
-        },
-        'vuetable:reload': function vuetableReload() {
-            this.loadData();
-        },
-        'vuetable:refresh': function vuetableRefresh() {
-            this.currentPage = 1;
-            this.loadData();
-        },
-        'vuetable:goto-page': function vuetableGotoPage(page) {
-            this.$emit('vuetable-pagination:change-page', page);
-        },
-        'vuetable:set-options': function vuetableSetOptions(options) {
-            for (var n in options) {
-                this.$set(n, options[n]);
-            }
-        }
-    },
-    created: function created() {
-        this.normalizeFields();
-        if (this.loadOnStart) {
-            this.loadData();
-        }
-        this.$nextTick(function () {
-            this.callPaginationConfig();
-        });
-    }
-};
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"{{wrapperClass}}\">\n    <table class=\"vuetable {{tableClass}}\">\n        <thead>\n            <tr>\n                <template v-for=\"field in fields\">\n                    <template v-if=\"field.visible\">\n                        <template v-if=\"isSpecialField(field.name)\">\n                            <th v-if=\"extractName(field.name) == '__checkbox'\" class=\"{{field.titleClass || ''}}\">\n                                <input type=\"checkbox\" @change=\"toggleAllCheckboxes($event.target.checked, field.name)\">\n                            </th>\n                            <th v-else=\"\" id=\"{{field.name}}\" class=\"{{field.titleClass || ''}}\">\n                                {{field.title || ''}}\n                            </th>\n                        </template>\n                        <template v-else=\"\">\n                            <th @click=\"orderBy(field)\" id=\"_{{field.name}}\" class=\"{{field.titleClass || ''}} {{isSortable(field) ? 'sortable' : ''}}\">\n                                {{getTitle(field) | capitalize}}&nbsp;\n                                <i v-if=\"isCurrentSortField(field)\" class=\"{{ sortIcon }}\"></i>\n                            </th>\n                        </template>\n                    </template>\n                </template>\n            </tr>\n        </thead>\n        <tbody v-cloak=\"\">\n            <tr v-for=\"(itemNumber, item) in tableData\" @click=\"onRowClicked(item, $event)\">\n                <template v-if=\"onRowChanged(item)\"></template>\n                <template v-for=\"field in fields\">\n                    <template v-if=\"field.visible\">\n                        <template v-if=\"isSpecialField(field.name)\">\n                            <td v-if=\"extractName(field.name) == '__sequence'\" class=\"vuetable-sequence {{field.dataClass}}\" v-html=\"tablePagination.from + itemNumber\">\n                            </td>\n                            <td v-if=\"extractName(field.name) == '__checkbox'\" class=\"vuetable-checkboxes {{field.dataClass}}\">\n                                <input type=\"checkbox\" @change=\"toggleCheckbox($event.target.checked, item, field.name)\" :checked=\"isSelectedRow(item, field.name)\">\n                            </td>\n                            <td v-if=\"field.name == '__actions'\" class=\"vuetable-actions {{field.dataClass}}\">\n                                <template v-for=\"action in itemActions\">\n                                    <button class=\"{{ action.class }}\" @click=\"callAction(action.name, item)\" v-attr=\"action.extra\">\n                                        <i class=\"{{ action.icon }}\"></i> {{ action.label }}\n                                    </button>\n                                </template>\n                            </td>\n                        </template>\n                        <template v-else=\"\">\n                            <td v-if=\"hasCallback(field)\" class=\"{{field.dataClass}}\" @dblclick=\"onCellDoubleClicked(item, field, $event)\">\n                                {{{ callCallback(field, item) }}}\n                            </td>\n                            <td v-else=\"\" class=\"{{field.dataClass}}\" @dblclick=\"onCellDoubleClicked(item, field, $event)\">\n                                {{{ getObjectValue(item, field.name, \"\") }}}\n                            </td>\n                        </template>\n                    </template>\n                </template>\n            </tr>\n        </tbody>\n    </table>\n    <div v-if=\"showPagination\" class=\"vuetable-pagination {{paginationClass}}\">\n        <div class=\"vuetable-pagination-info {{paginationInfoClass}}\" v-html=\"paginationInfo\">\n        </div>\n        <div v-show=\"tablePagination &amp;&amp; tablePagination.last_page > 1\" class=\"vuetable-pagination-component {{paginationComponentClass}}\">\n            <component v-ref:pagination=\"\" :is=\"paginationComponent\"></component>\n        </div>\n    </div>\n</div>\n"
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  module.hot.dispose(function () {
-    __vueify_insert__.cache["\n.vuetable th.sortable:hover {\n  color: #2185d0;\n  cursor: pointer;\n}\n.vuetable-actions {\n  width: 15%;\n  padding: 12px 0px;\n  text-align: center;\n}\n.vuetable-pagination {\n  background: #f9fafb !important;\n}\n.vuetable-pagination-info {\n  margin-top: auto;\n  margin-bottom: auto;\n}\n"] = false
-    document.head.removeChild(__vueify_style__)
-  })
-  if (!module.hot.data) {
-    hotAPI.createRecord("_v-1d5bd7d1", module.exports)
-  } else {
-    hotAPI.update("_v-1d5bd7d1", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
-},{"vue":6,"vue-hot-reload-api":2,"vueify/lib/insert-css":7}],9:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _VuetablePaginationMixin = require('./VuetablePaginationMixin.vue');
-
-var _VuetablePaginationMixin2 = _interopRequireDefault(_VuetablePaginationMixin);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-    mixins: [_VuetablePaginationMixin2.default]
-};
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"{{wrapperClass}}\">\n    <a @click=\"loadPage(1)\" class=\"btn-nav {{linkClass}} {{isOnFirstPage ? disabledClass : ''}}\">\n            <i v-if=\"icons.first != ''\" class=\"{{icons.first}}\"></i>\n            <span v-else=\"\">«</span>\n    </a>\n    <a @click=\"loadPage('prev')\" class=\"btn-nav {{linkClass}} {{isOnFirstPage ? disabledClass : ''}}\">\n            <i v-if=\"icons.next != ''\" class=\"{{icons.prev}}\"></i>\n            <span v-else=\"\">&nbsp;‹</span>\n    </a>\n    <template v-if=\"notEnoughPages\">\n        <template v-for=\"n in totalPage\">\n            <a @click=\"loadPage(n+1)\" class=\"{{pageClass}} {{isCurrentPage(n+1) ? activeClass : ''}}\">\n                    {{ n+1 }}\n            </a>\n        </template>\n    </template>\n    <template v-else=\"\">\n       <template v-for=\"n in windowSize\">\n           <a @click=\"loadPage(windowStart+n)\" class=\"{{pageClass}} {{isCurrentPage(windowStart+n) ? activeClass : ''}}\">\n                {{ windowStart+n }}\n           </a>\n       </template>\n    </template>\n    <a @click=\"loadPage('next')\" class=\"btn-nav {{linkClass}} {{isOnLastPage ? disabledClass : ''}}\">\n        <i v-if=\"icons.next != ''\" class=\"{{icons.next}}\"></i>\n        <span v-else=\"\">›&nbsp;</span>\n    </a>\n    <a @click=\"loadPage(totalPage)\" class=\"btn-nav {{linkClass}} {{isOnLastPage ? disabledClass : ''}}\">\n        <i v-if=\"icons.last != ''\" class=\"{{icons.last}}\"></i>\n        <span v-else=\"\">»</span>\n    </a>\n</div>\n"
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  if (!module.hot.data) {
-    hotAPI.createRecord("_v-0c840b4b", module.exports)
-  } else {
-    hotAPI.update("_v-0c840b4b", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
-},{"./VuetablePaginationMixin.vue":12,"vue":6,"vue-hot-reload-api":2}],10:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _VuetablePaginationMixin = require('./VuetablePaginationMixin.vue');
-
-var _VuetablePaginationMixin2 = _interopRequireDefault(_VuetablePaginationMixin);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-    mixins: [_VuetablePaginationMixin2.default],
-    methods: {
-        loadPage: function loadPage(page) {
-            this.$dispatch('vuetable-pagination:change-page', page);
-        }
-    }
-};
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<nav>\n    <ul class=\"pagination\">\n        <li class=\"{{isOnFirstPage ? disabledClass : ''}}\">\n            <a @click=\"loadPage('prev')\"><i class=\"glyphicon glyphicon-chevron-left\"></i></a>\n        </li>\n        <template v-for=\"n in totalPage\">\n            <li class=\"{{isCurrentPage(n+1) ? ' active' : ''}}\">\n                <a @click=\"loadPage(n+1)\"> {{ n+1 }}</a>\n            </li>\n        </template>\n        <li class=\"{{isOnLastPage ? disabledClass : ''}}\">\n            <a @click=\"loadPage('next')\"><i class=\"glyphicon glyphicon-chevron-right\"></i></a>\n        </li>\n    </ul>\n</nav>\n"
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  if (!module.hot.data) {
-    hotAPI.createRecord("_v-b07aeada", module.exports)
-  } else {
-    hotAPI.update("_v-b07aeada", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
-},{"./VuetablePaginationMixin.vue":12,"vue":6,"vue-hot-reload-api":2}],11:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _VuetablePaginationMixin = require('./VuetablePaginationMixin.vue');
-
-var _VuetablePaginationMixin2 = _interopRequireDefault(_VuetablePaginationMixin);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-    mixins: [_VuetablePaginationMixin2.default],
-    props: {
-        'dropdownClass': {
-            type: String,
-            default: function _default() {
-                return 'ui search dropdown';
-            }
-        },
-        'pageText': {
-            type: String,
-            default: function _default() {
-                return 'Page';
-            }
-        }
-    },
-    methods: {
-        loadPage: function loadPage(page) {
-            // update dropdown value
-            if (page == 'prev' && !this.isOnFirstPage) {
-                this.setDropdownToPage(this.tablePagination.current_page - 1);
-            } else if (page == 'next' && !this.isOnLastPage) {
-                this.setDropdownToPage(this.tablePagination.current_page + 1);
-            }
-
-            this.$dispatch('vuetable-pagination:change-page', page);
-        },
-        setDropdownToPage: function setDropdownToPage(page) {
-            this.$nextTick(function () {
-                document.getElementById('vuetable-pagination-dropdown').value = page;
-            });
-        },
-        selectPage: function selectPage(event) {
-            this.$dispatch('vuetable-pagination:change-page', event.target.selectedIndex + 1);
-        }
-    },
-    events: {
-        'vuetable:load-success': function vuetableLoadSuccess(tablePagination) {
-            this.tablePagination = tablePagination;
-            this.setDropdownToPage(tablePagination.current_page);
-        }
-    }
-};
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"{{wrapperClass}}\">\n    <a @click=\"loadPage('prev')\" class=\"{{linkClass}} {{isOnFirstPage ? disabledClass : ''}}\">\n        <i :class=\"icons.prev\"></i>\n    </a>\n    <select id=\"vuetable-pagination-dropdown\" class=\"{{dropdownClass}}\" @change=\"selectPage($event)\">\n        <template v-for=\"n in totalPage\">\n            <option class=\"{{pageClass}}\" value=\"{{n+1}}\">\n                {{pageText}} {{n+1}}\n            </option>\n        </template>\n    </select>\n    <a @click=\"loadPage('next')\" class=\"{{linkClass}} {{isOnLastPage ? disabledClass : ''}}\">\n        <i :class=\"icons.next\"></i>\n    </a>\n</div>\n"
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  if (!module.hot.data) {
-    hotAPI.createRecord("_v-0d846008", module.exports)
-  } else {
-    hotAPI.update("_v-0d846008", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
-},{"./VuetablePaginationMixin.vue":12,"vue":6,"vue-hot-reload-api":2}],12:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = {
-    props: {
-        'wrapperClass': {
-            type: String,
-            default: function _default() {
-                return 'ui right floated pagination menu';
-            }
-        },
-        'activeClass': {
-            type: String,
-            default: function _default() {
-                return 'active large';
-            }
-        },
-        'disabledClass': {
-            type: String,
-            default: function _default() {
-                return 'disabled';
-            }
-        },
-        'pageClass': {
-            type: String,
-            default: function _default() {
-                return 'item';
-            }
-        },
-        'linkClass': {
-            type: String,
-            default: function _default() {
-                return 'icon item';
-            }
-        },
-        'icons': {
-            type: Object,
-            default: function _default() {
-                return {
-                    first: 'angle double left icon',
-                    prev: 'left chevron icon',
-                    next: 'right chevron icon',
-                    last: 'angle double right icon'
-                };
-            }
-        },
-        'onEachSide': {
-            type: Number,
-            coerce: function coerce(value) {
-                return parseInt(value);
-            },
-            default: function _default() {
-                return 2;
-            }
-        }
-    },
-    data: function data() {
-        return {
-            tablePagination: null
-        };
-    },
-    computed: {
-        totalPage: function totalPage() {
-            return this.tablePagination == null ? 0 : this.tablePagination.last_page;
-        },
-        isOnFirstPage: function isOnFirstPage() {
-            return this.tablePagination == null ? false : this.tablePagination.current_page == 1;
-        },
-        isOnLastPage: function isOnLastPage() {
-            return this.tablePagination == null ? false : this.tablePagination.current_page == this.tablePagination.last_page;
-        },
-        notEnoughPages: function notEnoughPages() {
-            return this.totalPage < this.onEachSide * 2 + 4;
-        },
-        windowSize: function windowSize() {
-            return this.onEachSide * 2 + 1;
-        },
-        windowStart: function windowStart() {
-            if (this.tablePagination.current_page <= this.onEachSide) {
-                return 1;
-            } else if (this.tablePagination.current_page >= this.totalPage - this.onEachSide) {
-                return this.totalPage - this.onEachSide * 2;
-            }
-
-            return this.tablePagination.current_page - this.onEachSide;
-        }
-    },
-    methods: {
-        loadPage: function loadPage(page) {
-            this.$dispatch('vuetable-pagination:change-page', page);
-        },
-        isCurrentPage: function isCurrentPage(page) {
-            return page == this.tablePagination.current_page;
-        }
-    },
-    events: {
-        'vuetable:load-success': function vuetableLoadSuccess(tablePagination) {
-            this.tablePagination = tablePagination;
-        },
-        'vuetable-pagination:set-options': function vuetablePaginationSetOptions(options) {
-            for (var n in options) {
-                this.$set(n, options[n]);
-            }
-        }
-    }
-};
-if (module.exports.__esModule) module.exports = module.exports.default
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  if (!module.hot.data) {
-    hotAPI.createRecord("_v-766954b4", module.exports)
-  } else {
-    hotAPI.update("_v-766954b4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
-},{"vue":6,"vue-hot-reload-api":2}],13:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 'use strict';
 
 var _vue = require('vue');
@@ -15453,8 +14643,8 @@ _vue2.default.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#csr
 _vue2.default.use(_vueRouter2.default);
 
 //external components
-var progress = require('vue-progressbar');
-_vue2.default.use(progress);
+//const progress = require('vue-progressbar');
+//Vue.use(progress);
 
 // routing
 /*
@@ -15486,7 +14676,9 @@ router.map({
      component: require('./finalComponents/app/testPagination.vue')
      },*/
   '/materias': require('./finalComponents/app/materias/index.js'),
+
   '/menu': require('./finalComponents/app/mantenedor-menu/index.js'),
+
   '/lockscreen': {
     component: require('./finalComponents/new-layout/lockscreen.vue')
   }
@@ -15501,39 +14693,37 @@ router.start(App, '#app');
 //solo para hacer debug
 window.router = router;
 
-},{"./config/externalComponents":14,"./finalComponents/app/mantenedor-menu/index.js":19,"./finalComponents/app/materias/index.js":25,"./finalComponents/layoutView.vue":29,"./finalComponents/new-layout/lockscreen.vue":35,"./finalComponents/reusable/notFound.vue":40,"vue":6,"vue-progressbar":3,"vue-resource":4,"vue-router":5}],14:[function(require,module,exports){
+},{"./config/externalComponents":12,"./finalComponents/app/mantenedor-menu/index.js":17,"./finalComponents/app/materias/index.js":23,"./finalComponents/layoutView.vue":27,"./finalComponents/new-layout/lockscreen.vue":33,"./finalComponents/reusable/notFound.vue":39,"vue":9,"vue-resource":7,"vue-router":8}],12:[function(require,module,exports){
 'use strict';
 
-var _Vuetable = require('vuetable/src/components/Vuetable.vue');
+var _loading = require('../finalComponents/reusable/loading.vue');
 
-var _Vuetable2 = _interopRequireDefault(_Vuetable);
-
-var _VuetablePagination = require('vuetable/src/components/VuetablePagination.vue');
-
-var _VuetablePagination2 = _interopRequireDefault(_VuetablePagination);
-
-var _VuetablePaginationDropdown = require('vuetable/src/components/VuetablePaginationDropdown.vue');
-
-var _VuetablePaginationDropdown2 = _interopRequireDefault(_VuetablePaginationDropdown);
-
-var _VuetablePaginationBootstrap = require('vuetable/src/components/VuetablePaginationBootstrap.vue');
-
-var _VuetablePaginationBootstrap2 = _interopRequireDefault(_VuetablePaginationBootstrap);
+var _loading2 = _interopRequireDefault(_loading);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/**
- * Esto se lo debe hacer luego de tener cargada la instancia de vue-resource
- */
-
 module.exports = function (Vue) {
-  Vue.component('vuetable', _Vuetable2.default);
-  Vue.component('vuetable-pagination', _VuetablePagination2.default);
-  Vue.component('vuetable-pagination-dropdown', _VuetablePaginationDropdown2.default);
-  Vue.component('vuetable-pagination-bootstrap', _VuetablePaginationBootstrap2.default);
-};
+  Vue.component('loading-app', _loading2.default);
+}; /**
+    * Esto se lo debe hacer luego de tener cargada la instancia de vue-resource
+    */
 
-},{"vuetable/src/components/Vuetable.vue":8,"vuetable/src/components/VuetablePagination.vue":9,"vuetable/src/components/VuetablePaginationBootstrap.vue":10,"vuetable/src/components/VuetablePaginationDropdown.vue":11}],15:[function(require,module,exports){
+/*
+ import Vuetable from 'vuetable/src/components/Vuetable.vue';
+ import VuetablePagination from 'vuetable/src/components/VuetablePagination.vue';
+ import VuetablePaginationDropdown  from 'vuetable/src/components/VuetablePaginationDropdown.vue';
+ import VuetablePaginationBootstrap from 'vuetable/src/components/VuetablePaginationBootstrap.vue';
+
+ module.exports = function(Vue){
+ 	Vue.component('vuetable', Vuetable);
+ 	Vue.component('vuetable-pagination', VuetablePagination);
+ 	Vue.component('vuetable-pagination-dropdown', VuetablePaginationDropdown);
+ 	Vue.component('vuetable-pagination-bootstrap', VuetablePaginationBootstrap);
+ }
+
+*/
+
+},{"../finalComponents/reusable/loading.vue":36}],13:[function(require,module,exports){
 'use strict';
 
 module.exports = [{
@@ -15558,7 +14748,7 @@ module.exports = [{
   }]
 }];
 
-},{}],16:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15605,12 +14795,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-54b6637c", module.exports)
+    hotAPI.createRecord("_v-aa257c00", module.exports)
   } else {
-    hotAPI.update("_v-54b6637c", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-aa257c00", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../../util/reusable_functions":42,"./form-fields.vue":18,"vue":6,"vue-hot-reload-api":2}],17:[function(require,module,exports){
+},{"../../../util/reusable_functions":41,"./form-fields.vue":16,"vue":9,"vue-hot-reload-api":6}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15636,7 +14826,8 @@ exports.default = {
 	data: function data() {
 		return {
 			createMode: false,
-			newModel: {}
+			newModel: {},
+			loading: true
 		};
 	},
 
@@ -15654,29 +14845,32 @@ exports.default = {
 			});
 		},
 		read: function read() {
+			this.loading = true;
 			this.$http.get(URL + '/' + this.$route.params.model_id).then(function (resp) {
 				this.newModel = resp.data.data;
+				this.loading = false;
 			}, function (err) {
 				console.warn(err);
 				_reusable_functions2.default.niceAlert('error', err.message);
+				this.loading = false;
 			});
 		}
 	}
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"row\">\n\t<form action=\"\" @submit.prevent=\"update\">\n\t\t\n\t\t<form-inputs :create-mode=\"createMode\" :data-model.sync=\"newModel\"></form-inputs>\n\n\t</form>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<loading-app v-if=\"loading===true\"></loading-app>\n\t<div class=\"row\" v-else=\"\">\n\t\t<form action=\"\" @submit.prevent=\"update\">\n\t\t\t\n\t\t\t<form-inputs :create-mode=\"createMode\" :data-model.sync=\"newModel\"></form-inputs>\n\n\t\t</form>\n\t</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-2dc335f4", module.exports)
+    hotAPI.createRecord("_v-35718132", module.exports)
   } else {
-    hotAPI.update("_v-2dc335f4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-35718132", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../../util/reusable_functions":42,"./form-fields.vue":18,"vue":6,"vue-hot-reload-api":2}],18:[function(require,module,exports){
+},{"../../../util/reusable_functions":41,"./form-fields.vue":16,"vue":9,"vue-hot-reload-api":6}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15734,18 +14928,18 @@ exports.default = {
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Menu padre</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.cod_padre\" value-key=\"id\" label-key=\"name\" url=\"api/menu\" nullable-label=\"--Este es padre --\"></select-list>\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Título</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.titulo\" minlength=\"3\" required=\"\">\n\t<input type=\"hidden\" class=\"form-control\" :value=\"dataModel.titulo\" v-model=\"dataModel.nombre\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Font-Awesome - Icono: <i :class=\"dataModel.iconclass\"></i> </label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.iconclass\" minlength=\"3\"> \n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Url</label> <small>(Opcional)</small>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.url\" minlength=\"3\"> \n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>orden</label>\n\t<input type=\"number\" class=\"form-control\" v-model=\"dataModel.orden\" min=\"0\"> \n</div>\n\n<div class=\"col-xs-12\">\n\t<div class=\"content\">\n\t\t<button v-if=\"createMode\" class=\"btn btn-success btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR</button>\n\t\t<button v-else=\"\" class=\"btn btn-warning btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR CAMBIOS</button>\n\t\t<a v-link=\"{path: '/menu'}\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-reply\"></i> VOLVER</a>\n\t</div>\n\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Menu padre</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.cod_padre\" value-key=\"id\" label-key=\"name\" url=\"api/menu\" nullable-label=\"--Este es padre --\"></select-list>\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Título</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.titulo\" minlength=\"3\" required=\"\">\n\t<input type=\"hidden\" class=\"form-control\" :value=\"dataModel.titulo\" v-model=\"dataModel.nombre\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Font-Awesome - Icono: <i :class=\"dataModel.iconclass\"></i> </label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.iconclass\" minlength=\"3\"> \n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Url</label> <small>(Opcional)</small>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.url\" minlength=\"3\"> \n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>orden</label>\n\t<input type=\"number\" class=\"form-control\" v-model=\"dataModel.orden\" min=\"0\"> \n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Rol de acceso</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.cod_padre\" value-key=\"id\" label-key=\"name\" url=\"api/menu\" nullable-label=\"--Seleccione --\"></select-list>\n</div>\n\n<div class=\"col-xs-12\">\n\t<div class=\"content\">\n\t\t<button v-if=\"createMode\" class=\"btn btn-success btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR</button>\n\t\t<button v-else=\"\" class=\"btn btn-warning btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR CAMBIOS</button>\n\t\t<a v-link=\"{path: '/menu'}\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-reply\"></i> VOLVER</a>\n\t</div>\n\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-535fb164", module.exports)
+    hotAPI.createRecord("_v-a8cec9e8", module.exports)
   } else {
-    hotAPI.update("_v-535fb164", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-a8cec9e8", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/select-list.vue":41,"vue":6,"vue-hot-reload-api":2}],19:[function(require,module,exports){
+},{"../../reusable/select-list.vue":40,"vue":9,"vue-hot-reload-api":6}],17:[function(require,module,exports){
 'use strict';
 
 var _index = require('./index.vue');
@@ -15792,7 +14986,7 @@ module.exports = {
    }
 };
 
-},{"./create-view.vue":16,"./edit-view.vue":17,"./index.vue":20,"./list-view.vue":21,"./read-view.vue":22}],20:[function(require,module,exports){
+},{"./create-view.vue":14,"./edit-view.vue":15,"./index.vue":18,"./list-view.vue":19,"./read-view.vue":20}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15805,6 +14999,8 @@ var _contentHeader2 = _interopRequireDefault(_contentHeader);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//import Loading from '../../reusable/loading.vue';
+
 exports.default = {
 	name: 'content-materias',
 	components: {
@@ -15812,7 +15008,8 @@ exports.default = {
 	},
 	data: function data() {
 		return {
-			path: ['Menú']
+			path: ['Menú'],
+			loading: true
 		};
 	}
 
@@ -15824,12 +15021,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-15dae184", module.exports)
+    hotAPI.createRecord("_v-9097ad08", module.exports)
   } else {
-    hotAPI.update("_v-15dae184", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-9097ad08", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../new-layout/content-header.vue":30,"vue":6,"vue-hot-reload-api":2}],21:[function(require,module,exports){
+},{"../../new-layout/content-header.vue":28,"vue":9,"vue-hot-reload-api":6}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15854,50 +15051,50 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-aa80cc40", module.exports)
+    hotAPI.createRecord("_v-9b2435c4", module.exports)
   } else {
-    hotAPI.update("_v-aa80cc40", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-9b2435c4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/menuManagement.vue":39,"vue":6,"vue-hot-reload-api":2}],22:[function(require,module,exports){
+},{"../../reusable/menuManagement.vue":38,"vue":9,"vue-hot-reload-api":6}],20:[function(require,module,exports){
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<h3>Visualización</h3>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem voluptate laborum, a accusamus. Cum aperiam dignissimos iste, placeat facere repudiandae vel, doloribus voluptatibus perferendis esse illo, dicta. Inventore, possimus, illum!</p>\n<pre>{{$route.params.model_id|json}}</pre>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-665f87e8", module.exports)
+    hotAPI.createRecord("_v-6e0dd326", module.exports)
   } else {
-    hotAPI.update("_v-665f87e8", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-6e0dd326", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":6,"vue-hot-reload-api":2}],23:[function(require,module,exports){
+},{"vue":9,"vue-hot-reload-api":6}],21:[function(require,module,exports){
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<h3>Crear</h3>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus nulla veniam animi sequi dolorem quae repellat incidunt fuga. Deserunt commodi repellat maiores voluptate, non ullam placeat accusantium quo culpa temporibus.</p>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-5510c697", module.exports)
+    hotAPI.createRecord("_v-4ad3ec99", module.exports)
   } else {
-    hotAPI.update("_v-5510c697", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-4ad3ec99", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":6,"vue-hot-reload-api":2}],24:[function(require,module,exports){
+},{"vue":9,"vue-hot-reload-api":6}],22:[function(require,module,exports){
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<h3>Modificar</h3>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus nulla veniam animi sequi dolorem quae repellat incidunt fuga. Deserunt commodi repellat maiores voluptate, non ullam placeat accusantium quo culpa temporibus.</p>\n<pre>{{$route.params.model_id|json}}</pre>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-41e980ee", module.exports)
+    hotAPI.createRecord("_v-3003fe0b", module.exports)
   } else {
-    hotAPI.update("_v-41e980ee", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-3003fe0b", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":6,"vue-hot-reload-api":2}],25:[function(require,module,exports){
-arguments[4][19][0].apply(exports,arguments)
-},{"./create-view.vue":23,"./edit-view.vue":24,"./index.vue":26,"./list-view.vue":27,"./read-view.vue":28,"dup":19}],26:[function(require,module,exports){
+},{"vue":9,"vue-hot-reload-api":6}],23:[function(require,module,exports){
+arguments[4][17][0].apply(exports,arguments)
+},{"./create-view.vue":21,"./edit-view.vue":22,"./index.vue":24,"./list-view.vue":25,"./read-view.vue":26,"dup":17}],24:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15928,36 +15125,36 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-11a0ab53", module.exports)
+    hotAPI.createRecord("_v-6b9e0a56", module.exports)
   } else {
-    hotAPI.update("_v-11a0ab53", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-6b9e0a56", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../new-layout/content-header.vue":30,"vue":6,"vue-hot-reload-api":2}],27:[function(require,module,exports){
+},{"../../new-layout/content-header.vue":28,"vue":9,"vue-hot-reload-api":6}],25:[function(require,module,exports){
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<h3>Listar</h3>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam est reprehenderit fugiat cumque alias, sed fugit ab natus eum maxime perferendis dolorum facere mollitia in error. Quia minima laboriosam, blanditiis.</p>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-5c07a375", module.exports)
+    hotAPI.createRecord("_v-a5ff3c12", module.exports)
   } else {
-    hotAPI.update("_v-5c07a375", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-a5ff3c12", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":6,"vue-hot-reload-api":2}],28:[function(require,module,exports){
+},{"vue":9,"vue-hot-reload-api":6}],26:[function(require,module,exports){
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<h3>Visualización</h3>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem voluptate laborum, a accusamus. Cum aperiam dignissimos iste, placeat facere repudiandae vel, doloribus voluptatibus perferendis esse illo, dicta. Inventore, possimus, illum!</p>\n<pre>{{$route.params.model_id|json}}</pre>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-17a7917d", module.exports)
+    hotAPI.createRecord("_v-68a04fff", module.exports)
   } else {
-    hotAPI.update("_v-17a7917d", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-68a04fff", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":6,"vue-hot-reload-api":2}],29:[function(require,module,exports){
+},{"vue":9,"vue-hot-reload-api":6}],27:[function(require,module,exports){
 'use strict';
 
 var menu = require('../config/menus.js');
@@ -15988,12 +15185,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-3e7b0efa", module.exports)
+    hotAPI.createRecord("_v-32136a05", module.exports)
   } else {
-    hotAPI.update("_v-3e7b0efa", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-32136a05", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../config/menus.js":15,"./new-layout/content.vue":31,"./new-layout/control.vue":32,"./new-layout/footer.vue":33,"./new-layout/header.vue":34,"./new-layout/menu.vue":36,"vue":6,"vue-hot-reload-api":2}],30:[function(require,module,exports){
+},{"../config/menus.js":13,"./new-layout/content.vue":29,"./new-layout/control.vue":30,"./new-layout/footer.vue":31,"./new-layout/header.vue":32,"./new-layout/menu.vue":34,"vue":9,"vue-hot-reload-api":6}],28:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16021,12 +15218,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-154a0082", module.exports)
+    hotAPI.createRecord("_v-5028ca80", module.exports)
   } else {
-    hotAPI.update("_v-154a0082", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-5028ca80", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":6,"vue-hot-reload-api":2}],31:[function(require,module,exports){
+},{"vue":9,"vue-hot-reload-api":6}],29:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -16039,12 +15236,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-3f6872a8", module.exports)
+    hotAPI.createRecord("_v-100e7bac", module.exports)
   } else {
-    hotAPI.update("_v-3f6872a8", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-100e7bac", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":6,"vue-hot-reload-api":2}],32:[function(require,module,exports){
+},{"vue":9,"vue-hot-reload-api":6}],30:[function(require,module,exports){
 "use strict";
 if (module.exports.__esModule) module.exports = module.exports.default
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t<!-- Control Sidebar -->\n\t<aside class=\"control-sidebar control-sidebar-dark\">\n\t\t<!-- Create the tabs -->\n\t\t<ul class=\"nav nav-tabs nav-justified control-sidebar-tabs\">\n\t\t\t<li class=\"active\"><a href=\"#control-sidebar-home-tab\" data-toggle=\"tab\"><i class=\"fa fa-home\"></i></a></li>\n\t\t\t<li><a href=\"#control-sidebar-settings-tab\" data-toggle=\"tab\"><i class=\"fa fa-gears\"></i></a></li>\n\t\t</ul>\n\t\t<!-- Tab panes -->\n\t\t<div class=\"tab-content\">\n\t\t\t<!-- Home tab content -->\n\t\t\t<div class=\"tab-pane active\" id=\"control-sidebar-home-tab\">\n\t\t\t\t<h3 class=\"control-sidebar-heading\">Actividad reciente</h3>\n\t\t\t\t<ul class=\"control-sidebar-menu\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<a href=\"javascript::;\">\n\t\t\t\t\t\t\t<i class=\"menu-icon fa fa-birthday-cake bg-red\"></i>\n\t\t\t\t\t\t\t<div class=\"menu-info\">\n\t\t\t\t\t\t\t\t<h4 class=\"control-sidebar-subheading\">Cumpleaños</h4>\n\t\t\t\t\t\t\t\t<p>01-07-1990</p>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</li>\n\t\t\t\t</ul><!-- /.control-sidebar-menu -->\n\n\t\t\t\t<h3 class=\"control-sidebar-heading\">Progreso</h3>\n\t\t\t\t<ul class=\"control-sidebar-menu\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<a href=\"javascript::;\">\n\t\t\t\t\t\t\t<h4 class=\"control-sidebar-subheading\">\n\t\t\t\t\t\t\t\tCustom Template\n\t\t\t\t\t\t\t\t<span class=\"label label-danger pull-right\">70%</span>\n\t\t\t\t\t\t\t</h4>\n\t\t\t\t\t\t\t<div class=\"progress progress-xxs\">\n\t\t\t\t\t\t\t\t<div class=\"progress-bar progress-bar-danger\" style=\"width: 70%\"></div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</li>\n\t\t\t\t</ul><!-- /.control-sidebar-menu -->\n\n\t\t\t</div><!-- /.tab-pane -->\n\t\t\t<!-- Stats tab content -->\n\t\t\t<div class=\"tab-pane\" id=\"control-sidebar-stats-tab\">Status</div><!-- /.tab-pane -->\n\t\t\t<!-- Settings tab content -->\n\t\t\t<div class=\"tab-pane\" id=\"control-sidebar-settings-tab\">\n\t\t\t\t<form method=\"post\">\n\t\t\t\t\t<h3 class=\"control-sidebar-heading\">Ajustes Generales</h3>\n\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t<label class=\"control-sidebar-subheading\">\n\t\t\t\t\t\t\tPanel de reporte\n\t\t\t\t\t\t\t<input type=\"checkbox\" class=\"pull-right\">\n\t\t\t\t\t\t</label>\n\t\t\t\t\t\t<p>\n\t\t\t\t\t\t\tAjustes de información\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div><!-- /.form-group -->\n\t\t\t\t</form>\n\t\t\t</div><!-- /.tab-pane -->\n\t\t</div>\n</aside><!-- /.control-sidebar\n\n<!-- Add the sidebar's background. This div must be placed\n\timmediately after the control sidebar -->\n\t<div class=\"control-sidebar-bg\"></div>\n"
@@ -16053,12 +15250,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-1f44dce8", module.exports)
+    hotAPI.createRecord("_v-ae243de4", module.exports)
   } else {
-    hotAPI.update("_v-1f44dce8", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-ae243de4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":6,"vue-hot-reload-api":2}],33:[function(require,module,exports){
+},{"vue":9,"vue-hot-reload-api":6}],31:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -16104,12 +15301,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-59745888", module.exports)
+    hotAPI.createRecord("_v-238c8bfa", module.exports)
   } else {
-    hotAPI.update("_v-59745888", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-238c8bfa", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":6,"vue-hot-reload-api":2}],34:[function(require,module,exports){
+},{"vue":9,"vue-hot-reload-api":6}],32:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -16173,12 +15370,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-170f90a4", module.exports)
+    hotAPI.createRecord("_v-44beefec", module.exports)
   } else {
-    hotAPI.update("_v-170f90a4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-44beefec", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":6,"vue-hot-reload-api":2}],35:[function(require,module,exports){
+},{"vue":9,"vue-hot-reload-api":6}],33:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\t.lockscreen-name{\n\t\ttext-align: center;\n    \tfont-weight: 600;\n\t}\n\t.lockscreen-logo{\n\t\tmargin-top: 25px;\n\t}\n\n")
 'use strict';
@@ -16205,12 +15402,12 @@ if (module.hot) {(function () {  module.hot.accept()
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-adbc2610", module.exports)
+    hotAPI.createRecord("_v-ea935394", module.exports)
   } else {
-    hotAPI.update("_v-adbc2610", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-ea935394", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":6,"vue-hot-reload-api":2,"vueify/lib/insert-css":7}],36:[function(require,module,exports){
+},{"vue":9,"vue-hot-reload-api":6,"vueify/lib/insert-css":10}],34:[function(require,module,exports){
 'use strict';
 
 var _reusable_functions = require('../../util/reusable_functions');
@@ -16268,12 +15465,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-33114080", module.exports)
+    hotAPI.createRecord("_v-04eb0f7e", module.exports)
   } else {
-    hotAPI.update("_v-33114080", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-04eb0f7e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../util/reusable_functions":42,"../reusable/menuItem.vue":38,"vue":6,"vue-hot-reload-api":2}],37:[function(require,module,exports){
+},{"../../util/reusable_functions":41,"../reusable/menuItem.vue":37,"vue":9,"vue-hot-reload-api":6}],35:[function(require,module,exports){
 'use strict';
 
 var _menuItem = require('./menuItem.vue');
@@ -16319,12 +15516,36 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-fe83ce56", module.exports)
+    hotAPI.createRecord("_v-5c925152", module.exports)
   } else {
-    hotAPI.update("_v-fe83ce56", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-5c925152", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./menuItem.vue":38,"vue":6,"vue-hot-reload-api":2}],38:[function(require,module,exports){
+},{"./menuItem.vue":37,"vue":9,"vue-hot-reload-api":6}],36:[function(require,module,exports){
+var __vueify_insert__ = require("vueify/lib/insert-css")
+var __vueify_style__ = __vueify_insert__.insert("\n* {margin: 0;padding:0;}\n.mask-loading {\n\tbackground-color: #ecf0f5;\n\tmargin: 150px 0px;\n}\n.spinner {\n\twidth: 50px;\n\theight: 50px;\n\tposition: relative;\n\tmargin: 0 auto;\n}\n\n.double-bounce1, .double-bounce2 {\n\twidth: 100%;\n\theight: 100%;\n\tborder-radius: 50%;\n\tbackground-color: #3c8dbc;\n\topacity: 0.6;\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\n\t-webkit-animation: sk-bounce 2.0s infinite ease-in-out;\n\tanimation: sk-bounce 2.0s infinite ease-in-out;\n}\n\n.double-bounce2 {\n\t-webkit-animation-delay: -1.0s;\n\tanimation-delay: -1.0s;\n}\n\n@-webkit-keyframes sk-bounce {\n\t0%, 100% { -webkit-transform: scale(0.0) }\n\t50% { -webkit-transform: scale(1.0) }\n}\n\n@keyframes sk-bounce {\n\t0%, 100% { \n\t\ttransform: scale(0.0);\n\t\t-webkit-transform: scale(0.0);\n\t} 50% { \n\t\ttransform: scale(1.0);\n\t\t-webkit-transform: scale(1.0);\n\t}\n}\n")
+"use strict";
+
+var o = $('.content-wrapper');
+$(".mask-loading").css("height", o.height());
+$(".spinner").css("top", o.height() / 2 - 25);
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"mask-loading\">\n\t<div class=\"spinner\">\n\t\t<div class=\"double-bounce1\"></div>\n\t\t<div class=\"double-bounce2\"></div>\n\t</div>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.dispose(function () {
+    __vueify_insert__.cache["\n* {margin: 0;padding:0;}\n.mask-loading {\n\tbackground-color: #ecf0f5;\n\tmargin: 150px 0px;\n}\n.spinner {\n\twidth: 50px;\n\theight: 50px;\n\tposition: relative;\n\tmargin: 0 auto;\n}\n\n.double-bounce1, .double-bounce2 {\n\twidth: 100%;\n\theight: 100%;\n\tborder-radius: 50%;\n\tbackground-color: #3c8dbc;\n\topacity: 0.6;\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\n\t-webkit-animation: sk-bounce 2.0s infinite ease-in-out;\n\tanimation: sk-bounce 2.0s infinite ease-in-out;\n}\n\n.double-bounce2 {\n\t-webkit-animation-delay: -1.0s;\n\tanimation-delay: -1.0s;\n}\n\n@-webkit-keyframes sk-bounce {\n\t0%, 100% { -webkit-transform: scale(0.0) }\n\t50% { -webkit-transform: scale(1.0) }\n}\n\n@keyframes sk-bounce {\n\t0%, 100% { \n\t\ttransform: scale(0.0);\n\t\t-webkit-transform: scale(0.0);\n\t} 50% { \n\t\ttransform: scale(1.0);\n\t\t-webkit-transform: scale(1.0);\n\t}\n}\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-2e1b703e", module.exports)
+  } else {
+    hotAPI.update("_v-2e1b703e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":9,"vue-hot-reload-api":6,"vueify/lib/insert-css":10}],37:[function(require,module,exports){
 'use strict';
 
 var _crossMenuItem = require('./crossMenuItem.vue');
@@ -16370,12 +15591,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-c5742402", module.exports)
+    hotAPI.createRecord("_v-24e6b386", module.exports)
   } else {
-    hotAPI.update("_v-c5742402", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-24e6b386", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./crossMenuItem.vue":37,"vue":6,"vue-hot-reload-api":2}],39:[function(require,module,exports){
+},{"./crossMenuItem.vue":35,"vue":9,"vue-hot-reload-api":6}],38:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\t#menu-content {\n\t\tbackground:white;\n\t\tfont:normal normal 13px/1.4 Segoe,\"Segoe UI\",Calibri,Helmet,FreeSans,Sans-Serif;\n\t\tpadding:10px;\n\t}\n\n\n/**\n * Framework starts from here ...\n * ------------------------------\n */\n\n .tree,\n .tree ul {\n \tmargin:0 0 0 1em; /* indentation */\n \tpadding:0;\n \tlist-style:none;\n \tcolor:#369;\n \tposition:relative;\n }\n\n .tree ul {margin-left:.5em} /* (indentation/2) */\n\n .tree:before,\n .tree ul:before {\n \tcontent:\"\";\n \tdisplay:block;\n \twidth:0;\n \tposition:absolute;\n \ttop:0;\n \tbottom:0;\n \tleft:0;\n \tborder-left:1px solid;\n }\n\n .tree li {\n \tmargin:0;\n \tpadding:0 1.5em; /* indentation + .5em */\n \tline-height:2em; /* default list item's `line-height` */\n \tposition:relative;\n }\n\n .tree li:before {\n \tcontent:\"\";\n \tdisplay:block;\n \twidth:10px; /* same with indentation */\n \theight:0;\n \tborder-top:1px solid;\n \tmargin-top:-1px; /* border top width */\n \tposition:absolute;\n \ttop:1em; /* (line-height/2) */\n \tleft:0;\n }\n\n .tree li:last-child:before {\n \tbackground:white; /* same with body background */\n \theight:auto;\n \ttop:1em; /* (line-height/2) */\n \tbottom:0;\n }\n\n .edit-option, .delete-option{\n \tcolor: #336699;\n }\n .edit-option:hover{\n \tcursor: pointer;\n \tcolor: orange;\n }\n\n .delete-option:hover{\n \tcursor: pointer;\n \tcolor: red;\n }\n\n .add-btn{\n \tpadding: 1px 50px !important;\n }\n")
 'use strict';
@@ -16384,57 +15605,69 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
+var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
+
+var _defineProperty3 = _interopRequireDefault(_defineProperty2);
+
+var _name$data$ready$name;
+
 var _reusable_functions = require('../../util/reusable_functions');
 
 var _reusable_functions2 = _interopRequireDefault(_reusable_functions);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = {
+exports.default = (_name$data$ready$name = {
+	name: 'gesto-de-menu',
+	data: function data() {
+		return {
+			loading: true
+		};
+	},
+
 	ready: function ready() {
 		this.load();
+	}
+}, (0, _defineProperty3.default)(_name$data$ready$name, 'name', 'management-menu'), (0, _defineProperty3.default)(_name$data$ready$name, 'props', {
+	caption: {
+		type: String,
+		required: false,
+		default: ''
 	},
-	name: 'management-menu',
-	props: {
-		caption: {
-			type: String,
-			required: false,
-			default: ''
-		},
-		url: {
-			type: String,
-			required: false,
-			default: 'api/menu'
-		},
-		data: {
-			type: Array,
-			required: false,
-			default: function _default() {
-				return [];
-			}
-		}
+	url: {
+		type: String,
+		required: false,
+		default: 'api/menu'
 	},
-	methods: {
-		destroy: function destroy(model_id) {
-			if (confirm('¿Estás seguro?')) {
-				this.$http.delete(this.url + '/' + model_id).then(function (resp) {
-					_reusable_functions2.default.niceAlert('success', 'Se eliminó correctamente');
-					this.load();
-				}, function (err) {
-					_reusable_functions2.default.niceAlert('error', err.message);
-				});
-			}
-		},
-		load: function load() {
-			var self = this;
-			self.$http.get(self.url).then(function (resp) {
-				self.data = resp.data.data;
-			}, _reusable_functions2.default.tryError);
+	data: {
+		type: Array,
+		required: false,
+		default: function _default() {
+			return [];
 		}
 	}
-};
+}), (0, _defineProperty3.default)(_name$data$ready$name, 'methods', {
+	destroy: function destroy(model_id) {
+		if (confirm('¿Estás seguro?')) {
+			this.$http.delete(this.url + '/' + model_id).then(function (resp) {
+				_reusable_functions2.default.niceAlert('success', 'Se eliminó correctamente');
+				this.load();
+			}, function (err) {
+				_reusable_functions2.default.niceAlert('error', err.message);
+			});
+		}
+	},
+	load: function load() {
+		var self = this;
+		self.loading = true;
+		self.$http.get(self.url).then(function (resp) {
+			self.data = resp.data.data;
+			self.loading = false;
+		}, _reusable_functions2.default.tryError);
+	}
+}), _name$data$ready$name);
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div id=\"menu-content\">\n\t<p>{{caption}}</p>\n\t<ul class=\"tree\">\n\t\t<li v-for=\"item in data\"><strong>{{item.name}}</strong> - <a v-link=\"{path: '/menu/edit/'+item.id}\"><i class=\"fa fa-pencil edit-option\" data-toggle=\"tooltip\" title=\"Editar\"></i></a> - <i class=\"fa fa-trash delete-option\" data-toggle=\"tooltip\" title=\"Eliminar\" @click.prevent=\"destroy(item.id)\"></i>\n\t\t\t<ul v-if=\"item.children.length>0\">\n\t\t\t\t<li v-for=\"it in item.children\">{{it.name}} - <a v-link=\"{path: '/menu/edit/'+it.id}\"><i class=\"fa fa-pencil edit-option\" data-toggle=\"tooltip\" title=\"Editar\"></i></a> - <i class=\"fa fa-trash delete-option\" data-toggle=\"tooltip\" title=\"Eliminar\" @click.prevent=\"destroy(it.id)\"></i></li>\n\t\t\t</ul>\n\t\t</li>\n\t\t\n\t\t<li><a v-link=\"{path: '/menu/create'}\" class=\"btn btn-sm btn-primary add-btn\"><i class=\"fa fa-plus\"> Agregar</i></a></li>\n\t</ul>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<loading-app v-if=\"loading===true\"></loading-app>\n\n<div id=\"menu-content\" v-else=\"\">\n\t<p>{{caption}}</p>\n\t<ul class=\"tree\">\n\t\t<li v-for=\"item in data\"><strong>{{item.name}}</strong> - <a v-link=\"{path: '/menu/edit/'+item.id}\"><i class=\"fa fa-pencil edit-option\" data-toggle=\"tooltip\" title=\"Editar\"></i></a> - <i class=\"fa fa-trash delete-option\" data-toggle=\"tooltip\" title=\"Eliminar\" @click.prevent=\"destroy(item.id)\"></i>\n\t\t\t<ul v-if=\"item.children.length>0\">\n\t\t\t\t<li v-for=\"it in item.children\">{{it.name}} - <a v-link=\"{path: '/menu/edit/'+it.id}\"><i class=\"fa fa-pencil edit-option\" data-toggle=\"tooltip\" title=\"Editar\"></i></a> - <i class=\"fa fa-trash delete-option\" data-toggle=\"tooltip\" title=\"Eliminar\" @click.prevent=\"destroy(it.id)\"></i></li>\n\t\t\t</ul>\n\t\t</li>\n\t\t\n\t\t<li><a v-link=\"{path: '/menu/create'}\" class=\"btn btn-sm btn-primary add-btn\"><i class=\"fa fa-plus\"> Agregar</i></a></li>\n\t</ul>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16444,12 +15677,12 @@ if (module.hot) {(function () {  module.hot.accept()
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-4e25b7a2", module.exports)
+    hotAPI.createRecord("_v-b1e79426", module.exports)
   } else {
-    hotAPI.update("_v-4e25b7a2", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-b1e79426", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../util/reusable_functions":42,"vue":6,"vue-hot-reload-api":2,"vueify/lib/insert-css":7}],40:[function(require,module,exports){
+},{"../../util/reusable_functions":41,"babel-runtime/helpers/defineProperty":2,"vue":9,"vue-hot-reload-api":6,"vueify/lib/insert-css":10}],39:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16465,12 +15698,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-b382fa48", module.exports)
+    hotAPI.createRecord("_v-12f589cc", module.exports)
   } else {
-    hotAPI.update("_v-b382fa48", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-12f589cc", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":6,"vue-hot-reload-api":2}],41:[function(require,module,exports){
+},{"vue":9,"vue-hot-reload-api":6}],40:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16547,12 +15780,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-43fb7a72", module.exports)
+    hotAPI.createRecord("_v-19b5f174", module.exports)
   } else {
-    hotAPI.update("_v-43fb7a72", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-19b5f174", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":6,"vue-hot-reload-api":2}],42:[function(require,module,exports){
+},{"vue":9,"vue-hot-reload-api":6}],41:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16594,6 +15827,6 @@ exports.default = {
 	}
 };
 
-},{}]},{},[13]);
+},{}]},{},[11]);
 
 //# sourceMappingURL=build.js.map

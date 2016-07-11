@@ -2,6 +2,7 @@
  * Esto se lo debe hacer luego de tener cargada la instancia de vue-resource
  */
 
+/*
  import Vuetable from 'vuetable/src/components/Vuetable.vue';
  import VuetablePagination from 'vuetable/src/components/VuetablePagination.vue';
  import VuetablePaginationDropdown  from 'vuetable/src/components/VuetablePaginationDropdown.vue';
@@ -14,3 +15,9 @@
  	Vue.component('vuetable-pagination-bootstrap', VuetablePaginationBootstrap);
  }
 
+*/
+import Loading from '../finalComponents/reusable/loading.vue';
+
+module.exports = function(Vue){
+	Vue.component('loading-app', Loading);
+}

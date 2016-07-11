@@ -25,6 +25,11 @@
 		<input type="number" class="form-control" v-model="dataModel.orden" min="0"> 
 	</div>
 
+	<div class="col-sm-6 col-xs-12">
+		<label>Rol de acceso</label>
+		<select-list class-name="form-control col-xs-6" :select-value.sync="dataModel.cod_padre" value-key="id" label-key="name" url="api/menu" nullable-label="--Seleccione --"></select-list>
+	</div>
+
 	<div class="col-xs-12">
 		<div class="content">
 			<button v-if="createMode" class="btn btn-success btn-flat" type="submit"><i class="fa fa-save"></i> GUARDAR</button>

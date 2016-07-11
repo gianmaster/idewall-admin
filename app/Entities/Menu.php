@@ -18,4 +18,8 @@ class Menu extends Model implements Transformable
    		return $this->hasMany(Menu::class, 'cod_padre', 'id')->orderBy('orden');
    	}
 
+   	public function rolMenu(){
+   		return $this->hasOne(RolMenu::class, 'menu', 'id');
+   	}
+
 }

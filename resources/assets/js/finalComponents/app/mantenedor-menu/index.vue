@@ -13,6 +13,7 @@
 <script>
 
 	import ContentHeader from '../../new-layout/content-header.vue';
+	//import Loading from '../../reusable/loading.vue';
 
 	export default {
 		name: 'content-materias',
@@ -21,7 +22,8 @@
 		},
 		data: function(){
 			return {
-				path: ['Menú']
+				path: ['Menú'],
+				loading: true,
 			}
 		},
 

@@ -10,8 +10,8 @@
 <style>
 	* {margin: 0;padding:0;}
 	.mask-loading {
-		widows: 100%;
 		background-color: #ecf0f5;
+		margin: 150px 0px;
 	}
 	.spinner {
 		width: 50px;

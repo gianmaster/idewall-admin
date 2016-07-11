@@ -30,7 +30,8 @@ class MenuTransformer extends TransformerAbstract
             'cod_padre' => $model->cod_padre,
             'children' => $model->children,
             'fecha_creacion' => (string)($model->created_at),
-            'fecha_modificacion' => (string)$model->updated_at
+            'fecha_modificacion' => (string)$model->updated_at,
+            'access_rol' => $model->rolMenu
         ];
 
         if (isset($newModel['children'])) {//convierto los hijos en transformaciones
