@@ -14897,6 +14897,7 @@ exports.default = {
 		initModel: function initModel() {
 			return {
 				cod_padre: null,
+				cod_rol: null,
 				titulo: null,
 				nombre: null,
 				iconclass: null,
@@ -14917,6 +14918,7 @@ exports.default = {
 			default: function _default() {
 				return {
 					cod_padre: null,
+					cod_rol: null,
 					titulo: null,
 					nombre: null,
 					iconclass: null,
@@ -14928,7 +14930,7 @@ exports.default = {
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Menu padre</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.cod_padre\" value-key=\"id\" label-key=\"name\" url=\"api/menu\" nullable-label=\"--Este es padre --\"></select-list>\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Título</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.titulo\" minlength=\"3\" required=\"\">\n\t<input type=\"hidden\" class=\"form-control\" :value=\"dataModel.titulo\" v-model=\"dataModel.nombre\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Font-Awesome - Icono: <i :class=\"dataModel.iconclass\"></i> </label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.iconclass\" minlength=\"3\"> \n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Url</label> <small>(Opcional)</small>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.url\" minlength=\"3\"> \n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>orden</label>\n\t<input type=\"number\" class=\"form-control\" v-model=\"dataModel.orden\" min=\"0\"> \n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Rol de acceso</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.cod_padre\" value-key=\"id\" label-key=\"name\" url=\"api/menu\" nullable-label=\"--Seleccione --\"></select-list>\n</div>\n\n<div class=\"col-xs-12\">\n\t<div class=\"content\">\n\t\t<button v-if=\"createMode\" class=\"btn btn-success btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR</button>\n\t\t<button v-else=\"\" class=\"btn btn-warning btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR CAMBIOS</button>\n\t\t<a v-link=\"{path: '/menu'}\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-reply\"></i> VOLVER</a>\n\t</div>\n\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Menu padre</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.cod_padre\" value-key=\"id\" label-key=\"name\" url=\"api/menu\" nullable-label=\"--Este es padre --\"></select-list>\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Título</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.titulo\" minlength=\"3\" required=\"\">\n\t<input type=\"hidden\" class=\"form-control\" :value=\"dataModel.titulo\" v-model=\"dataModel.nombre\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Font-Awesome - Icono: <i :class=\"dataModel.iconclass\"></i> </label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.iconclass\" minlength=\"3\"> \n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Url</label> <small>(Opcional)</small>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.url\" minlength=\"3\"> \n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>orden</label>\n\t<input type=\"number\" class=\"form-control\" v-model=\"dataModel.orden\" min=\"0\"> \n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Rol de acceso</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.cod_rol\" value-key=\"id\" label-key=\"name\" url=\"api/rol\" :is-required=\"true\"></select-list>\n</div>\n\n<div class=\"col-xs-12\">\n\t<div class=\"content\">\n\t\t<button v-if=\"createMode\" class=\"btn btn-success btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR</button>\n\t\t<button v-else=\"\" class=\"btn btn-warning btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR CAMBIOS</button>\n\t\t<a v-link=\"{path: '/menu'}\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-reply\"></i> VOLVER</a>\n\t</div>\n\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15768,13 +15770,18 @@ exports.default = {
 		},
 		nullValue: {
 			deafult: null
+		},
+		isRequired: {
+			type: Boolean,
+			required: false,
+			default: false
 		}
 
 	},
 	methods: {}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<select v-if=\"data.length<=0\" :class=\"className\" disabled=\"\">\n\t<option>Cargando.....</option>\n</select>\n<select v-else=\"\" v-model=\"selectValue\" :class=\"className\">\n\n\t<option v-if=\"selectLabel\" disabled=\"\">{{selectLabel}}</option>\n\n\t<template v-if=\"labelKey &amp;&amp; valueKey\">\n\t\t<option v-for=\"item in data\" value=\"{{item[valueKey]}}\">{{item[labelKey]}}</option>\n\t</template>\n\t<template v-else=\"\">\n\t\t<option v-for=\"item in data\" :value=\"item\">{{item}}</option>\n\t</template>\n\t<option v-if=\"nullableLabel\" :value=\"nullValue\">{{nullableLabel}}</option>\n\n</select>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<select v-if=\"data.length<=0\" :class=\"className\" disabled=\"\">\n\t<option>Cargando.....</option>\n</select>\n<select v-else=\"\" v-model=\"selectValue\" :class=\"className\" :required=\"isRequired\">\n\n\t<option v-if=\"selectLabel\" disabled=\"\" selected=\"\" :value=\"nullValue\">{{selectLabel}}</option>\n\n\t<template v-if=\"labelKey &amp;&amp; valueKey\">\n\t\t<option v-for=\"item in data\" value=\"{{item[valueKey]}}\">{{item[labelKey]}}</option>\n\t</template>\n\t<template v-else=\"\">\n\t\t<option v-for=\"item in data\" :value=\"item\">{{item}}</option>\n\t</template>\n\t<option v-if=\"nullableLabel\" :value=\"nullValue\">{{nullableLabel}}</option>\n\n</select>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)

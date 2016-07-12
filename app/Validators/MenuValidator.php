@@ -14,6 +14,7 @@ class MenuValidator extends LaravelValidator
             'url'       => 'max:255',
             'iconclass' => '',
             'orden'     => 'numeric',
+            'cod_rol'   => 'required|numeric',
             'cod_padre' => 'numeric',
         ],
         ValidatorInterface::RULE_UPDATE => [
@@ -21,6 +22,7 @@ class MenuValidator extends LaravelValidator
             'url'       => 'max:255',
             'iconclass' => '',
             'orden'     => 'numeric',
+            'cod_rol'   => 'required|numeric',
             'cod_padre' => 'numeric',
         ],
    ];

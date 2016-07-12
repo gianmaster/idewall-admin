@@ -30,6 +30,8 @@ Route::group(['middleware' => 'auth'], function(){
 
 		Route::resource('menu', 'MenusController');
 
+		Route::resource('rol', 'RolController');
+
 	});
 
 });

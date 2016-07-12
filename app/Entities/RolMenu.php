@@ -14,4 +14,12 @@ class RolMenu extends Model implements Transformable
 
     protected $fillable = ['rol', 'menu'];
 
+    public function menu(){
+    	return $this->belongsTo('App\Entities\Menu', 'id', 'menu');
+    }
+
+    public function rol(){
+    	return $this->belongsTo('App\Entities\Rol', 'id', 'rol');
+    }
+
 }

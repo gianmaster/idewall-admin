@@ -27,7 +27,7 @@
 
 	<div class="col-sm-6 col-xs-12">
 		<label>Rol de acceso</label>
-		<select-list class-name="form-control col-xs-6" :select-value.sync="dataModel.cod_padre" value-key="id" label-key="name" url="api/menu" nullable-label="--Seleccione --"></select-list>
+		<select-list class-name="form-control col-xs-6" :select-value.sync="dataModel.cod_rol" value-key="id" label-key="name" url="api/rol" :is-required="true"></select-list>
 	</div>
 
 	<div class="col-xs-12">
@@ -57,6 +57,7 @@
 			initModel: function(){
 				return {
 					cod_padre: null,
+					cod_rol: null,
 					titulo: null,
 					nombre: null,
 					iconclass: null,
@@ -77,6 +78,7 @@
 				default: function(){
 					return {
 						cod_padre: null,
+						cod_rol: null,
 						titulo: null,
 						nombre: null,
 						iconclass: null,

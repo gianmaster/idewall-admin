@@ -115,6 +115,7 @@ return array(
         'fecha_fin'         => 'Fecha Fin',
         'titulo'            => 'Titulo',
         'cod_padre'         => 'Menu padre',
+        'cod_rol'         => 'Rol de acceso',
         'orden'             => 'Orden',
         'url'               => 'Url',
         'iconclass'         => 'Icon Class',

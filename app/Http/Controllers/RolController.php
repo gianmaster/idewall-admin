@@ -3,26 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Menu;
+use App\Entities\Rol;
 use App\Entities\RolMenu;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
-use App\Http\Requests\MenuCreateRequest;
-use App\Http\Requests\MenuUpdateRequest;
-use App\Repositories\MenuRepository;
-use App\Validators\MenuValidator;
+use App\Repositories\RolRepository;
+use App\Validators\RolValidator;
 
 
 
-class MenusController extends Controller
+class RolController extends Controller
 {
 
-    protected $requestFields = [
-        'store'     => ['cod_padre', 'url', 'nombre', 'titulo', 'orden', 'iconclass', 'cod_rol'],
-        'update'    => ['cod_padre', 'url', 'nombre', 'titulo', 'orden', 'iconclass', 'cod_rol']
-    ];
+    protected $requestFields = [];
 
     /**
      * @var MenuRepository
@@ -34,7 +30,7 @@ class MenusController extends Controller
      */
     protected $validator;
 
-    public function __construct(MenuRepository $repository, MenuValidator $validator)
+    public function __construct(RolRepository $repository, RolValidator $validator)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
@@ -50,9 +46,9 @@ class MenusController extends Controller
     {
         //$this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
         //$menus = $this->repository->all();
-        $menus = $this->repository->findByField('cod_padre', null);
+        $roles = $this->repository->all();
 
-        return response()->json($menus);
+        return response()->json($roles);
     }
 
     /**
@@ -67,13 +63,7 @@ class MenusController extends Controller
 
         try {
 
-            $this->validator->with($request->only($this->requestFields['store']))->passesOrFail(ValidatorInterface::RULE_CREATE);
-
-            $menu = $this->repository->create($request->all());
-
-            RolMenu::create(['menu' => $menu['data']['id'], 'rol' => $request->input('cod_rol')]);
-
-            return response()->json($menu);
+            //TODO
 
         } catch (ValidatorException $e) {
             if ($request->wantsJson()) {
@@ -103,15 +93,9 @@ class MenusController extends Controller
     public function show($id)
     {
         //$menu = $this->repository->find($id);
-        //$menu = array('data' => Menu::find($id));
-        $menu = $this->repository->find($id);
-        $menu['data']['titulo'] = $menu['data']['name'];
-        $menu['data']['url'] = $menu['data']['link'];
-        $menu['data']['iconclass'] = $menu['data']['iconClass'];
-        $menu['data']['nombre'] = $menu['data']['name'];
-        $menu['data']['cod_rol'] = $menu['data']['cod_rol']->rol;
+        $rol = $this->repository->find($id);
 
-        return response()->json($menu);
+        return response()->json($rol);
 
     }
 
@@ -126,9 +110,9 @@ class MenusController extends Controller
     public function edit($id)
     {
 
-        $menu = $this->repository->find($id);
+        $rol = $this->repository->find($id);
 
-        return view('menus.edit', compact('menu'));
+        return view('rol.edit', compact('rol'));
     }
 
 
@@ -145,11 +129,7 @@ class MenusController extends Controller
 
         try {
 
-            $this->validator->with($request->only($this->requestFields['update']))->passesOrFail(ValidatorInterface::RULE_UPDATE);
-
-            $menu = $this->repository->update($request->only($this->requestFields['update']), $id);
-
-            return response()->json($menu);
+            //TODO
 
         } catch (ValidatorException $e) {
             if ($request->wantsJson()) {
@@ -182,8 +162,7 @@ class MenusController extends Controller
 
         try {
 
-            Menu::where('cod_padre', $id)->delete();
-            RolMenu::where('menu', $id)->delete();
+            RolMenu::where('rol', $id)->delete();
             $deleted = $this->repository->delete($id);
             return response()->json(array('data' => $deleted), 204);
 

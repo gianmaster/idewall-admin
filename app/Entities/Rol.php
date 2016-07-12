@@ -14,4 +14,8 @@ class Rol extends Model implements Transformable
 
     protected $fillable = ['nombre', 'descripcion'];
 
+    public function rolMenu(){
+   		return $this->hasOne(RolMenu::class, 'rol', 'id');
+   	}
+
 }

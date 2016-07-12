@@ -2,9 +2,9 @@
 	<select v-if="data.length<=0" :class="className" disabled>
 		<option>Cargando.....</option>
 	</select>
-	<select v-else v-model="selectValue" :class="className">
+	<select v-else v-model="selectValue" :class="className" :required="isRequired">
 
-		<option v-if="selectLabel" disabled>{{selectLabel}}</option>
+		<option v-if="selectLabel" disabled selected :value="nullValue">{{selectLabel}}</option>
 
 		<template v-if="labelKey && valueKey">
 			<option v-for="item in data" value="{{item[valueKey]}}" >{{item[labelKey]}}</option>
@@ -77,6 +77,11 @@
 			},
 			nullValue: {
 				deafult: null
+			},
+			isRequired: {
+				type: Boolean,
+				required: false,
+				default: false
 			}
 
 		},
