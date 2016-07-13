@@ -48,7 +48,7 @@
 import fnc from '../../util/reusable_functions';
 
 
-import MenuItem from '../reusable/menuItem.vue';
+import MenuItem from '../reusable/menuItemLevel1.vue';
 
 module.exports = {
 	components: {

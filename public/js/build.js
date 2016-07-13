@@ -1,6 +1,8 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+module.exports = { "default": require("core-js/library/fn/object/assign"), __esModule: true };
+},{"core-js/library/fn/object/assign":4}],2:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/object/define-property"), __esModule: true };
-},{"core-js/library/fn/object/define-property":3}],2:[function(require,module,exports){
+},{"core-js/library/fn/object/define-property":5}],3:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -25,12 +27,122 @@ exports.default = function (obj, key, value) {
 
   return obj;
 };
-},{"../core-js/object/define-property":1}],3:[function(require,module,exports){
+},{"../core-js/object/define-property":2}],4:[function(require,module,exports){
+require('../../modules/es6.object.assign');
+module.exports = require('../../modules/$.core').Object.assign;
+},{"../../modules/$.core":8,"../../modules/es6.object.assign":18}],5:[function(require,module,exports){
 var $ = require('../../modules/$');
 module.exports = function defineProperty(it, key, desc){
   return $.setDesc(it, key, desc);
 };
-},{"../../modules/$":4}],4:[function(require,module,exports){
+},{"../../modules/$":15}],6:[function(require,module,exports){
+module.exports = function(it){
+  if(typeof it != 'function')throw TypeError(it + ' is not a function!');
+  return it;
+};
+},{}],7:[function(require,module,exports){
+var toString = {}.toString;
+
+module.exports = function(it){
+  return toString.call(it).slice(8, -1);
+};
+},{}],8:[function(require,module,exports){
+var core = module.exports = {version: '1.2.6'};
+if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
+},{}],9:[function(require,module,exports){
+// optional / simple context binding
+var aFunction = require('./$.a-function');
+module.exports = function(fn, that, length){
+  aFunction(fn);
+  if(that === undefined)return fn;
+  switch(length){
+    case 1: return function(a){
+      return fn.call(that, a);
+    };
+    case 2: return function(a, b){
+      return fn.call(that, a, b);
+    };
+    case 3: return function(a, b, c){
+      return fn.call(that, a, b, c);
+    };
+  }
+  return function(/* ...args */){
+    return fn.apply(that, arguments);
+  };
+};
+},{"./$.a-function":6}],10:[function(require,module,exports){
+// 7.2.1 RequireObjectCoercible(argument)
+module.exports = function(it){
+  if(it == undefined)throw TypeError("Can't call method on  " + it);
+  return it;
+};
+},{}],11:[function(require,module,exports){
+var global    = require('./$.global')
+  , core      = require('./$.core')
+  , ctx       = require('./$.ctx')
+  , PROTOTYPE = 'prototype';
+
+var $export = function(type, name, source){
+  var IS_FORCED = type & $export.F
+    , IS_GLOBAL = type & $export.G
+    , IS_STATIC = type & $export.S
+    , IS_PROTO  = type & $export.P
+    , IS_BIND   = type & $export.B
+    , IS_WRAP   = type & $export.W
+    , exports   = IS_GLOBAL ? core : core[name] || (core[name] = {})
+    , target    = IS_GLOBAL ? global : IS_STATIC ? global[name] : (global[name] || {})[PROTOTYPE]
+    , key, own, out;
+  if(IS_GLOBAL)source = name;
+  for(key in source){
+    // contains in native
+    own = !IS_FORCED && target && key in target;
+    if(own && key in exports)continue;
+    // export native or passed
+    out = own ? target[key] : source[key];
+    // prevent global pollution for namespaces
+    exports[key] = IS_GLOBAL && typeof target[key] != 'function' ? source[key]
+    // bind timers to global for call from export context
+    : IS_BIND && own ? ctx(out, global)
+    // wrap global constructors for prevent change them in library
+    : IS_WRAP && target[key] == out ? (function(C){
+      var F = function(param){
+        return this instanceof C ? new C(param) : C(param);
+      };
+      F[PROTOTYPE] = C[PROTOTYPE];
+      return F;
+    // make static versions for prototype methods
+    })(out) : IS_PROTO && typeof out == 'function' ? ctx(Function.call, out) : out;
+    if(IS_PROTO)(exports[PROTOTYPE] || (exports[PROTOTYPE] = {}))[key] = out;
+  }
+};
+// type bitmap
+$export.F = 1;  // forced
+$export.G = 2;  // global
+$export.S = 4;  // static
+$export.P = 8;  // proto
+$export.B = 16; // bind
+$export.W = 32; // wrap
+module.exports = $export;
+},{"./$.core":8,"./$.ctx":9,"./$.global":13}],12:[function(require,module,exports){
+module.exports = function(exec){
+  try {
+    return !!exec();
+  } catch(e){
+    return true;
+  }
+};
+},{}],13:[function(require,module,exports){
+// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
+var global = module.exports = typeof window != 'undefined' && window.Math == Math
+  ? window : typeof self != 'undefined' && self.Math == Math ? self : Function('return this')();
+if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
+},{}],14:[function(require,module,exports){
+// fallback for non-array-like ES3 and non-enumerable old V8 strings
+var cof = require('./$.cof');
+module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
+  return cof(it) == 'String' ? it.split('') : Object(it);
+};
+},{"./$.cof":7}],15:[function(require,module,exports){
 var $Object = Object;
 module.exports = {
   create:     $Object.create,
@@ -44,7 +156,52 @@ module.exports = {
   getSymbols: $Object.getOwnPropertySymbols,
   each:       [].forEach
 };
-},{}],5:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
+// 19.1.2.1 Object.assign(target, source, ...)
+var $        = require('./$')
+  , toObject = require('./$.to-object')
+  , IObject  = require('./$.iobject');
+
+// should work with symbols and should have deterministic property order (V8 bug)
+module.exports = require('./$.fails')(function(){
+  var a = Object.assign
+    , A = {}
+    , B = {}
+    , S = Symbol()
+    , K = 'abcdefghijklmnopqrst';
+  A[S] = 7;
+  K.split('').forEach(function(k){ B[k] = k; });
+  return a({}, A)[S] != 7 || Object.keys(a({}, B)).join('') != K;
+}) ? function assign(target, source){ // eslint-disable-line no-unused-vars
+  var T     = toObject(target)
+    , $$    = arguments
+    , $$len = $$.length
+    , index = 1
+    , getKeys    = $.getKeys
+    , getSymbols = $.getSymbols
+    , isEnum     = $.isEnum;
+  while($$len > index){
+    var S      = IObject($$[index++])
+      , keys   = getSymbols ? getKeys(S).concat(getSymbols(S)) : getKeys(S)
+      , length = keys.length
+      , j      = 0
+      , key;
+    while(length > j)if(isEnum.call(S, key = keys[j++]))T[key] = S[key];
+  }
+  return T;
+} : Object.assign;
+},{"./$":15,"./$.fails":12,"./$.iobject":14,"./$.to-object":17}],17:[function(require,module,exports){
+// 7.1.13 ToObject(argument)
+var defined = require('./$.defined');
+module.exports = function(it){
+  return Object(defined(it));
+};
+},{"./$.defined":10}],18:[function(require,module,exports){
+// 19.1.3.1 Object.assign(target, source)
+var $export = require('./$.export');
+
+$export($export.S + $export.F, 'Object', {assign: require('./$.object-assign')});
+},{"./$.export":11,"./$.object-assign":16}],19:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -165,7 +322,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],6:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 var Vue // late bind
 var map = Object.create(null)
 var shimmed = false
@@ -465,7 +622,7 @@ function format (id) {
   return id.match(/[^\/]+\.vue$/)[0]
 }
 
-},{}],7:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 /*!
  * vue-resource v0.7.4
  * https://github.com/vuejs/vue-resource
@@ -1842,7 +1999,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 module.exports = plugin;
-},{}],8:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 /*!
  * vue-router v0.7.13
  * (c) 2016 Evan You
@@ -4552,7 +4709,7 @@ module.exports = plugin;
   return Router;
 
 }));
-},{}],9:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 (function (process,global){
 /*!
  * Vue.js v1.0.24
@@ -14585,7 +14742,7 @@ setTimeout(function () {
 
 module.exports = Vue;
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":5}],10:[function(require,module,exports){
+},{"_process":19}],24:[function(require,module,exports){
 var inserted = exports.cache = {}
 
 exports.insert = function (css) {
@@ -14605,7 +14762,7 @@ exports.insert = function (css) {
   return elem
 }
 
-},{}],11:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 'use strict';
 
 var _vue = require('vue');
@@ -14679,6 +14836,8 @@ router.map({
 
   '/menu': require('./finalComponents/app/mantenedor-menu/index.js'),
 
+  '/catalogos': require('./finalComponents/app/catalogos/index.js'),
+
   '/lockscreen': {
     component: require('./finalComponents/new-layout/lockscreen.vue')
   }
@@ -14693,7 +14852,7 @@ router.start(App, '#app');
 //solo para hacer debug
 window.router = router;
 
-},{"./config/externalComponents":12,"./finalComponents/app/mantenedor-menu/index.js":17,"./finalComponents/app/materias/index.js":23,"./finalComponents/layoutView.vue":27,"./finalComponents/new-layout/lockscreen.vue":33,"./finalComponents/reusable/notFound.vue":39,"vue":9,"vue-resource":7,"vue-router":8}],12:[function(require,module,exports){
+},{"./config/externalComponents":26,"./finalComponents/app/catalogos/index.js":31,"./finalComponents/app/mantenedor-menu/index.js":38,"./finalComponents/app/materias/index.js":44,"./finalComponents/layoutView.vue":48,"./finalComponents/new-layout/lockscreen.vue":54,"./finalComponents/reusable/notFound.vue":62,"vue":23,"vue-resource":21,"vue-router":22}],26:[function(require,module,exports){
 'use strict';
 
 var _loading = require('../finalComponents/reusable/loading.vue');
@@ -14723,7 +14882,7 @@ module.exports = function (Vue) {
 
 */
 
-},{"../finalComponents/reusable/loading.vue":36}],13:[function(require,module,exports){
+},{"../finalComponents/reusable/loading.vue":57}],27:[function(require,module,exports){
 'use strict';
 
 module.exports = [{
@@ -14748,7 +14907,375 @@ module.exports = [{
   }]
 }];
 
-},{}],14:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _reusable_functions = require('../../../util/reusable_functions');
+
+var _reusable_functions2 = _interopRequireDefault(_reusable_functions);
+
+var _formFields = require('./form-fields.vue');
+
+var _formFields2 = _interopRequireDefault(_formFields);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var URL = 'api/menu';
+
+exports.default = {
+	data: function data() {
+		return {
+			createMode: true,
+			newModel: {}
+		};
+	},
+
+	components: {
+		'form-inputs': _formFields2.default
+	},
+	methods: {
+		create: function create() {
+			this.$http.post(URL, this.newModel).then(function (resp) {
+				_reusable_functions2.default.niceAlert('success', 'Se creó el menú correctamente!');
+				this.$router.go('/menu');
+			}, _reusable_functions2.default.tryError);
+		}
+	}
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"row\">\n\t<form action=\"\" @submit.prevent=\"create\">\n\t\t\n\t\t<form-inputs :create-mode=\"createMode\" :data-model.sync=\"newModel\"></form-inputs>\n\n\t</form>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-0161fad4", module.exports)
+  } else {
+    hotAPI.update("_v-0161fad4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"../../../util/reusable_functions":64,"./form-fields.vue":30,"vue":23,"vue-hot-reload-api":20}],29:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _reusable_functions = require('../../../util/reusable_functions');
+
+var _reusable_functions2 = _interopRequireDefault(_reusable_functions);
+
+var _formFields = require('./form-fields.vue');
+
+var _formFields2 = _interopRequireDefault(_formFields);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var URL = 'api/menu';
+
+exports.default = {
+	ready: function ready() {
+		this.read();
+	},
+	data: function data() {
+		return {
+			createMode: false,
+			newModel: {},
+			loading: true
+		};
+	},
+
+	components: {
+		'form-inputs': _formFields2.default
+	},
+	methods: {
+		update: function update() {
+			this.$http.put(URL + '/' + this.newModel.id, this.newModel).then(function (resp) {
+				_reusable_functions2.default.niceAlert('success', 'Se modificó correctamente el menú!');
+				this.$router.go('/menu');
+			}, function (err) {
+				console.warn(err);
+				_reusable_functions2.default.niceAlert('error', err.dev_message);
+			});
+		},
+		read: function read() {
+			this.loading = true;
+			this.$http.get(URL + '/' + this.$route.params.model_id).then(function (resp) {
+				this.newModel = resp.data.data;
+				this.loading = false;
+			}, function (err) {
+				console.warn(err);
+				_reusable_functions2.default.niceAlert('error', err.message);
+				this.loading = false;
+			});
+		}
+	}
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<loading-app v-if=\"loading===true\"></loading-app>\n\t<div class=\"row\" v-else=\"\">\n\t\t<form action=\"\" @submit.prevent=\"update\">\n\t\t\t\n\t\t\t<form-inputs :create-mode=\"createMode\" :data-model.sync=\"newModel\"></form-inputs>\n\n\t\t</form>\n\t</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-6f566f48", module.exports)
+  } else {
+    hotAPI.update("_v-6f566f48", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"../../../util/reusable_functions":64,"./form-fields.vue":30,"vue":23,"vue-hot-reload-api":20}],30:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _selectList = require('../../reusable/select-list.vue');
+
+var _selectList2 = _interopRequireDefault(_selectList);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+	beforeCompile: function beforeCompile() {
+		if (this.createMode) {
+			this.dataModel = this.initModel();
+		}
+	},
+
+	components: {
+		'select-list': _selectList2.default
+	},
+	methods: {
+		initModel: function initModel() {
+			return {
+				cod_padre: null,
+				cod_rol: null,
+				titulo: null,
+				nombre: null,
+				iconclass: null,
+				url: null,
+				orden: null
+			};
+		}
+	},
+	props: {
+		createMode: {
+			type: Boolean,
+			required: false,
+			default: true
+		},
+		dataModel: {
+			type: Object,
+			required: false,
+			default: function _default() {
+				return {
+					cod_padre: null,
+					cod_rol: null,
+					titulo: null,
+					nombre: null,
+					iconclass: null,
+					url: null,
+					orden: null
+				};
+			}
+		}
+	}
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Menu padre</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.cod_padre\" value-key=\"id\" label-key=\"name\" url=\"api/menu\" nullable-label=\"--Este es padre --\"></select-list>\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Título</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.titulo\" minlength=\"3\" required=\"\">\n\t<input type=\"hidden\" class=\"form-control\" :value=\"dataModel.titulo\" v-model=\"dataModel.nombre\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Font-Awesome - Icono: <i :class=\"dataModel.iconclass\"></i> </label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.iconclass\" minlength=\"3\"> \n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Url</label> <small>(Opcional)</small>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.url\" minlength=\"3\"> \n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>orden</label>\n\t<input type=\"number\" class=\"form-control\" v-model=\"dataModel.orden\" min=\"0\"> \n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Rol de acceso</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.cod_rol\" value-key=\"id\" label-key=\"name\" url=\"api/rol\" :is-required=\"true\"></select-list>\n</div>\n\n<div class=\"col-xs-12\">\n\t<div class=\"content\">\n\t\t<button v-if=\"createMode\" class=\"btn btn-success btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR</button>\n\t\t<button v-else=\"\" class=\"btn btn-warning btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR CAMBIOS</button>\n\t\t<a v-link=\"{path: '/menu'}\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-reply\"></i> VOLVER</a>\n\t</div>\n\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-000b48bc", module.exports)
+  } else {
+    hotAPI.update("_v-000b48bc", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"../../reusable/select-list.vue":63,"vue":23,"vue-hot-reload-api":20}],31:[function(require,module,exports){
+'use strict';
+
+var _index = require('./index.vue');
+
+var _index2 = _interopRequireDefault(_index);
+
+var _listView = require('./list-view.vue');
+
+var _listView2 = _interopRequireDefault(_listView);
+
+var _createView = require('./create-view.vue');
+
+var _createView2 = _interopRequireDefault(_createView);
+
+var _editView = require('./edit-view.vue');
+
+var _editView2 = _interopRequireDefault(_editView);
+
+var _readView = require('./read-view.vue');
+
+var _readView2 = _interopRequireDefault(_readView);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+module.exports = {
+   component: _index2.default,
+   subRoutes: {
+      '/': {
+         component: _listView2.default,
+         name: 'Listar'
+      },
+      '/create': {
+         name: 'Crear',
+         component: _createView2.default
+      },
+      '/edit/:model_id': {
+         name: 'Edición',
+         component: _editView2.default
+      },
+      '/view/:model_id': {
+         name: 'Ver',
+         component: _readView2.default
+      }
+   }
+};
+
+},{"./create-view.vue":28,"./edit-view.vue":29,"./index.vue":32,"./list-view.vue":33,"./read-view.vue":34}],32:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _contentHeader = require('../../new-layout/content-header.vue');
+
+var _contentHeader2 = _interopRequireDefault(_contentHeader);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//import Loading from '../../reusable/loading.vue';
+
+exports.default = {
+	name: 'content-catalogo',
+	components: {
+		'content-header': _contentHeader2.default
+	},
+	data: function data() {
+		return {
+			path: ['Catálogo'],
+			loading: true
+		};
+	}
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<!-- Main content -->\n\t\n\t<content-header title=\"Catálogo\" :list-path=\"path\"></content-header>\n\n\t<section class=\"content\">\n\t\t<!--<router-view class=\"animated\" transition=\"fade\" transition-mode=\"out-in\" keep-alive></router-view>-->\n\t\t<router-view></router-view>\n\n\t</section>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-663f9292", module.exports)
+  } else {
+    hotAPI.update("_v-663f9292", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"../../new-layout/content-header.vue":49,"vue":23,"vue-hot-reload-api":20}],33:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _loading = require('../../reusable/loading.vue');
+
+var _loading2 = _interopRequireDefault(_loading);
+
+var _coolTable = require('../../reusable/cool-table.vue');
+
+var _coolTable2 = _interopRequireDefault(_coolTable);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+	data: function data() {
+		return {
+			datos: [],
+			columnas: [{
+				title: 'Cod.',
+				field: 'id',
+				hidden: false
+			}, {
+				title: 'Nombre',
+				field: 'nombre',
+				hidden: false
+			}, {
+				title: 'Descripción',
+				field: 'descripcion',
+				hidden: false
+			}, {
+				title: 'Acciones',
+				titleClass: 'text-center',
+				hidden: false,
+				fieldClass: 'text-center',
+				itemActions: [{
+					nameEmit: 'view-event',
+					btnClass: 'btn btn-default btn-xs',
+					iconClass: 'fa fa-eye',
+					label: 'Visualizar'
+				}, {
+					nameEmit: 'view-event',
+					btnClass: 'btn btn-default btn-xs',
+					iconClass: 'fa fa-edit',
+					label: 'Editar'
+				}, {
+					nameEmit: 'view-event',
+					btnClass: 'btn btn-danger btn-xs',
+					iconClass: 'fa fa-trash',
+					label: 'Eliminar'
+				}]
+			}],
+			loading: false
+		};
+	},
+
+	components: {
+		'cool-table': _coolTable2.default,
+		'app-loading': _loading2.default
+	}
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div v-if=\"loading\">\n\t<app-loading></app-loading>\n</div>\n\n<div v-else=\"\">\n\t<cool-table url=\"api/menu\" :data.sync=\"datos\" :columns=\"columnas\"></cool-table>\n</div>\n\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-275a5998", module.exports)
+  } else {
+    hotAPI.update("_v-275a5998", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"../../reusable/cool-table.vue":56,"../../reusable/loading.vue":57,"vue":23,"vue-hot-reload-api":20}],34:[function(require,module,exports){
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<h3>Visualización</h3>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem voluptate laborum, a accusamus. Cum aperiam dignissimos iste, placeat facere repudiandae vel, doloribus voluptatibus perferendis esse illo, dicta. Inventore, possimus, illum!</p>\n<pre>{{$route.params.model_id|json}}</pre>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-b01a7d88", module.exports)
+  } else {
+    hotAPI.update("_v-b01a7d88", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":23,"vue-hot-reload-api":20}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14800,7 +15327,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-aa257c00", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../../util/reusable_functions":41,"./form-fields.vue":16,"vue":9,"vue-hot-reload-api":6}],15:[function(require,module,exports){
+},{"../../../util/reusable_functions":64,"./form-fields.vue":37,"vue":23,"vue-hot-reload-api":20}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14870,7 +15397,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-35718132", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../../util/reusable_functions":41,"./form-fields.vue":16,"vue":9,"vue-hot-reload-api":6}],16:[function(require,module,exports){
+},{"../../../util/reusable_functions":64,"./form-fields.vue":37,"vue":23,"vue-hot-reload-api":20}],37:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14941,54 +15468,9 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-a8cec9e8", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/select-list.vue":40,"vue":9,"vue-hot-reload-api":6}],17:[function(require,module,exports){
-'use strict';
-
-var _index = require('./index.vue');
-
-var _index2 = _interopRequireDefault(_index);
-
-var _listView = require('./list-view.vue');
-
-var _listView2 = _interopRequireDefault(_listView);
-
-var _createView = require('./create-view.vue');
-
-var _createView2 = _interopRequireDefault(_createView);
-
-var _editView = require('./edit-view.vue');
-
-var _editView2 = _interopRequireDefault(_editView);
-
-var _readView = require('./read-view.vue');
-
-var _readView2 = _interopRequireDefault(_readView);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-module.exports = {
-   component: _index2.default,
-   subRoutes: {
-      '/': {
-         component: _listView2.default,
-         name: 'Listar'
-      },
-      '/create': {
-         name: 'Crear',
-         component: _createView2.default
-      },
-      '/edit/:model_id': {
-         name: 'Edición',
-         component: _editView2.default
-      },
-      '/view/:model_id': {
-         name: 'Ver',
-         component: _readView2.default
-      }
-   }
-};
-
-},{"./create-view.vue":14,"./edit-view.vue":15,"./index.vue":18,"./list-view.vue":19,"./read-view.vue":20}],18:[function(require,module,exports){
+},{"../../reusable/select-list.vue":63,"vue":23,"vue-hot-reload-api":20}],38:[function(require,module,exports){
+arguments[4][31][0].apply(exports,arguments)
+},{"./create-view.vue":35,"./edit-view.vue":36,"./index.vue":39,"./list-view.vue":40,"./read-view.vue":41,"dup":31}],39:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15028,7 +15510,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-9097ad08", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../new-layout/content-header.vue":28,"vue":9,"vue-hot-reload-api":6}],19:[function(require,module,exports){
+},{"../../new-layout/content-header.vue":49,"vue":23,"vue-hot-reload-api":20}],40:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15058,7 +15540,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-9b2435c4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/menuManagement.vue":38,"vue":9,"vue-hot-reload-api":6}],20:[function(require,module,exports){
+},{"../../reusable/menuManagement.vue":61,"vue":23,"vue-hot-reload-api":20}],41:[function(require,module,exports){
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<h3>Visualización</h3>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem voluptate laborum, a accusamus. Cum aperiam dignissimos iste, placeat facere repudiandae vel, doloribus voluptatibus perferendis esse illo, dicta. Inventore, possimus, illum!</p>\n<pre>{{$route.params.model_id|json}}</pre>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
@@ -15070,7 +15552,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-6e0dd326", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":9,"vue-hot-reload-api":6}],21:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20}],42:[function(require,module,exports){
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<h3>Crear</h3>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus nulla veniam animi sequi dolorem quae repellat incidunt fuga. Deserunt commodi repellat maiores voluptate, non ullam placeat accusantium quo culpa temporibus.</p>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
@@ -15082,7 +15564,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-4ad3ec99", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":9,"vue-hot-reload-api":6}],22:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20}],43:[function(require,module,exports){
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<h3>Modificar</h3>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus nulla veniam animi sequi dolorem quae repellat incidunt fuga. Deserunt commodi repellat maiores voluptate, non ullam placeat accusantium quo culpa temporibus.</p>\n<pre>{{$route.params.model_id|json}}</pre>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
@@ -15094,9 +15576,9 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-3003fe0b", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":9,"vue-hot-reload-api":6}],23:[function(require,module,exports){
-arguments[4][17][0].apply(exports,arguments)
-},{"./create-view.vue":21,"./edit-view.vue":22,"./index.vue":24,"./list-view.vue":25,"./read-view.vue":26,"dup":17}],24:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20}],44:[function(require,module,exports){
+arguments[4][31][0].apply(exports,arguments)
+},{"./create-view.vue":42,"./edit-view.vue":43,"./index.vue":45,"./list-view.vue":46,"./read-view.vue":47,"dup":31}],45:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15132,7 +15614,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-6b9e0a56", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../new-layout/content-header.vue":28,"vue":9,"vue-hot-reload-api":6}],25:[function(require,module,exports){
+},{"../../new-layout/content-header.vue":49,"vue":23,"vue-hot-reload-api":20}],46:[function(require,module,exports){
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<h3>Listar</h3>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam est reprehenderit fugiat cumque alias, sed fugit ab natus eum maxime perferendis dolorum facere mollitia in error. Quia minima laboriosam, blanditiis.</p>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
@@ -15144,7 +15626,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-a5ff3c12", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":9,"vue-hot-reload-api":6}],26:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20}],47:[function(require,module,exports){
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<h3>Visualización</h3>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem voluptate laborum, a accusamus. Cum aperiam dignissimos iste, placeat facere repudiandae vel, doloribus voluptatibus perferendis esse illo, dicta. Inventore, possimus, illum!</p>\n<pre>{{$route.params.model_id|json}}</pre>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
@@ -15156,7 +15638,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-68a04fff", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":9,"vue-hot-reload-api":6}],27:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20}],48:[function(require,module,exports){
 'use strict';
 
 var menu = require('../config/menus.js');
@@ -15192,7 +15674,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-32136a05", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../config/menus.js":13,"./new-layout/content.vue":29,"./new-layout/control.vue":30,"./new-layout/footer.vue":31,"./new-layout/header.vue":32,"./new-layout/menu.vue":34,"vue":9,"vue-hot-reload-api":6}],28:[function(require,module,exports){
+},{"../config/menus.js":27,"./new-layout/content.vue":50,"./new-layout/control.vue":51,"./new-layout/footer.vue":52,"./new-layout/header.vue":53,"./new-layout/menu.vue":55,"vue":23,"vue-hot-reload-api":20}],49:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -15225,7 +15707,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-5028ca80", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":9,"vue-hot-reload-api":6}],29:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20}],50:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -15243,7 +15725,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-100e7bac", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":9,"vue-hot-reload-api":6}],30:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20}],51:[function(require,module,exports){
 "use strict";
 if (module.exports.__esModule) module.exports = module.exports.default
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t<!-- Control Sidebar -->\n\t<aside class=\"control-sidebar control-sidebar-dark\">\n\t\t<!-- Create the tabs -->\n\t\t<ul class=\"nav nav-tabs nav-justified control-sidebar-tabs\">\n\t\t\t<li class=\"active\"><a href=\"#control-sidebar-home-tab\" data-toggle=\"tab\"><i class=\"fa fa-home\"></i></a></li>\n\t\t\t<li><a href=\"#control-sidebar-settings-tab\" data-toggle=\"tab\"><i class=\"fa fa-gears\"></i></a></li>\n\t\t</ul>\n\t\t<!-- Tab panes -->\n\t\t<div class=\"tab-content\">\n\t\t\t<!-- Home tab content -->\n\t\t\t<div class=\"tab-pane active\" id=\"control-sidebar-home-tab\">\n\t\t\t\t<h3 class=\"control-sidebar-heading\">Actividad reciente</h3>\n\t\t\t\t<ul class=\"control-sidebar-menu\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<a href=\"javascript::;\">\n\t\t\t\t\t\t\t<i class=\"menu-icon fa fa-birthday-cake bg-red\"></i>\n\t\t\t\t\t\t\t<div class=\"menu-info\">\n\t\t\t\t\t\t\t\t<h4 class=\"control-sidebar-subheading\">Cumpleaños</h4>\n\t\t\t\t\t\t\t\t<p>01-07-1990</p>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</li>\n\t\t\t\t</ul><!-- /.control-sidebar-menu -->\n\n\t\t\t\t<h3 class=\"control-sidebar-heading\">Progreso</h3>\n\t\t\t\t<ul class=\"control-sidebar-menu\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<a href=\"javascript::;\">\n\t\t\t\t\t\t\t<h4 class=\"control-sidebar-subheading\">\n\t\t\t\t\t\t\t\tCustom Template\n\t\t\t\t\t\t\t\t<span class=\"label label-danger pull-right\">70%</span>\n\t\t\t\t\t\t\t</h4>\n\t\t\t\t\t\t\t<div class=\"progress progress-xxs\">\n\t\t\t\t\t\t\t\t<div class=\"progress-bar progress-bar-danger\" style=\"width: 70%\"></div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</li>\n\t\t\t\t</ul><!-- /.control-sidebar-menu -->\n\n\t\t\t</div><!-- /.tab-pane -->\n\t\t\t<!-- Stats tab content -->\n\t\t\t<div class=\"tab-pane\" id=\"control-sidebar-stats-tab\">Status</div><!-- /.tab-pane -->\n\t\t\t<!-- Settings tab content -->\n\t\t\t<div class=\"tab-pane\" id=\"control-sidebar-settings-tab\">\n\t\t\t\t<form method=\"post\">\n\t\t\t\t\t<h3 class=\"control-sidebar-heading\">Ajustes Generales</h3>\n\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t<label class=\"control-sidebar-subheading\">\n\t\t\t\t\t\t\tPanel de reporte\n\t\t\t\t\t\t\t<input type=\"checkbox\" class=\"pull-right\">\n\t\t\t\t\t\t</label>\n\t\t\t\t\t\t<p>\n\t\t\t\t\t\t\tAjustes de información\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div><!-- /.form-group -->\n\t\t\t\t</form>\n\t\t\t</div><!-- /.tab-pane -->\n\t\t</div>\n</aside><!-- /.control-sidebar\n\n<!-- Add the sidebar's background. This div must be placed\n\timmediately after the control sidebar -->\n\t<div class=\"control-sidebar-bg\"></div>\n"
@@ -15257,7 +15739,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-ae243de4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":9,"vue-hot-reload-api":6}],31:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20}],52:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -15308,7 +15790,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-238c8bfa", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":9,"vue-hot-reload-api":6}],32:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20}],53:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -15377,7 +15859,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-44beefec", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":9,"vue-hot-reload-api":6}],33:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20}],54:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\t.lockscreen-name{\n\t\ttext-align: center;\n    \tfont-weight: 600;\n\t}\n\t.lockscreen-logo{\n\t\tmargin-top: 25px;\n\t}\n\n")
 'use strict';
@@ -15409,16 +15891,16 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-ea935394", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":9,"vue-hot-reload-api":6,"vueify/lib/insert-css":10}],34:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20,"vueify/lib/insert-css":24}],55:[function(require,module,exports){
 'use strict';
 
 var _reusable_functions = require('../../util/reusable_functions');
 
 var _reusable_functions2 = _interopRequireDefault(_reusable_functions);
 
-var _menuItem = require('../reusable/menuItem.vue');
+var _menuItemLevel = require('../reusable/menuItemLevel1.vue');
 
-var _menuItem2 = _interopRequireDefault(_menuItem);
+var _menuItemLevel2 = _interopRequireDefault(_menuItemLevel);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -15427,7 +15909,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 module.exports = {
 	components: {
-		menuItem: _menuItem2.default
+		menuItem: _menuItemLevel2.default
 	},
 	props: {
 		username: {
@@ -15472,58 +15954,316 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-04eb0f7e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../util/reusable_functions":41,"../reusable/menuItem.vue":37,"vue":9,"vue-hot-reload-api":6}],35:[function(require,module,exports){
+},{"../../util/reusable_functions":64,"../reusable/menuItemLevel1.vue":58,"vue":23,"vue-hot-reload-api":20}],56:[function(require,module,exports){
+var __vueify_insert__ = require("vueify/lib/insert-css")
+var __vueify_style__ = __vueify_insert__.insert("\n.font-success{\n\tcolor: #00a65a;\n}\n\n.font-error{\n\tcolor: #dd4b39;\n}\n\n.pagination{\n\tmargin: 0 !important;\n}\n\n.cool-table-loading-icon{\n\tposition: absolute;\n\tmargin-left: 45%;\n\tmargin-top: 50%;\n}\n\n.cool-table-sortable{\n\tcursor: pointer;\n}\n.cool-table-sortable:hover{\n\tcolor: #2185d0;\n}\n\n.loading-mask{\t\n\tz-index: 99;\t\n\tposition: absolute;\n\twidth: 100%;\n\tbackground: rgba(236, 240, 245, 0.31);\n}\n.l-open{\n\tdisplay: inherit;\n}\n\n.l-close{\n\tdisplay: none;\t\n}\n")
 'use strict';
 
-var _menuItem = require('./menuItem.vue');
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
-var _menuItem2 = _interopRequireDefault(_menuItem);
+var _assign = require('babel-runtime/core-js/object/assign');
+
+var _assign2 = _interopRequireDefault(_assign);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-module.exports = {
-	components: {
-		creaMenu: _menuItem2.default
+function schemaModel(toModel) {
+	if (toModel.field) {
+		(0, _assign2.default)(toModel, {
+			hidden: toModel.hidden ? toModel.hidden : false,
+			field: toModel.field ? toModel.field : '',
+			fieldClass: toModel.fieldClass ? toModel.fieldClass : '',
+			title: toModel.title ? toModel.title : toModel.field.toUpperCase(),
+			titleClass: toModel.titleClass ? toModel.titleClass : '',
+			filterable: toModel.filterable ? toModel.filterable : false,
+			applyFilter: toModel.applyFilter ? toModel.applyFilter : null,
+			template: toModel.template ? toModel.template : null,
+			itemActions: toModel.itemActions ? toModel.itemActions : null
+		});
+	} else {
+		if (toModel.itemActions) {
+			if (toModel.itemActions.length <= 0) {
+				throw 'ModelError: itemActions proptype is required in columns object if is not a field';
+			} else {
+				(0, _assign2.default)(toModel, {
+					hidden: toModel.hidden ? toModel.hidden : false,
+					field: toModel.field ? toModel.field : '',
+					fieldClass: toModel.fieldClass ? toModel.fieldClass : '',
+					title: toModel.title ? toModel.title : toModel.field.toUpperCase(),
+					titleClass: toModel.titleClass ? toModel.titleClass : '',
+					filterable: toModel.filterable ? toModel.filterable : false,
+					applyFilter: toModel.applyFilter ? toModel.applyFilter : null,
+					template: toModel.template ? toModel.template : null,
+					itemActions: toModel.itemActions ? toModel.itemActions : null
+				});
+			}
+		} else throw 'ModelError: field proptype is required in columns object';
+	}
+}
+
+function arrayToScema(listModels) {
+	listModels.forEach(function (element, index) {
+		schemaModel(element);
+	});
+}
+
+exports.default = {
+	computed: {
+		lastActive: function lastActive() {
+			return this.pagination.current_page == this.pagination.last_page ? 'disabled' : '';
+		},
+		firstActive: function firstActive() {
+			return this.pagination.current_page == 1 ? 'disabled' : '';
+		}
+
 	},
 	props: {
-		item: {
+		optionToolbar: {
 			type: Object,
-			required: true
+			default: function _default() {
+				return {
+					iconClass: 'fa fa-plus',
+					iconClassOptions: 'fa fa-cogs',
+					label: 'Nuevo',
+					labelOptions: 'Campos visibles',
+					nameEmit: 'create-event',
+					btnClass: 'btn btn-primary btn-flat'
+				};
+			}
 		},
-		isParent: {
-			type: Boolean,
-			required: true
+		tableClass: { type: String, default: 'table table-bordered table-striped' },
+		requireHeader: { type: Boolean, default: true },
+		divSeparatorClass: { type: String, default: 'col-xs-12' },
+		url: { type: String, default: 'api/users' },
+		search_filter: { type: String, default: '' },
+		endpoint: { type: String, default: '' },
+		sortable: {
+			type: Object,
+			default: function _default() {
+				return {
+					ascendingIcon: 'glyphicon glyphicon-chevron-up',
+					descendingIcon: 'glyphicon glyphicon-chevron-down',
+					column: 'id',
+					order: 'asc'
+				};
+			}
+		},
+		columns: {
+			type: Array, default: function _default() {
+				return [{
+					field: 'name',
+					hidden: false
+				}, {
+					field: 'email',
+					hidden: false
+				}, {
+					field: 'created_at',
+					title: 'Fecha Creación',
+					hidden: false
+				}, {
+					title: 'Fecha Modificación',
+					field: 'updated_at',
+					hidden: false
+				}, {
+					title: 'Acciones',
+					titleClass: 'text-center',
+					hidden: false,
+					fieldClass: 'text-center',
+					itemActions: [{
+						nameEmit: 'view-event',
+						btnClass: 'btn btn-default btn-xs',
+						iconClass: 'fa fa-eye',
+						label: 'Visualizar'
+					}, {
+						nameEmit: 'view-event',
+						btnClass: 'btn btn-default btn-xs',
+						iconClass: 'fa fa-edit',
+						label: 'Editar'
+					}, {
+						nameEmit: 'view-event',
+						btnClass: 'btn btn-danger btn-xs',
+						iconClass: 'fa fa-trash',
+						label: 'Eliminar'
+					}]
+				}];
+			}
+		},
+		pagination: {
+			type: Object,
+			default: function _default() {
+				return {
+					loadingIconClass: 'fa fa-spinner fa-spin fa-3x fa-fw cool-table-loading-icon',
+					showText: 'Mostrando',
+					of: 'de',
+					refresh: 'Actualizar',
+					noData: 'No hay registros',
+					register: 'Registros',
+					next: '>',
+					back: '<',
+					last: '>>',
+					first: '<<',
+					searchable: false,
+					per_page_list: [5, 10, 15, 20, 30, 50],
+					total: 150,
+					per_page: 5,
+					current_page: 1,
+					last_page: 10,
+					next_page_url: "http:\/\/vuetable.ratiw.net\/api\/users?page=2",
+					prev_page_url: null,
+					from: 1,
+					to: 15,
+					data: [],
+					moreTemp: 1,
+					limitPaginate: 5
+				};
+			}
+		},
+		data: {
+			type: Array,
+			deafult: function deafult() {
+				return [];
+			}
 		}
 	},
 	methods: {
-		toggleMenu: function toggleMenu(event) {
-			$('li.pageLink').removeClass('active');
-			var itemElement = event.toElement.parentElement;
-			if (itemElement.className.indexOf('pageLink') >= 0) {
-				itemElement.className = 'pageLink active';
+		updateEndpoint: function updateEndpoint() {
+			var _pagination = this.pagination;
+			var per_page = _pagination.per_page;
+			var current_page = _pagination.current_page;
+			var search_filter = this.search_filter;
+			var url = this.url;
+			var _sortable = this.sortable;
+			var column = _sortable.column;
+			var order = _sortable.order;
+
+			this.endpoint = url + '?per_page=' + per_page + '&page=' + current_page + '&sort=' + column + '|' + order + '&filter=' + search_filter;
+		},
+		orderColumn: function orderColumn(column) {
+			if (this.sortable.column == column) {
+				this.sortable.order = this.sortable.order == 'asc' ? 'desc' : 'asc';
 			} else {
-				itemElement.parentElement.className = 'pageLink active';
+				this.sortable.order = 'asc';
+				this.sortable.column = column;
+			}
+			this.loadData();
+		},
+		isActive: function isActive(index) {
+			return this.pagination.current_page == index ? 'active' : '';
+		},
+		paginate: function paginate(numPage) {
+			if (this.pagination.current_page != numPage) {
+				if (numPage == this.pagination.last_page) {
+					this.pagination.moreTemp = parseInt(numPage / this.pagination.limitPaginate) + 1;
+				}
+				if (numPage == 1) {
+					this.pagination.moreTemp = 1;
+				}
+				this.pagination.current_page = numPage;
+				this.loadData();
 			}
 		},
-		hasChildren: function hasChildren(nodo) {
-			if (typeof nodo === 'undefined') return false;
-			return nodo.length > 0;
+		paginateNext: function paginateNext() {
+			if (this.pagination.next_page_url != null) {
+				this.pagination.current_page % this.pagination.limitPaginate === 0 ? this.pagination.moreTemp++ : null;
+				this.pagination.current_page++;
+				this.loadData();
+			}
+		},
+		paginatePrev: function paginatePrev() {
+			if (this.pagination.prev_page_url != null) {
+				this.pagination.current_page % this.pagination.limitPaginate === 1 ? this.pagination.moreTemp-- : null;
+				this.pagination.current_page--;
+				this.loadData();
+			}
+		},
+		pagScroll: function pagScroll(type) {
+			if (type == 'next') {
+				this.pagination.moreTemp++;
+				this.pagination.current_page = (this.pagination.moreTemp - 1) * this.pagination.limitPaginate + 1;
+			} else {
+				this.pagination.moreTemp--;
+				this.pagination.current_page = (this.pagination.moreTemp - 1) * this.pagination.limitPaginate + this.pagination.limitPaginate;
+			}
+			this.loadData();
+		},
+		changePerPage: function changePerPage() {
+			this.pagination.moreTemp = 1;
+			this.pagination.current_page = 1;
+			this.loadData();
+		},
+		loadingAnimation: function loadingAnimation(type) {
+			var query = '.' + this.tableClass.split(' ').join('.');
+			var elem = document.querySelector(query);
+			var loadElem = document.querySelector('.loading-mask');
+			var loadIcon = document.querySelector('.cool-table-loading-icon');
+			if (type == 'open') {
+				var axisY = parseInt(elem.scrollHeight / 2);
+				loadElem.style.height = axisY * 2 + 'px';
+				loadIcon.style.marginTop = axisY + 'px';
+				loadElem.className = 'loading-mask l-open';
+			} else {
+				loadElem.className = 'loading-mask l-close';
+			}
+		},
+		numToShow: function numToShow(num) {
+			return (this.pagination.moreTemp - 1) * this.pagination.limitPaginate < num && num < this.pagination.moreTemp * this.pagination.limitPaginate + 1;
+		},
+		toggleColumns: function toggleColumns(idx) {
+			this.columns[idx].hidden = !this.columns[idx].hidden;
+		},
+		loadData: function loadData() {
+			this.loadingAnimation('open');
+			this.updateEndpoint();
+			var self = this;
+			self.$http.get(this.endpoint).then(function (resp) {
+				self.data = resp.data.data;
+				(0, _assign2.default)(self.pagination, resp.data);
+				self.loadingAnimation('close');
+			}, function (err) {
+				console.warn(err, 'error while try to load the endpoit', self.endpoint);
+				self.loadingAnimation('close');
+			});
+		},
+		search: function search() {
+			this.loadData();
+		},
+		dispacher: function dispacher(event, model) {
+			this.$dispatch(event, model);
 		}
+
+	},
+
+	ready: function ready() {
+		this.loadData(this.endpoint + '?per_page=' + this.pagination.per_page);
+	},
+	created: function created() {
+		arrayToScema(this.columns);
+	},
+	data: function data() {
+		return {
+			otro: 'hola'
+		};
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<li @click=\"toggleMenu\" class=\"pageLink\" v-if=\"!isParent\">\n\t<a v-link=\"{path:item.link}\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span></a>\n</li>\n<li v-else=\"\" class=\"treeview\">\n\t<a href=\"#\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span> <i class=\"fa fa-angle-left pull-right\"></i></a>\n\t<ul class=\"treeview-menu\">\n\t\t<crea-menu v-for=\"itemenu in item.children\" :item=\"itemenu\" :is-parent=\"hasChildren(itemenu.children)\"></crea-menu>\n\t</ul>\n</li>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n\t<!-- Head Confi toolbar -->\n\t<div class=\"box box-primary\">\n\t\t<div class=\"box-header with-border\" v-if=\"optionToolbar\">\n\t\t\t<div class=\"col-sm-2 col-xs-12\" v-if=\"optionToolbar\">\n\t\t\t\t<button :class=\"optionToolbar.btnClass\" @click.prevent=\"dispacher(optionToolbar.nameEmit)\"><i :class=\"optionToolbar.iconClass\"></i> {{optionToolbar.label}}</button>\n\t\t\t</div>\n\t\t\t<div class=\"col-xs-6 col-sm-6\">\n\t\t\t\t<form action=\"#\" method=\"get\" @submit.prevent=\"search\">\n\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t<input type=\"text\" name=\"filter\" v-model=\"search_filter\" class=\"form-control\" placeholder=\"Buscar...\">\n\t\t\t\t\t\t<span class=\"input-group-btn\">\n\t\t\t\t\t\t\t<button type=\"submit\" name=\"search_table\" id=\"search-btn\" class=\"btn btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t</div>\n\t\t\t\t</form>\n\t\t\t</div>\n\t\t\t<div class=\"col-xs-4 col-sm-3\">\n\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t<select class=\"form-control\" v-model=\"pagination.per_page\" @change=\"changePerPage\">\n\t\t\t\t\t\t<option value=\"\" disabled=\"\">Rigistros por página</option>\n\t\t\t\t\t\t<option v-for=\"item in pagination.per_page_list | orderBy item\" track-by=\"$index\" :value=\"item\">{{item}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"col-xs-2 col-sm-1\">\n\t\t\t\t<button class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"true\" :title=\"optionToolbar.labelOptions\">\n\t\t\t\t\t<i :class=\"optionToolbar.iconClassOptions\"></i>\n\t\t\t\t</button>\n\t\t\t\t<ul class=\"dropdown-menu pull-right\">\n\t\t\t\t\t<li v-for=\"(idx, col) in columns\">\n\t\t\t\t\t\t<span class=\"checkbox\">\n\t\t\t\t\t\t\t<label @click=\"toggleColumns(idx)\">\n\t\t\t\t\t\t\t\t<strong>{{ col.title }} <i class=\"fa fa-check font-success\" v-if=\"!col.hidden\"></i><i class=\"fa fa-close font-error\" v-else=\"\"></i></strong>\n\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Body table -->\n\t\t<div class=\"box-body table-responsive\">\n\t\t\t<div class=\"loading-mask l-close\">\n\t\t\t\t<i :class=\"pagination.loadingIconClass\"></i>\n\t\t\t\t<span class=\"sr-only\">Loading...</span>\n\t\t\t</div>\n\t\t\t<table :class=\"tableClass\">\n\t\t\t\t\n\t\t\t\t<thead v-if=\"requireHeader\">\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<th v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.titleClass\">\n\t\t\t\t\t\t\t<template v-if=\"sortable &amp;&amp; !col.itemActions\">\n\t\t\t\t\t\t\t\t<div class=\"cool-table-sortable\" @click.prevent=\"orderColumn(col.field)\">\n\t\t\t\t\t\t\t\t\t<span>{{col.title}}</span>\n\t\t\t\t\t\t\t\t\t<template v-if=\"sortable.column == col.field\">\n\t\t\t\t\t\t\t\t\t\t<template v-if=\"sortable.order == 'desc'\">\n\t\t\t\t\t\t\t\t\t\t\t<span class=\"pull-right\"><i :class=\"sortable.descendingIcon\"></i></span>\n\t\t\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t\t\t\t<template v-else=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<span class=\"pull-right\"><i :class=\"sortable.ascendingIcon\"></i></span>\n\t\t\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t<template v-else=\"\">\n\t\t\t\t\t\t\t\t{{col.title}}\n\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t</th>\n\t\t\t\t\t</tr>\n\t\t\t\t</thead>\n\n\t\t\t\t<tbody>\n\t\t\t\t\t<tr v-for=\"item in data\">\n\n\t\t\t\t\t\t<td v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.fieldClass\">\n\n\t\t\t\t\t\t\t<div v-if=\"!col.itemActions\">{{ item[col.field] }}</div>\n\n\t\t\t\t\t\t\t<div v-else=\"\" class=\"btn-group\">\n\n\t\t\t\t\t\t\t\t<a v-for=\"act in col.itemActions\" :class=\"act.btnClass\" href=\"\" @click.prevent=\"dispacher(act.nameEmit, item)\">\n\t\t\t\t\t\t\t\t\t<i :class=\"act.iconClass\" data-toggle=\"tooltip\" :title=\"act.label\"></i>\n\t\t\t\t\t\t\t\t</a>\n\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</td>\n\n\t\t\t\t\t</tr>\n\t\t\t\t</tbody>\n\n\t\t\t</table>\n\t\t</div>\n\n\t\t<!-- Footer pagination -->\n\t\t<div class=\"box-footer\" v-if=\"pagination\">\n\t\t\t<div class=\"row\" v-if=\"pagination.data.length>0\">\n\t\t\t\t<div class=\"col-xs-12 col-sm-8\">\n\t\t\t\t\t<nav>\n\t\t\t\t\t\t<ul class=\"pagination pagination-sm\">\n\t\t\t\t\t\t\t<li class=\"{{firstActive}}\" @click.prevent=\"paginate(1)\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Previous\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.first}}</span>\n\t\t\t\t\t\t\t\t</a><!-- begin -->\n\t\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t\t<li class=\"{{firstActive}}\" @click.prevent=\"paginatePrev\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Previous\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.back}}</span>\n\t\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t\t<li v-if=\"pagination.current_page>pagination.limitPaginate\" @click.prevent=\"pagScroll('prev')\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Prev\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">...</span>\n\t\t\t\t\t\t\t\t</a><!-- more back -->\n\t\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t\t<li v-for=\"pag in 5, pagination.last_page\" class=\"{{isActive(pag+1)}}\" @click.prevent=\"paginate(pag+1)\" v-if=\"numToShow(pag+1)\"><a href=\"#\">{{pag + 1}}</a></li>\n\n\t\t\t\t\t\t\t<li v-if=\"pagination.moreTemp < (pagination.last_page/pagination.limitPaginate)\" @click.prevent=\"pagScroll('next')\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">...</span>\n\t\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t\t</li><!-- more next -->\n\n\t\t\t\t\t\t\t<li class=\"{{lastActive}}\" @click.prevent=\"paginateNext\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.next}}</span>\n\t\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t\t<li class=\"{{lastActive}}\" @click.prevent=\"paginate(pagination.last_page)\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.last}}</span>\n\t\t\t\t\t\t\t\t</a><!-- end -->\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</nav>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"col-xs-12 col-sm-4 text-right\" v-if=\"pagination\">\n\t\t\t\t\t<span>{{pagination.showText}}: {{pagination.from}} - {{pagination.to}} {{pagination.of}} {{pagination.total}} {{pagination.register}}</span>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"row\" v-else=\"\">\n\t\t\t\t<div class=\"col-xs-12 text-center\">\n\t\t\t\t\t<span>{{pagination.noData}}</span>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t</div>\n\n\t<!--\n\t<div v-if=\"optionToolbar\" :class=\"divSeparatorClass\">\n\t\t<div class=\"col-xs-7\">\n\t\t\t<form action=\"#\" method=\"get\">\n\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t<input type=\"text\" name=\"table_q\" class=\"form-control\" placeholder=\"Buscar...\">\n\t\t\t\t\t<span class=\"input-group-btn\">\n\t\t\t\t\t\t<button type=\"submit\" name=\"search_table\" id=\"search-btn\" class=\"btn btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t\t</span>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\t\t<div class=\"col-xs-4\">\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<select class=\"form-control\" v-model=\"pagination.data.per_page\">\n\t\t\t\t\t<option value=\"\" disabled>Rigistros por página</option>\n\t\t\t\t\t<option v-for=\"item in pagination.data.per_page_list | orderBy item\"  track-by=\"$index\" :value=\"item\">{{item}}</option>\n\t\t\t\t</select>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"col-xs-1\">\n\t\t\t<button class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"true\" :title=\"optionToolbar.label\">\n\t\t\t\t<i :class=\"optionToolbar.iconClass\"></i>\n\t\t\t</button>\n\t\t\t<ul class=\"dropdown-menu\">\n\t\t\t\t<li v-for=\"(idx, col) in columns\">\n\t\t\t\t\t<span class=\"checkbox\">\n\t\t\t\t\t\t<label @click=\"toggleColumns(idx)\">\n\t\t\t\t\t\t\t<strong>{{ col.title }} <i class=\"fa fa-check font-success\" v-if=\"!col.hidden\"></i><i class=\"fa fa-close font-error\" v-else></i></strong>\n\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</span>\n\t\t\t\t</li>\n\t\t\t</ul>\n\t\t</div>\n\t</div>\n\n\t<div :class=\"divSeparatorClass\">\n\t\t<table :class=\"tableClass\">\n\t\t\t<thead v-if=\"requireHeader\">\n\t\t\t\t<tr>\n\t\t\t\t\t<th v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.titleClass\">{{col.title}}</th>\n\t\t\t\t</tr>\n\t\t\t</thead>\n\t\t\t\n\t\t\t<tbody>\n\t\t\t\t<tr v-for=\"item in data\">\n\n\t\t\t\t\t<td v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.fieldClass\">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div v-if=\"!col.itemActions\">{{ item[col.field] }}</div>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div v-else class=\"btn-group\">\n\n\t\t\t\t\t\t\t<a v-for=\"act in col.itemActions\" :class=\"act.btnClass\" href=\"\" @click.prevent=\"dispacher(act.nameEmit, item)\" >\n\t\t\t\t\t\t\t\t<i :class=\"act.iconClass\" data-toggle=\"tooltip\" :title=\"act.label\"></i>\n\t\t\t\t\t\t\t</a>\n\n\t\t\t\t\t\t</div>\n\n\n\n\t\t\t\t</td>\n\n\t\t\t</tr>\n\t\t</tbody>\n\t\t\n\t</table>\n</div>\n-->\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
+  module.hot.dispose(function () {
+    __vueify_insert__.cache["\n.font-success{\n\tcolor: #00a65a;\n}\n\n.font-error{\n\tcolor: #dd4b39;\n}\n\n.pagination{\n\tmargin: 0 !important;\n}\n\n.cool-table-loading-icon{\n\tposition: absolute;\n\tmargin-left: 45%;\n\tmargin-top: 50%;\n}\n\n.cool-table-sortable{\n\tcursor: pointer;\n}\n.cool-table-sortable:hover{\n\tcolor: #2185d0;\n}\n\n.loading-mask{\t\n\tz-index: 99;\t\n\tposition: absolute;\n\twidth: 100%;\n\tbackground: rgba(236, 240, 245, 0.31);\n}\n.l-open{\n\tdisplay: inherit;\n}\n\n.l-close{\n\tdisplay: none;\t\n}\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-5c925152", module.exports)
+    hotAPI.createRecord("_v-5b39ce96", module.exports)
   } else {
-    hotAPI.update("_v-5c925152", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-5b39ce96", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./menuItem.vue":37,"vue":9,"vue-hot-reload-api":6}],36:[function(require,module,exports){
+},{"babel-runtime/core-js/object/assign":1,"vue":23,"vue-hot-reload-api":20,"vueify/lib/insert-css":24}],57:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n* {margin: 0;padding:0;}\n.mask-loading {\n\tbackground-color: #ecf0f5;\n\tmargin: 150px 0px;\n}\n.spinner {\n\twidth: 50px;\n\theight: 50px;\n\tposition: relative;\n\tmargin: 0 auto;\n}\n\n.double-bounce1, .double-bounce2 {\n\twidth: 100%;\n\theight: 100%;\n\tborder-radius: 50%;\n\tbackground-color: #3c8dbc;\n\topacity: 0.6;\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\n\t-webkit-animation: sk-bounce 2.0s infinite ease-in-out;\n\tanimation: sk-bounce 2.0s infinite ease-in-out;\n}\n\n.double-bounce2 {\n\t-webkit-animation-delay: -1.0s;\n\tanimation-delay: -1.0s;\n}\n\n@-webkit-keyframes sk-bounce {\n\t0%, 100% { -webkit-transform: scale(0.0) }\n\t50% { -webkit-transform: scale(1.0) }\n}\n\n@keyframes sk-bounce {\n\t0%, 100% { \n\t\ttransform: scale(0.0);\n\t\t-webkit-transform: scale(0.0);\n\t} 50% { \n\t\ttransform: scale(1.0);\n\t\t-webkit-transform: scale(1.0);\n\t}\n}\n")
 "use strict";
@@ -15547,18 +16287,18 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-2e1b703e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":9,"vue-hot-reload-api":6,"vueify/lib/insert-css":10}],37:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20,"vueify/lib/insert-css":24}],58:[function(require,module,exports){
 'use strict';
 
-var _crossMenuItem = require('./crossMenuItem.vue');
+var _menuItemLevel = require('./menuItemLevel2.vue');
 
-var _crossMenuItem2 = _interopRequireDefault(_crossMenuItem);
+var _menuItemLevel2 = _interopRequireDefault(_menuItemLevel);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 module.exports = {
 	components: {
-		creaMenu: _crossMenuItem2.default
+		'menu-item-level-1': _menuItemLevel2.default
 	},
 	props: {
 		item: {
@@ -15587,18 +16327,120 @@ module.exports = {
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<li @click=\"toggleMenu\" class=\"pageLink\" v-if=\"!isParent\">\n\t<a v-link=\"{path:item.link}\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span></a>\n</li>\n<li v-else=\"\" class=\"treeview\">\n\t<a href=\"#\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span> <i class=\"fa fa-angle-left pull-right\"></i></a>\n\t<ul class=\"treeview-menu\">\n\t\t<crea-menu v-for=\"itemenu in item.children\" :item=\"itemenu\" :is-parent=\"hasChildren(itemenu.children)\"></crea-menu>\n\t</ul>\n</li>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<li @click=\"toggleMenu\" class=\"pageLink\" v-if=\"!isParent\">\n\t<a v-link=\"{path:item.link}\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span></a>\n</li>\n<li v-else=\"\" class=\"treeview\">\n\t<a href=\"#\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span> <i class=\"fa fa-angle-left pull-right\"></i></a>\n\t<ul class=\"treeview-menu\">\n\t\t<menu-item-level-1 v-for=\"itemenu in item.children\" :item=\"itemenu\" :is-parent=\"hasChildren(itemenu.children)\"></menu-item-level-1>\n\t</ul>\n</li>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-24e6b386", module.exports)
+    hotAPI.createRecord("_v-64d9e94a", module.exports)
   } else {
-    hotAPI.update("_v-24e6b386", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-64d9e94a", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./crossMenuItem.vue":35,"vue":9,"vue-hot-reload-api":6}],38:[function(require,module,exports){
+},{"./menuItemLevel2.vue":59,"vue":23,"vue-hot-reload-api":20}],59:[function(require,module,exports){
+'use strict';
+
+var _menuItemLevel = require('./menuItemLevel3.vue');
+
+var _menuItemLevel2 = _interopRequireDefault(_menuItemLevel);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+module.exports = {
+	components: {
+		'menu-item-level-2': _menuItemLevel2.default
+	},
+	props: {
+		item: {
+			type: Object,
+			required: true
+		},
+		isParent: {
+			type: Boolean,
+			required: true
+		}
+	},
+	methods: {
+		toggleMenu: function toggleMenu(event) {
+			$('li.pageLink').removeClass('active');
+			var itemElement = event.toElement.parentElement;
+			if (itemElement.className.indexOf('pageLink') >= 0) {
+				itemElement.className = 'pageLink active';
+			} else {
+				itemElement.parentElement.className = 'pageLink active';
+			}
+		},
+		hasChildren: function hasChildren(nodo) {
+			if (typeof nodo === 'undefined') return false;
+			return nodo.length > 0;
+		}
+	}
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<li @click=\"toggleMenu\" class=\"pageLink\" v-if=\"!isParent\">\n\t<a v-link=\"{path:item.link}\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span></a>\n</li>\n<li v-else=\"\" class=\"treeview\">\n\t<a href=\"#\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span> <i class=\"fa fa-angle-left pull-right\"></i></a>\n\t<ul class=\"treeview-menu\">\n\t\t<menu-item-level-2 v-for=\"itemenu in item.children\" :item=\"itemenu\" :is-parent=\"hasChildren(itemenu.children)\"></menu-item-level-2>\n\t</ul>\n</li>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-64e800cb", module.exports)
+  } else {
+    hotAPI.update("_v-64e800cb", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"./menuItemLevel3.vue":60,"vue":23,"vue-hot-reload-api":20}],60:[function(require,module,exports){
+'use strict';
+
+var _menuItemLevel = require('./menuItemLevel1.vue');
+
+var _menuItemLevel2 = _interopRequireDefault(_menuItemLevel);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+module.exports = {
+	components: {
+		'menu-item-level-3': _menuItemLevel2.default
+	},
+	props: {
+		item: {
+			type: Object,
+			required: true
+		},
+		isParent: {
+			type: Boolean,
+			required: true
+		}
+	},
+	methods: {
+		toggleMenu: function toggleMenu(event) {
+			$('li.pageLink').removeClass('active');
+			var itemElement = event.toElement.parentElement;
+			if (itemElement.className.indexOf('pageLink') >= 0) {
+				itemElement.className = 'pageLink active';
+			} else {
+				itemElement.parentElement.className = 'pageLink active';
+			}
+		},
+		hasChildren: function hasChildren(nodo) {
+			if (typeof nodo === 'undefined') return false;
+			return nodo.length > 0;
+		}
+	}
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<li @click=\"toggleMenu\" class=\"pageLink\" v-if=\"!isParent\">\n\t<a v-link=\"{path:item.link}\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span></a>\n</li>\n<li v-else=\"\" class=\"treeview\">\n\t<a href=\"#\"><i :class=\"item.iconClass\"></i> <span>{{item.name}}</span> <i class=\"fa fa-angle-left pull-right\"></i></a>\n\t<ul class=\"treeview-menu\">\n\t\t<menu-item-level-3 v-for=\"itemenu in item.children\" :item=\"itemenu\" :is-parent=\"hasChildren(itemenu.children)\"></menu-item-level-3>\n\t</ul>\n</li>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-64f6184c", module.exports)
+  } else {
+    hotAPI.update("_v-64f6184c", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"./menuItemLevel1.vue":58,"vue":23,"vue-hot-reload-api":20}],61:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\t#menu-content {\n\t\tbackground:white;\n\t\tfont:normal normal 13px/1.4 Segoe,\"Segoe UI\",Calibri,Helmet,FreeSans,Sans-Serif;\n\t\tpadding:10px;\n\t}\n\n\n/**\n * Framework starts from here ...\n * ------------------------------\n */\n\n .tree,\n .tree ul {\n \tmargin:0 0 0 1em; /* indentation */\n \tpadding:0;\n \tlist-style:none;\n \tcolor:#369;\n \tposition:relative;\n }\n\n .tree ul {margin-left:.5em} /* (indentation/2) */\n\n .tree:before,\n .tree ul:before {\n \tcontent:\"\";\n \tdisplay:block;\n \twidth:0;\n \tposition:absolute;\n \ttop:0;\n \tbottom:0;\n \tleft:0;\n \tborder-left:1px solid;\n }\n\n .tree li {\n \tmargin:0;\n \tpadding:0 1.5em; /* indentation + .5em */\n \tline-height:2em; /* default list item's `line-height` */\n \tposition:relative;\n }\n\n .tree li:before {\n \tcontent:\"\";\n \tdisplay:block;\n \twidth:10px; /* same with indentation */\n \theight:0;\n \tborder-top:1px solid;\n \tmargin-top:-1px; /* border top width */\n \tposition:absolute;\n \ttop:1em; /* (line-height/2) */\n \tleft:0;\n }\n\n .tree li:last-child:before {\n \tbackground:white; /* same with body background */\n \theight:auto;\n \ttop:1em; /* (line-height/2) */\n \tbottom:0;\n }\n\n .edit-option, .delete-option{\n \tcolor: #336699;\n }\n .edit-option:hover{\n \tcursor: pointer;\n \tcolor: orange;\n }\n\n .delete-option:hover{\n \tcursor: pointer;\n \tcolor: red;\n }\n\n .add-btn{\n \tpadding: 1px 50px !important;\n }\n")
 'use strict';
@@ -15684,7 +16526,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-b1e79426", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../util/reusable_functions":41,"babel-runtime/helpers/defineProperty":2,"vue":9,"vue-hot-reload-api":6,"vueify/lib/insert-css":10}],39:[function(require,module,exports){
+},{"../../util/reusable_functions":64,"babel-runtime/helpers/defineProperty":3,"vue":23,"vue-hot-reload-api":20,"vueify/lib/insert-css":24}],62:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15705,7 +16547,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-12f589cc", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":9,"vue-hot-reload-api":6}],40:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20}],63:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15792,7 +16634,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-19b5f174", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":9,"vue-hot-reload-api":6}],41:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20}],64:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15834,6 +16676,6 @@ exports.default = {
 	}
 };
 
-},{}]},{},[11]);
+},{}]},{},[25]);
 
 //# sourceMappingURL=build.js.map

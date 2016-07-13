@@ -49,11 +49,11 @@ class ConfigurationSeeder extends Seeder
         * Creacion de los menus
         * */
 
-       $menuMenu = App\Menu::create([
-       		'nombre'		=> 'menu', 
-       		'titulo'		=> 'Menú', 
-       		'url'			=> '/menu', 			
-       		'iconclass'		=> 'fa fa-th-list', 
+       $menuSistema = App\Menu::create([
+       		'nombre'		=> 'sistema', 
+       		'titulo'		=> 'Sistema', 
+       		'url'			=> '/sistema', 			
+       		'iconclass'		=> 'fa fa-cogs', 
        		'orden'			=> 2,
        		'cod_padre'		=> null
        	]);
@@ -67,58 +67,62 @@ class ConfigurationSeeder extends Seeder
        		'cod_padre'		=> null
        	]);
 
-       $menuUsuarios = App\Menu::create([
-       		'nombre'		=> 'usuarios', 
-       		'titulo'		=> 'Usuarios', 
-       		'url'			=> null, 			
-       		'iconclass'		=> 'fa fa-users', 
-       		'orden'			=> 4,
-       		'cod_padre'		=> null
-       	]);
-
        $menuUsuariosV1 = App\Menu::create([
-       		'nombre'		=> 'mentenimiento_usuarios', 
-       		'titulo'		=> 'Mantenimiento Usuarios', 
+       		'nombre'		=> 'mantenimiento_usuarios', 
+       		'titulo'		=> 'Administración de Usuarios', 
        		'url'			=> '/usuarios', 			
-       		'iconclass'		=> 'fa fa-link', 
+       		'iconclass'		=> 'fa fa-users', 
        		'orden'			=> 1,
-       		'cod_padre'		=> $menuUsuarios->id
+       		'cod_padre'		=> $menuSistema->id
        	]);
 
        $menuUsuariosV2 = App\Menu::create([
-       		'nombre'		=> 'mentenimiento_usuarios2', 
-       		'titulo'		=> 'Mantenimiento Usuarios 2', 
-       		'url'			=> '/sdk', 			
-       		'iconclass'		=> 'fa fa-link', 
+       		'nombre'		=> 'mantenimiento_menu', 
+       		'titulo'		=> 'Administración de Menú', 
+       		'url'			=> '/menu', 			
+       		'iconclass'		=> 'fa fa-th-list', 
        		'orden'			=> 2,
-       		'cod_padre'		=> $menuUsuarios->id
+       		'cod_padre'		=> $menuSistema->id
        	]);
 
        $menuUsuariosV3 = App\Menu::create([
-       		'nombre'		=> 'mentenimiento_usuarios3', 
-       		'titulo'		=> 'Mantenimiento Usuarios 3', 
-       		'url'			=> '/paginate', 			
-       		'iconclass'		=> 'fa fa-link', 
+       		'nombre'		=> 'mantenimiento_catalogos', 
+       		'titulo'		=> 'Mantenimiento de Catálogos', 
+       		'url'			=> '/catalogos', 			
+       		'iconclass'		=> 'fa fa-cog', 
        		'orden'			=> 3,
-       		'cod_padre'		=> $menuUsuarios->id
+       		'cod_padre'		=> $menuSistema->id
        	]);
+
+       $menuUsuariosV4 = App\Menu::create([
+          'nombre'    => 'mantenimiento_items_catalogo', 
+          'titulo'    => 'Lista Items Cátalogos', 
+          'url'     => '/catalogos_item',      
+          'iconclass'   => 'fa fa-list', 
+          'orden'     => 4,
+          'cod_padre'   => $menuSistema->id
+        ]);
+
+       $menuUsuariosV5 = App\Menu::create([
+          'nombre'    => 'mantenimiento_items_catalogo', 
+          'titulo'    => 'Áreas del Conocimiento', 
+          'url'     => '/catalogos/1',      
+          'iconclass'   => 'fa fa-link', 
+          'orden'     => 4,
+          'cod_padre'   => $menuUsuariosV4->id
+        ]);
 
        /**
         * Asignacion de acceso a los menus segun los roles
         * */
        App\RolMenu::create([
        		'rol'	=> $rolAdmin->id,
-       		'menu'	=> $menuMenu->id,
+       		'menu'	=> $menuSistema->id,
        	]);
 
        App\RolMenu::create([
        		'rol'	=> $rolAdmin->id,
        		'menu'	=> $menuDashboard->id,
-       	]);
-
-       App\RolMenu::create([
-       		'rol'	=> $rolAdmin->id,
-       		'menu'	=> $menuUsuarios->id,
        	]);
 
        App\RolMenu::create([
@@ -132,9 +136,27 @@ class ConfigurationSeeder extends Seeder
        	]);
 
        App\RolMenu::create([
-       		'rol'	=> $rolAdmin->id,
-       		'menu'	=> $menuUsuariosV3->id,
-       	]);
+          'rol' => $rolAdmin->id,
+          'menu'  => $menuUsuariosV3->id,
+        ]);
+
+       App\RolMenu::create([
+          'rol' => $rolAdmin->id,
+          'menu'  => $menuUsuariosV4->id,
+        ]);
+
+       App\RolMenu::create([
+          'rol' => $rolAdmin->id,
+          'menu'  => $menuUsuariosV5->id,
+        ]);
+
+       /**
+        * Creacion de Catalogos
+        * */
+       App\Entities\Catalogo::create([
+          'nombre'      => 'AREAS_CONOCIMIENTO',
+          'descripcion' => 'Áreas del Conocimiento de los docentes'
+        ]);
 
     }
 }

@@ -12,9 +12,10 @@
 
 <script>
 
-import MenuItem from './menuItem.vue';
+	import MenuItem from './menuItem.vue';
 
 	module.exports = {
+		name: 'menu-item',
 		components: {
 			creaMenu: MenuItem
 		},

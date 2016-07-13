@@ -32,6 +32,8 @@ Route::group(['middleware' => 'auth'], function(){
 
 		Route::resource('rol', 'RolController');
 
+		Route::resource('catalogos', 'CatalogosController');
+
 	});
 
 });

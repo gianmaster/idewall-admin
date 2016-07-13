@@ -56,6 +56,8 @@ router.map({
 
   '/menu': require('./finalComponents/app/mantenedor-menu/index.js'),
 
+  '/catalogos': require('./finalComponents/app/catalogos/index.js'),
+
   '/lockscreen': {
     component: require('./finalComponents/new-layout/lockscreen.vue')
   },

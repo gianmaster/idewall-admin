@@ -5,18 +5,18 @@
 	<li v-else class="treeview">
 		<a href="#"><i :class='item.iconClass'></i> <span>{{item.name}}</span> <i class="fa fa-angle-left pull-right"></i></a>
 		<ul class="treeview-menu">
-			<crea-menu v-for="itemenu in item.children" :item="itemenu"  :is-parent="hasChildren(itemenu.children)" ></crea-menu>
+			<menu-item-level-1 v-for="itemenu in item.children" :item="itemenu"  :is-parent="hasChildren(itemenu.children)" ></menu-item-level-1>
 		</ul>
 	</li>
 </template>
 
 <script>
 
-	import MenuItem from './crossMenuItem.vue';
+	import MenuItem from './menuItemLevel2.vue';
 
 	module.exports = {
 		components: {
-			creaMenu: MenuItem
+			'menu-item-level-1': MenuItem
 		},
 		props:{
 			item: {
