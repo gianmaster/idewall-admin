@@ -10,6 +10,12 @@ class Catalogo extends Model implements Transformable
 {
     use TransformableTrait;
 
+    protected $table = 'catalogos';
+
     protected $fillable = ['nombre', 'descripcion', 'activo', 'id'];
+
+    public function items(){
+    	return $this->hasMany(CatalogoItem::class, 'catalogo', 'id');
+    }
 
 }

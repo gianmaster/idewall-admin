@@ -14,7 +14,7 @@
 
 	import inputs from './form-fields.vue';
 
-	const URL = 'api/menu';
+	const URL = 'api/catalogos';
 
 	export default {
 		data(){
@@ -30,7 +30,7 @@
 			create: function(){
 				this.$http.post(URL, this.newModel).then(function(resp){
 					fnc.niceAlert('success', 'Se creó el menú correctamente!');
-					this.$router.go('/menu');
+					this.$router.go('/catalogos');
 				}, fnc.tryError);
 			}
 		}

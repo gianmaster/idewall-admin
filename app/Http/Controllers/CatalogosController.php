@@ -16,6 +16,11 @@ use App\Validators\CatalogoValidator;
 class CatalogosController extends Controller
 {
 
+    protected $requestFields = [
+    'store'     => ['nombre', 'descripcion'],
+    'update'    => ['nombre', 'descripcion']
+    ];
+
     /**
      * @var CatalogoRepository
      */
@@ -41,9 +46,27 @@ class CatalogosController extends Controller
     public function index()
     {
         $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
-        $catalogos = $this->repository->paginate(10);
+
+        $perPage = request()->has('per_page') ? (int) request()->per_page : 5;
+
+        $catalogos = $this->repository->paginate($perPage);
+
+        $data = array();
+
+        $data['data']= $catalogos->data;
+        $data['total']= $catalogos->meta->total;
+        $data['current_page']= $catalogos->meta->pagination->current_page;
+        $data['per_page']= $catalogos->meta->pagination->per_page;
+        $data['last_page']= null;
+        $data['next_page_url']= $catalogos->meta->pagination->next;
+        $data['prev_page_url']= $catalogos->meta->pagination->next;
+        $data['from']= 1;
+        $data['to']= $catalogos->meta->pagination->count;
+        //"total":101,"per_page":15,"current_page":1,"last_page":7,"next_page_url":"http:\/\/localhost:88\/admin_lte\/public\/api\/users?page=2","prev_page_url":null,"from":1,"to":15,"data"
+        //
+        //"total":1,"count":1,"per_page":5,"current_page":1,"total_pages":1,"links":[]}
         
-        return response()->json($catalogos);
+        return response()->json($data);
     }
 
     /**
@@ -53,33 +76,35 @@ class CatalogosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(CatalogoCreateRequest $request)
+    public function store(Request $request)
     {
 
         try {
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
 
-            $catalogo = $this->repository->create($request->all());
+            $catalogo = $this->repository->create($request->only($this->requestFields['store']));
 
-            $response = [
-                'message' => 'Catalogo created.',
-                'data'    => $catalogo->toArray(),
-            ];
-            
-            return response()->json($response);
+            return response()->json($catalogo);
 
         } catch (ValidatorException $e) {
             if ($request->wantsJson()) {
                 return response()->json([
-                    'error'   => true,
+                    'dev_message' => $e->getMessage(),
                     'message' => $e->getMessageBag()
-                ]);
+                    ], 403);
             }
 
             return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+
+        } catch (Exception $e){
+            return response()->json(array(
+                'message' => 'Se presento un error al tratar de hacer esta acción',
+                'dev_message' => $e->getMessage()), 405);
         }
     }
+
+
 
 
     /**
@@ -91,11 +116,17 @@ class CatalogosController extends Controller
      */
     public function show($id)
     {
-        $catalogo = $this->repository->find($id);
 
-        return response()->json([
-                'data' => $catalogo,
-        ]);
+        try{
+
+            $catalogo = $this->repository->find($id);
+            return response()->json($catalogo);
+
+        } catch (Exception $e){
+            return response()->json(array(
+                'message' => 'Se presento un error al tratar de hacer esta acción',
+                'dev_message' => $e->getMessage()), 405);
+        }
 
     }
 
@@ -124,34 +155,34 @@ class CatalogosController extends Controller
      *
      * @return Response
      */
-    public function update(CatalogoUpdateRequest $request, $id)
+    public function update(Request $request, $id)
     {
 
         try {
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
 
-            $catalogo = $this->repository->update($id, $request->all());
+            $catalogo = $this->repository->update($id, $request->only($this->requestFields['update']), $id);
 
-            $response = [
-                'message' => 'Catalogo updated.',
-                'data'    => $catalogo->toArray(),
-            ];
-
-            return response()->json($response);
+            return response()->json($catalogo);
 
         } catch (ValidatorException $e) {
 
             if ($request->wantsJson()) {
-
                 return response()->json([
-                    'error'   => true,
+                    'dev_message' => $e->getMessage(),
                     'message' => $e->getMessageBag()
-                ]);
+                ], 403);
             }
 
             return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+        } catch (Exception $e){
+            
+            return response()->json(array(
+                'message' => 'Se presento un error al tratar de hacer esta acción',
+                'dev_message' => $e->getMessage()), 405);
         }
+
     }
 
 
@@ -167,9 +198,9 @@ class CatalogosController extends Controller
         $deleted = $this->repository->delete($id);
 
         return response()->json([
-                'message' => 'Catalogo deleted.',
-                'deleted' => $deleted,
-        ]); 
+            'message' => 'Catalogo deleted.',
+            'deleted' => $deleted,
+            ]); 
 
         return redirect()->back()->with('message', 'Catalogo deleted.');
     }

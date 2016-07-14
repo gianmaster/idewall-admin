@@ -2,19 +2,17 @@
 
 namespace App\Repositories;
 
-use App\Entities\Catalogo;
-use App\Validators\CatalogoValidator;
-use App\Presenters\CatalogoPresenter;
-use App\Repositories\CatalogoRepository;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-
+use App\Repositories\CatalogoItemRepository;
+use App\Entities\CatalogoItem;
+use App\Validators\CatalogoItemValidator;
 
 /**
- * Class CatalogoRepositoryEloquent
+ * Class CatalogoItemRepositoryEloquent
  * @package namespace App\Repositories;
  */
-class CatalogoRepositoryEloquent extends BaseRepository implements CatalogoRepository
+class CatalogoItemRepositoryEloquent extends BaseRepository implements CatalogoItemRepository
 {
     /**
      * Specify Model class name
@@ -23,7 +21,7 @@ class CatalogoRepositoryEloquent extends BaseRepository implements CatalogoRepos
      */
     public function model()
     {
-        return Catalogo::class;
+        return CatalogoItem::class;
     }
 
     /**
@@ -34,16 +32,15 @@ class CatalogoRepositoryEloquent extends BaseRepository implements CatalogoRepos
     public function validator()
     {
 
-        return CatalogoValidator::class;
+        return CatalogoItemValidator::class;
     }
 
     /**
      * Specify Searchable fields
      * */
     protected $fieldSearchable = [
-        'nombre' => 'like',
-        'descripcion' => 'like',
-        'id',
+        'codigo',
+        'descripion',
         //'titulo' => 'like', //with condition
     ];
 
@@ -54,15 +51,5 @@ class CatalogoRepositoryEloquent extends BaseRepository implements CatalogoRepos
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
-    }
-
-    /**
-    * Specify Presenter function
-    *
-    * @return mixed
-    */
-    public function presenter()
-    {
-        return CatalogoPresenter::class;
     }
 }

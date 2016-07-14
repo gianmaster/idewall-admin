@@ -15,7 +15,7 @@
 
 	import inputs from './form-fields.vue';
 
-	const URL = 'api/menu';
+	const URL = 'api/catalogos';
 
 	export default {
 		ready(){
