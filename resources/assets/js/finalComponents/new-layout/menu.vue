@@ -58,7 +58,7 @@ module.exports = {
 		username: {
 			type: String,
 			required:false,
-			default: "Root User"
+			default: "Giancarlos Cercado"
 		}
 	},
 	methods: {

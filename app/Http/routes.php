@@ -17,6 +17,12 @@ Route::get('/', function () {
 });
 */
 
+Route::group(['domain' => '{user}.ug_laravel_vue.dev'], function ($user) {
+	Route::get('/', function ($user) {
+		return 'hola '.$user;
+	});
+});
+
 Route::resource('/', 'HomeController');
 
 //Route::resource('menu2', 'MenusController');
