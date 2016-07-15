@@ -14962,7 +14962,7 @@ var _formFields2 = _interopRequireDefault(_formFields);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var URL = 'api/menu';
+var URL = 'api/catalogos';
 
 exports.default = {
 	data: function data() {
@@ -14979,7 +14979,7 @@ exports.default = {
 		create: function create() {
 			this.$http.post(URL, this.newModel).then(function (resp) {
 				_reusable_functions2.default.niceAlert('success', 'Se creó el menú correctamente!');
-				this.$router.go('/menu');
+				this.$router.go('/catalogos');
 			}, _reusable_functions2.default.tryError);
 		}
 	}
@@ -15014,7 +15014,7 @@ var _formFields2 = _interopRequireDefault(_formFields);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var URL = 'api/menu';
+var URL = 'api/catalogos';
 
 exports.default = {
 	ready: function ready() {
@@ -15093,13 +15093,10 @@ exports.default = {
 	methods: {
 		initModel: function initModel() {
 			return {
-				cod_padre: null,
-				cod_rol: null,
-				titulo: null,
 				nombre: null,
-				iconclass: null,
-				url: null,
-				orden: null
+				descripcion: null,
+				activo: null,
+				id: null
 			};
 		}
 	},
@@ -15114,20 +15111,17 @@ exports.default = {
 			required: false,
 			default: function _default() {
 				return {
-					cod_padre: null,
-					cod_rol: null,
-					titulo: null,
 					nombre: null,
-					iconclass: null,
-					url: null,
-					orden: null
+					descripcion: null,
+					activo: null,
+					id: null
 				};
 			}
 		}
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Menu padre</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.cod_padre\" value-key=\"id\" label-key=\"name\" url=\"api/menu\" nullable-label=\"--Este es padre --\"></select-list>\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Título</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.titulo\" minlength=\"3\" required=\"\">\n\t<input type=\"hidden\" class=\"form-control\" :value=\"dataModel.titulo\" v-model=\"dataModel.nombre\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Font-Awesome - Icono: <i :class=\"dataModel.iconclass\"></i> </label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.iconclass\" minlength=\"3\"> \n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Url</label> <small>(Opcional)</small>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.url\" minlength=\"3\"> \n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>orden</label>\n\t<input type=\"number\" class=\"form-control\" v-model=\"dataModel.orden\" min=\"0\"> \n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Rol de acceso</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.cod_rol\" value-key=\"id\" label-key=\"name\" url=\"api/rol\" :is-required=\"true\"></select-list>\n</div>\n\n<div class=\"col-xs-12\">\n\t<div class=\"content\">\n\t\t<button v-if=\"createMode\" class=\"btn btn-success btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR</button>\n\t\t<button v-else=\"\" class=\"btn btn-warning btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR CAMBIOS</button>\n\t\t<a v-link=\"{path: '/menu'}\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-reply\"></i> VOLVER</a>\n\t</div>\n\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Nombre Catálogo</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.nombre\" minlength=\"3\" required=\"\">\n\t<input type=\"hidden\" class=\"form-control\" :value=\"dataModel.id\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Descripción</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.descripcion\" minlength=\"6\" required=\"\">\n</div>\n\n<div class=\"col-xs-12\">\n\t<div class=\"content\">\n\t\t<button v-if=\"createMode\" class=\"btn btn-success btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR</button>\n\t\t<button v-else=\"\" class=\"btn btn-warning btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR CAMBIOS</button>\n\t\t<a v-link=\"{path: '/catalogos'}\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-reply\"></i> VOLVER</a>\n\t</div>\n\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15198,8 +15192,6 @@ var _contentHeader2 = _interopRequireDefault(_contentHeader);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-//import Loading from '../../reusable/loading.vue';
-
 exports.default = {
 	name: 'content-catalogo',
 	components: {
@@ -15240,11 +15232,24 @@ var _coolTable = require('../../reusable/cool-table.vue');
 
 var _coolTable2 = _interopRequireDefault(_coolTable);
 
+var _reusable_functions = require('../../../util/reusable_functions');
+
+var _reusable_functions2 = _interopRequireDefault(_reusable_functions);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
 	data: function data() {
 		return {
+			url: 'api/catalogos',
+			toolbar: {
+				iconClass: 'fa fa-plus',
+				iconClassOptions: 'fa fa-cogs',
+				label: 'Agregar',
+				labelOptions: 'Campos visibles',
+				nameEmit: 'catalogo-create-event',
+				btnClass: 'btn btn-primary btn-flat'
+			},
 			datos: [],
 			columnas: [{
 				title: 'Cod.',
@@ -15264,17 +15269,17 @@ exports.default = {
 				hidden: false,
 				fieldClass: 'text-center',
 				itemActions: [{
-					nameEmit: 'view-event',
+					nameEmit: 'catalogo-read-event',
 					btnClass: 'btn btn-default btn-xs',
 					iconClass: 'fa fa-eye',
 					label: 'Visualizar'
 				}, {
-					nameEmit: 'view-event',
+					nameEmit: 'catalogo-update-event',
 					btnClass: 'btn btn-default btn-xs',
 					iconClass: 'fa fa-edit',
 					label: 'Editar'
 				}, {
-					nameEmit: 'view-event',
+					nameEmit: 'catalogo-delete-event',
 					btnClass: 'btn btn-danger btn-xs',
 					iconClass: 'fa fa-trash',
 					label: 'Eliminar'
@@ -15287,10 +15292,32 @@ exports.default = {
 	components: {
 		'cool-table': _coolTable2.default,
 		'app-loading': _loading2.default
+	},
+	events: {
+		'catalogo-create-event': function catalogoCreateEvent(model) {
+			this.$router.go('/catalogos/create');
+		},
+		'catalogo-read-event': function catalogoReadEvent(model) {
+			this.$router.go('/catalogos/view/' + model.id);
+		},
+		'catalogo-update-event': function catalogoUpdateEvent(model) {
+			this.$router.go('/catalogos/edit/' + model.id);
+		},
+		'catalogo-delete-event': function catalogoDeleteEvent(model) {
+			if (confirm('¿Estás seguro?')) {
+				this.$http.delete(this.url + '/' + model.id).then(function (resp) {
+					_reusable_functions2.default.niceAlert('success', 'Se eliminó correctamente');
+					this.load();
+				}, function (err) {
+					_reusable_functions2.default.niceAlert('error', err.message);
+				});
+			}
+		}
 	}
+
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div v-if=\"loading\">\n\t<app-loading></app-loading>\n</div>\n\n<div v-else=\"\">\n\t<cool-table url=\"api/menu\" :data.sync=\"datos\" :columns=\"columnas\"></cool-table>\n</div>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t\n\t<div v-if=\"loading\">\n\t\t<app-loading></app-loading>\n\t</div>\n\n\t<div v-else=\"\">\n\t\t<cool-table :option-toolbar=\"toolbar\" :url=\"url\" :data.sync=\"datos\" :columns=\"columnas\" filter-key-word=\"search\">\n\t</cool-table>\n</div>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15301,8 +15328,50 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-1e33c176", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/cool-table.vue":56,"../../reusable/loading.vue":57,"vue":23,"vue-hot-reload-api":20}],34:[function(require,module,exports){
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<h3>Visualización</h3>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem voluptate laborum, a accusamus. Cum aperiam dignissimos iste, placeat facere repudiandae vel, doloribus voluptatibus perferendis esse illo, dicta. Inventore, possimus, illum!</p>\n<pre>{{$route.params.model_id|json}}</pre>\n"
+},{"../../../util/reusable_functions":64,"../../reusable/cool-table.vue":56,"../../reusable/loading.vue":57,"vue":23,"vue-hot-reload-api":20}],34:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _reusable_functions = require('../../../util/reusable_functions');
+
+var _reusable_functions2 = _interopRequireDefault(_reusable_functions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var URL = 'api/catalogos';
+
+exports.default = {
+	ready: function ready() {
+		this.read();
+	},
+	data: function data() {
+		return {
+			createMode: false,
+			newModel: {},
+			loading: true
+		};
+	},
+
+	methods: {
+		read: function read() {
+			this.loading = true;
+			this.$http.get(URL + '/' + this.$route.params.model_id).then(function (resp) {
+				this.newModel = resp.data.data;
+				this.loading = false;
+			}, function (err) {
+				console.warn(err);
+				_reusable_functions2.default.niceAlert('error', err.message);
+				this.loading = false;
+			});
+		}
+	}
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<loading-app v-if=\"loading===true\"></loading-app>\n\t<div class=\"row\" v-else=\"\">\n\t\t<div class=\"col-xs-12\">\n\t\t\t<strong>Nombre:</strong>\n\t\t\t<p>{{newModel.nombre}}</p>\n\t\t</div>\n\t\t<div class=\"col-xs-12\">\n\t\t\t<strong>Descripción:</strong>\n\t\t\t<p>{{newModel.descripcion}}</p>\n\t\t</div>\n\t\t<div class=\"col-xs-12\">\n\t\t\t<a v-link=\"{path: '/catalogos'}\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-reply\"></i> VOLVER</a>\n\t\t</div>\n\t</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15313,7 +15382,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-4c58a104", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":23,"vue-hot-reload-api":20}],35:[function(require,module,exports){
+},{"../../../util/reusable_functions":64,"vue":23,"vue-hot-reload-api":20}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16076,6 +16145,7 @@ exports.default = {
 		divSeparatorClass: { type: String, default: 'col-xs-12' },
 		url: { type: String, default: 'api/users' },
 		search_filter: { type: String, default: '' },
+		filterKeyWord: { type: String, default: 'filter' },
 		endpoint: { type: String, default: '' },
 		sortable: {
 			type: Object,
@@ -16171,12 +16241,13 @@ exports.default = {
 			var per_page = _pagination.per_page;
 			var current_page = _pagination.current_page;
 			var search_filter = this.search_filter;
+			var filterKeyWord = this.filterKeyWord;
 			var url = this.url;
 			var _sortable = this.sortable;
 			var column = _sortable.column;
 			var order = _sortable.order;
 
-			this.endpoint = url + '?per_page=' + per_page + '&page=' + current_page + '&sort=' + column + '|' + order + '&filter=' + search_filter;
+			this.endpoint = url + '?per_page=' + per_page + '&page=' + current_page + '&sort=' + column + '|' + order + '&' + filterKeyWord + '=' + search_filter;
 		},
 		orderColumn: function orderColumn(column) {
 			if (this.sortable.column == column) {

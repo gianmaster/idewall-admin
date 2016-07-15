@@ -103,6 +103,8 @@ return array(
     */
 
     'attributes' => array(
+        'nombre'            => 'Nombre',
+        'descripcion'       => 'Descripción',
         'nombres'           => 'Nombres',
         'username'          => 'Nombre de Usuario',
         'user_name'         => 'Nombre de Usuario',

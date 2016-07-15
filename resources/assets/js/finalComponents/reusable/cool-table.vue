@@ -343,6 +343,7 @@
 			divSeparatorClass: {type: String, default: 'col-xs-12'},
 			url: {type: String, default: 'api/users'},
 			search_filter: {type: String, default: ''},
+			filterKeyWord: {type: String, default: 'filter'},
 			endpoint: {type: String, default: ''},
 			sortable: {
 				type: Object,
@@ -445,9 +446,9 @@
 		methods: {
 			updateEndpoint: function(){
 				let {per_page, current_page} = this.pagination;
-				let {search_filter, url} = this;
+				let {search_filter, filterKeyWord, url} = this;
 				let {column, order} = this.sortable;
-				this.endpoint = `${url}?per_page=${per_page}&page=${current_page}&sort=${column}|${order}&filter=${search_filter}`;
+				this.endpoint = `${url}?per_page=${per_page}&page=${current_page}&sort=${column}|${order}&${filterKeyWord}=${search_filter}`;
 			},
 			orderColumn: function(column){
 				if (this.sortable.column == column) {

@@ -11,7 +11,7 @@ class Menu extends Model implements Transformable
     use TransformableTrait;
 
     protected $table = 'menu';
-    //
+    
     protected $fillable = ['nombre', 'titulo', 'url', 'iconclass', 'cod_padre', 'orden'];
 
    	public function children(){

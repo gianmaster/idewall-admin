@@ -5,8 +5,14 @@
 	</div>
 
 	<div v-else>
-		<cool-table url="api/menu" :data.sync="datos" :columns="columnas"></cool-table>
-	</div>
+		<cool-table 
+		:option-toolbar="toolbar"
+		:url="url" 
+		:data.sync="datos" 
+		:columns="columnas" 
+		filter-key-word="search">
+	</cool-table>
+</div>
 
 </template>
 
@@ -17,52 +23,63 @@
 	
 	import coolTable from '../../reusable/cool-table.vue';
 
+	import fnc from '../../../util/reusable_functions';
+
 	export default {
 		data(){
 			return {
+				url: 'api/catalogos',
+				toolbar: {
+					iconClass: 'fa fa-plus',
+					iconClassOptions: 'fa fa-cogs',
+					label: 'Agregar',
+					labelOptions: 'Campos visibles',
+					nameEmit: 'catalogo-create-event',
+					btnClass: 'btn btn-primary btn-flat'
+				},
 				datos: [],
 				columnas: [
+				{
+					title: 'Cod.',
+					field: 'id',
+					hidden: false
+				},
+				{
+					title: 'Nombre',
+					field: 'nombre',
+					hidden: false
+				},
+				{
+					title: 'Descripción',
+					field: 'descripcion',
+					hidden: false
+				},
+				{
+					title: 'Acciones',
+					titleClass: 'text-center',
+					hidden: false,
+					fieldClass: 'text-center',
+					itemActions: [
 					{
-						title: 'Cod.',
-						field: 'id',
-						hidden: false
+						nameEmit: 'catalogo-read-event',
+						btnClass: 'btn btn-default btn-xs',
+						iconClass: 'fa fa-eye',
+						label: 'Visualizar',
 					},
 					{
-						title: 'Nombre',
-						field: 'nombre',
-						hidden: false
+						nameEmit: 'catalogo-update-event',
+						btnClass: 'btn btn-default btn-xs',
+						iconClass: 'fa fa-edit',
+						label: 'Editar',
 					},
 					{
-						title: 'Descripción',
-						field: 'descripcion',
-						hidden: false
-					},
-					{
-						title: 'Acciones',
-						titleClass: 'text-center',
-						hidden: false,
-						fieldClass: 'text-center',
-						itemActions: [
-						{
-							nameEmit: 'view-event',
-							btnClass: 'btn btn-default btn-xs',
-							iconClass: 'fa fa-eye',
-							label: 'Visualizar',
-						},
-						{
-							nameEmit: 'view-event',
-							btnClass: 'btn btn-default btn-xs',
-							iconClass: 'fa fa-edit',
-							label: 'Editar',
-						},
-						{
-							nameEmit: 'view-event',
-							btnClass: 'btn btn-danger btn-xs',
-							iconClass: 'fa fa-trash',
-							label: 'Eliminar',
-						}
-						]
+						nameEmit: 'catalogo-delete-event',
+						btnClass: 'btn btn-danger btn-xs',
+						iconClass: 'fa fa-trash',
+						label: 'Eliminar',
 					}
+					]
+				}
 				],
 				loading: false,
 			}
@@ -70,7 +87,29 @@
 		components: {
 			'cool-table' : coolTable,
 			'app-loading' : Loading,
+		},
+		events: {
+			'catalogo-create-event' : function(model){
+				this.$router.go('/catalogos/create');
+			},
+			'catalogo-read-event' : function(model){
+				this.$router.go('/catalogos/view/' + model.id);
+			},
+			'catalogo-update-event' : function(model){
+				this.$router.go('/catalogos/edit/' + model.id);
+			},
+			'catalogo-delete-event' : function(model){
+				if (confirm('¿Estás seguro?')) {
+					this.$http.delete(this.url + '/' + model.id).then(function(resp){
+						fnc.niceAlert('success', 'Se eliminó correctamente');
+						this.load();
+					}, function(err){
+						fnc.niceAlert('error', err.message);
+					});
+				}
+			},
 		}
+		
 	}
 
 </script>

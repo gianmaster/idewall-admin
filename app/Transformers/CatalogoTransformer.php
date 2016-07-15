@@ -26,9 +26,10 @@ class CatalogoTransformer extends TransformerAbstract
             /* place your other model properties here */
             'nombre'     => $model->nombre,
             'descripcion'=> $model->descripcion,
+            'items'      => $model->items,
 
-            'created_at' => $model->created_at,
-            'updated_at' => $model->updated_at
+            'created_at' => (string)$model->created_at,
+            'updated_at' => (string)$model->updated_at
         ];
     }
 }
