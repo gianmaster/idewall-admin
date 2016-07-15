@@ -1,7 +1,7 @@
 <template>
 	<div class="col-sm-6 col-xs-12">
 		<label>Menu padre</label>
-		<select-list class-name="form-control col-xs-6" :select-value.sync="dataModel.cod_padre" value-key="id" label-key="name" url="api/menu" nullable-label="--Este es padre --"></select-list>
+		<select-list class-name="form-control col-xs-6" :select-value.sync="dataModel.cod_padre" value-key="id" label-key="name" url="api/menu-list" nullable-label="--Este es padre --"></select-list>
 	</div>
 
 	<div class="col-sm-6 col-xs-12">

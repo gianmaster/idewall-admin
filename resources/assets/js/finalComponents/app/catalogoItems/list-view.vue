@@ -23,38 +23,43 @@
 	
 	import coolTable from '../../reusable/cool-table.vue';
 
-	import fnc from '../../../util/reusable_functions';
-
 	import myMixins from './mixins';
 
 	export default {
 		mixins: [myMixins],
+		route: {
+			data: function(transition){
+				this.generateUrl();
+				this.load();
+				transition.next();
+			}
+		},
 		data(){
 			return {
-				url: 'api/catalogos',
+				url: 'api/catalogos/REPLACEME/items',
 				toolbar: {
 					iconClass: 'fa fa-plus',
 					iconClassOptions: 'fa fa-cogs',
 					label: 'Agregar',
 					labelOptions: 'Campos visibles',
-					nameEmit: 'catalogo-create-event',
+					nameEmit: 'catalogo-item-create-event',
 					btnClass: 'btn btn-primary btn-flat'
 				},
 				datos: [],
 				columnas: [
 				{
-					title: 'Cod.',
-					field: 'id',
-					hidden: false
-				},
-				{
-					title: 'Nombre',
-					field: 'nombre',
+					title: 'Código',
+					field: 'codigo',
 					hidden: false
 				},
 				{
 					title: 'Descripción',
 					field: 'descripcion',
+					hidden: false
+				},
+				{
+					title: 'Orden',
+					field: 'orden',
 					hidden: false
 				},
 				{
@@ -64,19 +69,13 @@
 					fieldClass: 'text-center',
 					itemActions: [
 					{
-						nameEmit: 'catalogo-read-event',
-						btnClass: 'btn btn-default btn-xs',
-						iconClass: 'fa fa-eye',
-						label: 'Visualizar',
-					},
-					{
-						nameEmit: 'catalogo-update-event',
+						nameEmit: 'catalogo-item-update-event',
 						btnClass: 'btn btn-default btn-xs',
 						iconClass: 'fa fa-edit',
 						label: 'Editar',
 					},
 					{
-						nameEmit: 'catalogo-delete-event',
+						nameEmit: 'catalogo-item-delete-event',
 						btnClass: 'btn btn-danger btn-xs',
 						iconClass: 'fa fa-trash',
 						label: 'Eliminar',
@@ -92,19 +91,17 @@
 			'app-loading' : Loading,
 		},
 		events: {
-			'catalogo-create-event' : function(model){
-				this.$router.go('/catalogos/create');
+			'catalogo-item-create-event' : function(model){
+				this.$router.go('/catalogos/'+ this.$route.params.catalogo_id +'/create');
 			},
-			'catalogo-read-event' : function(model){
-				this.$router.go('/catalogos/view/' + model.id);
+			'catalogo-item-update-event' : function(model){
+				this.$router.go('/catalogos/' + model.catalogo + '/edit/' + model.id);
 			},
-			'catalogo-update-event' : function(model){
-				this.$router.go('/catalogos/edit/' + model.id);
-			},
-			'catalogo-delete-event' : function(model){
+			'catalogo-item-delete-event' : function(model){
 				this.destroy(model);
 			},
-		}
+		},
+
 		
 	}
 

@@ -36,9 +36,15 @@ Route::group(['middleware' => 'auth'], function(){
 
 		Route::resource('menu', 'MenusController');
 
+		Route::get('/menu-list', ['uses' => 'MenusController@allMenu', 'as' => 'api.menu.list']);
+
 		Route::resource('rol', 'RolController');
 
 		Route::resource('catalogos', 'CatalogosController');
+
+		Route::get('/catalogos-list', ['uses' => 'CatalogosController@allCatalogos', 'as' => 'api.catalogos.list']);
+
+		Route::resource('catalogos.items', 'CatalogoItemsController');
 
 	});
 

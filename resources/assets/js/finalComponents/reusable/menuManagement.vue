@@ -6,8 +6,15 @@
 		<ul class="tree">
 			<li v-for="item in data"><strong>{{item.name}}</strong> - <a v-link="{path: '/menu/edit/'+item.id}"><i class="fa fa-pencil edit-option" data-toggle="tooltip" title="Editar"></i></a> - <i class="fa fa-trash delete-option" data-toggle="tooltip" title="Eliminar" @click.prevent="destroy(item.id)"></i>
 				<ul v-if="item.children.length>0">
-					<li v-for="it in item.children">{{it.name}} - <a v-link="{path: '/menu/edit/'+it.id}"><i class="fa fa-pencil edit-option" data-toggle="tooltip" title="Editar"></i></a> - <i class="fa fa-trash delete-option" data-toggle="tooltip" title="Eliminar" @click.prevent="destroy(it.id)"></i></li>
+					<li v-for="it in item.children">{{it.name}} - <a v-link="{path: '/menu/edit/'+it.id}"><i class="fa fa-pencil edit-option" data-toggle="tooltip" title="Editar"></i></a> - <i class="fa fa-trash delete-option" data-toggle="tooltip" title="Eliminar" @click.prevent="destroy(it.id)"></i>
+
+						<ul v-if="it.children.length>0">
+						<li v-for="it0 in it.children">{{it0.name}} - <a v-link="{path: '/menu/edit/'+it0.id}"><i class="fa fa-pencil edit-option" data-toggle="tooltip" title="Editar"></i></a> - <i class="fa fa-trash delete-option" data-toggle="tooltip" title="Eliminar" @click.prevent="destroy(it0.id)"></i></li>
+						</ul>
+
+					</li>
 				</ul>
+
 			</li>
 			
 			<li><a v-link="{path: '/menu/create'}" class="btn btn-sm btn-primary add-btn"><i class="fa fa-plus"> Agregar</i></a></li>

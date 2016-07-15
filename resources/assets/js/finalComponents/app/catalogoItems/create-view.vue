@@ -1,7 +1,6 @@
 <template>
-<loading-app v-if="loading===true"></loading-app>
-	<div class="row" v-else>
-		<form action="" @submit.prevent="update">
+	<div class="row">
+		<form action="" @submit.prevent="create">
 			
 			<form-inputs :create-mode="createMode" :data-model.sync="newModel"></form-inputs>
 
@@ -17,15 +16,17 @@
 
 	export default {
 		mixins: [myMixins],
-		ready(){
-			this.read();
+		route: {
+			data: function(transition){
+				this.generateUrl();
+				transition.next();
+			}
 		},
 		data(){
 			return {
-				createMode: false,
+				createMode: true,
 				newModel: {},
-				loading: true,
-				url: 'api/catalogos'
+				url: 'api/catalogos' //no hace nada por que se autogenera para este caso
 			}
 		},
 		components: {
@@ -33,6 +34,4 @@
 		},
 
 	}
-
-
 </script>

@@ -50,7 +50,13 @@ class CatalogosController extends Controller
 
         $perPage = request()->has('per_page') ? (int) request()->per_page : 5;
 
-        $catalogos = $this->repository->with('items')->paginate($perPage);
+        if (request()->has('sort')) {
+            list($sortCol, $sortDir) = explode('|', request()->sort);
+            $catalogos = $this->repository->with('items')->orderBy($sortCol, $sortDir)->paginate($perPage);
+        } else {
+            $catalogos = $this->repository->with('items')->orderBy('id', 'asc')->paginate($perPage);
+        }
+
         
         return response()->json($catalogos);
     }
@@ -109,6 +115,13 @@ class CatalogosController extends Controller
             return response()->json($catalogo);
 
         } catch (Exception $e){
+            if ($e instanceof  \NotFoundHttpException) {
+                return response()->json(array(
+                'data'  => [],
+                'message' => 'No hay resultados',
+                'dev_message' => $e->getMessage()), 404);
+                
+            }
             return response()->json(array(
                 'message' => 'Se presento un error al tratar de hacer esta acción',
                 'dev_message' => $e->getMessage()), 405);
@@ -148,7 +161,7 @@ class CatalogosController extends Controller
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
 
-            $catalogo = $this->repository->update($id, $request->only($this->requestFields['update']), $id);
+            $catalogo = $this->repository->update($request->only($this->requestFields['update']), $id);
 
             return response()->json($catalogo);
 
@@ -189,5 +202,19 @@ class CatalogosController extends Controller
             ]); 
 
         return redirect()->back()->with('message', 'Catalogo deleted.');
+    }
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function allCatalogos()
+    {
+
+        $catalogos = $this->repository->all();
+        return response()->json($catalogos);
+
     }
 }

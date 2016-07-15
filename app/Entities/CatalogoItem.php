@@ -14,7 +14,7 @@ class CatalogoItem extends Model implements Transformable
 
     protected $fillable = ['catalogo', 'codigo', 'descripcion', 'orden', 'activo'];
 
-    public function catalogo(){
+    public function padre(){
         return $this->belongsTo(Catalogo::class, 'id', 'catalogo');
     }
 

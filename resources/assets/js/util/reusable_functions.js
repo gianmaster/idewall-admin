@@ -29,6 +29,7 @@ export default {
 			console.log(err.data.message);
 			myAlert('warning', err.data.message);
 		}else{
+			console.log(err);
     		myAlert('error', 'Se ha presentado un error al tratar de traer los datos del sistema');
     	}
 

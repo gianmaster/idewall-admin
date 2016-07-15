@@ -4,32 +4,45 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Entities\Catalogo;
+use App\Entities\CatalogoItem;
+
 use App\Http\Requests;
+use App\Validators\CatalogoValidator;
+use App\Validators\CatalogoItemValidator;
+use App\Repositories\CatalogoRepository;
+use App\Repositories\CatalogoItemRepository;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
-use App\Http\Requests\CatalogoItemCreateRequest;
-use App\Http\Requests\CatalogoItemUpdateRequest;
-use App\Repositories\CatalogoItemRepository;
-use App\Validators\CatalogoItemValidator;
 
 
 class CatalogoItemsController extends Controller
 {
 
+    protected $requestFields = [
+    'store'     => ['catalogo', 'codigo', 'descripcion', 'orden', 'activo'],
+    'update'    => ['catalogo', 'codigo', 'descripcion', 'orden', 'activo']
+    ];
+
     /**
      * @var CatalogoItemRepository
      */
-    protected $repository;
+    protected $catalogo_repositoty;
+    protected $catalogo_item_repository;
 
     /**
      * @var CatalogoItemValidator
      */
-    protected $validator;
+    protected $catalogo_validator;
+    protected $catalogo_item_validator;
 
-    public function __construct(CatalogoItemRepository $repository, CatalogoItemValidator $validator)
+    public function __construct(CatalogoItemRepository $repository1, CatalogoItemValidator $validator1, CatalogoRepository $repository2, CatalogoValidator $validator2)
     {
-        $this->repository = $repository;
-        $this->validator  = $validator;
+        $this->catalogo_item_repository = $repository1;
+        $this->catalogo_item_validator  = $validator1;
+
+        $this->catalogo_repository = $repository2;
+        $this->catalogo_validator  = $validator2;
     }
 
 
@@ -38,19 +51,34 @@ class CatalogoItemsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($catalogos)
     {
-        $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
-        $catalogoItems = $this->repository->all();
 
-        if (request()->wantsJson()) {
+        $perPage = request()->has('per_page') ? (int) request()->per_page : 5;
+        //$items = CatalogoItem::find($catalogos)->paginate($perPage);
 
-            return response()->json([
-                'data' => $catalogoItems,
-            ]);
+        if (request()->has('sort')) {
+            list($sortCol, $sortDir) = explode('|', request()->sort);
+            $items = CatalogoItem::where('catalogo', $catalogos)->orderBy($sortCol, $sortDir)->paginate($perPage);
+        } else {
+            $items = CatalogoItem::where('catalogo', $catalogos)->orderBy('id', 'asc')->paginate($perPage);
         }
 
-        return view('catalogoItems.index', compact('catalogoItems'));
+
+        /*
+
+        $perPage = request()->has('per_page') ? (int) request()->per_page : 5;
+
+        if (request()->has('sort')) {
+            list($sortCol, $sortDir) = explode('|', request()->sort);
+            $catalogoItems = $this->repository->with('padre')->orderBy($sortCol, $sortDir)->paginate($perPage);
+        } else {
+            $catalogoItems = $this->repository->with('padre')->orderBy('id', 'asc')->paginate($perPage);
+        }
+        */
+        
+        return response()->json($items);
+
     }
 
     /**
@@ -60,36 +88,34 @@ class CatalogoItemsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $catalogo)
     {
 
         try {
 
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
+            $this->catalogo_item_validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
 
-            $catalogoItem = $this->repository->create($request->all());
+            $catalogo = $this->catalogo_item_repository->create($request->only($this->requestFields['store']));
 
-            $response = [
-                'message' => 'CatalogoItem created.',
-                'data'    => $catalogoItem->toArray(),
-            ];
+            return response()->json($catalogo);
 
-            if ($request->wantsJson()) {
-
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
         } catch (ValidatorException $e) {
             if ($request->wantsJson()) {
                 return response()->json([
-                    'error'   => true,
+                    'dev_message' => $e->getMessage(),
                     'message' => $e->getMessageBag()
-                ]);
+                    ], 403);
             }
 
             return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+
+        } catch (Exception $e){
+            return response()->json(array(
+                'message' => 'Se presento un error al tratar de hacer esta acción',
+                'dev_message' => $e->getMessage()), 405);
         }
+
+
     }
 
 
@@ -100,18 +126,19 @@ class CatalogoItemsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($catalogo, $id)
     {
-        $catalogoItem = $this->repository->find($id);
+        try{
 
-        if (request()->wantsJson()) {
+            $itemCatalogo = $this->catalogo_item_repository->find($id);
+            return response()->json($itemCatalogo);
 
-            return response()->json([
-                'data' => $catalogoItem,
-            ]);
+        } catch (Exception $e){
+            return response()->json(array(
+                'message' => 'Se presento un error al tratar de hacer esta acción',
+                'dev_message' => $e->getMessage()), 405);
         }
 
-        return view('catalogoItems.show', compact('catalogoItem'));
     }
 
 
@@ -139,38 +166,34 @@ class CatalogoItemsController extends Controller
      *
      * @return Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $catalogo, $id)
     {
 
         try {
 
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
+            $this->catalogo_item_validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
 
-            $catalogoItem = $this->repository->update($id, $request->all());
+            $catalogoItem = $this->catalogo_item_repository->update($request->only($this->requestFields['update']), $id);
 
-            $response = [
-                'message' => 'CatalogoItem updated.',
-                'data'    => $catalogoItem->toArray(),
-            ];
+            return response()->json($catalogoItem);
 
-            if ($request->wantsJson()) {
-
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
         } catch (ValidatorException $e) {
 
             if ($request->wantsJson()) {
-
                 return response()->json([
-                    'error'   => true,
+                    'dev_message' => $e->getMessage(),
                     'message' => $e->getMessageBag()
-                ]);
+                ], 403);
             }
 
             return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+        } catch (Exception $e){
+            
+            return response()->json(array(
+                'message' => 'Se presento un error al tratar de hacer esta acción',
+                'dev_message' => $e->getMessage()), 405);
         }
+
     }
 
 

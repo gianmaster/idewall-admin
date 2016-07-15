@@ -58,6 +58,8 @@ router.map({
 
   '/catalogos': require('./finalComponents/app/catalogos/index.js'),
 
+  '/catalogos/:catalogo_id': require('./finalComponents/app/catalogoItems/index.js'),
+
   '/lockscreen': {
     component: require('./finalComponents/new-layout/lockscreen.vue')
   },

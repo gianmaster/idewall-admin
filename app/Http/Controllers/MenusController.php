@@ -55,6 +55,8 @@ class MenusController extends Controller
         return response()->json($menus);
     }
 
+
+
     /**
      * Store a newly created resource in storage.
      *
@@ -193,5 +195,20 @@ class MenusController extends Controller
                 'dev_message' => $e->getMessage()),409);
         }
 
+    }
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function allMenu()
+    {
+        //$this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
+        //$menus = $this->repository->all();
+        $menus = $this->repository->all();
+
+        return response()->json($menus);
     }
 }

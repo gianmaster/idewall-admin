@@ -17,6 +17,12 @@
 
 	export default {
 		mixins: [myMixins],
+		route: {
+			data: function(transition){
+				this.generateUrl();
+				transition.next();
+			}
+		},
 		ready(){
 			this.read();
 		},

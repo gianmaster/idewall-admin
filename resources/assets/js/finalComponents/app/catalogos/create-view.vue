@@ -10,30 +10,22 @@
 
 <script>
 	
-	import fnc from '../../../util/reusable_functions';
-
 	import inputs from './form-fields.vue';
 
-	const URL = 'api/catalogos';
+	import myMixins from './mixins';
 
 	export default {
+		mixins: [myMixins],
 		data(){
 			return {
 				createMode: true,
 				newModel: {},
+				url: 'api/catalogos'
 			}
 		},
 		components: {
 			'form-inputs': inputs
 		},
-		methods: {
-			create: function(){
-				this.$http.post(URL, this.newModel).then(function(resp){
-					fnc.niceAlert('success', 'Se creó el menú correctamente!');
-					this.$router.go('/catalogos');
-				}, fnc.tryError);
-			}
-		}
 
 	}
 </script>
