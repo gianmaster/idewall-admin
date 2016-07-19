@@ -844,6 +844,7 @@ class ConfigurationSeeder extends Seeder
           'nacionalidad'        => 'Ecuatoriano',
           'residencia'          => 'Ecuador', 
           'direccion'           => 'Metropolis 2g Mz 2060 Villa 8',
+          'tipo_contrato'       => 'MEDIO_TIEMPO'
           ]);
 
 
@@ -866,6 +867,7 @@ class ConfigurationSeeder extends Seeder
           'nacionalidad'        => 'Ecuatoriano',
           'residencia'          => 'Ecuador', 
           'direccion'           => 'Latamendi #4818 y la 23',
+          'tipo_contrato'       => 'TIEMPO_COMPLETO'
           ]);
 
 

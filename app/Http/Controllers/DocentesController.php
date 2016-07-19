@@ -162,7 +162,7 @@ class DocentesController extends Controller
 
         try {
 
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
+            $this->validator->with($request->all())->setId($id)->passesOrFail(ValidatorInterface::RULE_UPDATE);
 
             $docente = $this->repository->update($request->only($this->requestFields['update']), $id);
 

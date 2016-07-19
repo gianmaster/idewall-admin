@@ -15820,7 +15820,7 @@ exports.default = {
 		return {
 			createMode: true,
 			newModel: {},
-			url: 'api/malla_academica'
+			url: 'api/docentes'
 		};
 	},
 
@@ -15873,7 +15873,7 @@ exports.default = {
 			createMode: false,
 			newModel: {},
 			loading: true,
-			url: 'api/malla_academica'
+			url: 'api/docentes'
 		};
 	},
 
@@ -15921,11 +15921,25 @@ exports.default = {
 		initModel: function initModel() {
 			return {
 				id: null,
-				codigo_materia: null,
-				nombre_materia: null,
-				semestre: null,
-				horas: null,
-				estado: null
+				nombres: null,
+				apellidos: null,
+				identificacion: null,
+				tipo_identificacion: null,
+				email: null,
+				email_corporativo: null,
+				celular: null,
+				telefono: null,
+				estado_civil: null,
+				genero: null,
+				titulo_pregrado: null,
+				titulo_postgrado: null,
+				titulo_mba: null,
+				registro_senescyt: null,
+				fecha_nacimiento: null,
+				nacionalidad: null,
+				residencia: null,
+				direccion: null,
+				tipo_contrato: null
 			};
 		}
 	},
@@ -15941,18 +15955,32 @@ exports.default = {
 			default: function _default() {
 				return {
 					id: null,
-					codigo_materia: null,
-					nombre_materia: null,
-					semestre: null,
-					horas: null,
-					estado: null
+					nombres: null,
+					apellidos: null,
+					identificacion: null,
+					tipo_identificacion: null,
+					email: null,
+					email_corporativo: null,
+					celular: null,
+					telefono: null,
+					estado_civil: null,
+					genero: null,
+					titulo_pregrado: null,
+					titulo_postgrado: null,
+					titulo_mba: null,
+					registro_senescyt: null,
+					fecha_nacimiento: null,
+					nacionalidad: null,
+					residencia: null,
+					direccion: null,
+					tipo_contrato: null
 				};
 			}
 		}
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<!--\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Catálogo</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.catalogo\" value-key=\"id\" label-key=\"descripcion\" url=\"api/catalogos-list\"></select-list>\n</div>\n-->\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Código Materia</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.codigo_materia\" minlength=\"2\" required=\"\">\n\t<input type=\"hidden\" class=\"form-control\" :value=\"dataModel.id\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Nombre Materia</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.nombre_materia\" minlength=\"6\" required=\"\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Semestre</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.semestre\" value-key=\"codigo\" label-key=\"descripcion\" url=\"api/catalogos-list/2\"></select-list>\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Horas</label>\n\t<input type=\"number\" class=\"form-control\" v-model=\"dataModel.horas\" min=\"0\" required=\"\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Estado</label>\n\t<select name=\"estado\" id=\"estado\" class=\"form-control\" v-model=\"dataModel.estado\" required=\"\">\n\t\t<option value=\"VIGENTE\">VIGENTE</option>\n\t\t<option value=\"INACTIVO\">INACTIVO</option>\n\t\t<option value=\"NO_CALCULABLE\">NO_CALCULABLE</option>\n\t</select>\n</div>\n\n<div class=\"col-xs-12\">\n\t<div class=\"content\">\n\t\t<button v-if=\"createMode\" class=\"btn btn-success btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR</button>\n\t\t<button v-else=\"\" class=\"btn btn-warning btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR CAMBIOS</button>\n\t\t<a v-link=\"{path: '/malla_academica'}\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-reply\"></i> VOLVER</a>\n\t</div>\n\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<!--\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Catálogo</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.catalogo\" value-key=\"id\" label-key=\"descripcion\" url=\"api/catalogos-list\"></select-list>\n</div>\n-->\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Nombres</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.nombres\" placeholder=\"Giancarlos Steven\" minlength=\"2\" required=\"\">\n\t<input type=\"hidden\" class=\"form-control\" :value=\"dataModel.id\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Apellidos</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.apellidos\" placeholder=\"Cercado Cedeño\" minlength=\"3\" required=\"\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Identificación</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.identificacion\" minlength=\"9\" required=\"\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Tipo de Identificación</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.tipo_identificacion\" :data=\"['CEDULA', 'RUC', 'PASAPORTE']\" :is-required=\"true\"></select-list>\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Email Personal</label>\n\t<input type=\"email\" class=\"form-control\" v-model=\"dataModel.email\" required=\"\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Email Corporativo</label>\n\t<input type=\"email\" class=\"form-control\" v-model=\"dataModel.email_corporativo\" required=\"\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Celular</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.celular\" required=\"\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Teléfono</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.telefono\" required=\"\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Género</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.genero\" :data=\"['MASCULINO', 'FEMENINO']\" :is-required=\"true\"></select-list>\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Estado Civil</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.estado_civil\" :data=\"['SOLTERO', 'CASADO', 'DIVORCIADO', 'VIUDO']\" :is-required=\"true\"></select-list>\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Fecha Nacimiento</label>\n\t<input type=\"date\" class=\"form-control\" v-model=\"dataModel.fecha_nacimiento\" required=\"\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Nacionalidad</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.nacionalidad\" required=\"\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Residencia</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.residencia\" required=\"\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Dirección</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.direccion\" required=\"\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Título Pregrado</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.titulo_pregrado\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Título Postgrado</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.titulo_postgrado\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Título MBA</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.titulo_mba\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Código de Registro Senescyt</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.registro_senescyt\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Tipo Contrato</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.tipo_contrato\" :data=\"['MEDIO_TIEMPO', 'TIEMPO_COMPLETO']\" :is-required=\"true\"></select-list>\n</div>\n\n\n<div class=\"col-xs-12\">\n\t<div class=\"content\">\n\t\t<button v-if=\"createMode\" class=\"btn btn-success btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR</button>\n\t\t<button v-else=\"\" class=\"btn btn-warning btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR CAMBIOS</button>\n\t\t<a v-link=\"{path: '/docentes'}\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-reply\"></i> VOLVER</a>\n\t</div>\n\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16225,7 +16253,7 @@ exports.default = {
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<loading-app v-if=\"loading===true\"></loading-app>\n<div class=\"row\" v-else=\"\">\n\n\t<div class=\"col-xs-12 col-sm-6\">\n\n\t\t<div class=\"box box-primary\">\n\t\t\t<div class=\"box-header with-border\">\n\t\t\t\t<h3 class=\"box-title\">Infomación Personal</h3>\n\t\t\t</div>\n\t\t\t<!-- /.box-header -->\n\t\t\t<div class=\"box-body\">\n\t\t\t\t<strong>Nombres</strong>\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\t{{newModel.nombres}}\n\t\t\t\t</p>\n\n\t\t\t\t<strong>Apellidos</strong>\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\t{{newModel.apellidos}}\n\t\t\t\t</p>\n\n\t\t\t\t<strong>Identificación</strong>\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\t{{newModel.identificacion}} <sub>{{newModel.tipo_identificacion}}</sub>\n\t\t\t\t</p>\n\n\t\t\t\t<strong>Género</strong>\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\t{{newModel.genero}}\n\t\t\t\t</p>\n\n\t\t\t\t<strong>Estado Civil</strong>\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\t{{newModel.estado_civil}}\n\t\t\t\t</p>\n\n\t\t\t\t<hr>\n\n\t\t\t\t<strong>Fecha Nacimiento <i class=\"fa fa-calendar-o\"></i></strong>\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\t<span class=\"label label-primary\">{{newModel.fecha_nacimiento}} </span>\n\t\t\t\t</p>\n\n\t\t\t\t<hr>\n\n\t\t\t\t\n\t\t\t\t<strong>Contacto <i class=\"fa fa-search-minus\"></i></strong>\n\n\t\t\t\t<p class=\"text-muted\">{{newModel.celular}} <i class=\"fa fa-mobile-phone\"></i></p>\n\n\t\t\t\t<p class=\"text-muted\">{{newModel.telefono}} <i class=\"fa fa-phone\"></i></p>\n\n\t\t\t\t<p class=\"text-muted\">{{newModel.email}} <i class=\"fa fa-envelope-o\"></i></p>\n\n\t\t\t</div>\n\t\t\t<!-- /.box-body -->\n\t\t</div>\n\t</div>\n\t\n\t<div class=\"col-xs-12 col-sm-6\">\n\t\t<div class=\"box box-primary\">\n\t\t\t<div class=\"box-header with-border\">\n\t\t\t\t<h3 class=\"box-title\">Más Detalles</h3>\n\t\t\t</div>\n\t\t\t<!-- /.box-header -->\n\t\t\t<div class=\"box-body\">\n\n\n\t\t\t\t<strong><i class=\"fa fa-briefcase margin-r-5\"></i> Tipo de Contrato</strong>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\t<span class=\"label label-warnig\" v-if=\"newModel.tipo_contrato=='MEDIO_TIEMPO'\">\n\t\t\t\t\t\tMedio Tiempo <i class=\"fa fa-clock-o\"></i>\n\t\t\t\t\t</span>\n\t\t\t\t\t<span class=\"label label-success\" v-else=\"\">\n\t\t\t\t\t\tTiempo Completo <i class=\"fa fa-clock-o\"></i>\n\t\t\t\t\t</span>\n\t\t\t\t</p>\n\n\t\t\t\t<hr>\n\t\t\t\t\n\n\t\t\t\t<strong><i class=\"fa fa-book margin-r-5\"></i> Educación</strong>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tTítulo PostGrado: {{newModel.titulo_postgrado ? newModel.titulo_postgrado : 'N/A'}}\n\t\t\t\t</p>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tTítulo Pregredo: {{newModel.titulo_pregrado ? newModel.titulo_pregrado : 'N/A'}}\n\t\t\t\t</p>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tTítulo MBA: {{newModel.titulo_mba ? newModel.titulo_mba : 'N/A'}}\n\t\t\t\t</p>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tTítulo Pregredo: {{newModel.titulo_pregrado ? newModel.titulo_pregrado : 'N/A'}}\n\t\t\t\t</p>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tRegistro Senescyt: {{newModel.registro_senescyt ? newModel.registro_senescyt : 'N/A'}}\n\t\t\t\t</p>\n\n\t\t\t\t<hr>\n\n\t\t\t\t<strong><i class=\"fa fa-map-marker margin-r-5\"></i> Localización</strong>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tNacionalidad: {{newModel.nacionalidad}}\n\t\t\t\t</p>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tResidencia: {{newModel.residencia}}\n\t\t\t\t</p>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tDirección: {{newModel.direccion}}\n\t\t\t\t</p>\n\n\t\t\t</div>\n\t\t\t<!-- /.box-body -->\n\t\t</div>\n\t</div>\n\n\t<div class=\"col-xs-12\">\n\t\t<a v-link=\"{path: '/docentes'}\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-reply\"></i> VOLVER</a>\n\t</div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<loading-app v-if=\"loading===true\"></loading-app>\n<div class=\"row\" v-else=\"\">\n\n\t<div class=\"col-xs-12 col-sm-6\">\n\n\t\t<div class=\"box box-primary\">\n\t\t\t<div class=\"box-header with-border\">\n\t\t\t\t<h3 class=\"box-title\">Infomación Personal <i class=\"fa fa-user\" style=\"color:#3c8dbc;\"></i></h3>\n\t\t\t</div>\n\t\t\t<!-- /.box-header -->\n\t\t\t<div class=\"box-body\">\n\t\t\t\t<strong>Nombres</strong>\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\t{{newModel.nombres}}\n\t\t\t\t</p>\n\n\t\t\t\t<strong>Apellidos</strong>\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\t{{newModel.apellidos}}\n\t\t\t\t</p>\n\n\t\t\t\t<strong>Identificación</strong>\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\t{{newModel.identificacion}} <sub>{{newModel.tipo_identificacion}}</sub>\n\t\t\t\t</p>\n\n\t\t\t\t<strong>Género</strong>\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\t{{newModel.genero}}\n\t\t\t\t</p>\n\n\t\t\t\t<strong>Estado Civil</strong>\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\t{{newModel.estado_civil}}\n\t\t\t\t</p>\n\n\t\t\t\t<hr>\n\n\t\t\t\t<strong>Fecha Nacimiento <i class=\"fa fa-calendar-o\"></i></strong>\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\t<span class=\"label label-primary\">{{newModel.fecha_nacimiento}} </span>\n\t\t\t\t</p>\n\n\t\t\t\t<hr>\n\n\t\t\t\t\n\t\t\t\t<strong>Contacto <i class=\"fa fa-search-minus\"></i></strong>\n\n\t\t\t\t<p class=\"text-muted\"><a href=\"tel:+{{newModel.celular}}\">{{newModel.celular}} <i class=\"fa fa-mobile-phone\"></i> </a></p>\n\n\t\t\t\t<p class=\"text-muted\"><a href=\"tel:+{{newModel.telefono}}\">{{newModel.telefono}} <i class=\"fa fa-phone\"></i></a></p>\n\n\t\t\t\t<p class=\"text-muted\"><a href=\"mailto:{{newModel.email}}\">{{newModel.email}} <i class=\"fa fa-envelope-o\"></i></a></p>\n\n\t\t\t</div>\n\t\t\t<!-- /.box-body -->\n\t\t</div>\n\t</div>\n\t\n\t<div class=\"col-xs-12 col-sm-6\">\n\t\t<div class=\"box box-primary\">\n\t\t\t<div class=\"box-header with-border\">\n\t\t\t\t<h3 class=\"box-title\">Más Detalles <i class=\"fa fa-graduation-cap\" style=\"color:#3c8dbc;\"></i></h3>\n\t\t\t</div>\n\t\t\t<!-- /.box-header -->\n\t\t\t<div class=\"box-body\">\n\n\n\t\t\t\t<strong><i class=\"fa fa-briefcase margin-r-5\"></i> Tipo de Contrato</strong>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\t<span class=\"label label-success\" v-if=\"newModel.tipo_contrato=='TIEMPO_COMPLETO'\">\n\t\t\t\t\t\tTiempo Completo <i class=\"fa fa-clock-o\"></i>\n\t\t\t\t\t</span>\n\t\t\t\t\t<span class=\"label label-warning\" v-else=\"\">\n\t\t\t\t\t\tMedio Tiempo <i class=\"fa fa-clock-o\"></i>\n\t\t\t\t\t</span>\n\t\t\t\t</p>\n\n\t\t\t\t<hr>\n\t\t\t\t\n\n\t\t\t\t<strong><i class=\"fa fa-book margin-r-5\"></i> Educación</strong>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tTítulo PostGrado: {{newModel.titulo_postgrado ? newModel.titulo_postgrado : 'N/A'}}\n\t\t\t\t</p>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tTítulo Pregredo: {{newModel.titulo_pregrado ? newModel.titulo_pregrado : 'N/A'}}\n\t\t\t\t</p>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tTítulo MBA: {{newModel.titulo_mba ? newModel.titulo_mba : 'N/A'}}\n\t\t\t\t</p>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tTítulo Pregredo: {{newModel.titulo_pregrado ? newModel.titulo_pregrado : 'N/A'}}\n\t\t\t\t</p>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tRegistro Senescyt: {{newModel.registro_senescyt ? newModel.registro_senescyt : 'N/A'}}\n\t\t\t\t</p>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tEmail Corporativo: <a href=\"mailto:{{newModel.email_corporativo}}\">{{newModel.email_corporativo ? newModel.email_corporativo : 'N/A'}}</a>\n\t\t\t\t</p>\n\n\t\t\t\t<hr>\n\n\t\t\t\t<strong><i class=\"fa fa-map-marker margin-r-5\"></i> Localización</strong>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tNacionalidad: {{newModel.nacionalidad}}\n\t\t\t\t</p>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tResidencia: {{newModel.residencia}}\n\t\t\t\t</p>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tDirección: {{newModel.direccion}}\n\t\t\t\t</p>\n\n\t\t\t</div>\n\t\t\t<!-- /.box-body -->\n\t\t</div>\n\t</div>\n\n\t<div class=\"col-xs-12\">\n\t\t<a v-link=\"{path: '/docentes'}\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-reply\"></i> VOLVER</a>\n\t</div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -18388,11 +18416,13 @@ exports.default = {
 	name: 'select-list',
 	ready: function ready() {
 		var self = this;
-		this.$http.get(this.url).then(function (resp) {
-			self.data = resp.data.data;
-		}, function (err) {
-			console.warn(err);
-		});
+		if (this.url) {
+			this.$http.get(this.url).then(function (resp) {
+				self.data = resp.data.data;
+			}, function (err) {
+				console.warn(err);
+			});
+		}
 	},
 	props: {
 		className: {

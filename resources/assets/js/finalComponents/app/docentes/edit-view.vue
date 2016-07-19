@@ -30,7 +30,7 @@
 				createMode: false,
 				newModel: {},
 				loading: true,
-				url: 'api/malla_academica'
+				url: 'api/docentes'
 			}
 		},
 		components: {

@@ -25,7 +25,7 @@
 			return {
 				createMode: true,
 				newModel: {},
-				url: 'api/malla_academica'
+				url: 'api/docentes'
 			}
 		},
 		components: {

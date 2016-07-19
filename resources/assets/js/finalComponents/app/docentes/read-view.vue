@@ -6,7 +6,7 @@
 
 			<div class="box box-primary">
 				<div class="box-header with-border">
-					<h3 class="box-title">Infomación Personal</h3>
+					<h3 class="box-title">Infomación Personal <i class="fa fa-user" style="color:#3c8dbc;"></i></h3>
 				</div>
 				<!-- /.box-header -->
 				<div class="box-body">
@@ -47,11 +47,11 @@
 					
 					<strong>Contacto <i class="fa fa-search-minus"></i></strong>
 
-					<p class="text-muted">{{newModel.celular}} <i class="fa fa-mobile-phone"></i></p>
+					<p class="text-muted"><a href="tel:+{{newModel.celular}}">{{newModel.celular}} <i class="fa fa-mobile-phone"></i> </a></p>
 
-					<p class="text-muted">{{newModel.telefono}} <i class="fa fa-phone"></i></p>
+					<p class="text-muted"><a href="tel:+{{newModel.telefono}}">{{newModel.telefono}} <i class="fa fa-phone"></i></a></p>
 
-					<p class="text-muted">{{newModel.email}} <i class="fa fa-envelope-o"></i></p>
+					<p class="text-muted"><a href="mailto:{{newModel.email}}">{{newModel.email}} <i class="fa fa-envelope-o"></i></a></p>
 
 				</div>
 				<!-- /.box-body -->
@@ -61,7 +61,7 @@
 		<div class="col-xs-12 col-sm-6">
 			<div class="box box-primary">
 				<div class="box-header with-border">
-					<h3 class="box-title">Más Detalles</h3>
+					<h3 class="box-title">Más Detalles <i class="fa fa-graduation-cap" style="color:#3c8dbc;"></i></h3>
 				</div>
 				<!-- /.box-header -->
 				<div class="box-body">
@@ -70,11 +70,11 @@
 					<strong><i class="fa fa-briefcase margin-r-5"></i> Tipo de Contrato</strong>
 
 					<p class="text-muted">
-						<span class="label label-warnig" v-if="newModel.tipo_contrato=='MEDIO_TIEMPO'">
-							Medio Tiempo <i class="fa fa-clock-o"></i>
-						</span>
-						<span class="label label-success" v-else>
+						<span class="label label-success" v-if="newModel.tipo_contrato=='TIEMPO_COMPLETO'">
 							Tiempo Completo <i class="fa fa-clock-o"></i>
+						</span>
+						<span class="label label-warning" v-else>
+							Medio Tiempo <i class="fa fa-clock-o"></i>
 						</span>
 					</p>
 
@@ -101,6 +101,10 @@
 
 					<p class="text-muted">
 						Registro Senescyt: {{newModel.registro_senescyt ? newModel.registro_senescyt : 'N/A'}}
+					</p>
+
+					<p class="text-muted">
+						Email Corporativo: <a href="mailto:{{newModel.email_corporativo}}">{{newModel.email_corporativo ? newModel.email_corporativo : 'N/A'}}</a>
 					</p>
 
 					<hr>
