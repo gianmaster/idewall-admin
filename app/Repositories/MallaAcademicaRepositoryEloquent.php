@@ -40,10 +40,10 @@ class MallaAcademicaRepositoryEloquent extends BaseRepository implements MallaAc
      * Specify Searchable fields
      * */
     protected $fieldSearchable = [
-        'codigo_materia',
-        'nombre_materia',
-        'horasa',
-        'estado'
+        'codigo_materia' => 'like',
+        'nombre_materia' => 'like',
+        'horas',
+        'estado' => 'like'
         //'titulo' => 'like', //with condition
     ];
 

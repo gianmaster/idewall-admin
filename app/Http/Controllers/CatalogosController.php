@@ -216,4 +216,17 @@ class CatalogosController extends Controller
         return response()->json($catalogos);
 
     }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function allItemsCatalogo($catalogo)
+    {
+
+        $catalogos = $this->repository->with('items')->find($catalogo);
+        return response()->json(array('data' => $catalogos['data']['items']));
+
+    }
 }

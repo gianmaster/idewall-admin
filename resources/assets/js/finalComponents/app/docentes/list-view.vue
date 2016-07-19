@@ -34,45 +34,50 @@
 		},
 		data(){
 			return {
-				url: 'api/malla_academica',
+				url: 'api/docentes',
 				toolbar: {
 					iconClass: 'fa fa-plus',
 					iconClassOptions: 'fa fa-cogs',
 					label: 'Agregar',
 					labelOptions: 'Campos visibles',
-					nameEmit: 'malla-create-event',
+					nameEmit: 'docente-create-event',
 					btnClass: 'btn btn-primary btn-flat'
 				},
 				datos: [],
 				columnas: [
 					{
-						title: 'Código',
-						field: 'codigo_materia',
+						title: 'Nombres',
+						field: 'nombres',
 						hidden: false,
 						sortable: true
 					},
 					{
-						title: 'Nombre Materia',
-						field: 'nombre_materia',
+						title: 'Apellidos',
+						field: 'apellidos',
 						hidden: false,
 						sortable: true
 					},
 					{
-						title: 'Semestre',
-						field: 'semestre',
+						title: 'Identificación',
+						field: 'identificacion',
 						hidden: false,
-						sortable: true,
-						template: '<span>${col.descripcion_semestre.descripcion}</span>'
+						sortable: true					
 					},
 					{
-						title: 'Horas',
-						field: 'horas',
+						title: 'Correo',
+						field: 'email',
 						hidden: false,
 						sortable: true
 					},
 					{
-						title: 'Estado',
-						field: 'estado',
+						title: 'Tipo Contrato',
+						field: 'tipo_contrato',
+						hidden: false,
+						sortable: true
+					},
+					{
+						title: 'Celular',
+						field: 'celular',
 						hidden: false,
 						sortable: true
 					},
@@ -83,17 +88,24 @@
 						fieldClass: 'text-center',
 						itemActions: [
 							{
-								nameEmit: 'malla-update-event',
+								nameEmit: 'docente-update-event',
 								btnClass: 'btn btn-default btn-xs',
 								iconClass: 'fa fa-edit',
 								label: 'Editar',
 							},
 							{
-								nameEmit: 'malla-delete-event',
+								nameEmit: 'docente-view-event',
+								btnClass: 'btn btn-default btn-xs',
+								iconClass: 'fa fa-eye',
+								label: 'Visualizar',
+							},
+							{
+								nameEmit: 'docente-delete-event',
 								btnClass: 'btn btn-danger btn-xs',
 								iconClass: 'fa fa-trash',
 								label: 'Eliminar',
 							}
+							
 						]
 					}
 				],
@@ -105,13 +117,16 @@
 			'app-loading' : Loading,
 		},
 		events: {
-			'malla-create-event' : function(model){
-				this.$router.go('/malla_academica/create');
+			'docente-create-event' : function(model){
+				this.$router.go('/docentes/create');
 			},
-			'malla-update-event' : function(model){
-				this.$router.go('/malla_academica/edit/' + model.id);
+			'docente-update-event' : function(model){
+				this.$router.go('/docentes/edit/' + model.id);
 			},
-			'malla-delete-event' : function(model){
+			'docente-view-event' : function(model){
+				this.$router.go('/docentes/view/' + model.id);
+			},
+			'docente-delete-event' : function(model){
 				this.destroy(model);
 			},
 		},

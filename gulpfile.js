@@ -19,6 +19,6 @@ elixir(function(mix) {
     mix.less('bootstrap/bootstrap.less');
     mix.browserify('build.js');
     mix.browserSync({
-        proxy: 'ug_laravel_vue.dev/'
+        proxy: 'http://localhost:88/admin_lte/public'
     });
 });

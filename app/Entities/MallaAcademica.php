@@ -14,4 +14,8 @@ class MallaAcademica extends Model implements Transformable
 
     protected $fillable = ['id', 'codigo_materia', 'nombre_materia', 'semestre', 'horas', 'estado'];
 
+    public function descripcionSemestre(){
+    	return $this->hasOne('App\Entities\CatalogoItem', 'codigo', 'semestre')->where('catalogo', 2);//catalogo de semestres
+    }
+
 }

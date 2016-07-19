@@ -348,7 +348,7 @@
 					}
 				}
 			},
-			tableClass: { type: String, default: 'table table-bordered table-striped'},
+			tableClass: { type: String, default: 'table table-bordered table-striped table-hover'},
 			requireHeader: {type: Boolean, default: true},
 			divSeparatorClass: {type: String, default: 'col-xs-12'},
 			url: {type: String, default: 'api/users'},

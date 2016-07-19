@@ -7,16 +7,22 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
-use App\Repositories\MallaAcademicaRepository;
-use App\Validators\MallaAcademicaValidator;
+use App\Repositories\DocenteRepository;
+use App\Validators\DocenteValidator;
 
 
-class MallaAcademicaController extends Controller
+class DocentesController extends Controller
 {
 
     protected $requestFields = [
-        'store'     => ['codigo_materia', 'nombre_materia', 'semestre', 'horas', 'estado'],
-        'update'    => ['codigo_materia', 'nombre_materia', 'semestre', 'horas', 'estado']
+        'store'     => ['nombres', 'apellidos', 'identificacion', 'tipo_identificacion', 'email',
+                            'email_corporativo', 'celular', 'telefono', 'estado_civil', 'genero', 'titulo_pregrado',
+                            'titulo_postgrado', 'titulo_mba', 'registro_senescyt', 'fecha_nacimiento', 'nacionalidad',
+                            'residencia', 'direccion', 'tipo_contrato'],
+        'update'    => ['nombres', 'apellidos', 'identificacion', 'tipo_identificacion', 'email',
+                            'email_corporativo', 'celular', 'telefono', 'estado_civil', 'genero', 'titulo_pregrado',
+                            'titulo_postgrado', 'titulo_mba', 'registro_senescyt', 'fecha_nacimiento', 'nacionalidad',
+                            'residencia', 'direccion', 'tipo_contrato']
     ];
 
     /**
@@ -29,7 +35,7 @@ class MallaAcademicaController extends Controller
      */
     protected $validator;
 
-    public function __construct(MallaAcademicaRepository $repository, MallaAcademicaValidator $validator)
+    public function __construct(DocenteRepository $repository, DocenteValidator $validator)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
@@ -50,12 +56,12 @@ class MallaAcademicaController extends Controller
 
         if (request()->has('sort')) {
             list($sortCol, $sortDir) = explode('|', request()->sort);
-            $materias = $this->repository->with('descripcionSemestre')->orderBy($sortCol, $sortDir)->paginate($perPage);
+            $docentes = $this->repository->orderBy($sortCol, $sortDir)->paginate($perPage);
         } else {
-            $materias = $this->repository->with('descripcionSemestre')->orderBy('id', 'asc')->paginate($perPage);
+            $docentes = $this->repository->orderBy('id', 'asc')->paginate($perPage);
         }
 
-        return response()->json($materias);
+        return response()->json($docentes);
     }
 
     /**
@@ -72,9 +78,9 @@ class MallaAcademicaController extends Controller
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
 
-            $materias = $this->repository->create($request->only($this->requestFields['store']));
+            $docente = $this->repository->create($request->only($this->requestFields['store']));
 
-            return response()->json($materias);
+            return response()->json($docente);
 
         } catch (ValidatorException $e) {
             if ($request->wantsJson()) {
@@ -108,8 +114,8 @@ class MallaAcademicaController extends Controller
 
         try{
 
-            $materias = $this->repository->find($id);
-            return response()->json($materias);
+            $docente = $this->repository->find($id);
+            return response()->json($docente);
 
         } catch (Exception $e){
             if ($e instanceof  \NotFoundHttpException) {
@@ -137,9 +143,9 @@ class MallaAcademicaController extends Controller
     public function edit($id)
     {
 
-        $materias = $this->repository->find($id);
+        $docente = $this->repository->find($id);
 
-        return view('catalogos.edit', compact('materias'));
+        return view('catalogos.edit', compact('docente'));
     }
 
 
@@ -158,9 +164,9 @@ class MallaAcademicaController extends Controller
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
 
-            $materias = $this->repository->update($request->only($this->requestFields['update']), $id);
+            $docente = $this->repository->update($request->only($this->requestFields['update']), $id);
 
-            return response()->json($materias);
+            return response()->json($docente);
 
         } catch (ValidatorException $e) {
 

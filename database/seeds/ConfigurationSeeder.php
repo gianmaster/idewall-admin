@@ -193,7 +193,7 @@ class ConfigurationSeeder extends Seeder
           'menu'  => $menuTipoContrato->id,
         ]);
 
-        //menu malla academica
+        //menu principal de administracion
         $menuAdmin = App\Menu::create([
             'nombre'    => 'administracion',
             'titulo'    => 'Administración',
@@ -208,19 +208,34 @@ class ConfigurationSeeder extends Seeder
             'menu'  => $menuAdmin->id,
         ]);
 
-
+      //menu malla academica
         $menuMalla = App\Menu::create([
             'nombre'    => 'malla_academica',
             'titulo'    => 'Malla Académica',
             'url'     => '/malla_academica',
             'iconclass'   => 'fa fa-link',
-            'orden'     => 3,
+            'orden'     => 1,
             'cod_padre'   => $menuAdmin->id
         ]);
 
         App\RolMenu::create([
             'rol' => $rolAdmin->id,
             'menu'  => $menuMalla->id,
+        ]);
+
+        //menu docentes
+        $menuDocentes = App\Menu::create([
+            'nombre'    => 'docentes',
+            'titulo'    => 'Administración de Docentes',
+            'url'     => '/docentes',
+            'iconclass'   => 'fa fa-link',
+            'orden'     => 2,
+            'cod_padre'   => $menuAdmin->id
+        ]);
+
+        App\RolMenu::create([
+            'rol' => $rolAdmin->id,
+            'menu'  => $menuDocentes->id,
         ]);
 
 
@@ -273,7 +288,7 @@ class ConfigurationSeeder extends Seeder
        App\Entities\CatalogoItem::create([
           'catalogo'    => $sem->id,
           'codigo'      => 'SEM6',
-          'descripcion' => 'Semestre 6',
+          'descripcion' => 'Semestre VI',
           'orden'       => 6,
           'activo'      => true
         ]);
@@ -281,7 +296,7 @@ class ConfigurationSeeder extends Seeder
        App\Entities\CatalogoItem::create([
           'catalogo'    => $sem->id,
           'codigo'      => 'SEM7',
-          'descripcion' => 'Semestre 7',
+          'descripcion' => 'Semestre VII',
           'orden'       => 7,
           'activo'      => true
         ]);
@@ -289,7 +304,7 @@ class ConfigurationSeeder extends Seeder
        App\Entities\CatalogoItem::create([
           'catalogo'    => $sem->id,
           'codigo'      => 'SEM8',
-          'descripcion' => 'Semestre 8',
+          'descripcion' => 'Semestre VIII',
           'orden'       => 8,
           'activo'      => true
         ]);
@@ -397,13 +412,462 @@ class ConfigurationSeeder extends Seeder
         ]);
 
         //agregar materias a la malla academica
+        //Del primer semestre
         App\Entities\MallaAcademica::create([
             'nombre_materia'    => 'Contabilidad Básica',
             'codigo_materia'    => '101',
             'horas'             => 8,
-            'estado'            => 'ACTIVO',
+            'estado'            => 'VIGENTE',
             'semestre'          => 'SEM1',
         ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Matemáticas Aplicadas',
+            'codigo_materia'    => '102',
+            'horas'             => 8,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM1',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Derecho I',
+            'codigo_materia'    => '106',
+            'horas'             => 4,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM1',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Computación I',
+            'codigo_materia'    => '108',
+            'horas'             => 2,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM1',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Ingles I',
+            'codigo_materia'    => '109',
+            'horas'             => 3,
+            'estado'            => 'NO_CALCULABLE',
+            'semestre'          => 'SEM1',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Metodología de la Investigación I',
+            'codigo_materia'    => '107',
+            'horas'             => 4,
+            'estado'            => 'NO_CALCULABLE',
+            'semestre'          => 'SEM1',
+        ]);
+
+        //Materias del segundo semestre
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Contabilidad Intermadia',
+            'codigo_materia'    => '201',
+            'horas'             => 8,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM2',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Matemáticas Financieras I',
+            'codigo_materia'    => '202',
+            'horas'             => 8,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM2',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Derecho II',
+            'codigo_materia'    => '206',
+            'horas'             => 4,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM2',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Computación II',
+            'codigo_materia'    => '208',
+            'horas'             => 2,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM2',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Ingles II',
+            'codigo_materia'    => '209',
+            'horas'             => 3,
+            'estado'            => 'NO_CALCULABLE',
+            'semestre'          => 'SEM2',
+        ]);
+
+        //Materias 3er semestre
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Contabilidad de Costos y Administrativa',
+            'codigo_materia'    => '301',
+            'horas'             => 9,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM3',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Estadística I',
+            'codigo_materia'    => '302',
+            'horas'             => 5,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM3',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Derecho III',
+            'codigo_materia'    => '303',
+            'horas'             => 4,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM3',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Organización Computacional',
+            'codigo_materia'    => '304',
+            'horas'             => 3,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM3',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Ingles III',
+            'codigo_materia'    => '309',
+            'horas'             => 3,
+            'estado'            => 'NO_CALCULABLE',
+            'semestre'          => 'SEM3',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Computación III',
+            'codigo_materia'    => '308',
+            'horas'             => 3,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM3',
+        ]);
+
+        //Materias 4to semestre
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Estadística II',
+            'codigo_materia'    => '401',
+            'horas'             => 5,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM4',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Micro y Macro',
+            'codigo_materia'    => '402',
+            'horas'             => 4,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM4',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Programación I',
+            'codigo_materia'    => '403',
+            'horas'             => 5,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM4',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Arquitectura Computacional',
+            'codigo_materia'    => '404',
+            'horas'             => 5,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM4',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Ingles IV',
+            'codigo_materia'    => '409',
+            'horas'             => 3,
+            'estado'            => 'NO_CALCULABLE',
+            'semestre'          => 'SEM4',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Computación IV',
+            'codigo_materia'    => '408',
+            'horas'             => 3,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM4',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Mantenimiento de Computadoras',
+            'codigo_materia'    => '405',
+            'horas'             => 2,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM4',
+        ]);
+
+        //Materias 5to semestre
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Administración de Empresas',
+            'codigo_materia'    => '501',
+            'horas'             => 5,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM5',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Negociación y solución de conflictos',
+            'codigo_materia'    => '502',
+            'horas'             => 3,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM5',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Programación II',
+            'codigo_materia'    => '503',
+            'horas'             => 5,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM5',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Redes Computacionales',
+            'codigo_materia'    => '504',
+            'horas'             => 4,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM5',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Análisis y Diseño de Sistemas',
+            'codigo_materia'    => '505',
+            'horas'             => 3,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM5',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Ingles V',
+            'codigo_materia'    => '509',
+            'horas'             => 3,
+            'estado'            => 'NO_CALCULABLE',
+            'semestre'          => 'SEM5',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Comutación V',
+            'codigo_materia'    => '508',
+            'horas'             => 2,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM5',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Emprendedores',
+            'codigo_materia'    => '506',
+            'horas'             => 3,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM5',
+        ]);
+
+        //Materias 6to semestre
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Administración Financiera I',
+            'codigo_materia'    => '601',
+            'horas'             => 8,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM6',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Estructura de Datos',
+            'codigo_materia'    => '602',
+            'horas'             => 4,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM6',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Punto Net',
+            'codigo_materia'    => '603',
+            'horas'             => 4,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM6',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Base de Datos',
+            'codigo_materia'    => '604',
+            'horas'             => 4,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM6',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Ingles VI',
+            'codigo_materia'    => '609',
+            'horas'             => 3,
+            'estado'            => 'NO_CALCULABLE',
+            'semestre'          => 'SEM6',
+        ]);
+
+
+
+         //Materias 7mo semestre
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Administración Financiera II',
+            'codigo_materia'    => '701',
+            'horas'             => 6,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM7',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Sistemas de Información Gerencial',
+            'codigo_materia'    => '702',
+            'horas'             => 3,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM7',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Programación Orientada a Objetos',
+            'codigo_materia'    => '703',
+            'horas'             => 4,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM7',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Auditoria de Sistemas',
+            'codigo_materia'    => '704',
+            'horas'             => 3,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM7',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'E-BUSSINESS',
+            'codigo_materia'    => '705',
+            'horas'             => 3,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM7',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Ingles VII',
+            'codigo_materia'    => '709',
+            'horas'             => 3,
+            'estado'            => 'NO_CALCULABLE',
+            'semestre'          => 'SEM7',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Comutación VI',
+            'codigo_materia'    => '708',
+            'horas'             => 2,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM7',
+        ]);
+
+
+         //Materias 8vo semestre
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Banca y Mercado de Valores',
+            'codigo_materia'    => '801',
+            'horas'             => 5,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM8',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Planeación Estratégica',
+            'codigo_materia'    => '802',
+            'horas'             => 5,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM8',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'OPTATIVA',
+            'codigo_materia'    => '805',
+            'horas'             => 4,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM8',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Tecnología de la Información',
+            'codigo_materia'    => '803',
+            'horas'             => 3,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM8',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Administración de Redes Sociales',
+            'codigo_materia'    => '804',
+            'horas'             => 3,
+            'estado'            => 'VIGENTE',
+            'semestre'          => 'SEM8',
+        ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Ingles VIII',
+            'codigo_materia'    => '809',
+            'horas'             => 3,
+            'estado'            => 'NO_CALCULABLE',
+            'semestre'          => 'SEM8',
+        ]);
+
+
+        //creacion de docentes para pruebas
+        App\Entities\Docente::create([
+          'nombres'             => 'Jose Antonio',
+          'apellidos'           => 'Alcivar Gonzales', 
+          'identificacion'      => '0919210419', 
+          'tipo_identificacion' => 'CEDULA', 
+          'email'               => 'josant_83@hotmail.com',
+          'email_corporativo'   => 'josealcivar@prueba.com', 
+          'celular'             => '09889000925', 
+          'telefono'            => '04-6-030-825', 
+          'estado_civil'        => 'CASADO', 
+          'genero'              => 'MASCULINO', 
+          'titulo_pregrado'     => '',
+          'titulo_postgrado'    => '', 
+          'titulo_mba'          => '', 
+          'registro_senescyt'   => '', 
+          'fecha_nacimiento'    => '1983-03-06', 
+          'nacionalidad'        => 'Ecuatoriano',
+          'residencia'          => 'Ecuador', 
+          'direccion'           => 'Metropolis 2g Mz 2060 Villa 8',
+          ]);
+
+
+        App\Entities\Docente::create([
+          'nombres'             => 'Cesar Gabriel',
+          'apellidos'           => 'Barrionuevo De la rosa', 
+          'identificacion'      => '0920214731', 
+          'tipo_identificacion' => 'CEDULA', 
+          'email'               => 'cesar.barrionuevod@hotmail.com',
+          'email_corporativo'   => 'cesar.barrionuevo@edu.ug.ec', 
+          'celular'             => '0994696504', 
+          'telefono'            => '(04)2 267-145', 
+          'estado_civil'        => 'CASADO', 
+          'genero'              => 'MASCULINO', 
+          'titulo_pregrado'     => '',
+          'titulo_postgrado'    => '', 
+          'titulo_mba'          => '', 
+          'registro_senescyt'   => '', 
+          'fecha_nacimiento'    => '1982-10-08', 
+          'nacionalidad'        => 'Ecuatoriano',
+          'residencia'          => 'Ecuador', 
+          'direccion'           => 'Latamendi #4818 y la 23',
+          ]);
+
 
     }
 }

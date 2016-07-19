@@ -43,10 +43,13 @@ Route::group(['middleware' => 'auth'], function(){
 		Route::resource('catalogos', 'CatalogosController');
 
 		Route::get('/catalogos-list', ['uses' => 'CatalogosController@allCatalogos', 'as' => 'api.catalogos.list']);
+		Route::get('/catalogos-list/{catalogo}', ['uses' => 'CatalogosController@allItemsCatalogo', 'as' => 'api.itemscatalogo.list']);
 
 		Route::resource('catalogos.items', 'CatalogoItemsController');
 
 		Route::resource('malla_academica', 'MallaAcademicaController');
+
+		Route::resource('docentes', 'DocentesController');
 
 	});
 

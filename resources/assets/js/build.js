@@ -60,6 +60,8 @@ router.map({
 
   '/malla_academica': require('./finalComponents/app/malla_academica/index.js'),
 
+  '/docentes': require('./finalComponents/app/docentes/index.js'),
+
   '/menu': require('./finalComponents/app/mantenedor-menu/index.js'),
 
   '/catalogos': require('./finalComponents/app/catalogos/index.js'),
