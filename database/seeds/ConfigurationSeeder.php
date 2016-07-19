@@ -153,10 +153,76 @@ class ConfigurationSeeder extends Seeder
        /**
         * Creacion de Catalogos
         * */
-       App\Entities\Catalogo::create([
-          'nombre'      => 'AREAS_CONOCIMIENTO',
-          'descripcion' => 'Áreas del Conocimiento de los docentes'
+
+		//catalogo de areas de conocimiento
+       $areasConocimiento = App\Entities\Catalogo::create([
+          'nombre'      => 'SEMESTRES',
+          'descripcion' => 'Semestres I.S.A.C'
         ]);
+
+		App\Entities\CatalogoItem::create([
+			'catalogo'	=> $areasConocimiento->id,
+			'codigo'	=> 'SEM1',
+			'descripcion'=> 'Semestre I',
+			'orden'		=> 1,
+			'activo'	=> true
+		]);
+
+		App\Entities\CatalogoItem::create([
+			'catalogo'	=> $areasConocimiento->id,
+			'codigo'	=> 'SEM2',
+			'descripcion'=> 'Semestre II',
+			'orden'		=> 1,
+			'activo'	=> true
+		]);
+
+		App\Entities\CatalogoItem::create([
+			'catalogo'	=> $areasConocimiento->id,
+			'codigo'	=> 'SEM3',
+			'descripcion'=> 'Semestre III',
+			'orden'		=> 1,
+			'activo'	=> true
+		]);
+
+		App\Entities\CatalogoItem::create([
+			'catalogo'	=> $areasConocimiento->id,
+			'codigo'	=> 'SEM4',
+			'descripcion'=> 'Semestre IV',
+			'orden'		=> 1,
+			'activo'	=> true
+		]);
+
+		App\Entities\CatalogoItem::create([
+			'catalogo'	=> $areasConocimiento->id,
+			'codigo'	=> 'SEM5',
+			'descripcion'=> 'Semestre V',
+			'orden'		=> 1,
+			'activo'	=> true
+		]);
+
+		App\Entities\CatalogoItem::create([
+			'catalogo'	=> $areasConocimiento->id,
+			'codigo'	=> 'SEM6',
+			'descripcion'=> 'Semestre VI',
+			'orden'		=> 1,
+			'activo'	=> true
+		]);
+
+		App\Entities\CatalogoItem::create([
+			'catalogo'	=> $areasConocimiento->id,
+			'codigo'	=> 'SEM7',
+			'descripcion'=> 'Semestre VII',
+			'orden'		=> 1,
+			'activo'	=> true
+		]);
+
+		App\Entities\CatalogoItem::create([
+			'catalogo'	=> $areasConocimiento->id,
+			'codigo'	=> 'SEM8',
+			'descripcion'=> 'Semestre VIII',
+			'orden'		=> 1,
+			'activo'	=> true
+		]);
 
     }
 }
