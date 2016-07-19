@@ -7,18 +7,16 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
-use App\Http\Requests\CatalogoCreateRequest;
-use App\Http\Requests\CatalogoUpdateRequest;
-use App\Repositories\CatalogoRepository;
-use App\Validators\CatalogoValidator;
+use App\Repositories\MallaAcademicaRepository;
+use App\Validators\MallaAcademicaValidator;
 
 
-class CatalogosController extends Controller
+class MallaAcademicaController extends Controller
 {
 
     protected $requestFields = [
-    'store'     => ['nombre', 'descripcion'],
-    'update'    => ['nombre', 'descripcion']
+        'store'     => ['codigo_materia', 'nombre_materia', 'semestre', 'horas', 'estado'],
+        'update'    => ['codigo_materia', 'nombre_materia', 'semestre', 'horas', 'estado']
     ];
 
     /**
@@ -31,7 +29,7 @@ class CatalogosController extends Controller
      */
     protected $validator;
 
-    public function __construct(CatalogoRepository $repository, CatalogoValidator $validator)
+    public function __construct(MallaAcademicaRepository $repository, MallaAcademicaValidator $validator)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
@@ -52,13 +50,12 @@ class CatalogosController extends Controller
 
         if (request()->has('sort')) {
             list($sortCol, $sortDir) = explode('|', request()->sort);
-            $catalogos = $this->repository->with('items')->orderBy($sortCol, $sortDir)->paginate($perPage);
+            $materias = $this->repository->orderBy($sortCol, $sortDir)->paginate($perPage);
         } else {
-            $catalogos = $this->repository->with('items')->orderBy('id', 'asc')->paginate($perPage);
+            $materias = $this->repository->orderBy('id', 'asc')->paginate($perPage);
         }
 
-        
-        return response()->json($catalogos);
+        return response()->json($materias);
     }
 
     /**
@@ -75,16 +72,16 @@ class CatalogosController extends Controller
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
 
-            $catalogo = $this->repository->create($request->only($this->requestFields['store']));
+            $materias = $this->repository->create($request->only($this->requestFields['store']));
 
-            return response()->json($catalogo);
+            return response()->json($materias);
 
         } catch (ValidatorException $e) {
             if ($request->wantsJson()) {
                 return response()->json([
                     'dev_message' => $e->getMessage(),
                     'message' => $e->getMessageBag()
-                    ], 403);
+                ], 403);
             }
 
             return redirect()->back()->withErrors($e->getMessageBag())->withInput();
@@ -111,16 +108,16 @@ class CatalogosController extends Controller
 
         try{
 
-            $catalogo = $this->repository->find($id);
-            return response()->json($catalogo);
+            $materias = $this->repository->find($id);
+            return response()->json($materias);
 
         } catch (Exception $e){
             if ($e instanceof  \NotFoundHttpException) {
                 return response()->json(array(
-                'data'  => [],
-                'message' => 'No hay resultados',
-                'dev_message' => $e->getMessage()), 404);
-                
+                    'data'  => [],
+                    'message' => 'No hay resultados',
+                    'dev_message' => $e->getMessage()), 404);
+
             }
             return response()->json(array(
                 'message' => 'Se presento un error al tratar de hacer esta acción',
@@ -140,9 +137,9 @@ class CatalogosController extends Controller
     public function edit($id)
     {
 
-        $catalogo = $this->repository->find($id);
+        $materias = $this->repository->find($id);
 
-        return view('catalogos.edit', compact('catalogo'));
+        return view('catalogos.edit', compact('materias'));
     }
 
 
@@ -161,9 +158,9 @@ class CatalogosController extends Controller
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
 
-            $catalogo = $this->repository->update($request->only($this->requestFields['update']), $id);
+            $materias = $this->repository->update($request->only($this->requestFields['update']), $id);
 
-            return response()->json($catalogo);
+            return response()->json($materias);
 
         } catch (ValidatorException $e) {
 
@@ -176,7 +173,7 @@ class CatalogosController extends Controller
 
             return redirect()->back()->withErrors($e->getMessageBag())->withInput();
         } catch (Exception $e){
-            
+
             return response()->json(array(
                 'message' => 'Se presento un error al tratar de hacer esta acción',
                 'dev_message' => $e->getMessage()), 405);
@@ -199,7 +196,7 @@ class CatalogosController extends Controller
         return response()->json([
             'message' => 'Catalogo deleted.',
             'deleted' => $deleted,
-            ]); 
+        ]);
 
     }
 
@@ -212,8 +209,8 @@ class CatalogosController extends Controller
     public function allCatalogos()
     {
 
-        $catalogos = $this->repository->all();
-        return response()->json($catalogos);
+        $materias = $this->repository->all();
+        return response()->json($materias);
 
     }
 }

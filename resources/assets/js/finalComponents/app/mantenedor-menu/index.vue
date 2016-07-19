@@ -22,7 +22,7 @@
 		},
 		data: function(){
 			return {
-				path: ['Menú'],
+				path: ['Sistema', 'Menú'],
 				loading: true,
 			}
 		},

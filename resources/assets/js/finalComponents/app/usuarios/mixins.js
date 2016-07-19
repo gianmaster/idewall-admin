@@ -9,14 +9,14 @@ export default {
 	methods: {
 		create: function(){
 			this.$http.post(this.url, this.newModel).then(function(resp){
-				fnc.niceAlert('success', 'Se creó el catálogo correctamente!');
-				this.$router.go('/catalogos');
+				fnc.niceAlert('success', 'Se creó el usuario correctamente!');
+				this.$router.go('/usuarios');
 			}, fnc.tryError);
 		},
 		update: function(){
 			this.$http.put(this.url + '/' + this.newModel.id, this.newModel).then(function(resp){
-				fnc.niceAlert('success', 'Se modificó correctamente el catálogo !');
-				this.$router.go('/catalogos');
+				fnc.niceAlert('success', 'Se modificó el usuario correctamente!');
+				this.$router.go('/usuarios');
 			}, fnc.tryError);
 		},
 		read: function(){

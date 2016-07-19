@@ -37,7 +37,7 @@ class UserController extends Controller
         $perPage = request()->has('per_page') ? (int) request()->per_page : null;
 
         return response()->json(
-            $query->paginate($perPage)
+            $query->with('descripcionRol')->paginate($perPage)
             )
         ->header('Access-Control-Allow-Origin', '*')
         ->header('Access-Control-Allow-Methods', 'GET');
@@ -65,9 +65,10 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $input = $request->only(['name', 'email', 'password']);
-        $input['password'] = bcrypt($input['password']);
-        $input['rol'] = 1;
+        $input = $request->only(['name', 'email', 'rol', 'state']);
+        $input['password'] = bcrypt($input['email']);
+        isset($input['state']) ? null : $input['state'] = true;
+        $input['avatar'] = 'img/user-profile.png';
         $user = User::create($input);
         return response()->json(array('data' => $user));
     }
@@ -108,7 +109,7 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::find($id);
-        $user->update($request->all());
+        $user->update($request->only(['name', 'email', 'rol', 'state']));
         return response()->json(array('data' => $user));
     }
 

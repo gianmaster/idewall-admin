@@ -14870,7 +14870,12 @@ router.map({
      '/paginate': {
      component: require('./finalComponents/app/testPagination.vue')
      },*/
+
+  '/usuarios': require('./finalComponents/app/usuarios/index.js'),
+
   '/materias': require('./finalComponents/app/materias/index.js'),
+
+  '/malla_academica': require('./finalComponents/app/malla_academica/index.js'),
 
   '/menu': require('./finalComponents/app/mantenedor-menu/index.js'),
 
@@ -14892,7 +14897,7 @@ router.start(App, '#app');
 //solo para hacer debug
 window.router = router;
 
-},{"./config/externalComponents":26,"./finalComponents/app/catalogoItems/index.js":31,"./finalComponents/app/catalogos/index.js":39,"./finalComponents/app/mantenedor-menu/index.js":47,"./finalComponents/app/materias/index.js":53,"./finalComponents/layoutView.vue":57,"./finalComponents/new-layout/lockscreen.vue":63,"./finalComponents/reusable/notFound.vue":71,"vue":23,"vue-resource":21,"vue-router":22}],26:[function(require,module,exports){
+},{"./config/externalComponents":26,"./finalComponents/app/catalogoItems/index.js":31,"./finalComponents/app/catalogos/index.js":39,"./finalComponents/app/malla_academica/index.js":47,"./finalComponents/app/mantenedor-menu/index.js":55,"./finalComponents/app/materias/index.js":61,"./finalComponents/app/usuarios/index.js":68,"./finalComponents/layoutView.vue":73,"./finalComponents/new-layout/lockscreen.vue":79,"./finalComponents/reusable/notFound.vue":87,"vue":23,"vue-resource":21,"vue-router":22}],26:[function(require,module,exports){
 'use strict';
 
 var _loading = require('../finalComponents/reusable/loading.vue');
@@ -14922,7 +14927,7 @@ module.exports = function (Vue) {
 
 */
 
-},{"../finalComponents/reusable/loading.vue":66}],27:[function(require,module,exports){
+},{"../finalComponents/reusable/loading.vue":82}],27:[function(require,module,exports){
 'use strict';
 
 module.exports = [{
@@ -15120,7 +15125,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-4c7add11", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/select-list.vue":72,"vue":23,"vue-hot-reload-api":20}],31:[function(require,module,exports){
+},{"../../reusable/select-list.vue":88,"vue":23,"vue-hot-reload-api":20}],31:[function(require,module,exports){
 'use strict';
 
 var _index = require('./index.vue');
@@ -15198,7 +15203,7 @@ exports.default = {
 	},
 	data: function data() {
 		return {
-			path: ['Catálogo', 'Items'],
+			path: ['Sistema', 'Catálogo', 'Items'],
 			loading: true,
 			titulo: 'Catálogo Items',
 			url: ''
@@ -15207,8 +15212,8 @@ exports.default = {
 	methods: {
 		loadCatalogo: function loadCatalogo() {
 			this.$http.get(this.url).then(function (resp) {
-				this.titulo = 'Catálogo - ' + resp.data.data.descripcion;
-				this.path = ['Catálogo', resp.data.data.descripcion];
+				this.titulo = 'Catálogo - ' + resp.data.data.nombre;
+				this.path = ['Sistema', 'Catálogos', resp.data.data.nombre];
 			}, _reusable_functions2.default.tryError);
 		}
 	}
@@ -15226,7 +15231,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-9044d97e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../../util/reusable_functions":73,"../../new-layout/content-header.vue":58,"vue":23,"vue-hot-reload-api":20}],33:[function(require,module,exports){
+},{"../../../util/reusable_functions":89,"../../new-layout/content-header.vue":74,"vue":23,"vue-hot-reload-api":20}],33:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15330,7 +15335,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-4892e463", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/cool-table.vue":65,"../../reusable/loading.vue":66,"./mixins":34,"vue":23,"vue-hot-reload-api":20}],34:[function(require,module,exports){
+},{"../../reusable/cool-table.vue":81,"../../reusable/loading.vue":82,"./mixins":34,"vue":23,"vue-hot-reload-api":20}],34:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15387,7 +15392,7 @@ exports.default = {
     * cada metodo declarado aquí hará referencia con "this" a su propio "scope"
     */
 
-},{"../../../util/reusable_functions":73}],35:[function(require,module,exports){
+},{"../../../util/reusable_functions":89}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15582,7 +15587,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-3d58c164", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/select-list.vue":72,"vue":23,"vue-hot-reload-api":20}],39:[function(require,module,exports){
+},{"../../reusable/select-list.vue":88,"vue":23,"vue-hot-reload-api":20}],39:[function(require,module,exports){
 arguments[4][31][0].apply(exports,arguments)
 },{"./create-view.vue":36,"./edit-view.vue":37,"./index.vue":40,"./list-view.vue":41,"./read-view.vue":43,"dup":31}],40:[function(require,module,exports){
 'use strict';
@@ -15604,7 +15609,7 @@ exports.default = {
 	},
 	data: function data() {
 		return {
-			path: ['Catálogo'],
+			path: ['Sistema', 'Catálogos'],
 			loading: true
 		};
 	}
@@ -15622,7 +15627,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-0cc5f1d4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../new-layout/content-header.vue":58,"vue":23,"vue-hot-reload-api":20}],41:[function(require,module,exports){
+},{"../../new-layout/content-header.vue":74,"vue":23,"vue-hot-reload-api":20}],41:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15731,7 +15736,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-1e33c176", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../../util/reusable_functions":73,"../../reusable/cool-table.vue":65,"../../reusable/loading.vue":66,"./mixins":42,"vue":23,"vue-hot-reload-api":20}],42:[function(require,module,exports){
+},{"../../../util/reusable_functions":89,"../../reusable/cool-table.vue":81,"../../reusable/loading.vue":82,"./mixins":42,"vue":23,"vue-hot-reload-api":20}],42:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15748,13 +15753,13 @@ exports.default = {
 	methods: {
 		create: function create() {
 			this.$http.post(this.url, this.newModel).then(function (resp) {
-				_reusable_functions2.default.niceAlert('success', 'Se creó el menú correctamente!');
+				_reusable_functions2.default.niceAlert('success', 'Se creó el catálogo correctamente!');
 				this.$router.go('/catalogos');
 			}, _reusable_functions2.default.tryError);
 		},
 		update: function update() {
 			this.$http.put(this.url + '/' + this.newModel.id, this.newModel).then(function (resp) {
-				_reusable_functions2.default.niceAlert('success', 'Se modificó correctamente el menú!');
+				_reusable_functions2.default.niceAlert('success', 'Se modificó correctamente el catálogo !');
 				this.$router.go('/catalogos');
 			}, _reusable_functions2.default.tryError);
 		},
@@ -15785,7 +15790,7 @@ exports.default = {
     * cada metodo declarado aquí hará referencia con "this" a su propio "scope"
     */
 
-},{"../../../util/reusable_functions":73}],43:[function(require,module,exports){
+},{"../../../util/reusable_functions":89}],43:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15824,6 +15829,439 @@ if (module.hot) {(function () {  module.hot.accept()
   }
 })()}
 },{"./mixins":42,"vue":23,"vue-hot-reload-api":20}],44:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _formFields = require('./form-fields.vue');
+
+var _formFields2 = _interopRequireDefault(_formFields);
+
+var _mixins = require('./mixins');
+
+var _mixins2 = _interopRequireDefault(_mixins);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+	mixins: [_mixins2.default],
+	route: {
+		data: function data(transition) {
+			this.generateUrl();
+			transition.next();
+		}
+	},
+	data: function data() {
+		return {
+			createMode: true,
+			newModel: {},
+			url: 'api/catalogos' //no hace nada por que se autogenera para este caso
+		};
+	},
+
+	components: {
+		'form-inputs': _formFields2.default
+	}
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"row\">\n\t<form action=\"\" @submit.prevent=\"create\">\n\t\t\n\t\t<form-inputs :create-mode=\"createMode\" :data-model.sync=\"newModel\"></form-inputs>\n\n\t</form>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-856f09ba", module.exports)
+  } else {
+    hotAPI.update("_v-856f09ba", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"./form-fields.vue":46,"./mixins":50,"vue":23,"vue-hot-reload-api":20}],45:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _formFields = require('./form-fields.vue');
+
+var _formFields2 = _interopRequireDefault(_formFields);
+
+var _mixins = require('./mixins');
+
+var _mixins2 = _interopRequireDefault(_mixins);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+	mixins: [_mixins2.default],
+	route: {
+		data: function data(transition) {
+			this.generateUrl();
+			transition.next();
+		}
+	},
+	ready: function ready() {
+		this.read();
+	},
+	data: function data() {
+		return {
+			createMode: false,
+			newModel: {},
+			loading: true,
+			url: 'api/catalogos'
+		};
+	},
+
+	components: {
+		'form-inputs': _formFields2.default
+	}
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<loading-app v-if=\"loading===true\"></loading-app>\n\t<div class=\"row\" v-else=\"\">\n\t\t<form action=\"\" @submit.prevent=\"update\">\n\t\t\t\n\t\t\t<form-inputs :create-mode=\"createMode\" :data-model.sync=\"newModel\"></form-inputs>\n\n\t\t</form>\n\t</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-567ea715", module.exports)
+  } else {
+    hotAPI.update("_v-567ea715", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"./form-fields.vue":46,"./mixins":50,"vue":23,"vue-hot-reload-api":20}],46:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _selectList = require('../../reusable/select-list.vue');
+
+var _selectList2 = _interopRequireDefault(_selectList);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+	beforeCompile: function beforeCompile() {
+		if (this.createMode) {
+			this.dataModel = this.initModel();
+		}
+	},
+
+	components: {
+		'select-list': _selectList2.default
+	},
+	methods: {
+		initModel: function initModel() {
+			return {
+				catalogo: this.$route.params.catalogo_id,
+				codigo: null,
+				id: null,
+				descripcion: null,
+				orden: null,
+				activo: true
+			};
+		}
+	},
+	props: {
+		createMode: {
+			type: Boolean,
+			required: false,
+			default: true
+		},
+		dataModel: {
+			type: Object,
+			required: false,
+			default: function _default() {
+				return {
+					catalogo: null,
+					codigo: null,
+					id: null,
+					descripcion: null,
+					orden: null,
+					activo: true
+				};
+			}
+		}
+	}
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<!--\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Catálogo</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.catalogo\" value-key=\"id\" label-key=\"descripcion\" url=\"api/catalogos-list\"></select-list>\n</div>\n-->\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Código Item</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.codigo\" minlength=\"3\" required=\"\">\n\t<input type=\"hidden\" class=\"form-control\" :value=\"dataModel.id\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Descripción Item</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.descripcion\" minlength=\"6\" required=\"\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Orden Item</label>\n\t<input type=\"number\" class=\"form-control\" v-model=\"dataModel.orden\" required=\"\">\n</div>\n\n<div class=\"col-xs-12\">\n\t<div class=\"content\">\n\t\t<button v-if=\"createMode\" class=\"btn btn-success btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR</button>\n\t\t<button v-else=\"\" class=\"btn btn-warning btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR CAMBIOS</button>\n\t\t<a v-link=\"{path: '/catalogos/'+$route.params.catalogo_id}\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-reply\"></i> VOLVER</a>\n\t</div>\n\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-841857a2", module.exports)
+  } else {
+    hotAPI.update("_v-841857a2", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"../../reusable/select-list.vue":88,"vue":23,"vue-hot-reload-api":20}],47:[function(require,module,exports){
+arguments[4][31][0].apply(exports,arguments)
+},{"./create-view.vue":44,"./edit-view.vue":45,"./index.vue":48,"./list-view.vue":49,"./read-view.vue":51,"dup":31}],48:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _contentHeader = require('../../new-layout/content-header.vue');
+
+var _contentHeader2 = _interopRequireDefault(_contentHeader);
+
+var _reusable_functions = require('../../../util/reusable_functions');
+
+var _reusable_functions2 = _interopRequireDefault(_reusable_functions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+	name: 'content-malla-academica',
+	components: {
+		'content-header': _contentHeader2.default
+	},
+	route: {
+		data: function data(transition) {
+			transition.next();
+		}
+	},
+	data: function data() {
+		return {
+			path: ['Administración', 'Malla Académica'],
+			loading: true,
+			titulo: 'Malla Académica',
+			url: ''
+		};
+	}
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<!-- Main content -->\n\t\n\t<content-header :title.sync=\"titulo\" :list-path=\"path\"></content-header>\n\n\t<section class=\"content\">\n\t\t<!--<router-view class=\"animated\" transition=\"fade\" transition-mode=\"out-in\" keep-alive></router-view>-->\n\t\t<router-view></router-view>\n\n\t</section>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-18adb8df", module.exports)
+  } else {
+    hotAPI.update("_v-18adb8df", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"../../../util/reusable_functions":89,"../../new-layout/content-header.vue":74,"vue":23,"vue-hot-reload-api":20}],49:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _loading = require('../../reusable/loading.vue');
+
+var _loading2 = _interopRequireDefault(_loading);
+
+var _coolTable = require('../../reusable/cool-table.vue');
+
+var _coolTable2 = _interopRequireDefault(_coolTable);
+
+var _mixins = require('./mixins');
+
+var _mixins2 = _interopRequireDefault(_mixins);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+	mixins: [_mixins2.default],
+	route: {
+		data: function data(transition) {
+			this.load();
+			transition.next();
+		}
+	},
+	data: function data() {
+		return {
+			url: 'api/malla_academica',
+			toolbar: {
+				iconClass: 'fa fa-plus',
+				iconClassOptions: 'fa fa-cogs',
+				label: 'Agregar',
+				labelOptions: 'Campos visibles',
+				nameEmit: 'malla-create-event',
+				btnClass: 'btn btn-primary btn-flat'
+			},
+			datos: [],
+			columnas: [{
+				title: 'Código',
+				field: 'codigo_materia',
+				hidden: false,
+				sortable: true
+			}, {
+				title: 'Nombre Materia',
+				field: 'nombre_materia',
+				hidden: false,
+				sortable: true
+			}, {
+				title: 'Semestre',
+				field: 'semestre',
+				hidden: false,
+				sortable: true
+			}, {
+				title: 'Horas',
+				field: 'horas',
+				hidden: false,
+				sortable: true
+			}, {
+				title: 'Estado',
+				field: 'estado',
+				hidden: false,
+				sortable: true
+			}, {
+				title: 'Acciones',
+				titleClass: 'text-center',
+				hidden: false,
+				fieldClass: 'text-center',
+				itemActions: [{
+					nameEmit: 'catalogo-item-update-event',
+					btnClass: 'btn btn-default btn-xs',
+					iconClass: 'fa fa-edit',
+					label: 'Editar'
+				}, {
+					nameEmit: 'catalogo-item-delete-event',
+					btnClass: 'btn btn-danger btn-xs',
+					iconClass: 'fa fa-trash',
+					label: 'Eliminar'
+				}]
+			}],
+			loading: false
+		};
+	},
+
+	components: {
+		'cool-table': _coolTable2.default,
+		'app-loading': _loading2.default
+	},
+	events: {
+		'malla-create-event': function mallaCreateEvent(model) {
+			this.$router.go('/malla_academica/' + this.$route.params.catalogo_id + '/create');
+		},
+		'malla-update-event': function mallaUpdateEvent(model) {
+			this.$router.go('/malla_academica/' + model.catalogo + '/edit/' + model.id);
+		},
+		'malla-delete-event': function mallaDeleteEvent(model) {
+			this.destroy(model);
+		}
+	}
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t\n\t<div v-if=\"loading\">\n\t\t<app-loading></app-loading>\n\t</div>\n\n\t<div v-else=\"\">\n\t\t<cool-table :option-toolbar=\"toolbar\" :url=\"url\" :data.sync=\"datos\" :columns=\"columnas\" filter-key-word=\"search\">\n\t</cool-table>\n</div>\n\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-5909e9fe", module.exports)
+  } else {
+    hotAPI.update("_v-5909e9fe", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"../../reusable/cool-table.vue":81,"../../reusable/loading.vue":82,"./mixins":50,"vue":23,"vue-hot-reload-api":20}],50:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _reusable_functions = require('../../../util/reusable_functions');
+
+var _reusable_functions2 = _interopRequireDefault(_reusable_functions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+  methods: {
+    create: function create() {
+      this.$http.post(this.url, this.newModel).then(function (resp) {
+        _reusable_functions2.default.niceAlert('success', 'Se creó la materia correctamente!');
+        this.$router.go('/malla_academica');
+      }, _reusable_functions2.default.tryError);
+    },
+    update: function update() {
+      this.$http.put(this.url + '/' + this.newModel.id, this.newModel).then(function (resp) {
+        _reusable_functions2.default.niceAlert('success', 'Se modificó correctamente la materia!');
+        this.$router.go('/malla_academica');
+      }, _reusable_functions2.default.tryError);
+    },
+    read: function read() {
+      this.loading = true;
+      this.$http.get(this.url + '/' + this.$route.params.model_id).then(function (resp) {
+        this.newModel = resp.data.data;
+        this.loading = false;
+      }, _reusable_functions2.default.tryError);
+    },
+    destroy: function destroy(model) {
+      if (confirm('¿Estás seguro?')) {
+        this.$http.delete(this.url + '/' + model.id).then(function (resp) {
+          _reusable_functions2.default.niceAlert('success', 'Se eliminó correctamente');
+          this.load();
+        }, _reusable_functions2.default.tryError);
+      }
+    },
+    load: function load() {
+      this.loading = true;
+      this.$http.get(this.url).then(function (resp) {
+        this.loading = false;
+      }, _reusable_functions2.default.tryError);
+    }
+
+  }
+}; /**
+    * Aqui se definen los metodos generales que seran usados por los componentes que implementen este mixins,
+    * cada metodo declarado aquí hará referencia con "this" a su propio "scope"
+    */
+
+},{"../../../util/reusable_functions":89}],51:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _mixins = require('./mixins');
+
+var _mixins2 = _interopRequireDefault(_mixins);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+	mixins: [_mixins2.default],
+	ready: function ready() {
+		this.read();
+	},
+	data: function data() {
+		return {
+			newModel: {},
+			loading: true,
+			url: 'api/catalogos'
+		};
+	}
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<loading-app v-if=\"loading===true\"></loading-app>\n\t<div class=\"row\" v-else=\"\">\n\t\t<div class=\"col-xs-12\">\n\t\t\t<strong>Nombre:</strong>\n\t\t\t<p>{{newModel.nombre}}</p>\n\t\t</div>\n\t\t<div class=\"col-xs-12\">\n\t\t\t<strong>Descripción:</strong>\n\t\t\t<p>{{newModel.descripcion}}</p>\n\t\t</div>\n\t\t<div class=\"col-xs-12\">\n\t\t\t<a v-link=\"{path: '/catalogos'}\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-reply\"></i> VOLVER</a>\n\t\t</div>\n\t</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-e1ca0dee", module.exports)
+  } else {
+    hotAPI.update("_v-e1ca0dee", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"./mixins":50,"vue":23,"vue-hot-reload-api":20}],52:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15875,7 +16313,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-54b6637c", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../../util/reusable_functions":73,"./form-fields.vue":46,"vue":23,"vue-hot-reload-api":20}],45:[function(require,module,exports){
+},{"../../../util/reusable_functions":89,"./form-fields.vue":54,"vue":23,"vue-hot-reload-api":20}],53:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15945,7 +16383,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-2dc335f4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../../util/reusable_functions":73,"./form-fields.vue":46,"vue":23,"vue-hot-reload-api":20}],46:[function(require,module,exports){
+},{"../../../util/reusable_functions":89,"./form-fields.vue":54,"vue":23,"vue-hot-reload-api":20}],54:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16016,9 +16454,9 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-535fb164", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/select-list.vue":72,"vue":23,"vue-hot-reload-api":20}],47:[function(require,module,exports){
+},{"../../reusable/select-list.vue":88,"vue":23,"vue-hot-reload-api":20}],55:[function(require,module,exports){
 arguments[4][31][0].apply(exports,arguments)
-},{"./create-view.vue":44,"./edit-view.vue":45,"./index.vue":48,"./list-view.vue":49,"./read-view.vue":50,"dup":31}],48:[function(require,module,exports){
+},{"./create-view.vue":52,"./edit-view.vue":53,"./index.vue":56,"./list-view.vue":57,"./read-view.vue":58,"dup":31}],56:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16040,7 +16478,7 @@ exports.default = {
 	},
 	data: function data() {
 		return {
-			path: ['Menú'],
+			path: ['Sistema', 'Menú'],
 			loading: true
 		};
 	}
@@ -16058,7 +16496,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-15dae184", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../new-layout/content-header.vue":58,"vue":23,"vue-hot-reload-api":20}],49:[function(require,module,exports){
+},{"../../new-layout/content-header.vue":74,"vue":23,"vue-hot-reload-api":20}],57:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16088,7 +16526,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-aa80cc40", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/menuManagement.vue":70,"vue":23,"vue-hot-reload-api":20}],50:[function(require,module,exports){
+},{"../../reusable/menuManagement.vue":86,"vue":23,"vue-hot-reload-api":20}],58:[function(require,module,exports){
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<h3>Visualización</h3>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem voluptate laborum, a accusamus. Cum aperiam dignissimos iste, placeat facere repudiandae vel, doloribus voluptatibus perferendis esse illo, dicta. Inventore, possimus, illum!</p>\n<pre>{{$route.params.model_id|json}}</pre>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
@@ -16100,7 +16538,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-665f87e8", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":23,"vue-hot-reload-api":20}],51:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20}],59:[function(require,module,exports){
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<h3>Crear</h3>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus nulla veniam animi sequi dolorem quae repellat incidunt fuga. Deserunt commodi repellat maiores voluptate, non ullam placeat accusantium quo culpa temporibus.</p>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
@@ -16112,7 +16550,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-5510c697", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":23,"vue-hot-reload-api":20}],52:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20}],60:[function(require,module,exports){
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<h3>Modificar</h3>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus nulla veniam animi sequi dolorem quae repellat incidunt fuga. Deserunt commodi repellat maiores voluptate, non ullam placeat accusantium quo culpa temporibus.</p>\n<pre>{{$route.params.model_id|json}}</pre>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
@@ -16124,9 +16562,9 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-41e980ee", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":23,"vue-hot-reload-api":20}],53:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20}],61:[function(require,module,exports){
 arguments[4][31][0].apply(exports,arguments)
-},{"./create-view.vue":51,"./edit-view.vue":52,"./index.vue":54,"./list-view.vue":55,"./read-view.vue":56,"dup":31}],54:[function(require,module,exports){
+},{"./create-view.vue":59,"./edit-view.vue":60,"./index.vue":62,"./list-view.vue":63,"./read-view.vue":64,"dup":31}],62:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16162,7 +16600,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-11a0ab53", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../new-layout/content-header.vue":58,"vue":23,"vue-hot-reload-api":20}],55:[function(require,module,exports){
+},{"../../new-layout/content-header.vue":74,"vue":23,"vue-hot-reload-api":20}],63:[function(require,module,exports){
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<h3>Listar</h3>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam est reprehenderit fugiat cumque alias, sed fugit ab natus eum maxime perferendis dolorum facere mollitia in error. Quia minima laboriosam, blanditiis.</p>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
@@ -16174,7 +16612,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-5c07a375", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":23,"vue-hot-reload-api":20}],56:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20}],64:[function(require,module,exports){
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<h3>Visualización</h3>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem voluptate laborum, a accusamus. Cum aperiam dignissimos iste, placeat facere repudiandae vel, doloribus voluptatibus perferendis esse illo, dicta. Inventore, possimus, illum!</p>\n<pre>{{$route.params.model_id|json}}</pre>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
@@ -16186,7 +16624,440 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-17a7917d", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":23,"vue-hot-reload-api":20}],57:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20}],65:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _formFields = require('./form-fields.vue');
+
+var _formFields2 = _interopRequireDefault(_formFields);
+
+var _mixins = require('./mixins');
+
+var _mixins2 = _interopRequireDefault(_mixins);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+	mixins: [_mixins2.default],
+	data: function data() {
+		return {
+			createMode: true,
+			newModel: {},
+			url: 'api/users'
+		};
+	},
+
+	components: {
+		'form-inputs': _formFields2.default
+	}
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"row\">\n\t<form action=\"\" @submit.prevent=\"create\">\n\t\t\n\t\t<form-inputs :create-mode=\"createMode\" :data-model.sync=\"newModel\"></form-inputs>\n\n\t</form>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-fe937324", module.exports)
+  } else {
+    hotAPI.update("_v-fe937324", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"./form-fields.vue":67,"./mixins":71,"vue":23,"vue-hot-reload-api":20}],66:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _formFields = require('./form-fields.vue');
+
+var _formFields2 = _interopRequireDefault(_formFields);
+
+var _mixins = require('./mixins');
+
+var _mixins2 = _interopRequireDefault(_mixins);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+	mixins: [_mixins2.default],
+	ready: function ready() {
+		this.read();
+	},
+	data: function data() {
+		return {
+			createMode: false,
+			newModel: {},
+			loading: true,
+			url: 'api/users'
+		};
+	},
+
+	components: {
+		'form-inputs': _formFields2.default
+	}
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<loading-app v-if=\"loading===true\"></loading-app>\n\t<div class=\"row\" v-else=\"\">\n\t\t<form action=\"\" @submit.prevent=\"update\">\n\t\t\t\n\t\t\t<form-inputs :create-mode=\"createMode\" :data-model.sync=\"newModel\"></form-inputs>\n\n\t\t</form>\n\t</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-06266dc0", module.exports)
+  } else {
+    hotAPI.update("_v-06266dc0", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"./form-fields.vue":67,"./mixins":71,"vue":23,"vue-hot-reload-api":20}],67:[function(require,module,exports){
+var __vueify_insert__ = require("vueify/lib/insert-css")
+var __vueify_style__ = __vueify_insert__.insert("\n.profile-ima-edit{\n\twidth: 200px;\n\theight: 200px;\n\tborder-radius: 50%;\n\tmargin-right: 10px;\n\tmargin-top: -2px;\n}\n")
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _selectList = require('../../reusable/select-list.vue');
+
+var _selectList2 = _interopRequireDefault(_selectList);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+	beforeCompile: function beforeCompile() {
+		if (this.createMode) {
+			this.dataModel = this.initModel();
+		}
+	},
+
+	components: {
+		'select-list': _selectList2.default
+	},
+	data: function data() {
+		return {
+			byFalse: 'INACTIVO',
+			byTrue: 'ACTIVO'
+		};
+	},
+
+	methods: {
+		initModel: function initModel() {
+			return {
+				name: null,
+				email: null,
+				id: null,
+				state: null,
+				rol: null
+			};
+		}
+	},
+	props: {
+		createMode: {
+			type: Boolean,
+			required: false,
+			default: true
+		},
+		dataModel: {
+			type: Object,
+			required: false,
+			default: function _default() {
+				return {
+					name: null,
+					email: null,
+					id: null,
+					state: null,
+					rol: null
+				};
+			}
+		}
+	}
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"col-xs-12 col-sm-4 col-md-3\" v-if=\"!createMode\">\n\t<img :src=\"dataModel.avatar\" class=\"profile-ima-edit\" alt=\"Responsive image\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Nombre Completo</label>\n\t<input type=\"text\" class=\"form-control\" v-model=\"dataModel.name\" minlength=\"3\" required=\"\">\n\t<input type=\"hidden\" class=\"form-control\" :value=\"dataModel.id\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Correo Electrónico</label>\n\t<input type=\"email\" class=\"form-control\" v-model=\"dataModel.email\" required=\"\">\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Rol de acceso</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.rol\" value-key=\"id\" label-key=\"name\" url=\"api/rol\" :is-required=\"true\"></select-list>\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<b></b><b></b><b></b>\n\t<strong>Estado Usuario</strong>\n\t<div class=\"checkbox\">\n\t\t<label>\n\t\t\t<input type=\"checkbox\" v-model=\"dataModel.state\" :true-value=\"byTrue\" :false-value=\"byFalse\"> Activo\n\t\t</label>\n\t</div>\n</div>\n\n<div class=\"col-xs-12\">\n\t<div class=\"content\">\n\t\t<button v-if=\"createMode\" class=\"btn btn-success btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR</button>\n\t\t<button v-else=\"\" class=\"btn btn-warning btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR CAMBIOS</button>\n\t\t<a v-link=\"{path: '/usuarios'}\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-reply\"></i> VOLVER</a>\n\t</div>\n\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.dispose(function () {
+    __vueify_insert__.cache["\n.profile-ima-edit{\n\twidth: 200px;\n\theight: 200px;\n\tborder-radius: 50%;\n\tmargin-right: 10px;\n\tmargin-top: -2px;\n}\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-fd3cc10c", module.exports)
+  } else {
+    hotAPI.update("_v-fd3cc10c", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"../../reusable/select-list.vue":88,"vue":23,"vue-hot-reload-api":20,"vueify/lib/insert-css":24}],68:[function(require,module,exports){
+arguments[4][31][0].apply(exports,arguments)
+},{"./create-view.vue":65,"./edit-view.vue":66,"./index.vue":69,"./list-view.vue":70,"./read-view.vue":72,"dup":31}],69:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _contentHeader = require('../../new-layout/content-header.vue');
+
+var _contentHeader2 = _interopRequireDefault(_contentHeader);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+	name: 'content-usuarios',
+	components: {
+		'content-header': _contentHeader2.default
+	},
+	data: function data() {
+		return {
+			path: ['Sistema', 'Administración de Usuarios'],
+			loading: true
+		};
+	}
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<!-- Main content -->\n\t\n\t<content-header title=\"Usuarios\" :list-path=\"path\"></content-header>\n\n\t<section class=\"content\">\n\t\t<!--<router-view class=\"animated\" transition=\"fade\" transition-mode=\"out-in\" keep-alive></router-view>-->\n\t\t<router-view></router-view>\n\n\t</section>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-7006cf2c", module.exports)
+  } else {
+    hotAPI.update("_v-7006cf2c", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"../../new-layout/content-header.vue":74,"vue":23,"vue-hot-reload-api":20}],70:[function(require,module,exports){
+var __vueify_insert__ = require("vueify/lib/insert-css")
+var __vueify_style__ = __vueify_insert__.insert("\n.profile-ima{\n\tfloat: left;\n\twidth: 25px;\n\theight: 25px;\n\tborder-radius: 50%;\n\tmargin-right: 10px;\n\tmargin-top: -2px;\n\tborder: 1px solid #222d32;\n}\n\n")
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _loading = require('../../reusable/loading.vue');
+
+var _loading2 = _interopRequireDefault(_loading);
+
+var _coolTable = require('../../reusable/cool-table.vue');
+
+var _coolTable2 = _interopRequireDefault(_coolTable);
+
+var _reusable_functions = require('../../../util/reusable_functions');
+
+var _reusable_functions2 = _interopRequireDefault(_reusable_functions);
+
+var _mixins = require('./mixins');
+
+var _mixins2 = _interopRequireDefault(_mixins);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+	mixins: [_mixins2.default],
+	data: function data() {
+		return {
+			url: 'api/users',
+			toolbar: {
+				iconClass: 'fa fa-plus',
+				iconClassOptions: 'fa fa-cogs',
+				label: 'Agregar',
+				labelOptions: 'Campos visibles',
+				nameEmit: 'usuario-create-event',
+				btnClass: 'btn btn-primary btn-flat'
+			},
+			datos: [],
+			columnas: [{
+				title: 'Avatar',
+				field: 'avatar',
+				hidden: false,
+				template: '<img class="profile-ima" src="${col.avatar}" alt="${col.name}" />'
+			}, {
+				title: 'Cod.',
+				field: 'id',
+				hidden: false,
+				sortable: true
+			}, {
+				title: 'Nombre Completo',
+				field: 'name',
+				hidden: false,
+				sortable: true
+			}, {
+				title: 'Correo electrónico',
+				field: 'email',
+				hidden: false,
+				sortable: true
+			}, {
+				title: 'Rol',
+				field: 'rol',
+				hidden: false,
+				sortable: true,
+				template: '<span>${col.descripcion_rol.nombre}</span>'
+			}, {
+				title: 'Acciones',
+				titleClass: 'text-center',
+				hidden: false,
+				fieldClass: 'text-center',
+				itemActions: [{
+					nameEmit: 'usuario-read-event',
+					btnClass: 'btn btn-default btn-xs',
+					iconClass: 'fa fa-eye',
+					label: 'Visualizar'
+				}, {
+					nameEmit: 'usuario-update-event',
+					btnClass: 'btn btn-default btn-xs',
+					iconClass: 'fa fa-edit',
+					label: 'Editar'
+				}, {
+					nameEmit: 'usuario-delete-event',
+					btnClass: 'btn btn-danger btn-xs',
+					iconClass: 'fa fa-trash',
+					label: 'Eliminar'
+				}]
+			}],
+			loading: false
+		};
+	},
+
+	components: {
+		'cool-table': _coolTable2.default,
+		'app-loading': _loading2.default
+	},
+	events: {
+		'usuario-create-event': function usuarioCreateEvent(model) {
+			this.$router.go('/usuarios/create');
+		},
+		'usuario-read-event': function usuarioReadEvent(model) {
+			this.$router.go('/usuarios/view/' + model.id);
+		},
+		'usuario-update-event': function usuarioUpdateEvent(model) {
+			this.$router.go('/usuarios/edit/' + model.id);
+		},
+		'usuario-delete-event': function usuarioDeleteEvent(model) {
+			this.destroy(model);
+		}
+	}
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t\n\t<div v-if=\"loading\">\n\t\t<app-loading></app-loading>\n\t</div>\n\n\t<div v-else=\"\">\n\t\t<cool-table :option-toolbar=\"toolbar\" :url=\"url\" :data.sync=\"datos\" :columns=\"columnas\" filter-key-word=\"search\">\n\t</cool-table>\n</div>\n\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.dispose(function () {
+    __vueify_insert__.cache["\n.profile-ima{\n\tfloat: left;\n\twidth: 25px;\n\theight: 25px;\n\tborder-radius: 50%;\n\tmargin-right: 10px;\n\tmargin-top: -2px;\n\tborder: 1px solid #222d32;\n}\n\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-79e92d0c", module.exports)
+  } else {
+    hotAPI.update("_v-79e92d0c", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"../../../util/reusable_functions":89,"../../reusable/cool-table.vue":81,"../../reusable/loading.vue":82,"./mixins":71,"vue":23,"vue-hot-reload-api":20,"vueify/lib/insert-css":24}],71:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _reusable_functions = require('../../../util/reusable_functions');
+
+var _reusable_functions2 = _interopRequireDefault(_reusable_functions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+	methods: {
+		create: function create() {
+			this.$http.post(this.url, this.newModel).then(function (resp) {
+				_reusable_functions2.default.niceAlert('success', 'Se creó el usuario correctamente!');
+				this.$router.go('/usuarios');
+			}, _reusable_functions2.default.tryError);
+		},
+		update: function update() {
+			this.$http.put(this.url + '/' + this.newModel.id, this.newModel).then(function (resp) {
+				_reusable_functions2.default.niceAlert('success', 'Se modificó el usuario correctamente!');
+				this.$router.go('/usuarios');
+			}, _reusable_functions2.default.tryError);
+		},
+		read: function read() {
+			this.loading = true;
+			this.$http.get(this.url + '/' + this.$route.params.model_id).then(function (resp) {
+				this.newModel = resp.data.data;
+				this.loading = false;
+			}, _reusable_functions2.default.tryError);
+		},
+		destroy: function destroy(model) {
+			if (confirm('¿Estás seguro?')) {
+				this.$http.delete(this.url + '/' + model.id).then(function (resp) {
+					_reusable_functions2.default.niceAlert('success', 'Se eliminó correctamente');
+					this.load();
+				}, _reusable_functions2.default.tryError);
+			}
+		},
+		load: function load() {
+			this.loading = true;
+			this.$http.get(this.url).then(function (resp) {
+				this.loading = false;
+			}, _reusable_functions2.default.tryError);
+		}
+	}
+}; /**
+    * Aqui se definen los metodos generales que seran usados por los componentes que implementen este mixins,
+    * cada metodo declarado aquí hará referencia con "this" a su propio "scope"
+    */
+
+},{"../../../util/reusable_functions":89}],72:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _mixins = require('./mixins');
+
+var _mixins2 = _interopRequireDefault(_mixins);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+	mixins: [_mixins2.default],
+	ready: function ready() {
+		this.read();
+	},
+	data: function data() {
+		return {
+			newModel: {},
+			loading: true,
+			url: 'api/users'
+		};
+	}
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<loading-app v-if=\"loading===true\"></loading-app>\n\n<div class=\"row\" v-else=\"\">\n\n\t<div class=\"col-xs-12 col-sm-4 col-md-3\">\n\t\t<img :src=\"newModel.avatar\" class=\"profile-ima-edit\" alt=\"Responsive image\">\n\t</div>\n\n\t<div class=\"col-sm-6 col-xs-12\">\n\t\t<strong>Nombre Completo:</strong>\n\t\t<p>{{newModel.name}}</p>\n\t</div>\n\n\t<div class=\"col-sm-6 col-xs-12\">\n\t\t<strong>Correo Electrónico:</strong>\n\t\t<p>{{newModel.email}}</p>\n\t</div>\n\n\t<div class=\"col-sm-6 col-xs-12\">\n\t\t<strong>Estado:</strong>\n\t\t<p>{{newModel.state}}</p>\n\t</div>\n\n\n\t<div class=\"col-xs-12\" style=\"padding-top: 50px;\">\n\t\t<a v-link=\"{path: '/usuarios'}\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-reply\"></i> VOLVER</a>\n\t</div>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-35891b14", module.exports)
+  } else {
+    hotAPI.update("_v-35891b14", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"./mixins":71,"vue":23,"vue-hot-reload-api":20}],73:[function(require,module,exports){
 'use strict';
 
 var menu = require('../config/menus.js');
@@ -16222,7 +17093,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-3e7b0efa", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../config/menus.js":27,"./new-layout/content.vue":59,"./new-layout/control.vue":60,"./new-layout/footer.vue":61,"./new-layout/header.vue":62,"./new-layout/menu.vue":64,"vue":23,"vue-hot-reload-api":20}],58:[function(require,module,exports){
+},{"../config/menus.js":27,"./new-layout/content.vue":75,"./new-layout/control.vue":76,"./new-layout/footer.vue":77,"./new-layout/header.vue":78,"./new-layout/menu.vue":80,"vue":23,"vue-hot-reload-api":20}],74:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16255,7 +17126,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-154a0082", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":23,"vue-hot-reload-api":20}],59:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20}],75:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -16273,7 +17144,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-3f6872a8", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":23,"vue-hot-reload-api":20}],60:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20}],76:[function(require,module,exports){
 "use strict";
 if (module.exports.__esModule) module.exports = module.exports.default
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t<!-- Control Sidebar -->\n\t<aside class=\"control-sidebar control-sidebar-dark\">\n\t\t<!-- Create the tabs -->\n\t\t<ul class=\"nav nav-tabs nav-justified control-sidebar-tabs\">\n\t\t\t<li class=\"active\"><a href=\"#control-sidebar-home-tab\" data-toggle=\"tab\"><i class=\"fa fa-home\"></i></a></li>\n\t\t\t<li><a href=\"#control-sidebar-settings-tab\" data-toggle=\"tab\"><i class=\"fa fa-gears\"></i></a></li>\n\t\t</ul>\n\t\t<!-- Tab panes -->\n\t\t<div class=\"tab-content\">\n\t\t\t<!-- Home tab content -->\n\t\t\t<div class=\"tab-pane active\" id=\"control-sidebar-home-tab\">\n\t\t\t\t<h3 class=\"control-sidebar-heading\">Actividad reciente</h3>\n\t\t\t\t<ul class=\"control-sidebar-menu\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<a href=\"javascript::;\">\n\t\t\t\t\t\t\t<i class=\"menu-icon fa fa-birthday-cake bg-red\"></i>\n\t\t\t\t\t\t\t<div class=\"menu-info\">\n\t\t\t\t\t\t\t\t<h4 class=\"control-sidebar-subheading\">Cumpleaños</h4>\n\t\t\t\t\t\t\t\t<p>01-07-1990</p>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</li>\n\t\t\t\t</ul><!-- /.control-sidebar-menu -->\n\n\t\t\t\t<h3 class=\"control-sidebar-heading\">Progreso</h3>\n\t\t\t\t<ul class=\"control-sidebar-menu\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<a href=\"javascript::;\">\n\t\t\t\t\t\t\t<h4 class=\"control-sidebar-subheading\">\n\t\t\t\t\t\t\t\tCustom Template\n\t\t\t\t\t\t\t\t<span class=\"label label-danger pull-right\">70%</span>\n\t\t\t\t\t\t\t</h4>\n\t\t\t\t\t\t\t<div class=\"progress progress-xxs\">\n\t\t\t\t\t\t\t\t<div class=\"progress-bar progress-bar-danger\" style=\"width: 70%\"></div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</li>\n\t\t\t\t</ul><!-- /.control-sidebar-menu -->\n\n\t\t\t</div><!-- /.tab-pane -->\n\t\t\t<!-- Stats tab content -->\n\t\t\t<div class=\"tab-pane\" id=\"control-sidebar-stats-tab\">Status</div><!-- /.tab-pane -->\n\t\t\t<!-- Settings tab content -->\n\t\t\t<div class=\"tab-pane\" id=\"control-sidebar-settings-tab\">\n\t\t\t\t<form method=\"post\">\n\t\t\t\t\t<h3 class=\"control-sidebar-heading\">Ajustes Generales</h3>\n\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t<label class=\"control-sidebar-subheading\">\n\t\t\t\t\t\t\tPanel de reporte\n\t\t\t\t\t\t\t<input type=\"checkbox\" class=\"pull-right\">\n\t\t\t\t\t\t</label>\n\t\t\t\t\t\t<p>\n\t\t\t\t\t\t\tAjustes de información\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div><!-- /.form-group -->\n\t\t\t\t</form>\n\t\t\t</div><!-- /.tab-pane -->\n\t\t</div>\n</aside><!-- /.control-sidebar\n\n<!-- Add the sidebar's background. This div must be placed\n\timmediately after the control sidebar -->\n\t<div class=\"control-sidebar-bg\"></div>\n"
@@ -16287,7 +17158,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-1f44dce8", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":23,"vue-hot-reload-api":20}],61:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20}],77:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -16338,7 +17209,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-59745888", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":23,"vue-hot-reload-api":20}],62:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20}],78:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -16407,7 +17278,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-170f90a4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":23,"vue-hot-reload-api":20}],63:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20}],79:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\t.lockscreen-name{\n\t\ttext-align: center;\n    \tfont-weight: 600;\n\t}\n\t.lockscreen-logo{\n\t\tmargin-top: 25px;\n\t}\n\n")
 'use strict';
@@ -16439,7 +17310,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-adbc2610", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":23,"vue-hot-reload-api":20,"vueify/lib/insert-css":24}],64:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20,"vueify/lib/insert-css":24}],80:[function(require,module,exports){
 'use strict';
 
 var _reusable_functions = require('../../util/reusable_functions');
@@ -16502,7 +17373,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-33114080", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../util/reusable_functions":73,"../reusable/menuItemLevel1.vue":67,"vue":23,"vue-hot-reload-api":20}],65:[function(require,module,exports){
+},{"../../util/reusable_functions":89,"../reusable/menuItemLevel1.vue":83,"vue":23,"vue-hot-reload-api":20}],81:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n.font-success{\n\tcolor: #00a65a;\n}\n\n.font-error{\n\tcolor: #dd4b39;\n}\n\n.pagination{\n\tmargin: 0 !important;\n}\n\n.cool-table-loading-icon{\n\tposition: absolute;\n\tmargin-left: 45%;\n\tmargin-top: 50%;\n}\n\n.cool-table-sortable{\n\tcursor: pointer;\n}\n.cool-table-sortable:hover{\n\tcolor: #2185d0;\n}\n\n.loading-mask{\t\n\tz-index: 99;\t\n\tposition: absolute;\n\twidth: 100%;\n\tbackground: rgba(236, 240, 245, 0.31);\n}\n.l-open{\n\tdisplay: inherit;\n}\n\n.l-close{\n\tdisplay: none;\t\n}\n")
 'use strict';
@@ -16677,6 +17548,9 @@ exports.default = {
 		}
 	},
 	methods: {
+		renderTemplate: function renderTemplate(col, template) {
+			return eval('`' + template + '`');
+		},
 		updateEndpoint: function updateEndpoint() {
 			var _pagination = this.pagination;
 			var per_page = _pagination.per_page;
@@ -16754,7 +17628,7 @@ exports.default = {
 				loadIcon.style.marginTop = axisY + 'px';
 				loadElem.className = 'loading-mask l-open';
 			} else {
-				loadElem.className = 'loading-mask l-close';
+				loadElem ? loadElem.className = 'loading-mask l-close' : null;
 			}
 		},
 		numToShow: function numToShow(num) {
@@ -16798,7 +17672,7 @@ exports.default = {
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n\t<!-- Head Confi toolbar -->\n\t<div class=\"box box-primary\">\n\t\t<div class=\"box-header with-border\" v-if=\"optionToolbar\">\n\t\t\t<div class=\"col-sm-2 col-xs-12\" v-if=\"optionToolbar\">\n\t\t\t\t<button :class=\"optionToolbar.btnClass\" @click.prevent=\"dispacher(optionToolbar.nameEmit)\"><i :class=\"optionToolbar.iconClass\"></i> {{optionToolbar.label}}</button>\n\t\t\t</div>\n\t\t\t<div class=\"col-xs-6 col-sm-6\">\n\t\t\t\t<form action=\"#\" method=\"get\" @submit.prevent=\"search\">\n\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t<input type=\"text\" name=\"filter\" v-model=\"search_filter\" class=\"form-control\" placeholder=\"Buscar...\">\n\t\t\t\t\t\t<span class=\"input-group-btn\">\n\t\t\t\t\t\t\t<button type=\"submit\" name=\"search_table\" id=\"search-btn\" class=\"btn btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t</div>\n\t\t\t\t</form>\n\t\t\t</div>\n\t\t\t<div class=\"col-xs-4 col-sm-3\">\n\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t<select class=\"form-control\" v-model=\"pagination.per_page\" @change=\"changePerPage\">\n\t\t\t\t\t\t<option value=\"\" disabled=\"\">Rigistros por página</option>\n\t\t\t\t\t\t<option v-for=\"item in pagination.per_page_list | orderBy item\" track-by=\"$index\" :value=\"item\">{{item}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"col-xs-2 col-sm-1\">\n\t\t\t\t<button class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"true\" :title=\"optionToolbar.labelOptions\">\n\t\t\t\t\t<i :class=\"optionToolbar.iconClassOptions\"></i>\n\t\t\t\t</button>\n\t\t\t\t<ul class=\"dropdown-menu pull-right\">\n\t\t\t\t\t<li v-for=\"(idx, col) in columns\">\n\t\t\t\t\t\t<span class=\"checkbox\">\n\t\t\t\t\t\t\t<label @click=\"toggleColumns(idx)\">\n\t\t\t\t\t\t\t\t<strong>{{ col.title }} <i class=\"fa fa-check font-success\" v-if=\"!col.hidden\"></i><i class=\"fa fa-close font-error\" v-else=\"\"></i></strong>\n\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Body table -->\n\t\t<div class=\"box-body table-responsive\">\n\t\t\t<div class=\"loading-mask l-close\">\n\t\t\t\t<i :class=\"pagination.loadingIconClass\"></i>\n\t\t\t\t<span class=\"sr-only\">Loading...</span>\n\t\t\t</div>\n\t\t\t<table :class=\"tableClass\">\n\t\t\t\t\n\t\t\t\t<thead v-if=\"requireHeader\">\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<th v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.titleClass\">\n\t\t\t\t\t\t\t<template v-if=\"sortable &amp;&amp; !col.itemActions\">\n\t\t\t\t\t\t\t\t<div class=\"cool-table-sortable\" @click.prevent=\"orderColumn(col.field)\">\n\t\t\t\t\t\t\t\t\t<span>{{col.title}}</span>\n\t\t\t\t\t\t\t\t\t<template v-if=\"sortable.column == col.field\">\n\t\t\t\t\t\t\t\t\t\t<template v-if=\"sortable.order == 'desc'\">\n\t\t\t\t\t\t\t\t\t\t\t<span class=\"pull-right\"><i :class=\"sortable.descendingIcon\"></i></span>\n\t\t\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t\t\t\t<template v-else=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<span class=\"pull-right\"><i :class=\"sortable.ascendingIcon\"></i></span>\n\t\t\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t<template v-else=\"\">\n\t\t\t\t\t\t\t\t{{col.title}}\n\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t</th>\n\t\t\t\t\t</tr>\n\t\t\t\t</thead>\n\n\t\t\t\t<tbody>\n\t\t\t\t\t<tr v-for=\"item in data\">\n\n\t\t\t\t\t\t<td v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.fieldClass\">\n\n\t\t\t\t\t\t\t<div v-if=\"!col.itemActions\">{{ item[col.field] }}</div>\n\n\t\t\t\t\t\t\t<div v-else=\"\" class=\"btn-group\">\n\n\t\t\t\t\t\t\t\t<a v-for=\"act in col.itemActions\" :class=\"act.btnClass\" href=\"\" @click.prevent=\"dispacher(act.nameEmit, item)\">\n\t\t\t\t\t\t\t\t\t<i :class=\"act.iconClass\" data-toggle=\"tooltip\" :title=\"act.label\"></i>\n\t\t\t\t\t\t\t\t</a>\n\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</td>\n\n\t\t\t\t\t</tr>\n\t\t\t\t</tbody>\n\n\t\t\t</table>\n\t\t</div>\n\n\t\t<!-- Footer pagination -->\n\t\t<div class=\"box-footer\" v-if=\"pagination\">\n\t\t\t<div class=\"row\" v-if=\"pagination.data.length>0\">\n\t\t\t\t<div class=\"col-xs-12 col-sm-8\">\n\t\t\t\t\t<nav>\n\t\t\t\t\t\t<ul class=\"pagination pagination-sm\">\n\t\t\t\t\t\t\t<li class=\"{{firstActive}}\" @click.prevent=\"paginate(1)\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Previous\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.first}}</span>\n\t\t\t\t\t\t\t\t</a><!-- begin -->\n\t\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t\t<li class=\"{{firstActive}}\" @click.prevent=\"paginatePrev\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Previous\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.back}}</span>\n\t\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t\t<li v-if=\"pagination.current_page>pagination.limitPaginate\" @click.prevent=\"pagScroll('prev')\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Prev\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">...</span>\n\t\t\t\t\t\t\t\t</a><!-- more back -->\n\t\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t\t<li v-for=\"pag in 5, pagination.last_page\" class=\"{{isActive(pag+1)}}\" @click.prevent=\"paginate(pag+1)\" v-if=\"numToShow(pag+1)\"><a href=\"#\">{{pag + 1}}</a></li>\n\n\t\t\t\t\t\t\t<li v-if=\"pagination.moreTemp < (pagination.last_page/pagination.limitPaginate)\" @click.prevent=\"pagScroll('next')\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">...</span>\n\t\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t\t</li><!-- more next -->\n\n\t\t\t\t\t\t\t<li class=\"{{lastActive}}\" @click.prevent=\"paginateNext\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.next}}</span>\n\t\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t\t<li class=\"{{lastActive}}\" @click.prevent=\"paginate(pagination.last_page)\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.last}}</span>\n\t\t\t\t\t\t\t\t</a><!-- end -->\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</nav>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"col-xs-12 col-sm-4 text-right\" v-if=\"pagination\">\n\t\t\t\t\t<span>{{pagination.showText}}: {{pagination.from}} - {{pagination.to}} {{pagination.of}} {{pagination.total}} {{pagination.register}}</span>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"row\" v-else=\"\">\n\t\t\t\t<div class=\"col-xs-12 text-center\">\n\t\t\t\t\t<span>{{pagination.noData}}</span>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t</div>\n\n\t<!--\n\t<div v-if=\"optionToolbar\" :class=\"divSeparatorClass\">\n\t\t<div class=\"col-xs-7\">\n\t\t\t<form action=\"#\" method=\"get\">\n\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t<input type=\"text\" name=\"table_q\" class=\"form-control\" placeholder=\"Buscar...\">\n\t\t\t\t\t<span class=\"input-group-btn\">\n\t\t\t\t\t\t<button type=\"submit\" name=\"search_table\" id=\"search-btn\" class=\"btn btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t\t</span>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\t\t<div class=\"col-xs-4\">\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<select class=\"form-control\" v-model=\"pagination.data.per_page\">\n\t\t\t\t\t<option value=\"\" disabled>Rigistros por página</option>\n\t\t\t\t\t<option v-for=\"item in pagination.data.per_page_list | orderBy item\"  track-by=\"$index\" :value=\"item\">{{item}}</option>\n\t\t\t\t</select>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"col-xs-1\">\n\t\t\t<button class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"true\" :title=\"optionToolbar.label\">\n\t\t\t\t<i :class=\"optionToolbar.iconClass\"></i>\n\t\t\t</button>\n\t\t\t<ul class=\"dropdown-menu\">\n\t\t\t\t<li v-for=\"(idx, col) in columns\">\n\t\t\t\t\t<span class=\"checkbox\">\n\t\t\t\t\t\t<label @click=\"toggleColumns(idx)\">\n\t\t\t\t\t\t\t<strong>{{ col.title }} <i class=\"fa fa-check font-success\" v-if=\"!col.hidden\"></i><i class=\"fa fa-close font-error\" v-else></i></strong>\n\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</span>\n\t\t\t\t</li>\n\t\t\t</ul>\n\t\t</div>\n\t</div>\n\n\t<div :class=\"divSeparatorClass\">\n\t\t<table :class=\"tableClass\">\n\t\t\t<thead v-if=\"requireHeader\">\n\t\t\t\t<tr>\n\t\t\t\t\t<th v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.titleClass\">{{col.title}}</th>\n\t\t\t\t</tr>\n\t\t\t</thead>\n\t\t\t\n\t\t\t<tbody>\n\t\t\t\t<tr v-for=\"item in data\">\n\n\t\t\t\t\t<td v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.fieldClass\">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div v-if=\"!col.itemActions\">{{ item[col.field] }}</div>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div v-else class=\"btn-group\">\n\n\t\t\t\t\t\t\t<a v-for=\"act in col.itemActions\" :class=\"act.btnClass\" href=\"\" @click.prevent=\"dispacher(act.nameEmit, item)\" >\n\t\t\t\t\t\t\t\t<i :class=\"act.iconClass\" data-toggle=\"tooltip\" :title=\"act.label\"></i>\n\t\t\t\t\t\t\t</a>\n\n\t\t\t\t\t\t</div>\n\n\n\n\t\t\t\t</td>\n\n\t\t\t</tr>\n\t\t</tbody>\n\t\t\n\t</table>\n</div>\n-->\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n\t<!-- Head Confi toolbar -->\n\t<div class=\"box box-primary\">\n\t\t<div class=\"box-header with-border\" v-if=\"optionToolbar\">\n\t\t\t<div class=\"col-sm-2 col-xs-12\" v-if=\"optionToolbar\">\n\t\t\t\t<button :class=\"optionToolbar.btnClass\" @click.prevent=\"dispacher(optionToolbar.nameEmit)\"><i :class=\"optionToolbar.iconClass\"></i> {{optionToolbar.label}}</button>\n\t\t\t</div>\n\t\t\t<div class=\"col-xs-6 col-sm-6\">\n\t\t\t\t<form action=\"#\" method=\"get\" @submit.prevent=\"search\">\n\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t<input type=\"text\" name=\"filter\" v-model=\"search_filter\" class=\"form-control\" placeholder=\"Buscar...\">\n\t\t\t\t\t\t<span class=\"input-group-btn\">\n\t\t\t\t\t\t\t<button type=\"submit\" name=\"search_table\" id=\"search-btn\" class=\"btn btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t</div>\n\t\t\t\t</form>\n\t\t\t</div>\n\t\t\t<div class=\"col-xs-4 col-sm-3\">\n\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t<select class=\"form-control\" v-model=\"pagination.per_page\" @change=\"changePerPage\">\n\t\t\t\t\t\t<option value=\"\" disabled=\"\">Rigistros por página</option>\n\t\t\t\t\t\t<option v-for=\"item in pagination.per_page_list | orderBy item\" track-by=\"$index\" :value=\"item\">{{item}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"col-xs-2 col-sm-1\">\n\t\t\t\t<button class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"true\" :title=\"optionToolbar.labelOptions\">\n\t\t\t\t\t<i :class=\"optionToolbar.iconClassOptions\"></i>\n\t\t\t\t</button>\n\t\t\t\t<ul class=\"dropdown-menu pull-right\">\n\t\t\t\t\t<li v-for=\"(idx, col) in columns\">\n\t\t\t\t\t\t<span class=\"checkbox\">\n\t\t\t\t\t\t\t<label @click=\"toggleColumns(idx)\">\n\t\t\t\t\t\t\t\t<strong>{{ col.title }} <i class=\"fa fa-check font-success\" v-if=\"!col.hidden\"></i><i class=\"fa fa-close font-error\" v-else=\"\"></i></strong>\n\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Body table -->\n\t\t<div class=\"box-body table-responsive\">\n\t\t\t<div class=\"loading-mask l-close\">\n\t\t\t\t<i :class=\"pagination.loadingIconClass\"></i>\n\t\t\t\t<span class=\"sr-only\">Loading...</span>\n\t\t\t</div>\n\t\t\t<table :class=\"tableClass\">\n\t\t\t\t\n\t\t\t\t<thead v-if=\"requireHeader\">\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<th v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.titleClass\">\n\t\t\t\t\t\t\t<template v-if=\"sortable &amp;&amp; col.sortable &amp;&amp; !col.itemActions\">\n\t\t\t\t\t\t\t\t<div class=\"cool-table-sortable\" @click.prevent=\"orderColumn(col.field)\">\n\t\t\t\t\t\t\t\t\t<span>{{col.title}}</span>\n\t\t\t\t\t\t\t\t\t<template v-if=\"sortable.column == col.field\">\n\t\t\t\t\t\t\t\t\t\t<template v-if=\"sortable.order == 'desc'\">\n\t\t\t\t\t\t\t\t\t\t\t<span class=\"pull-right\"><i :class=\"sortable.descendingIcon\"></i></span>\n\t\t\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t\t\t\t<template v-else=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<span class=\"pull-right\"><i :class=\"sortable.ascendingIcon\"></i></span>\n\t\t\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t<template v-else=\"\">\n\t\t\t\t\t\t\t\t{{col.title}}\n\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t</th>\n\t\t\t\t\t</tr>\n\t\t\t\t</thead>\n\n\t\t\t\t<tbody>\n\t\t\t\t\t<tr v-for=\"item in data\">\n\n\t\t\t\t\t\t<td v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.fieldClass\">\n\n\t\t\t\t\t\t\t<template v-if=\"col.template\">\n\t\t\t\t\t\t\t\t{{{renderTemplate(item, col.template)}}}\n\t\t\t\t\t\t\t</template>\n\n\t\t\t\t\t\t\t<template v-else=\"\">\n\n\t\t\t\t\t\t\t\t<div v-if=\"!col.itemActions\">{{ item[col.field] }}</div>\n\n\t\t\t\t\t\t\t\t<div v-else=\"\" class=\"btn-group\">\n\n\t\t\t\t\t\t\t\t\t<a v-for=\"act in col.itemActions\" :class=\"act.btnClass\" href=\"\" @click.prevent=\"dispacher(act.nameEmit, item)\">\n\t\t\t\t\t\t\t\t\t\t<i :class=\"act.iconClass\" data-toggle=\"tooltip\" :title=\"act.label\"></i>\n\t\t\t\t\t\t\t\t\t</a>\n\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t</template>\n\n\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t</td>\n\n\t\t\t\t\t</tr>\n\t\t\t\t</tbody>\n\n\t\t\t</table>\n\t\t</div>\n\n\t\t<!-- Footer pagination -->\n\t\t<div class=\"box-footer\" v-if=\"pagination\">\n\t\t\t<div class=\"row\" v-if=\"pagination.data.length>0\">\n\t\t\t\t<div class=\"col-xs-12 col-sm-8\">\n\t\t\t\t\t<nav>\n\t\t\t\t\t\t<ul class=\"pagination pagination-sm\">\n\t\t\t\t\t\t\t<li class=\"{{firstActive}}\" @click.prevent=\"paginate(1)\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Previous\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.first}}</span>\n\t\t\t\t\t\t\t\t</a><!-- begin -->\n\t\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t\t<li class=\"{{firstActive}}\" @click.prevent=\"paginatePrev\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Previous\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.back}}</span>\n\t\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t\t<li v-if=\"pagination.current_page>pagination.limitPaginate\" @click.prevent=\"pagScroll('prev')\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Prev\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">...</span>\n\t\t\t\t\t\t\t\t</a><!-- more back -->\n\t\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t\t<li v-for=\"pag in 5, pagination.last_page\" class=\"{{isActive(pag+1)}}\" @click.prevent=\"paginate(pag+1)\" v-if=\"numToShow(pag+1)\"><a href=\"#\">{{pag + 1}}</a></li>\n\n\t\t\t\t\t\t\t<li v-if=\"pagination.moreTemp < (pagination.last_page/pagination.limitPaginate)\" @click.prevent=\"pagScroll('next')\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">...</span>\n\t\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t\t</li><!-- more next -->\n\n\t\t\t\t\t\t\t<li class=\"{{lastActive}}\" @click.prevent=\"paginateNext\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.next}}</span>\n\t\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t\t<li class=\"{{lastActive}}\" @click.prevent=\"paginate(pagination.last_page)\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.last}}</span>\n\t\t\t\t\t\t\t\t</a><!-- end -->\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</nav>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"col-xs-12 col-sm-4 text-right\" v-if=\"pagination\">\n\t\t\t\t\t<span>{{pagination.showText}}: {{pagination.from}} - {{pagination.to}} {{pagination.of}} {{pagination.total}} {{pagination.register}}</span>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"row\" v-else=\"\">\n\t\t\t\t<div class=\"col-xs-12 text-center\">\n\t\t\t\t\t<span>{{pagination.noData}}</span>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t</div>\n\n\t<!--\n\t<div v-if=\"optionToolbar\" :class=\"divSeparatorClass\">\n\t\t<div class=\"col-xs-7\">\n\t\t\t<form action=\"#\" method=\"get\">\n\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t<input type=\"text\" name=\"table_q\" class=\"form-control\" placeholder=\"Buscar...\">\n\t\t\t\t\t<span class=\"input-group-btn\">\n\t\t\t\t\t\t<button type=\"submit\" name=\"search_table\" id=\"search-btn\" class=\"btn btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t\t</span>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\t\t<div class=\"col-xs-4\">\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<select class=\"form-control\" v-model=\"pagination.data.per_page\">\n\t\t\t\t\t<option value=\"\" disabled>Rigistros por página</option>\n\t\t\t\t\t<option v-for=\"item in pagination.data.per_page_list | orderBy item\"  track-by=\"$index\" :value=\"item\">{{item}}</option>\n\t\t\t\t</select>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"col-xs-1\">\n\t\t\t<button class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"true\" :title=\"optionToolbar.label\">\n\t\t\t\t<i :class=\"optionToolbar.iconClass\"></i>\n\t\t\t</button>\n\t\t\t<ul class=\"dropdown-menu\">\n\t\t\t\t<li v-for=\"(idx, col) in columns\">\n\t\t\t\t\t<span class=\"checkbox\">\n\t\t\t\t\t\t<label @click=\"toggleColumns(idx)\">\n\t\t\t\t\t\t\t<strong>{{ col.title }} <i class=\"fa fa-check font-success\" v-if=\"!col.hidden\"></i><i class=\"fa fa-close font-error\" v-else></i></strong>\n\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</span>\n\t\t\t\t</li>\n\t\t\t</ul>\n\t\t</div>\n\t</div>\n\n\t<div :class=\"divSeparatorClass\">\n\t\t<table :class=\"tableClass\">\n\t\t\t<thead v-if=\"requireHeader\">\n\t\t\t\t<tr>\n\t\t\t\t\t<th v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.titleClass\">{{col.title}}</th>\n\t\t\t\t</tr>\n\t\t\t</thead>\n\t\t\t\n\t\t\t<tbody>\n\t\t\t\t<tr v-for=\"item in data\">\n\n\t\t\t\t\t<td v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.fieldClass\">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div v-if=\"!col.itemActions\">{{ item[col.field] }}</div>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div v-else class=\"btn-group\">\n\n\t\t\t\t\t\t\t<a v-for=\"act in col.itemActions\" :class=\"act.btnClass\" href=\"\" @click.prevent=\"dispacher(act.nameEmit, item)\" >\n\t\t\t\t\t\t\t\t<i :class=\"act.iconClass\" data-toggle=\"tooltip\" :title=\"act.label\"></i>\n\t\t\t\t\t\t\t</a>\n\n\t\t\t\t\t\t</div>\n\n\n\n\t\t\t\t</td>\n\n\t\t\t</tr>\n\t\t</tbody>\n\t\t\n\t</table>\n</div>\n-->\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16813,7 +17687,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-78e977f7", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"babel-runtime/core-js/object/assign":1,"vue":23,"vue-hot-reload-api":20,"vueify/lib/insert-css":24}],66:[function(require,module,exports){
+},{"babel-runtime/core-js/object/assign":1,"vue":23,"vue-hot-reload-api":20,"vueify/lib/insert-css":24}],82:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n* {margin: 0;padding:0;}\n.mask-loading {\n\tbackground-color: #ecf0f5;\n\tmargin: 150px 0px;\n}\n.spinner {\n\twidth: 50px;\n\theight: 50px;\n\tposition: relative;\n\tmargin: 0 auto;\n}\n\n.double-bounce1, .double-bounce2 {\n\twidth: 100%;\n\theight: 100%;\n\tborder-radius: 50%;\n\tbackground-color: #3c8dbc;\n\topacity: 0.6;\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\n\t-webkit-animation: sk-bounce 2.0s infinite ease-in-out;\n\tanimation: sk-bounce 2.0s infinite ease-in-out;\n}\n\n.double-bounce2 {\n\t-webkit-animation-delay: -1.0s;\n\tanimation-delay: -1.0s;\n}\n\n@-webkit-keyframes sk-bounce {\n\t0%, 100% { -webkit-transform: scale(0.0) }\n\t50% { -webkit-transform: scale(1.0) }\n}\n\n@keyframes sk-bounce {\n\t0%, 100% { \n\t\ttransform: scale(0.0);\n\t\t-webkit-transform: scale(0.0);\n\t} 50% { \n\t\ttransform: scale(1.0);\n\t\t-webkit-transform: scale(1.0);\n\t}\n}\n")
 "use strict";
@@ -16837,7 +17711,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-38efffdf", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":23,"vue-hot-reload-api":20,"vueify/lib/insert-css":24}],67:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20,"vueify/lib/insert-css":24}],83:[function(require,module,exports){
 'use strict';
 
 var _menuItemLevel = require('./menuItemLevel2.vue');
@@ -16888,7 +17762,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-d28a50e8", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./menuItemLevel2.vue":68,"vue":23,"vue-hot-reload-api":20}],68:[function(require,module,exports){
+},{"./menuItemLevel2.vue":84,"vue":23,"vue-hot-reload-api":20}],84:[function(require,module,exports){
 'use strict';
 
 var _menuItemLevel = require('./menuItemLevel3.vue');
@@ -16939,7 +17813,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-d26e21e6", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./menuItemLevel3.vue":69,"vue":23,"vue-hot-reload-api":20}],69:[function(require,module,exports){
+},{"./menuItemLevel3.vue":85,"vue":23,"vue-hot-reload-api":20}],85:[function(require,module,exports){
 'use strict';
 
 var _menuItemLevel = require('./menuItemLevel1.vue');
@@ -16990,7 +17864,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-d251f2e4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./menuItemLevel1.vue":67,"vue":23,"vue-hot-reload-api":20}],70:[function(require,module,exports){
+},{"./menuItemLevel1.vue":83,"vue":23,"vue-hot-reload-api":20}],86:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\t#menu-content {\n\t\tbackground:white;\n\t\tfont:normal normal 13px/1.4 Segoe,\"Segoe UI\",Calibri,Helmet,FreeSans,Sans-Serif;\n\t\tpadding:10px;\n\t}\n\n\n/**\n * Framework starts from here ...\n * ------------------------------\n */\n\n .tree,\n .tree ul {\n \tmargin:0 0 0 1em; /* indentation */\n \tpadding:0;\n \tlist-style:none;\n \tcolor:#369;\n \tposition:relative;\n }\n\n .tree ul {margin-left:.5em} /* (indentation/2) */\n\n .tree:before,\n .tree ul:before {\n \tcontent:\"\";\n \tdisplay:block;\n \twidth:0;\n \tposition:absolute;\n \ttop:0;\n \tbottom:0;\n \tleft:0;\n \tborder-left:1px solid;\n }\n\n .tree li {\n \tmargin:0;\n \tpadding:0 1.5em; /* indentation + .5em */\n \tline-height:2em; /* default list item's `line-height` */\n \tposition:relative;\n }\n\n .tree li:before {\n \tcontent:\"\";\n \tdisplay:block;\n \twidth:10px; /* same with indentation */\n \theight:0;\n \tborder-top:1px solid;\n \tmargin-top:-1px; /* border top width */\n \tposition:absolute;\n \ttop:1em; /* (line-height/2) */\n \tleft:0;\n }\n\n .tree li:last-child:before {\n \tbackground:white; /* same with body background */\n \theight:auto;\n \ttop:1em; /* (line-height/2) */\n \tbottom:0;\n }\n\n .edit-option, .delete-option{\n \tcolor: #336699;\n }\n .edit-option:hover{\n \tcursor: pointer;\n \tcolor: orange;\n }\n\n .delete-option:hover{\n \tcursor: pointer;\n \tcolor: red;\n }\n\n .add-btn{\n \tpadding: 1px 50px !important;\n }\n")
 'use strict';
@@ -17076,7 +17950,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-4e25b7a2", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../util/reusable_functions":73,"babel-runtime/helpers/defineProperty":3,"vue":23,"vue-hot-reload-api":20,"vueify/lib/insert-css":24}],71:[function(require,module,exports){
+},{"../../util/reusable_functions":89,"babel-runtime/helpers/defineProperty":3,"vue":23,"vue-hot-reload-api":20,"vueify/lib/insert-css":24}],87:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17097,7 +17971,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-b382fa48", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":23,"vue-hot-reload-api":20}],72:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20}],88:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17184,7 +18058,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-43fb7a72", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":23,"vue-hot-reload-api":20}],73:[function(require,module,exports){
+},{"vue":23,"vue-hot-reload-api":20}],89:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

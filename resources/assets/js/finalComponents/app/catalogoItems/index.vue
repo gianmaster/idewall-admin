@@ -30,7 +30,7 @@
 		},
 		data: function(){
 			return {
-				path: ['Catálogo', 'Items'],
+				path: ['Sistema', 'Catálogo', 'Items'],
 				loading: true,
 				titulo: 'Catálogo Items',
 				url: ''
@@ -39,8 +39,8 @@
 		methods: {
 			loadCatalogo: function(){
 				this.$http.get(this.url).then(function(resp){
-					this.titulo = 'Catálogo - ' + resp.data.data.descripcion;
-					this.path = ['Catálogo', resp.data.data.descripcion];
+					this.titulo = 'Catálogo - ' + resp.data.data.nombre;
+					this.path = ['Sistema', 'Catálogos', resp.data.data.nombre];
 				}, fnc.tryError);
 			}
 		}

@@ -52,7 +52,13 @@ router.map({
   '/paginate': {
     component: require('./finalComponents/app/testPagination.vue')
   },*/
+
+
+  '/usuarios': require('./finalComponents/app/usuarios/index.js'),
+
   '/materias': require('./finalComponents/app/materias/index.js'),
+
+  '/malla_academica': require('./finalComponents/app/malla_academica/index.js'),
 
   '/menu': require('./finalComponents/app/mantenedor-menu/index.js'),
 

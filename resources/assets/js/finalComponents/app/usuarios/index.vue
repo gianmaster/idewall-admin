@@ -1,7 +1,7 @@
 <template>
 	<!-- Main content -->
 		
-		<content-header title="Catálogo" :list-path="path"></content-header>
+		<content-header title="Usuarios" :list-path="path"></content-header>
 
 		<section class="content">
 			<!--<router-view class="animated" transition="fade" transition-mode="out-in" keep-alive></router-view>-->
@@ -15,13 +15,13 @@
 	import ContentHeader from '../../new-layout/content-header.vue';
 
 	export default {
-		name: 'content-catalogo',
+		name: 'content-usuarios',
 		components:{
 			'content-header' : ContentHeader
 		},
 		data: function(){
 			return {
-				path: ['Sistema', 'Catálogos'],
+				path: ['Sistema', 'Administración de Usuarios'],
 				loading: true,
 			}
 		},

@@ -51,7 +51,7 @@
 				<thead v-if="requireHeader">
 					<tr>
 						<th v-for="col in columns | filterBy false in 'hidden'" :class="col.titleClass">
-							<template v-if="sortable && !col.itemActions">
+							<template v-if="sortable && col.sortable && !col.itemActions">
 								<div class="cool-table-sortable" @click.prevent="orderColumn(col.field)">
 									<span>{{col.title}}</span>
 									<template v-if="sortable.column == col.field">
@@ -76,15 +76,25 @@
 
 						<td v-for="col in columns | filterBy false in 'hidden'" :class="col.fieldClass">
 
-							<div v-if="!col.itemActions">{{ item[col.field] }}</div>
+							<template v-if="col.template">
+								{{{renderTemplate(item, col.template)}}}
+							</template>
 
-							<div v-else class="btn-group">
+							<template v-else>
 
-								<a v-for="act in col.itemActions" :class="act.btnClass" href="" @click.prevent="dispacher(act.nameEmit, item)" >
-									<i :class="act.iconClass" data-toggle="tooltip" :title="act.label"></i>
-								</a>
+								<div v-if="!col.itemActions">{{ item[col.field] }}</div>
 
-							</div>
+								<div v-else class="btn-group">
+
+									<a v-for="act in col.itemActions" :class="act.btnClass" href="" @click.prevent="dispacher(act.nameEmit, item)" >
+										<i :class="act.iconClass" data-toggle="tooltip" :title="act.label"></i>
+									</a>
+
+								</div>
+
+							</template>
+
+							
 
 						</td>
 
@@ -444,6 +454,9 @@
 			}      
 		},
 		methods: {
+			renderTemplate: function(col, template){
+				return eval('`'+template+'`');
+			},
 			updateEndpoint: function(){
 				let {per_page, current_page} = this.pagination;
 				let {search_filter, filterKeyWord, url} = this;
@@ -514,7 +527,7 @@
 					loadIcon.style.marginTop = axisY+'px';
 					loadElem.className = 'loading-mask l-open';
 				}else{
-					loadElem.className = 'loading-mask l-close';
+					loadElem ? loadElem.className = 'loading-mask l-close' : null;
 				}
 			},
 			numToShow: function(num){

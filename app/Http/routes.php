@@ -46,6 +46,8 @@ Route::group(['middleware' => 'auth'], function(){
 
 		Route::resource('catalogos.items', 'CatalogoItemsController');
 
+		Route::resource('malla_academica', 'MallaAcademicaController');
+
 	});
 
 });
