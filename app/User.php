@@ -28,4 +28,6 @@ class User extends Authenticatable
     public function descripcionRol(){
         return $this->HasOne('App\Entities\Rol', 'id', 'rol');
     }
+
+
 }

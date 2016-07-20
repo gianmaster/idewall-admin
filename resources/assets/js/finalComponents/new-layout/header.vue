@@ -1,7 +1,7 @@
 <template>
-  
+
   <!-- Main Header -->
-<header class="main-header">
+  <header class="main-header">
 
     <!-- Logo -->
     <a href="#" class="logo">
@@ -116,17 +116,17 @@
                     <!-- Menu Toggle Button -->
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <!-- The user image in the navbar-->
-                        <img src="img/user2-160x160.jpg" class="user-image" alt="User Image"/>
+                        <img :src="avatar" class="user-image" alt="User Image"/>
                         <!-- hidden-xs hides the username on small devices so only the image appears. -->
                         <span class="hidden-xs">{{username}}</span>
                     </a>
                     <ul class="dropdown-menu">
                         <!-- The user image in the menu -->
                         <li class="user-header">
-                            <img src="img/user2-160x160.jpg" class="img-circle" alt="User Image" />
+                            <img :src="avatar" class="img-circle" alt="User Image" />
                             <p>
                                 {{username}}
-                                <small>Miembro desde Nov. 2012</small>
+                                <small>Miembro desde {{fromDate}}</small>
                             </p>
                         </li>
                         <!-- Menu Body -->
@@ -158,59 +158,68 @@
 
 <script>
 
-module.exports = {
-
-  props:{
-    username: {
-      type: String,
-      required:false,
-      default: "Giancarlos Cercado"
-    },
-    notifications: {
-      required: false,
-      type: Object,
-      default: function(){
-        return []
-      }
+    export default {
+      props:{
+        username: {
+          type: String,
+          required:false,
+          default: "Giancarlos Cercado"
+      },
+      avatar: {
+        type: String,
+        required: false,
+        default: 'img/user2-160x160.jpg'
+      },
+      fromDate: {
+        type: String, 
+        required: false,
+        default: 'Ago. 2016'
+      },
+      notifications: {
+          required: false,
+          type: Object,
+          default: function(){
+            return [];
+        }
     },
     messages: {
       required: false,
       type: Object,
       default: function(){
-        return []
-      } 
-    },
-    tasks: {
-      required: false,
-      type: Object,
-      default: function(){
-        return []
-      }
-    },
-    control: {
-      required: false,
-      type: Boolean,
-      default: false
-    },
-    largeLogo:{
-      type: Array,
-      required: false,
-      default: function(){
-        return ["!De", "WALL"]
-      }
-    },
-    shortLogo:{
-      type: Array,
-      required: false,
-      default: function(){
-        return ["!D", "e"]
-      }
-    },
-    auth: {
-      type: Boolean,
-      default: true,
-    }
-  }
+        return [];
+    } 
+},
+tasks: {
+  required: false,
+  type: Object,
+  default: function(){
+    return [];
 }
-  
+},
+control: {
+  required: false,
+  type: Boolean,
+  default: false
+},
+largeLogo:{
+  type: Array,
+  required: false,
+  default: function(){
+    return ["!De", "WALL"];
+}
+},
+shortLogo:{
+  type: Array,
+  required: false,
+  default: function(){
+    return ["!D", "e"];
+}
+},
+auth: {
+  type: Boolean,
+  default: true,
+}
+}
+}
+
 </script>

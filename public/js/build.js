@@ -15617,6 +15617,12 @@ var _mixins2 = _interopRequireDefault(_mixins);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
+	route: {
+		data: function data(transition) {
+			this.load();
+			transition.next();
+		}
+	},
 	mixins: [_mixins2.default],
 	data: function data() {
 		return {
@@ -17299,6 +17305,12 @@ var _mixins2 = _interopRequireDefault(_mixins);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
+	route: {
+		data: function data(transition) {
+			this.load();
+			transition.next();
+		}
+	},
 	mixins: [_mixins2.default],
 	data: function data() {
 		return {
@@ -17497,11 +17509,39 @@ if (module.hot) {(function () {  module.hot.accept()
 
 var menu = require('../config/menus.js');
 
+var fnc = require('../util/reusable_functions.js');
+
 module.exports = {
   name: 'Layout',
+  ready: function ready() {
+    this.loadProfile();
+  },
+
+  methods: {
+    loadProfile: function loadProfile() {
+      this.$http.get('api/me').then(function (resp) {
+        this.profile = resp.data.data;
+      }, fnc.tryError);
+    }
+  },
+  computed: {
+    fromDate: function fromDate() {
+      if (this.profile.created_at) {
+        return this.profile.created_at.substr(0, 10);
+      }
+      return this.profile;
+    }
+  },
   data: function data() {
     return {
       title: null,
+      profile: {
+        name: 'Root',
+        avatar: 'img/user2-160x160.jpg',
+        rol: 0,
+        email: 'root@root.com',
+        created_at: 'Ago. 2016'
+      },
       login: true,
       body_class: "skin-blue sidebar-mini fixed",
       menus: menu || [] //esto deberia ser cargado una vez logoneado
@@ -17517,7 +17557,7 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div v-if=\"login\">\n  <app-header></app-header>\n  <app-menu></app-menu>\n  <app-content :title=\"title\"></app-content>\n  <app-control></app-control>\n  <app-footer></app-footer>\n</div>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div v-if=\"login\">\n  <app-header :username.sync=\"profile.name\" :avatar.sync=\"profile.avatar\" :from-date.sync=\"fromDate\"></app-header>\n  <app-menu></app-menu>\n  <app-content :title=\"title\"></app-content>\n  <app-control></app-control>\n  <app-footer></app-footer>\n</div>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -17528,7 +17568,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-32136a05", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../config/menus.js":27,"./new-layout/content.vue":83,"./new-layout/control.vue":84,"./new-layout/footer.vue":85,"./new-layout/header.vue":86,"./new-layout/menu.vue":88,"vue":23,"vue-hot-reload-api":20}],82:[function(require,module,exports){
+},{"../config/menus.js":27,"../util/reusable_functions.js":97,"./new-layout/content.vue":83,"./new-layout/control.vue":84,"./new-layout/footer.vue":85,"./new-layout/header.vue":86,"./new-layout/menu.vue":88,"vue":23,"vue-hot-reload-api":20}],82:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -17645,15 +17685,27 @@ if (module.hot) {(function () {  module.hot.accept()
   }
 })()}
 },{"vue":23,"vue-hot-reload-api":20}],86:[function(require,module,exports){
-"use strict";
+'use strict';
 
-module.exports = {
-
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
   props: {
     username: {
       type: String,
       required: false,
       default: "Giancarlos Cercado"
+    },
+    avatar: {
+      type: String,
+      required: false,
+      default: 'img/user2-160x160.jpg'
+    },
+    fromDate: {
+      type: String,
+      required: false,
+      default: 'Ago. 2016'
     },
     notifications: {
       required: false,
@@ -17702,7 +17754,7 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  \n  <!-- Main Header -->\n<header class=\"main-header\">\n\n    <!-- Logo -->\n    <a href=\"#\" class=\"logo\">\n        <!-- mini logo for sidebar mini 50x50 pixels -->\n        <span class=\"logo-mini\"><b>{{shortLogo[0]}}</b>{{shortLogo[1]}}</span>\n        <!-- logo for regular state and mobile devices -->\n        <span class=\"logo-lg\"><b>{{largeLogo[0]}}</b>{{largeLogo[1]}}</span>\n    </a>\n\n    <!-- Header Navbar -->\n    <nav class=\"navbar navbar-static-top\" role=\"navigation\">\n        <!-- Sidebar toggle button-->\n        <a href=\"#\" class=\"sidebar-toggle\" data-toggle=\"offcanvas\" role=\"button\">\n            <span class=\"sr-only\">no aparece, solo lectura</span>\n        </a>\n        <!-- Navbar Right Menu -->\n        <div class=\"navbar-custom-menu\">\n            <ul class=\"nav navbar-nav\">\n                <!-- Messages: style can be found in dropdown.less-->\n                <li class=\"dropdown messages-menu\" v-if=\"messages.length>0\">\n                    <!-- Menu toggle button -->\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <i class=\"fa fa-envelope-o\"></i>\n                        <span class=\"label label-success\">4</span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <li class=\"header\">Mensajes</li>\n                        <li>\n                            <!-- inner menu: contains the messages -->\n                            <ul class=\"menu\">\n                                <li><!-- start message -->\n                                    <a href=\"#\">\n                                        <div class=\"pull-left\">\n                                            <!-- User Image -->\n                                            <img src=\"img/user2-160x160.jpg\" class=\"img-circle\" alt=\"User Image\">\n                                        </div>\n                                        <!-- Message title and timestamp -->\n                                        <h4>\n                                            Mensajes\n                                            <small><i class=\"fa fa-clock-o\"></i> 5 mins</small>\n                                        </h4>\n                                        <!-- The message -->\n                                        <p>Estos son los mensajes</p>\n                                    </a>\n                                </li><!-- end message -->\n                            </ul><!-- /.menu -->\n                        </li>\n                        <li class=\"footer\"><a href=\"#\">Ver todos los mensajes</a></li>\n                    </ul>\n                </li><!-- /.messages-menu -->\n\n                <!-- Notifications Menu -->\n                <li class=\"dropdown notifications-menu\" v-if=\"notifications.length>0\">\n                    <!-- Menu toggle button -->\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <i class=\"fa fa-bell-o\"></i>\n                        <span class=\"label label-warning\">10</span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <li class=\"header\">Notificaciones</li>\n                        <li>\n                            <!-- Inner Menu: contains the notifications -->\n                            <ul class=\"menu\">\n                                <li><!-- start notification -->\n                                    <a href=\"#\">\n                                        <i class=\"fa fa-users text-aqua\"></i> Esta es una notificacion\n                                    </a>\n                                </li><!-- end notification -->\n                            </ul>\n                        </li>\n                        <li class=\"footer\"><a href=\"#\">Ver todos las notificaciones</a></li>\n                    </ul>\n                </li>\n                <!-- Tasks Menu -->\n                <li class=\"dropdown tasks-menu\" v-if=\"tasks.length>0\">\n                    <!-- Menu Toggle Button -->\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <i class=\"fa fa-flag-o\"></i>\n                        <span class=\"label label-danger\">9</span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <li class=\"header\">Tareas</li>\n                        <li>\n                            <!-- Inner menu: contains the tasks -->\n                            <ul class=\"menu\">\n                                <li><!-- Task item -->\n                                    <a href=\"#\">\n                                        <!-- Task title and progress text -->\n                                        <h3>\n                                            Esta es una tarea\n                                            <small class=\"pull-right\">20%</small>\n                                        </h3>\n                                        <!-- The progress bar -->\n                                        <div class=\"progress xs\">\n                                            <!-- Change the css width attribute to simulate progress -->\n                                            <div class=\"progress-bar progress-bar-aqua\" style=\"width: 20%\" role=\"progressbar\" aria-valuenow=\"20\" aria-valuemin=\"0\" aria-valuemax=\"100\">\n                                                <span class=\"sr-only\">20% completo</span>\n                                            </div>\n                                        </div>\n                                    </a>\n                                </li><!-- end task item -->\n                            </ul>\n                        </li>\n                        <li class=\"footer\">\n                            <a href=\"#\">Ver todas las tareas</a>\n                        </li>\n                    </ul>\n                </li>\n                \n                <!-- User Account Menu -->\n                <li class=\"dropdown user user-menu\">\n                    <!-- Menu Toggle Button -->\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <!-- The user image in the navbar-->\n                        <img src=\"img/user2-160x160.jpg\" class=\"user-image\" alt=\"User Image\">\n                        <!-- hidden-xs hides the username on small devices so only the image appears. -->\n                        <span class=\"hidden-xs\">{{username}}</span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <!-- The user image in the menu -->\n                        <li class=\"user-header\">\n                            <img src=\"img/user2-160x160.jpg\" class=\"img-circle\" alt=\"User Image\">\n                            <p>\n                                {{username}}\n                                <small>Miembro desde Nov. 2012</small>\n                            </p>\n                        </li>\n                        <!-- Menu Body -->\n\n                        <!-- Menu Footer-->\n                        <li class=\"user-footer\">\n                            <div class=\"pull-left\">\n                                <a href=\"account\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-user\"></i> Perfil</a>\n                            </div>\n                            <div class=\"pull-right\">\n                                <a href=\"logout\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-sign-out\"></i> Salir</a>\n                            </div>\n                        </li>\n                    </ul>\n                </li>\n\n                <!-- Control Sidebar Toggle Button -->\n                <li v-if=\"control\">\n                    <a href=\"#\" data-toggle=\"control-sidebar\"><i class=\"fa fa-gears\"></i></a>\n                </li>\n                \n            </ul>\n        </div>\n    </nav>\n</header>\n\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n  <!-- Main Header -->\n  <header class=\"main-header\">\n\n    <!-- Logo -->\n    <a href=\"#\" class=\"logo\">\n        <!-- mini logo for sidebar mini 50x50 pixels -->\n        <span class=\"logo-mini\"><b>{{shortLogo[0]}}</b>{{shortLogo[1]}}</span>\n        <!-- logo for regular state and mobile devices -->\n        <span class=\"logo-lg\"><b>{{largeLogo[0]}}</b>{{largeLogo[1]}}</span>\n    </a>\n\n    <!-- Header Navbar -->\n    <nav class=\"navbar navbar-static-top\" role=\"navigation\">\n        <!-- Sidebar toggle button-->\n        <a href=\"#\" class=\"sidebar-toggle\" data-toggle=\"offcanvas\" role=\"button\">\n            <span class=\"sr-only\">no aparece, solo lectura</span>\n        </a>\n        <!-- Navbar Right Menu -->\n        <div class=\"navbar-custom-menu\">\n            <ul class=\"nav navbar-nav\">\n                <!-- Messages: style can be found in dropdown.less-->\n                <li class=\"dropdown messages-menu\" v-if=\"messages.length>0\">\n                    <!-- Menu toggle button -->\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <i class=\"fa fa-envelope-o\"></i>\n                        <span class=\"label label-success\">4</span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <li class=\"header\">Mensajes</li>\n                        <li>\n                            <!-- inner menu: contains the messages -->\n                            <ul class=\"menu\">\n                                <li><!-- start message -->\n                                    <a href=\"#\">\n                                        <div class=\"pull-left\">\n                                            <!-- User Image -->\n                                            <img src=\"img/user2-160x160.jpg\" class=\"img-circle\" alt=\"User Image\">\n                                        </div>\n                                        <!-- Message title and timestamp -->\n                                        <h4>\n                                            Mensajes\n                                            <small><i class=\"fa fa-clock-o\"></i> 5 mins</small>\n                                        </h4>\n                                        <!-- The message -->\n                                        <p>Estos son los mensajes</p>\n                                    </a>\n                                </li><!-- end message -->\n                            </ul><!-- /.menu -->\n                        </li>\n                        <li class=\"footer\"><a href=\"#\">Ver todos los mensajes</a></li>\n                    </ul>\n                </li><!-- /.messages-menu -->\n\n                <!-- Notifications Menu -->\n                <li class=\"dropdown notifications-menu\" v-if=\"notifications.length>0\">\n                    <!-- Menu toggle button -->\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <i class=\"fa fa-bell-o\"></i>\n                        <span class=\"label label-warning\">10</span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <li class=\"header\">Notificaciones</li>\n                        <li>\n                            <!-- Inner Menu: contains the notifications -->\n                            <ul class=\"menu\">\n                                <li><!-- start notification -->\n                                    <a href=\"#\">\n                                        <i class=\"fa fa-users text-aqua\"></i> Esta es una notificacion\n                                    </a>\n                                </li><!-- end notification -->\n                            </ul>\n                        </li>\n                        <li class=\"footer\"><a href=\"#\">Ver todos las notificaciones</a></li>\n                    </ul>\n                </li>\n                <!-- Tasks Menu -->\n                <li class=\"dropdown tasks-menu\" v-if=\"tasks.length>0\">\n                    <!-- Menu Toggle Button -->\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <i class=\"fa fa-flag-o\"></i>\n                        <span class=\"label label-danger\">9</span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <li class=\"header\">Tareas</li>\n                        <li>\n                            <!-- Inner menu: contains the tasks -->\n                            <ul class=\"menu\">\n                                <li><!-- Task item -->\n                                    <a href=\"#\">\n                                        <!-- Task title and progress text -->\n                                        <h3>\n                                            Esta es una tarea\n                                            <small class=\"pull-right\">20%</small>\n                                        </h3>\n                                        <!-- The progress bar -->\n                                        <div class=\"progress xs\">\n                                            <!-- Change the css width attribute to simulate progress -->\n                                            <div class=\"progress-bar progress-bar-aqua\" style=\"width: 20%\" role=\"progressbar\" aria-valuenow=\"20\" aria-valuemin=\"0\" aria-valuemax=\"100\">\n                                                <span class=\"sr-only\">20% completo</span>\n                                            </div>\n                                        </div>\n                                    </a>\n                                </li><!-- end task item -->\n                            </ul>\n                        </li>\n                        <li class=\"footer\">\n                            <a href=\"#\">Ver todas las tareas</a>\n                        </li>\n                    </ul>\n                </li>\n                \n                <!-- User Account Menu -->\n                <li class=\"dropdown user user-menu\">\n                    <!-- Menu Toggle Button -->\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <!-- The user image in the navbar-->\n                        <img :src=\"avatar\" class=\"user-image\" alt=\"User Image\">\n                        <!-- hidden-xs hides the username on small devices so only the image appears. -->\n                        <span class=\"hidden-xs\">{{username}}</span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <!-- The user image in the menu -->\n                        <li class=\"user-header\">\n                            <img :src=\"avatar\" class=\"img-circle\" alt=\"User Image\">\n                            <p>\n                                {{username}}\n                                <small>Miembro desde {{fromDate}}</small>\n                            </p>\n                        </li>\n                        <!-- Menu Body -->\n\n                        <!-- Menu Footer-->\n                        <li class=\"user-footer\">\n                            <div class=\"pull-left\">\n                                <a href=\"account\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-user\"></i> Perfil</a>\n                            </div>\n                            <div class=\"pull-right\">\n                                <a href=\"logout\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-sign-out\"></i> Salir</a>\n                            </div>\n                        </li>\n                    </ul>\n                </li>\n\n                <!-- Control Sidebar Toggle Button -->\n                <li v-if=\"control\">\n                    <a href=\"#\" data-toggle=\"control-sidebar\"><i class=\"fa fa-gears\"></i></a>\n                </li>\n                \n            </ul>\n        </div>\n    </nav>\n</header>\n\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -17945,6 +17997,11 @@ exports.default = {
 				}];
 			}
 		},
+		callbackError: {
+			type: String,
+			required: false,
+			default: 'ev-callblack-error'
+		},
 		pagination: {
 			type: Object,
 			default: function _default() {
@@ -18081,8 +18138,9 @@ exports.default = {
 				(0, _assign2.default)(self.pagination, resp.data);
 				self.loadingAnimation('close');
 			}, function (err) {
-				console.warn(err, 'error while try to load the endpoit', self.endpoint);
+				console.warn(err, 'error while try to load the endpoit <cool-table>', self.endpoint);
 				self.loadingAnimation('close');
+				this.dispacher(this.callbackError, err);
 			});
 		},
 		search: function search() {

@@ -416,6 +416,11 @@
 					]
 				}
 			}, 
+			callbackError: {
+				type: String, 
+				required: false,
+				default: 'ev-callblack-error'
+			},
 			pagination: {
 				type: Object, 
 				default : function(){
@@ -545,8 +550,9 @@
 					Object.assign(self.pagination, resp.data);
 					self.loadingAnimation('close');
 				}, function(err) {
-					console.warn(err, 'error while try to load the endpoit', self.endpoint);
+					console.warn(err, 'error while try to load the endpoit <cool-table>', self.endpoint);
 					self.loadingAnimation('close');
+					this.dispacher(this.callbackError, err);
 				});
 			},
 			search: function(){

@@ -6,10 +6,22 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 
+use Illuminate\Support\Facades\Auth;
+
 use App\User;
+
+use App\Entities\Rol;
+use App\Entities\RolMenu;
+use App\Entities\Menu;
 
 class UserController extends Controller
 {
+
+    public function getProfile(){
+        $id = Auth::user()->id;
+        return $this->show($id);
+    }
+
     /**
      * Display a listing of the resource.
      *
