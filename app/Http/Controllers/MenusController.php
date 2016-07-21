@@ -50,7 +50,12 @@ class MenusController extends Controller
     {
         //$this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
         //$menus = $this->repository->all();
+        
+        //funcionalidad actual para mostrar el menu completo a cualquier usuario
         $menus = $this->repository->findByField('cod_padre', null);
+        
+        
+
 
         return response()->json($menus);
     }

@@ -20,7 +20,7 @@
 		},
 		props:{
 			item: {
-				type: Object,
+				type: Object | Array,
 				required: true
 			},
 			isParent: {

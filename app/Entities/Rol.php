@@ -12,10 +12,11 @@ class Rol extends Model implements Transformable
 
     protected $table = 'roles';
 
-    protected $fillable = ['nombre', 'descripcion'];
+    protected $fillable = ['nombre', 'descripcion', 'id'];
 
     public function rolMenu(){
    		return $this->hasOne(RolMenu::class, 'rol', 'id');
    	}
+
 
 }

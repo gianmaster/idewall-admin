@@ -40,6 +40,12 @@
 	import myMixins from './mixins';
 
 	export default {
+		route: {
+			data: function(transition){
+				this.load();
+				transition.next();
+			}
+		},
 		mixins: [myMixins],
 		data(){
 			return {

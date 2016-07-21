@@ -14,12 +14,12 @@ class ConfigurationSeeder extends Seeder
        /**
         * Creacion de los roles de usuario y acceso
         * */
-       $rolRoot = App\Rol::create([
+        $rolAdmin = App\Rol::create([
        		'nombre'		=> 'SUPEROOT',
        		'descripcion'	=> 'Es el administrador y ve todo!'
        	]);
 
-       $rolAdmin = App\Rol::create([
+       $rolAdministrativo = App\Rol::create([
        		'nombre'		=> 'ADMINISTRATIVO',
        		'descripcion'	=> 'Es quien se encarga de asignar horas administrativa!'
        	]);
@@ -41,7 +41,7 @@ class ConfigurationSeeder extends Seeder
        		'name' 			     => 'Chuck Norris',
         	'email' 		     => 'admin@admin.com',
         	'password' 		    => bcrypt('admin'),
-        	'rol'			       => $rolRoot->id,
+        	'rol'			       => $rolAdmin->id,
         	'remember_token' => str_random(10),
           'state'          => 'ACTIVO',
           'avatar'          => 'http://giancarloscercado.com/images/dist/profile.png'
@@ -409,6 +409,11 @@ class ConfigurationSeeder extends Seeder
           'iconclass'   => 'fa fa-link', 
           'orden'     => 2,
           'cod_padre'   => $menuUsuariosV4->id
+        ]);
+
+        App\RolMenu::create([
+            'rol' => $rolAdmin->id,
+            'menu'  => $menuAulas->id,
         ]);
 
         //agregar materias a la malla academica
