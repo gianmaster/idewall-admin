@@ -17343,6 +17343,12 @@ var _mixins2 = _interopRequireDefault(_mixins);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
+	route: {
+		data: function data(transition) {
+			this.load();
+			transition.next();
+		}
+	},
 	mixins: [_mixins2.default],
 	data: function data() {
 		return {
