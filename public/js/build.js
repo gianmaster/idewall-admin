@@ -17290,7 +17290,7 @@ var _reusable_functions2 = _interopRequireDefault(_reusable_functions);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
-	name: 'content-docentes',
+	name: 'content-materias-docentes',
 	components: {
 		'content-header': _contentHeader2.default
 	},
@@ -17301,9 +17301,9 @@ exports.default = {
 	},
 	data: function data() {
 		return {
-			path: ['Administración', 'Docentes'],
+			path: ['Administración', 'Materias Docentes'],
 			loading: true,
-			titulo: 'Administración de Docentes',
+			titulo: 'Materias Docentes',
 			url: ''
 		};
 	}
@@ -17356,7 +17356,7 @@ exports.default = {
 			toolbar: null,
 			datos: [],
 			columnas: [{
-				title: 'Nombre Docente',
+				title: 'Docente',
 				field: 'nombres',
 				hidden: false,
 				sortable: true,

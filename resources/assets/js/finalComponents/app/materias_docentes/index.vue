@@ -16,7 +16,7 @@
 	import fnc from '../../../util/reusable_functions';
 
 	export default {
-		name: 'content-docentes',
+		name: 'content-materias-docentes',
 		components:{
 			'content-header' : ContentHeader
 		},
@@ -27,9 +27,9 @@
 		},
 		data: function(){
 			return {
-				path: ['Administración', 'Docentes'],
+				path: ['Administración', 'Materias Docentes'],
 				loading: true,
-				titulo: 'Administración de Docentes',
+				titulo: 'Materias Docentes',
 				url: ''
 			}
 		}

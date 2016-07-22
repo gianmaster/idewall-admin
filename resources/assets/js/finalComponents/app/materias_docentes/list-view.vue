@@ -39,7 +39,7 @@
 				datos: [],
 				columnas: [
 					{
-						title: 'Nombre Docente',
+						title: 'Docente',
 						field: 'nombres',
 						hidden: false,
 						sortable: true,
