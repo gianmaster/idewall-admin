@@ -16,6 +16,7 @@ class CreateDocentesTable extends Migration
 		Schema::create('docentes', function(Blueprint $table) {
             $table->increments('id');
 
+            $table->string('abreviatura');
             $table->string("nombres");
             $table->string("apellidos");
             $table->string("identificacion");
@@ -35,6 +36,7 @@ class CreateDocentesTable extends Migration
             $table->string("residencia");
             $table->string("direccion")->nullable();
             $table->enum('tipo_contrato', ['TIEMPO_COMPLETO', 'MEDIO_TIEMPO'])->default('TIEMPO_COMPLETO')->nullable(false);
+            $table->enum('estado', ['CONTRATADO', 'CULMINADO', 'RENOVADO'])->default('CONTRATADO')->nullable(false);
 
             $table->timestamps();
 		});

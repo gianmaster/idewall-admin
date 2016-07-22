@@ -62,6 +62,8 @@ router.map({
 
   '/docentes': require('./finalComponents/app/docentes/index.js'),
 
+  '/materias_docentes': require('./finalComponents/app/materias_docentes/index.js'),
+
   '/menu': require('./finalComponents/app/mantenedor-menu/index.js'),
 
   '/catalogos': require('./finalComponents/app/catalogos/index.js'),
