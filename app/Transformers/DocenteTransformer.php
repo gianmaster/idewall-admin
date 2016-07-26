@@ -20,10 +20,20 @@ class DocenteTransformer extends TransformerAbstract
      */
     public function transform(Docente $model)
     {
+
+        $materias = array();
+        foreach ($model->materias as $key => $value) {
+            array_push($materias, array(
+                'nombre'    => $value->materia_detail->nombre_materia
+                'semestre'  => $value->materia_detail->semestre
+            )); 
+        }
+
         return [
             'id'         => (int) $model->id,
 
             /* place your other model properties here */
+            'abreviatura'   => $model->abreviatura,
             'nombres'             => $model->nombres, 
             'apellidos' => $model->apellidos, 
             'identificacion' => $model->identificacion, 
@@ -43,6 +53,8 @@ class DocenteTransformer extends TransformerAbstract
             'residencia' => $model->residencia, 
             'direccion' => $model->direccion, 
             'tipo_contrato' => $model->tipo_contrato, 
+            'estado' => $model->estado, 
+            'materias' => $materias,
 
             'created_at' => $model->created_at,
             'updated_at' => $model->updated_at

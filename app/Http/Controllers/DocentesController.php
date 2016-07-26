@@ -15,14 +15,14 @@ class DocentesController extends Controller
 {
 
     protected $requestFields = [
-        'store'     => ['nombres', 'apellidos', 'identificacion', 'tipo_identificacion', 'email',
+        'store'     => ['abreviatura','nombres', 'apellidos', 'identificacion', 'tipo_identificacion', 'email',
                             'email_corporativo', 'celular', 'telefono', 'estado_civil', 'genero', 'titulo_pregrado',
                             'titulo_postgrado', 'titulo_mba', 'registro_senescyt', 'fecha_nacimiento', 'nacionalidad',
-                            'residencia', 'direccion', 'tipo_contrato'],
-        'update'    => ['nombres', 'apellidos', 'identificacion', 'tipo_identificacion', 'email',
+                            'residencia', 'direccion', 'tipo_contrato', 'estado'],
+        'update'    => ['abreviatura','nombres', 'apellidos', 'identificacion', 'tipo_identificacion', 'email',
                             'email_corporativo', 'celular', 'telefono', 'estado_civil', 'genero', 'titulo_pregrado',
                             'titulo_postgrado', 'titulo_mba', 'registro_senescyt', 'fecha_nacimiento', 'nacionalidad',
-                            'residencia', 'direccion', 'tipo_contrato']
+                            'residencia', 'direccion', 'tipo_contrato', 'estado']
     ];
 
     /**
@@ -56,9 +56,9 @@ class DocentesController extends Controller
 
         if (request()->has('sort')) {
             list($sortCol, $sortDir) = explode('|', request()->sort);
-            $docentes = $this->repository->orderBy($sortCol, $sortDir)->paginate($perPage);
+            $docentes = $this->repository->with('materias')->orderBy($sortCol, $sortDir)->paginate($perPage);
         } else {
-            $docentes = $this->repository->orderBy('id', 'asc')->paginate($perPage);
+            $docentes = $this->repository->with('materias')->orderBy('id', 'asc')->paginate($perPage);
         }
 
         return response()->json($docentes);

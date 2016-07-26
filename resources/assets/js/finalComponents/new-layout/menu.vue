@@ -8,7 +8,7 @@
 			<!-- Sidebar user panel (optional) -->
 			<div class="user-panel">
 				<div class="pull-left image">
-					<img src="img/user2-160x160.jpg" class="img-circle" alt="User Image" />
+					<img :src="avatar" class="img-circle" alt="User Image" />
 				</div>
 				<div class="pull-left info">
 					<p>{{ username }}</p>
@@ -59,6 +59,11 @@ module.exports = {
 			type: String,
 			required:false,
 			default: "Giancarlos Cercado"
+		},
+		avatar: {
+			type: String,
+			required:false,
+			default: 'img/user2-160x160.jpg'
 		}
 	},
 	methods: {

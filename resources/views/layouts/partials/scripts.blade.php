@@ -7,7 +7,10 @@
 <!-- AdminLTE App -->
 <script src="{{ asset('/js/app.min.js') }}" type="text/javascript"></script>
 <!-- Lobibox -->
-<script src="{{ asset('/vendors/lobibox/js/notifications.js') }}" type="text/javascript"></script>
+<script src="{{ asset('/vendors/lobibox/dist/js/lobibox.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('/vendors/lobibox/dist/js/messageboxes.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('/vendors/lobibox/dist/js/notifications.min.js') }}" type="text/javascript"></script>
+
 <!-- SlimScroll -->
 <script src="{{ asset('/js/slimscroll.min.js') }}" type="text/javascript"></script>
 <!-- Optionally, you can add Slimscroll and FastClick plugins.

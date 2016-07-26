@@ -8,6 +8,11 @@
 	-->
 
 	<div class="col-sm-6 col-xs-12">
+		<label>Abreviatura Título</label>
+		<input type="text" class="form-control" v-model="dataModel.abreviatura" placeholder="Ing" minlength="3" required>
+	</div>
+
+	<div class="col-sm-6 col-xs-12">
 		<label>Nombres</label>
 		<input type="text" class="form-control" v-model="dataModel.nombres" placeholder="Giancarlos Steven" minlength="2" required>
 		<input type="hidden" class="form-control" :value="dataModel.id">
@@ -103,6 +108,11 @@
 		<select-list class-name="form-control col-xs-6" :select-value.sync="dataModel.tipo_contrato" :data="['MEDIO_TIEMPO', 'TIEMPO_COMPLETO']" :is-required="true"></select-list>
 	</div>
 
+	<div class="col-sm-6 col-xs-12" v-if="!createMode">
+		<label>Tipo Contrato</label>
+		<select-list class-name="form-control col-xs-6" :select-value.sync="dataModel.estado" :data="['CONTRATADO', 'CULMINADO', 'RENOVADO']" :is-required="true"></select-list>
+	</div>
+
 
 	<div class="col-xs-12">
 		<div class="content">
@@ -131,6 +141,7 @@
 			initModel: function(){
 				return {
 					id: null,
+					abreviatura: null,
 					nombres: null,
 					apellidos: null,
 					identificacion: null,
@@ -150,6 +161,7 @@
 					residencia: null,
 					direccion: null,
 					tipo_contrato: null,
+					estado: 'CONTRATADO',
 				}
 			},
 		},
@@ -165,6 +177,7 @@
 				default: function(){
 					return {
 						id: null,
+						abreviatura: null,
 						nombres: null,
 						apellidos: null,
 						identificacion: null,
@@ -184,6 +197,7 @@
 						residencia: null,
 						direccion: null,
 						tipo_contrato: null,
+						estado: null,
 					}
 				}
 			}

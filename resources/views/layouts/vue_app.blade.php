@@ -30,17 +30,6 @@ desired effect
 
 <body id="app" class="@{{ body_class }}">
 
-<!--
-<div class="wrapper" id="thefuckingapp">
-	
-		
-		<pinche-app></pinche-app>
-		
-
-
-</div>
-
--->
 
 @section('scripts')
     @include('layouts.partials.scripts')

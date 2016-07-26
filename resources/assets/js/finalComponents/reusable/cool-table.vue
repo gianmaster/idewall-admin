@@ -164,83 +164,13 @@
 
 	</div>
 
-	<!--
-	<div v-if="optionToolbar" :class="divSeparatorClass">
-		<div class="col-xs-7">
-			<form action="#" method="get">
-				<div class="input-group">
-					<input type="text" name="table_q" class="form-control" placeholder="Buscar...">
-					<span class="input-group-btn">
-						<button type="submit" name="search_table" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
-					</span>
-				</div>
-			</form>
-		</div>
-		<div class="col-xs-4">
-			<div class="form-group">
-				<select class="form-control" v-model="pagination.data.per_page">
-					<option value="" disabled>Rigistros por página</option>
-					<option v-for="item in pagination.data.per_page_list | orderBy item"  track-by="$index" :value="item">{{item}}</option>
-				</select>
-			</div>
-		</div>
-		<div class="col-xs-1">
-			<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true" :title="optionToolbar.label">
-				<i :class="optionToolbar.iconClass"></i>
-			</button>
-			<ul class="dropdown-menu">
-				<li v-for="(idx, col) in columns">
-					<span class="checkbox">
-						<label @click="toggleColumns(idx)">
-							<strong>{{ col.title }} <i class="fa fa-check font-success" v-if="!col.hidden"></i><i class="fa fa-close font-error" v-else></i></strong>
-
-						</label>
-					</span>
-				</li>
-			</ul>
-		</div>
-	</div>
-
-	<div :class="divSeparatorClass">
-		<table :class="tableClass">
-			<thead v-if="requireHeader">
-				<tr>
-					<th v-for="col in columns | filterBy false in 'hidden'" :class="col.titleClass">{{col.title}}</th>
-				</tr>
-			</thead>
-			
-			<tbody>
-				<tr v-for="item in data">
-
-					<td v-for="col in columns | filterBy false in 'hidden'" :class="col.fieldClass">
-						
-						<div v-if="!col.itemActions">{{ item[col.field] }}</div>
-						
-						<div v-else class="btn-group">
-
-							<a v-for="act in col.itemActions" :class="act.btnClass" href="" @click.prevent="dispacher(act.nameEmit, item)" >
-								<i :class="act.iconClass" data-toggle="tooltip" :title="act.label"></i>
-							</a>
-
-						</div>
-
-
-
-				</td>
-
-			</tr>
-		</tbody>
-		
-	</table>
-</div>
--->
 
 </template>
 
 <style>
 	.font-success{
-		color: #00a65a;
-	}
+		 color: #00a65a;
+	 }
 
 	.font-error{
 		color: #dd4b39;

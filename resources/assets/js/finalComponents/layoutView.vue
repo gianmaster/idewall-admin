@@ -1,7 +1,7 @@
 <template>
   <div v-if="login">
     <app-header :username.sync="profile.name" :avatar.sync="profile.avatar" :from-date.sync="fromDate"></app-header>
-    <app-menu></app-menu>
+    <app-menu :username.sync="profile.name" :avatar.sync="profile.avatar"></app-menu>
     <app-content :title="title"></app-content>
     <app-control></app-control>
     <app-footer></app-footer>

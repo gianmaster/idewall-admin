@@ -78,15 +78,6 @@
 						</span>
 					</p>
 
-					<p class="text-muted">
-						<span class="label label-success" v-if="newModel.estado=='CONTRATADO' || newModel.estado=='RENOVADO'">
-							{{newModel.estado}} <sub>(Activo)</sub>
-						</span>
-						<span class="label label-warning" v-else>
-							{{newModel.estado}} <sub>(Inactivo)</sub>
-						</span>
-					</p>
-
 					<hr>
 					
 

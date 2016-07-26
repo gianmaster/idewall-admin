@@ -238,6 +238,21 @@ class ConfigurationSeeder extends Seeder
             'menu'  => $menuDocentes->id,
         ]);
 
+        //menu materias docentes
+        $menuMateriasDocentes = App\Menu::create([
+            'nombre'    => 'materias_docentes',
+            'titulo'    => 'Materias Docentes',
+            'url'     => '/materias_docentes',
+            'iconclass'   => 'fa fa-link',
+            'orden'     => 2,
+            'cod_padre'   => $menuAdmin->id
+        ]);
+
+        App\RolMenu::create([
+            'rol' => $rolAdmin->id,
+            'menu'  => $menuMateriasDocentes->id,
+        ]);
+
 
        //Semestres
        $sem = App\Entities\Catalogo::create([
@@ -831,6 +846,7 @@ class ConfigurationSeeder extends Seeder
 
         //creacion de docentes para pruebas
         App\Entities\Docente::create([
+          'abreviatura'         => 'Ing',
           'nombres'             => 'Jose Antonio',
           'apellidos'           => 'Alcivar Gonzales', 
           'identificacion'      => '0919210419', 
@@ -854,6 +870,7 @@ class ConfigurationSeeder extends Seeder
 
 
         App\Entities\Docente::create([
+          'abreviatura'         => 'Ing',
           'nombres'             => 'Cesar Gabriel',
           'apellidos'           => 'Barrionuevo De la rosa', 
           'identificacion'      => '0920214731', 
@@ -874,6 +891,38 @@ class ConfigurationSeeder extends Seeder
           'direccion'           => 'Latamendi #4818 y la 23',
           'tipo_contrato'       => 'TIEMPO_COMPLETO'
           ]);
+
+
+        //Asignación de materias docentes para pruebas
+        App\Entities\MateriasDocente::create([
+          'docente' => 1,
+          'materia' => 12,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+          'docente' => 1,
+          'materia' => 34,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+          'docente' => 1,
+          'materia' => 41,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+          'docente' => 2,
+          'materia' => 2,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+          'docente' => 2,
+          'materia' => 22,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+          'docente' => 2,
+          'materia' => 17,
+        ]);
 
 
     }
