@@ -12,7 +12,7 @@ class MateriasDocente extends Model implements Transformable
 
     protected $table = 'materias_docente';
 
-    protected $fillable = ['docente', 'materia', 'id'];
+    protected $fillable = ['docente', 'materia', 'id', 'activo'];
 
     public function docenteOwner(){
     	return $this->BelongsTo(Docente::class, 'id', 'docente');

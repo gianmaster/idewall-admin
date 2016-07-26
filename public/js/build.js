@@ -5580,7 +5580,7 @@ module.exports = plugin;
 },{}],24:[function(require,module,exports){
 (function (process,global){
 /*!
- * Vue.js v1.0.25
+ * Vue.js v1.0.24
  * (c) 2016 Evan You
  * Released under the MIT License.
  */
@@ -5979,15 +5979,10 @@ var devtools = inBrowser && window.__VUE_DEVTOOLS_GLOBAL_HOOK__;
 
 // UA sniffing for working around browser-specific quirks
 var UA = inBrowser && window.navigator.userAgent.toLowerCase();
-var isIE = UA && UA.indexOf('trident') > 0;
 var isIE9 = UA && UA.indexOf('msie 9.0') > 0;
 var isAndroid = UA && UA.indexOf('android') > 0;
 var isIos = UA && /(iphone|ipad|ipod|ios)/i.test(UA);
-var iosVersionMatch = isIos && UA.match(/os ([\d_]+)/);
-var iosVersion = iosVersionMatch && iosVersionMatch[1].split('_');
-
-// detecting iOS UIWebView by indexedDB
-var hasMutationObserverBug = iosVersion && Number(iosVersion[0]) >= 9 && Number(iosVersion[1]) >= 3 && !window.indexedDB;
+var isWechat = UA && UA.indexOf('micromessenger') > 0;
 
 var transitionProp = undefined;
 var transitionEndEvent = undefined;
@@ -6028,7 +6023,7 @@ var nextTick = (function () {
   }
 
   /* istanbul ignore if */
-  if (typeof MutationObserver !== 'undefined' && !hasMutationObserverBug) {
+  if (typeof MutationObserver !== 'undefined' && !(isWechat && isIos)) {
     var counter = 1;
     var observer = new MutationObserver(nextTickHandler);
     var textNode = document.createTextNode(counter);
@@ -6100,12 +6095,12 @@ var p = Cache.prototype;
 
 p.put = function (key, value) {
   var removed;
+  if (this.size === this.limit) {
+    removed = this.shift();
+  }
 
   var entry = this.get(key, true);
   if (!entry) {
-    if (this.size === this.limit) {
-      removed = this.shift();
-    }
     entry = {
       key: key
     };
@@ -6350,7 +6345,7 @@ function compileRegex() {
   var unsafeOpen = escapeRegex(config.unsafeDelimiters[0]);
   var unsafeClose = escapeRegex(config.unsafeDelimiters[1]);
   tagRE = new RegExp(unsafeOpen + '((?:.|\\n)+?)' + unsafeClose + '|' + open + '((?:.|\\n)+?)' + close, 'g');
-  htmlRE = new RegExp('^' + unsafeOpen + '((?:.|\\n)+?)' + unsafeClose + '$');
+  htmlRE = new RegExp('^' + unsafeOpen + '.*' + unsafeClose + '$');
   // reset cache
   cache = new Cache(1000);
 }
@@ -7137,8 +7132,7 @@ if (process.env.NODE_ENV !== 'production') {
       return (/HTMLUnknownElement/.test(el.toString()) &&
         // Chrome returns unknown for several HTML5 elements.
         // https://code.google.com/p/chromium/issues/detail?id=540526
-        // Firefox returns unknown for some "Interactive elements."
-        !/^(data|time|rtc|rb|details|dialog|summary)$/.test(tag)
+        !/^(data|time|rtc|rb)$/.test(tag)
       );
     }
   };
@@ -7474,9 +7468,7 @@ function mergeOptions(parent, child, vm) {
   }
   if (child.mixins) {
     for (var i = 0, l = child.mixins.length; i < l; i++) {
-      var mixin = child.mixins[i];
-      var mixinOptions = mixin.prototype instanceof Vue ? mixin.options : mixin;
-      parent = mergeOptions(parent, mixinOptions, vm);
+      parent = mergeOptions(parent, child.mixins[i], vm);
     }
   }
   for (key in parent) {
@@ -7904,13 +7896,10 @@ var util = Object.freeze({
 	hasProto: hasProto,
 	inBrowser: inBrowser,
 	devtools: devtools,
-	isIE: isIE,
 	isIE9: isIE9,
 	isAndroid: isAndroid,
 	isIos: isIos,
-	iosVersionMatch: iosVersionMatch,
-	iosVersion: iosVersion,
-	hasMutationObserverBug: hasMutationObserverBug,
+	isWechat: isWechat,
 	get transitionProp () { return transitionProp; },
 	get transitionEndEvent () { return transitionEndEvent; },
 	get animationProp () { return animationProp; },
@@ -8398,9 +8387,7 @@ var saveRE = /[\{,]\s*[\w\$_]+\s*:|('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\
 var restoreRE = /"(\d+)"/g;
 var pathTestRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['.*?'\]|\[".*?"\]|\[\d+\]|\[[A-Za-z_$][\w$]*\])*$/;
 var identRE = /[^\w$\.](?:[A-Za-z_$][\w$]*)/g;
-var literalValueRE$1 = /^(?:true|false|null|undefined|Infinity|NaN)$/;
-
-function noop() {}
+var booleanLiteralRE = /^(?:true|false)$/;
 
 /**
  * Save / Rewrite / Restore
@@ -8482,7 +8469,7 @@ function compileGetter(exp) {
   // save strings and object literal keys
   var body = exp.replace(saveRE, save).replace(wsRE, '');
   // rewrite all paths
-  // pad 1 space here because the regex matches 1 extra char
+  // pad 1 space here becaue the regex matches 1 extra char
   body = (' ' + body).replace(identRE, rewrite).replace(restoreRE, restore);
   return makeGetterFn(body);
 }
@@ -8503,15 +8490,7 @@ function makeGetterFn(body) {
     return new Function('scope', 'return ' + body + ';');
     /* eslint-enable no-new-func */
   } catch (e) {
-    if (process.env.NODE_ENV !== 'production') {
-      /* istanbul ignore if */
-      if (e.toString().match(/unsafe-eval|CSP/)) {
-        warn('It seems you are using the default build of Vue.js in an environment ' + 'with Content Security Policy that prohibits unsafe-eval. ' + 'Use the CSP-compliant build instead: ' + 'http://vuejs.org/guide/installation.html#CSP-compliant-build');
-      } else {
-        warn('Invalid expression. ' + 'Generated function body: ' + body);
-      }
-    }
-    return noop;
+    process.env.NODE_ENV !== 'production' && warn('Invalid expression. ' + 'Generated function body: ' + body);
   }
 }
 
@@ -8573,8 +8552,8 @@ function parseExpression(exp, needSet) {
 
 function isSimplePath(exp) {
   return pathTestRE.test(exp) &&
-  // don't treat literal values as paths
-  !literalValueRE$1.test(exp) &&
+  // don't treat true/false as paths
+  !booleanLiteralRE.test(exp) &&
   // Math constants e.g. Math.PI, Math.E etc.
   exp.slice(0, 5) !== 'Math.';
 }
@@ -9053,7 +9032,6 @@ function isRealTemplate(node) {
 
 var tagRE$1 = /<([\w:-]+)/;
 var entityRE = /&#?\w+?;/;
-var commentRE = /<!--/;
 
 /**
  * Convert a string template to a DocumentFragment.
@@ -9076,9 +9054,8 @@ function stringToFragment(templateString, raw) {
   var frag = document.createDocumentFragment();
   var tagMatch = templateString.match(tagRE$1);
   var entityMatch = entityRE.test(templateString);
-  var commentMatch = commentRE.test(templateString);
 
-  if (!tagMatch && !entityMatch && !commentMatch) {
+  if (!tagMatch && !entityMatch) {
     // text only, return a single text node.
     frag.appendChild(document.createTextNode(templateString));
   } else {
@@ -10045,7 +10022,7 @@ var vFor = {
    * the filters. This is passed to and called by the watcher.
    *
    * It is necessary for this to be called during the
-   * watcher's dependency collection phase because we want
+   * wathcer's dependency collection phase because we want
    * the v-for to update when the source Object is mutated.
    */
 
@@ -10388,10 +10365,7 @@ var text$2 = {
   },
 
   update: function update(value) {
-    // #3029 only update when the value changes. This prevent
-    // browsers from overwriting values like selectionStart
-    value = _toString(value);
-    if (value !== this.el.value) this.el.value = value;
+    this.el.value = _toString(value);
   },
 
   unbind: function unbind() {
@@ -10440,8 +10414,6 @@ var radio = {
 var select = {
 
   bind: function bind() {
-    var _this = this;
-
     var self = this;
     var el = this.el;
 
@@ -10473,16 +10445,11 @@ var select = {
     // selectedIndex with value -1 to 0 when the element
     // is appended to a new parent, therefore we have to
     // force a DOM update whenever that happens...
-    this.vm.$on('hook:attached', function () {
-      nextTick(_this.forceUpdate);
-    });
+    this.vm.$on('hook:attached', this.forceUpdate);
   },
 
   update: function update(value) {
     var el = this.el;
-    if (!inDoc(el)) {
-      return nextTick(this.forceUpdate);
-    }
     el.selectedIndex = -1;
     var multi = this.multiple && isArray(value);
     var options = el.options;
@@ -11748,7 +11715,7 @@ function processPropValue(vm, prop, rawValue, fn) {
   if (value === undefined) {
     value = getPropDefaultValue(vm, prop);
   }
-  value = coerceProp(prop, value, vm);
+  value = coerceProp(prop, value);
   var coerced = value !== rawValue;
   if (!assertProp(prop, value, vm)) {
     value = undefined;
@@ -11867,17 +11834,13 @@ function assertProp(prop, value, vm) {
  * @return {*}
  */
 
-function coerceProp(prop, value, vm) {
+function coerceProp(prop, value) {
   var coerce = prop.options.coerce;
   if (!coerce) {
     return value;
   }
-  if (typeof coerce === 'function') {
-    return coerce(value);
-  } else {
-    process.env.NODE_ENV !== 'production' && warn('Invalid coerce for prop "' + prop.name + '": expected function, got ' + typeof coerce + '.', vm);
-    return value;
-  }
+  // coerce is a function
+  return coerce(value);
 }
 
 /**
@@ -12409,9 +12372,10 @@ var transition$1 = {
     // resolve on owner vm
     var hooks = resolveAsset(this.vm.$options, 'transitions', id);
     id = id || 'v';
-    oldId = oldId || 'v';
     el.__v_trans = new Transition(el, id, hooks, this.vm);
-    removeClass(el, oldId + '-transition');
+    if (oldId) {
+      removeClass(el, oldId + '-transition');
+    }
     addClass(el, id + '-transition');
   }
 };
@@ -12836,7 +12800,7 @@ function makeTextNodeLinkFn(tokens, frag) {
           if (token.html) {
             replace(node, parseTemplate(value, true));
           } else {
-            node.data = _toString(value);
+            node.data = value;
           }
         } else {
           vm._bindDir(token.descriptor, node, host, scope);
@@ -13820,7 +13784,7 @@ function eventsMixin (Vue) {
   };
 }
 
-function noop$1() {}
+function noop() {}
 
 /**
  * A directive links a DOM element with a piece of data,
@@ -13919,7 +13883,7 @@ Directive.prototype._bind = function () {
         }
       };
     } else {
-      this._update = noop$1;
+      this._update = noop;
     }
     var preProcess = this._preProcess ? bind(this._preProcess, this) : null;
     var postProcess = this._postProcess ? bind(this._postProcess, this) : null;
@@ -15357,7 +15321,7 @@ var filters = {
 
   json: {
     read: function read(value, indent) {
-      return typeof value === 'string' ? value : JSON.stringify(value, null, arguments.length > 1 ? indent : 2);
+      return typeof value === 'string' ? value : JSON.stringify(value, null, Number(indent) || 2);
     },
     write: function write(value) {
       try {
@@ -15615,9 +15579,7 @@ function installGlobalAPI (Vue) {
           }
         }
         if (type === 'component' && isPlainObject(definition)) {
-          if (!definition.name) {
-            definition.name = id;
-          }
+          definition.name = id;
           definition = Vue.extend(definition);
         }
         this.options[type + 's'][id] = definition;
@@ -15632,7 +15594,7 @@ function installGlobalAPI (Vue) {
 
 installGlobalAPI(Vue);
 
-Vue.version = '1.0.25';
+Vue.version = '1.0.24';
 
 // devtools global hook
 /* istanbul ignore next */
@@ -15769,7 +15731,7 @@ router.start(App, '#app');
 //solo para hacer debug
 window.router = router;
 
-},{"./config/externalComponents":27,"./finalComponents/app/catalogoItems/index.js":32,"./finalComponents/app/catalogos/index.js":40,"./finalComponents/app/docentes/index.js":48,"./finalComponents/app/malla_academica/index.js":56,"./finalComponents/app/mantenedor-menu/index.js":64,"./finalComponents/app/materias/index.js":70,"./finalComponents/app/materias_docentes/index.js":77,"./finalComponents/app/usuarios/index.js":85,"./finalComponents/layoutView.vue":90,"./finalComponents/new-layout/lockscreen.vue":96,"./finalComponents/reusable/notFound.vue":105,"vue":24,"vue-resource":22,"vue-router":23}],27:[function(require,module,exports){
+},{"./config/externalComponents":27,"./finalComponents/app/catalogoItems/index.js":32,"./finalComponents/app/catalogos/index.js":40,"./finalComponents/app/docentes/index.js":48,"./finalComponents/app/malla_academica/index.js":56,"./finalComponents/app/mantenedor-menu/index.js":64,"./finalComponents/app/materias/index.js":70,"./finalComponents/app/materias_docentes/index.js":75,"./finalComponents/app/usuarios/index.js":82,"./finalComponents/layoutView.vue":87,"./finalComponents/new-layout/lockscreen.vue":93,"./finalComponents/reusable/notFound.vue":102,"vue":24,"vue-resource":22,"vue-router":23}],27:[function(require,module,exports){
 'use strict';
 
 var _loading = require('../finalComponents/reusable/loading.vue');
@@ -15799,7 +15761,7 @@ module.exports = function (Vue) {
 
 */
 
-},{"../finalComponents/reusable/loading.vue":99}],28:[function(require,module,exports){
+},{"../finalComponents/reusable/loading.vue":96}],28:[function(require,module,exports){
 'use strict';
 
 module.exports = [{
@@ -15869,9 +15831,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-4bcf8405", module.exports)
+    hotAPI.createRecord("_v-537dcf43", module.exports)
   } else {
-    hotAPI.update("_v-4bcf8405", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-537dcf43", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"./form-fields.vue":31,"./mixins":35,"vue":24,"vue-hot-reload-api":20}],30:[function(require,module,exports){
@@ -15923,9 +15885,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-68d2ff12", module.exports)
+    hotAPI.createRecord("_v-6c3a8335", module.exports)
   } else {
-    hotAPI.update("_v-68d2ff12", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-6c3a8335", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"./form-fields.vue":31,"./mixins":35,"vue":24,"vue-hot-reload-api":20}],31:[function(require,module,exports){
@@ -15992,12 +15954,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-4c7add11", module.exports)
+    hotAPI.createRecord("_v-5429284f", module.exports)
   } else {
-    hotAPI.update("_v-4c7add11", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-5429284f", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/select-list.vue":106,"vue":24,"vue-hot-reload-api":20}],32:[function(require,module,exports){
+},{"../../reusable/select-list.vue":103,"vue":24,"vue-hot-reload-api":20}],32:[function(require,module,exports){
 'use strict';
 
 var _index = require('./index.vue');
@@ -16098,12 +16060,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-9044d97e", module.exports)
+    hotAPI.createRecord("_v-f406b602", module.exports)
   } else {
-    hotAPI.update("_v-9044d97e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-f406b602", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../../util/reusable_functions":107,"../../new-layout/content-header.vue":91,"vue":24,"vue-hot-reload-api":20}],34:[function(require,module,exports){
+},{"../../../util/reusable_functions":104,"../../new-layout/content-header.vue":88,"vue":24,"vue-hot-reload-api":20}],34:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16202,12 +16164,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-4892e463", module.exports)
+    hotAPI.createRecord("_v-2d9231be", module.exports)
   } else {
-    hotAPI.update("_v-4892e463", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-2d9231be", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/cool-table.vue":98,"../../reusable/loading.vue":99,"./mixins":35,"vue":24,"vue-hot-reload-api":20}],35:[function(require,module,exports){
+},{"../../reusable/cool-table.vue":95,"../../reusable/loading.vue":96,"./mixins":35,"vue":24,"vue-hot-reload-api":20}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16264,7 +16226,7 @@ exports.default = {
     * cada metodo declarado aquí hará referencia con "this" a su propio "scope"
     */
 
-},{"../../../util/reusable_functions":107}],36:[function(require,module,exports){
+},{"../../../util/reusable_functions":104}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16297,9 +16259,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-0432d26b", module.exports)
+    hotAPI.createRecord("_v-b65255ae", module.exports)
   } else {
-    hotAPI.update("_v-0432d26b", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-b65255ae", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"./mixins":35,"vue":24,"vue-hot-reload-api":20}],37:[function(require,module,exports){
@@ -16341,9 +16303,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-3cad6858", module.exports)
+    hotAPI.createRecord("_v-0161fad4", module.exports)
   } else {
-    hotAPI.update("_v-3cad6858", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-0161fad4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"./form-fields.vue":39,"./mixins":43,"vue":24,"vue-hot-reload-api":20}],38:[function(require,module,exports){
@@ -16389,9 +16351,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-bd9144ec", module.exports)
+    hotAPI.createRecord("_v-6f566f48", module.exports)
   } else {
-    hotAPI.update("_v-bd9144ec", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-6f566f48", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"./form-fields.vue":39,"./mixins":43,"vue":24,"vue-hot-reload-api":20}],39:[function(require,module,exports){
@@ -16454,12 +16416,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-3d58c164", module.exports)
+    hotAPI.createRecord("_v-000b48bc", module.exports)
   } else {
-    hotAPI.update("_v-3d58c164", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-000b48bc", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/select-list.vue":106,"vue":24,"vue-hot-reload-api":20}],40:[function(require,module,exports){
+},{"../../reusable/select-list.vue":103,"vue":24,"vue-hot-reload-api":20}],40:[function(require,module,exports){
 arguments[4][32][0].apply(exports,arguments)
 },{"./create-view.vue":37,"./edit-view.vue":38,"./index.vue":41,"./list-view.vue":42,"./read-view.vue":44,"dup":32}],41:[function(require,module,exports){
 'use strict';
@@ -16494,12 +16456,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-0cc5f1d4", module.exports)
+    hotAPI.createRecord("_v-663f9292", module.exports)
   } else {
-    hotAPI.update("_v-0cc5f1d4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-663f9292", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../new-layout/content-header.vue":91,"vue":24,"vue-hot-reload-api":20}],42:[function(require,module,exports){
+},{"../../new-layout/content-header.vue":88,"vue":24,"vue-hot-reload-api":20}],42:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16609,12 +16571,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-1e33c176", module.exports)
+    hotAPI.createRecord("_v-275a5998", module.exports)
   } else {
-    hotAPI.update("_v-1e33c176", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-275a5998", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../../util/reusable_functions":107,"../../reusable/cool-table.vue":98,"../../reusable/loading.vue":99,"./mixins":43,"vue":24,"vue-hot-reload-api":20}],43:[function(require,module,exports){
+},{"../../../util/reusable_functions":104,"../../reusable/cool-table.vue":95,"../../reusable/loading.vue":96,"./mixins":43,"vue":24,"vue-hot-reload-api":20}],43:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16668,7 +16630,7 @@ exports.default = {
     * cada metodo declarado aquí hará referencia con "this" a su propio "scope"
     */
 
-},{"../../../util/reusable_functions":107}],44:[function(require,module,exports){
+},{"../../../util/reusable_functions":104}],44:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16701,9 +16663,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-4c58a104", module.exports)
+    hotAPI.createRecord("_v-b01a7d88", module.exports)
   } else {
-    hotAPI.update("_v-4c58a104", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-b01a7d88", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"./mixins":43,"vue":24,"vue-hot-reload-api":20}],45:[function(require,module,exports){
@@ -16750,9 +16712,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-3a2bbfec", module.exports)
+    hotAPI.createRecord("_v-4ea573e8", module.exports)
   } else {
-    hotAPI.update("_v-3a2bbfec", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-4ea573e8", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"./form-fields.vue":47,"./mixins":51,"vue":24,"vue-hot-reload-api":20}],46:[function(require,module,exports){
@@ -16803,9 +16765,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-5e4259bc", module.exports)
+    hotAPI.createRecord("_v-a189cf84", module.exports)
   } else {
-    hotAPI.update("_v-5e4259bc", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-a189cf84", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"./form-fields.vue":47,"./mixins":51,"vue":24,"vue-hot-reload-api":20}],47:[function(require,module,exports){
@@ -16904,12 +16866,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-38d50dd4", module.exports)
+    hotAPI.createRecord("_v-4d4ec1d0", module.exports)
   } else {
-    hotAPI.update("_v-38d50dd4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-4d4ec1d0", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/select-list.vue":106,"vue":24,"vue-hot-reload-api":20}],48:[function(require,module,exports){
+},{"../../reusable/select-list.vue":103,"vue":24,"vue-hot-reload-api":20}],48:[function(require,module,exports){
 arguments[4][32][0].apply(exports,arguments)
 },{"./create-view.vue":45,"./edit-view.vue":46,"./index.vue":49,"./list-view.vue":50,"./read-view.vue":52,"dup":32}],49:[function(require,module,exports){
 'use strict';
@@ -16955,12 +16917,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-6e0ad706", module.exports)
+    hotAPI.createRecord("_v-269b2688", module.exports)
   } else {
-    hotAPI.update("_v-6e0ad706", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-269b2688", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../../util/reusable_functions":107,"../../new-layout/content-header.vue":91,"vue":24,"vue-hot-reload-api":20}],50:[function(require,module,exports){
+},{"../../../util/reusable_functions":104,"../../new-layout/content-header.vue":88,"vue":24,"vue-hot-reload-api":20}],50:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17084,12 +17046,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-498284b0", module.exports)
+    hotAPI.createRecord("_v-2c377c2a", module.exports)
   } else {
-    hotAPI.update("_v-498284b0", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-2c377c2a", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/cool-table.vue":98,"../../reusable/loading.vue":99,"./mixins":51,"vue":24,"vue-hot-reload-api":20}],51:[function(require,module,exports){
+},{"../../reusable/cool-table.vue":95,"../../reusable/loading.vue":96,"./mixins":51,"vue":24,"vue-hot-reload-api":20}],51:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17144,7 +17106,7 @@ exports.default = {
     * cada metodo declarado aquí hará referencia con "this" a su propio "scope"
     */
 
-},{"../../../util/reusable_functions":107}],52:[function(require,module,exports){
+},{"../../../util/reusable_functions":104}],52:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17177,9 +17139,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-d242a8a0", module.exports)
+    hotAPI.createRecord("_v-30512b9c", module.exports)
   } else {
-    hotAPI.update("_v-d242a8a0", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-30512b9c", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"./mixins":51,"vue":24,"vue-hot-reload-api":20}],53:[function(require,module,exports){
@@ -17226,9 +17188,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-856f09ba", module.exports)
+    hotAPI.createRecord("_v-dade223e", module.exports)
   } else {
-    hotAPI.update("_v-856f09ba", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-dade223e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"./form-fields.vue":55,"./mixins":59,"vue":24,"vue-hot-reload-api":20}],54:[function(require,module,exports){
@@ -17279,9 +17241,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-567ea715", module.exports)
+    hotAPI.createRecord("_v-5e2cf253", module.exports)
   } else {
-    hotAPI.update("_v-567ea715", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-5e2cf253", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"./form-fields.vue":55,"./mixins":59,"vue":24,"vue-hot-reload-api":20}],55:[function(require,module,exports){
@@ -17348,12 +17310,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-841857a2", module.exports)
+    hotAPI.createRecord("_v-d9877026", module.exports)
   } else {
-    hotAPI.update("_v-841857a2", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-d9877026", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/select-list.vue":106,"vue":24,"vue-hot-reload-api":20}],56:[function(require,module,exports){
+},{"../../reusable/select-list.vue":103,"vue":24,"vue-hot-reload-api":20}],56:[function(require,module,exports){
 arguments[4][32][0].apply(exports,arguments)
 },{"./create-view.vue":53,"./edit-view.vue":54,"./index.vue":57,"./list-view.vue":58,"./read-view.vue":60,"dup":32}],57:[function(require,module,exports){
 'use strict';
@@ -17399,12 +17361,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-18adb8df", module.exports)
+    hotAPI.createRecord("_v-496159c6", module.exports)
   } else {
-    hotAPI.update("_v-18adb8df", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-496159c6", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../../util/reusable_functions":107,"../../new-layout/content-header.vue":91,"vue":24,"vue-hot-reload-api":20}],58:[function(require,module,exports){
+},{"../../../util/reusable_functions":104,"../../new-layout/content-header.vue":88,"vue":24,"vue-hot-reload-api":20}],58:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17516,12 +17478,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-5909e9fe", module.exports)
+    hotAPI.createRecord("_v-49ad5382", module.exports)
   } else {
-    hotAPI.update("_v-5909e9fe", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-49ad5382", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/cool-table.vue":98,"../../reusable/loading.vue":99,"./mixins":59,"vue":24,"vue-hot-reload-api":20}],59:[function(require,module,exports){
+},{"../../reusable/cool-table.vue":95,"../../reusable/loading.vue":96,"./mixins":59,"vue":24,"vue-hot-reload-api":20}],59:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17576,7 +17538,7 @@ exports.default = {
     * cada metodo declarado aquí hará referencia con "this" a su propio "scope"
     */
 
-},{"../../../util/reusable_functions":107}],60:[function(require,module,exports){
+},{"../../../util/reusable_functions":104}],60:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17609,9 +17571,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-e1ca0dee", module.exports)
+    hotAPI.createRecord("_v-d26d7772", module.exports)
   } else {
-    hotAPI.update("_v-e1ca0dee", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-d26d7772", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"./mixins":59,"vue":24,"vue-hot-reload-api":20}],61:[function(require,module,exports){
@@ -17661,12 +17623,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-54b6637c", module.exports)
+    hotAPI.createRecord("_v-aa257c00", module.exports)
   } else {
-    hotAPI.update("_v-54b6637c", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-aa257c00", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../../util/reusable_functions":107,"./form-fields.vue":63,"vue":24,"vue-hot-reload-api":20}],62:[function(require,module,exports){
+},{"../../../util/reusable_functions":104,"./form-fields.vue":63,"vue":24,"vue-hot-reload-api":20}],62:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17731,12 +17693,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-2dc335f4", module.exports)
+    hotAPI.createRecord("_v-35718132", module.exports)
   } else {
-    hotAPI.update("_v-2dc335f4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-35718132", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../../util/reusable_functions":107,"./form-fields.vue":63,"vue":24,"vue-hot-reload-api":20}],63:[function(require,module,exports){
+},{"../../../util/reusable_functions":104,"./form-fields.vue":63,"vue":24,"vue-hot-reload-api":20}],63:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17802,12 +17764,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-535fb164", module.exports)
+    hotAPI.createRecord("_v-a8cec9e8", module.exports)
   } else {
-    hotAPI.update("_v-535fb164", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-a8cec9e8", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/select-list.vue":106,"vue":24,"vue-hot-reload-api":20}],64:[function(require,module,exports){
+},{"../../reusable/select-list.vue":103,"vue":24,"vue-hot-reload-api":20}],64:[function(require,module,exports){
 arguments[4][32][0].apply(exports,arguments)
 },{"./create-view.vue":61,"./edit-view.vue":62,"./index.vue":65,"./list-view.vue":66,"./read-view.vue":67,"dup":32}],65:[function(require,module,exports){
 'use strict';
@@ -17844,12 +17806,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-15dae184", module.exports)
+    hotAPI.createRecord("_v-9097ad08", module.exports)
   } else {
-    hotAPI.update("_v-15dae184", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-9097ad08", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../new-layout/content-header.vue":91,"vue":24,"vue-hot-reload-api":20}],66:[function(require,module,exports){
+},{"../../new-layout/content-header.vue":88,"vue":24,"vue-hot-reload-api":20}],66:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17874,21 +17836,21 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-aa80cc40", module.exports)
+    hotAPI.createRecord("_v-9b2435c4", module.exports)
   } else {
-    hotAPI.update("_v-aa80cc40", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-9b2435c4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/menuManagement.vue":103,"vue":24,"vue-hot-reload-api":20}],67:[function(require,module,exports){
+},{"../../reusable/menuManagement.vue":100,"vue":24,"vue-hot-reload-api":20}],67:[function(require,module,exports){
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<h3>Visualización</h3>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem voluptate laborum, a accusamus. Cum aperiam dignissimos iste, placeat facere repudiandae vel, doloribus voluptatibus perferendis esse illo, dicta. Inventore, possimus, illum!</p>\n<pre>{{$route.params.model_id|json}}</pre>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-665f87e8", module.exports)
+    hotAPI.createRecord("_v-6e0dd326", module.exports)
   } else {
-    hotAPI.update("_v-665f87e8", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-6e0dd326", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":24,"vue-hot-reload-api":20}],68:[function(require,module,exports){
@@ -17898,9 +17860,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-5510c697", module.exports)
+    hotAPI.createRecord("_v-4ad3ec99", module.exports)
   } else {
-    hotAPI.update("_v-5510c697", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-4ad3ec99", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":24,"vue-hot-reload-api":20}],69:[function(require,module,exports){
@@ -17910,9 +17872,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-41e980ee", module.exports)
+    hotAPI.createRecord("_v-3003fe0b", module.exports)
   } else {
-    hotAPI.update("_v-41e980ee", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-3003fe0b", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":24,"vue-hot-reload-api":20}],70:[function(require,module,exports){
@@ -17948,21 +17910,21 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-11a0ab53", module.exports)
+    hotAPI.createRecord("_v-6b9e0a56", module.exports)
   } else {
-    hotAPI.update("_v-11a0ab53", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-6b9e0a56", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../new-layout/content-header.vue":91,"vue":24,"vue-hot-reload-api":20}],72:[function(require,module,exports){
+},{"../../new-layout/content-header.vue":88,"vue":24,"vue-hot-reload-api":20}],72:[function(require,module,exports){
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<h3>Listar</h3>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam est reprehenderit fugiat cumque alias, sed fugit ab natus eum maxime perferendis dolorum facere mollitia in error. Quia minima laboriosam, blanditiis.</p>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-5c07a375", module.exports)
+    hotAPI.createRecord("_v-a5ff3c12", module.exports)
   } else {
-    hotAPI.update("_v-5c07a375", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-a5ff3c12", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":24,"vue-hot-reload-api":20}],73:[function(require,module,exports){
@@ -17972,125 +17934,19 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-17a7917d", module.exports)
+    hotAPI.createRecord("_v-68a04fff", module.exports)
   } else {
-    hotAPI.update("_v-17a7917d", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-68a04fff", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":24,"vue-hot-reload-api":20}],74:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _formFields = require('./form-fields.vue');
-
-var _formFields2 = _interopRequireDefault(_formFields);
-
-var _mixins = require('./mixins');
-
-var _mixins2 = _interopRequireDefault(_mixins);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-	mixins: [_mixins2.default],
-	route: {
-		data: function data(transition) {
-			transition.next();
-		}
-	},
-	data: function data() {
-		return {
-			createMode: true,
-			newModel: {},
-			url: 'api/docentes'
-		};
-	},
-
-	components: {
-		'form-inputs': _formFields2.default
-	}
-
-};
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"row\">\n\t<form action=\"\" @submit.prevent=\"create\">\n\t\t\n\t\t<form-inputs :create-mode=\"createMode\" :data-model.sync=\"newModel\"></form-inputs>\n\n\t</form>\n</div>\n"
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  if (!module.hot.data) {
-    hotAPI.createRecord("_v-e8aa03a6", module.exports)
-  } else {
-    hotAPI.update("_v-e8aa03a6", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
-},{"./form-fields.vue":76,"./mixins":80,"vue":24,"vue-hot-reload-api":20}],75:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _formFields = require('./form-fields.vue');
-
-var _formFields2 = _interopRequireDefault(_formFields);
-
-var _mixins = require('./mixins');
-
-var _mixins2 = _interopRequireDefault(_mixins);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-	mixins: [_mixins2.default],
-	route: {
-		data: function data(transition) {
-			transition.next();
-		}
-	},
-	ready: function ready() {
-		this.read();
-	},
-	data: function data() {
-		return {
-			createMode: false,
-			newModel: {},
-			loading: true,
-			url: 'api/docentes'
-		};
-	},
-
-	components: {
-		'form-inputs': _formFields2.default
-	}
-
-};
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<loading-app v-if=\"loading===true\"></loading-app>\n\t<div class=\"row\" v-else=\"\">\n\t\t<form action=\"\" @submit.prevent=\"update\">\n\t\t\t\n\t\t\t<form-inputs :create-mode=\"createMode\" :data-model.sync=\"newModel\"></form-inputs>\n\n\t\t</form>\n\t</div>\n"
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  if (!module.hot.data) {
-    hotAPI.createRecord("_v-4cda649f", module.exports)
-  } else {
-    hotAPI.update("_v-4cda649f", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
-},{"./form-fields.vue":76,"./mixins":80,"vue":24,"vue-hot-reload-api":20}],76:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n\n")
+var __vueify_style__ = __vueify_insert__.insert("\n\n.__user{\n\tcolor: #656464;\n}\n\n")
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-
-var _selectList = require('../../reusable/select-list.vue');
-
-var _selectList2 = _interopRequireDefault(_selectList);
 
 var _vueMultiselect = require('vue-multiselect');
 
@@ -18102,61 +17958,115 @@ exports.default = {
 	computed: {
 		isInvalid: function isInvalid() {
 			return this.isTouched && this.selected.length === 0;
-		}
-	},
-	beforeCompile: function beforeCompile() {
-		if (this.createMode) {
-			this.dataModel = this.initModel();
+		},
+		docente: function docente() {
+			var _dataModel = this.dataModel;
+			var nombres = _dataModel.nombres;
+			var abreviatura = _dataModel.abreviatura;
+			var apellidos = _dataModel.apellidos;
+
+			return abreviatura + '. ' + nombres + ' ' + apellidos;
 		}
 	},
 
 	components: {
-		'select-list': _selectList2.default,
 		'multiselect': _vueMultiselect2.default
 	},
-	methods: {
-		initModel: function initModel() {
-			return {
-				selected: []
-			};
-		}
-	},
+
 	props: {
-		createMode: {
-			type: Boolean,
-			required: false,
-			default: true
+		selected: {
+			type: Array,
+			default: function _default() {
+				return [];
+			}
 		},
 		dataModel: {
 			type: Object,
 			required: false,
 			default: function _default() {
 				return {
-					selected: null
+					id: null,
+					nombres: null,
+					apellidos: null,
+					abrevatura: null
 				};
 			}
 		}
+	},
+	data: function data() {
+		return {
+			options: [{
+				materia: 17,
+				desc: 'Opcion 1'
+			}, {
+				materia: 18,
+				desc: 'Opcion 2'
+			}, {
+				materia: 19,
+				desc: 'Opcion 3'
+			}, {
+				materia: 20,
+				desc: 'Opcion 4'
+			}, {
+				materia: 12,
+				desc: 'Opcion 5'
+			}, {
+				materia: 34,
+				desc: 'Opcion 6'
+			}, {
+				materia: 41,
+				desc: 'Opcion 7'
+			}, {
+				materia: 33,
+				desc: 'Opcion 8'
+			}],
+			templateLimit: function templateLimit(count) {
+				return 'y ' + count + ' más';
+			}
+
+		};
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"col-xs-12\">\n\t<div class=\"{'invalid': isInvalid}\">\n\t\t<label>Seleccione las materias para </label>\n\t\t<multiselect :options=\"options\" ,=\"\" :selected.sync=\"selected\" :multiple=\"true\" :searchable=\"true\" :allow-empty=\"false\" :hide-selected=\"true\" :max-height=\"400\" :max=\"5\" placeholder=\"Al menos una, máximo 3\"></multiselect>\n\t</div>\n\n</div>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"col-xs-12\">\n\t<div class=\"{'invalid': isInvalid}\">\n\t\t<label>Docente: <span class=\"__user\">{{docente}}</span></label>\n\t\t<multiselect :options=\"options\" :selected.sync=\"selected\" :multiple=\"true\" :searchable=\"true\" :close-on-select=\"true\" :clear-on-select=\"false\" placeholder=\"Seleccione máximo 3 materias\" :hide-selected=\"true\" label=\"desc\" :max=\"3\" :taggable=\"true\" select-label=\"Presione enter para seleccionar\" deselect-label=\"Presione enter para remover\" :limit-text=\"templateLimit\" key=\"materia\"></multiselect>\n\t</div>\n\n</div>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\n\n"] = false
+    __vueify_insert__.cache["\n\n.__user{\n\tcolor: #656464;\n}\n\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-e753518e", module.exports)
+    hotAPI.createRecord("_v-3150d377", module.exports)
   } else {
-    hotAPI.update("_v-e753518e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-3150d377", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/select-list.vue":106,"vue":24,"vue-hot-reload-api":20,"vue-multiselect":21,"vueify/lib/insert-css":25}],77:[function(require,module,exports){
-arguments[4][32][0].apply(exports,arguments)
-},{"./create-view.vue":74,"./edit-view.vue":75,"./index.vue":78,"./list-view.vue":79,"./read-view.vue":81,"dup":32}],78:[function(require,module,exports){
+},{"vue":24,"vue-hot-reload-api":20,"vue-multiselect":21,"vueify/lib/insert-css":25}],75:[function(require,module,exports){
+'use strict';
+
+var _index = require('./index.vue');
+
+var _index2 = _interopRequireDefault(_index);
+
+var _listView = require('./list-view.vue');
+
+var _listView2 = _interopRequireDefault(_listView);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+module.exports = {
+   component: _index2.default,
+   subRoutes: {
+      '/': {
+         component: _listView2.default,
+         name: 'Listar'
+      }
+   }
+};
+
+},{"./index.vue":76,"./list-view.vue":77}],76:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18200,12 +18110,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-106c692e", module.exports)
+    hotAPI.createRecord("_v-cf2463b2", module.exports)
   } else {
-    hotAPI.update("_v-106c692e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-cf2463b2", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../../util/reusable_functions":107,"../../new-layout/content-header.vue":91,"vue":24,"vue-hot-reload-api":20}],79:[function(require,module,exports){
+},{"../../../util/reusable_functions":104,"../../new-layout/content-header.vue":88,"vue":24,"vue-hot-reload-api":20}],77:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18247,6 +18157,8 @@ exports.default = {
 			showModal: false,
 			url: 'api/docentes',
 			toolbar: null,
+			currentModel: {},
+			materiasSeleccionadas: [],
 			datos: [],
 			columnas: [{
 				title: 'Docente',
@@ -18261,15 +18173,15 @@ exports.default = {
 				sortable: false,
 				template: '${col.materias.map(function(ele){return ele.materia_detail.nombre_materia;}).join(", ")}'
 			}, {
-				title: 'Acciones',
+				title: 'Gestionar Materias',
 				titleClass: 'text-center',
 				hidden: false,
 				fieldClass: 'text-center',
 				itemActions: [{
 					nameEmit: 'materias-docente-update-event',
-					btnClass: 'btn btn-warning btn-xs',
-					iconClass: 'fa fa-edit',
-					label: 'Editar'
+					btnClass: 'btn btn-primary btn-xs',
+					iconClass: 'fa fa-pencil',
+					label: 'Modificar'
 				}]
 			}],
 			loading: false
@@ -18284,23 +18196,28 @@ exports.default = {
 	},
 	events: {
 		'materias-docente-update-event': function materiasDocenteUpdateEvent(model) {
+			this.toggleDataModel(model);
 			this.toggleModal();
+		},
+		//when modal emit ok
+		'event-end-edit': function eventEndEdit() {
+			this.update();
 		}
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t\n\t<div v-if=\"loading\">\n\t\t<app-loading></app-loading>\n\t</div>\n\n\t<div v-else=\"\">\n\t\t<cool-table :option-toolbar=\"toolbar\" :url=\"url\" :data.sync=\"datos\" :columns=\"columnas\" filter-key-word=\"search\">\n\t</cool-table>\n\n\t\t<app-modal title=\"Asignación de Materias\" :show.sync=\"showModal\" @ok=\"toggleModal\" @cancel=\"toggleModal\">\n\t\t\t<div class=\"row\">\n\t\t\t\t<formulario></formulario> \n\t\t\t</div>\n\t\t</app-modal>\n\n</div>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t\n\t<div v-if=\"loading\">\n\t\t<app-loading></app-loading>\n\t</div>\n\n\t<div v-else=\"\">\n\t\t<cool-table :option-toolbar=\"toolbar\" :url=\"url\" :data.sync=\"datos\" :columns=\"columnas\" filter-key-word=\"search\">\n\t</cool-table>\n\n\t<!-- Modal logic -->\n\n\t<app-modal title=\"Asignación de Materias\" :show.sync=\"showModal\" @ok=\"toggleModal\" @cancel=\"toggleModal\" emit-when-ok=\"event-end-edit\">\n\t\t<div class=\"row\">\n\t\t\t<form action=\"\" @submit.prevent=\"update\">\n\n\t\t\t\t<formulario :data-model.sync=\"currentModel\" :selected.sync=\"materiasSeleccionadas\"></formulario>\n\n\t\t\t</form>\n\t\t</div>\n\t</app-modal>\n\n</div>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-6c526eea", module.exports)
+    hotAPI.createRecord("_v-c1c1876e", module.exports)
   } else {
-    hotAPI.update("_v-6c526eea", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-c1c1876e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/cool-table.vue":98,"../../reusable/loading.vue":99,"../../reusable/modal.vue":104,"./form-fields.vue":76,"./mixins":80,"vue":24,"vue-hot-reload-api":20}],80:[function(require,module,exports){
+},{"../../reusable/cool-table.vue":95,"../../reusable/loading.vue":96,"../../reusable/modal.vue":101,"./form-fields.vue":74,"./mixins":78,"vue":24,"vue-hot-reload-api":20}],78:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18313,90 +18230,58 @@ var _reusable_functions2 = _interopRequireDefault(_reusable_functions);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var API_URL = 'api/docentes/materias'; /**
+                                        * Aqui se definen los metodos generales que seran usados por los componentes que implementen este mixins,
+                                        * cada metodo declarado aquí hará referencia con "this" a su propio "scope"
+                                        */
+
 exports.default = {
   methods: {
+    //For list-view.vue
     toggleModal: function toggleModal() {
       this.showModal = !this.showModal;
     },
-    create: function create() {
-      this.$http.post(this.url, this.newModel).then(function (resp) {
-        _reusable_functions2.default.niceAlert('success', 'Se creó el registro correctamente!');
-        this.$router.go('/docentes');
-      }, _reusable_functions2.default.tryError);
+    toggleDataModel: function toggleDataModel(model) {
+      this.currentModel = model;
+      this.toggleMaterias();
     },
-    update: function update() {
-      this.$http.put(this.url + '/' + this.newModel.id, this.newModel).then(function (resp) {
-        _reusable_functions2.default.niceAlert('success', 'Se modificó el registro correctamente!');
-        this.$router.go('/docentes');
-      }, _reusable_functions2.default.tryError);
-    },
-    read: function read() {
-      this.loading = true;
-      this.$http.get(this.url + '/' + this.$route.params.model_id).then(function (resp) {
-        this.newModel = resp.data.data;
-        this.loading = false;
-      }, _reusable_functions2.default.tryError);
-    },
-    destroy: function destroy(model) {
-      if (confirm('¿Estás seguro?')) {
-        this.$http.delete(this.url + '/' + model.id).then(function (resp) {
-          _reusable_functions2.default.niceAlert('success', 'Se eliminó correctamente');
-          this.load();
-        }, _reusable_functions2.default.tryError);
+    toggleMaterias: function toggleMaterias() {
+      var data = [],
+          materia_id = void 0,
+          desc = void 0,
+          self = this,
+          materias = self.currentModel.materias;
+
+      for (var idx in materias) {
+        materia_id = materias[idx].materia;
+        desc = materias[idx].materia_detail.nombre_materia + ' | ' + materias[idx].materia_detail.semestre;
+        data.push({ materia: materia_id, desc: desc });
       }
+
+      this.materiasSeleccionadas = data;
     },
     load: function load() {
       this.loading = true;
       this.$http.get(this.url).then(function (resp) {
         this.loading = false;
       }, _reusable_functions2.default.tryError);
+    },
+
+    //for edit-view.vue
+    update: function update() {
+      var materias = this.materiasSeleccionadas;
+      var self = this;
+      self.$http.put(API_URL + '/' + this.currentModel.id, { materias: materias }).then(function (resp) {
+        _reusable_functions2.default.niceAlert('success', 'Esta información ha sido modificada correctamente!');
+        //setTimeout(function(){self.$router.go('/materias_docentes');}, 10);
+        self.$router.go('/materias_docentes?' + +new Date()); //random token
+      }, _reusable_functions2.default.tryError);
     }
 
   }
-}; /**
-    * Aqui se definen los metodos generales que seran usados por los componentes que implementen este mixins,
-    * cada metodo declarado aquí hará referencia con "this" a su propio "scope"
-    */
-
-},{"../../../util/reusable_functions":107}],81:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _mixins = require('./mixins');
-
-var _mixins2 = _interopRequireDefault(_mixins);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-	mixins: [_mixins2.default],
-	ready: function ready() {
-		this.read();
-	},
-	data: function data() {
-		return {
-			newModel: {},
-			loading: true,
-			url: 'api/docentes'
-		};
-	}
 };
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<loading-app v-if=\"loading===true\"></loading-app>\n<div class=\"row\" v-else=\"\">\n\n\t<div class=\"col-xs-12 col-sm-6\">\n\n\t\t<div class=\"box box-primary\">\n\t\t\t<div class=\"box-header with-border\">\n\t\t\t\t<h3 class=\"box-title\">Infomación Personal <i class=\"fa fa-user\" style=\"color:#3c8dbc;\"></i></h3>\n\t\t\t</div>\n\t\t\t<!-- /.box-header -->\n\t\t\t<div class=\"box-body\">\n\t\t\t\t<strong>Nombres</strong>\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\t{{newModel.nombres}}\n\t\t\t\t</p>\n\n\t\t\t\t<strong>Apellidos</strong>\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\t{{newModel.apellidos}}\n\t\t\t\t</p>\n\n\t\t\t\t<strong>Identificación</strong>\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\t{{newModel.identificacion}} <sub>{{newModel.tipo_identificacion}}</sub>\n\t\t\t\t</p>\n\n\t\t\t\t<strong>Género</strong>\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\t{{newModel.genero}}\n\t\t\t\t</p>\n\n\t\t\t\t<strong>Estado Civil</strong>\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\t{{newModel.estado_civil}}\n\t\t\t\t</p>\n\n\t\t\t\t<hr>\n\n\t\t\t\t<strong>Fecha Nacimiento <i class=\"fa fa-calendar-o\"></i></strong>\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\t<span class=\"label label-primary\">{{newModel.fecha_nacimiento}} </span>\n\t\t\t\t</p>\n\n\t\t\t\t<hr>\n\n\t\t\t\t\n\t\t\t\t<strong>Contacto <i class=\"fa fa-search-minus\"></i></strong>\n\n\t\t\t\t<p class=\"text-muted\"><a href=\"tel:+{{newModel.celular}}\">{{newModel.celular}} <i class=\"fa fa-mobile-phone\"></i> </a></p>\n\n\t\t\t\t<p class=\"text-muted\"><a href=\"tel:+{{newModel.telefono}}\">{{newModel.telefono}} <i class=\"fa fa-phone\"></i></a></p>\n\n\t\t\t\t<p class=\"text-muted\"><a href=\"mailto:{{newModel.email}}\">{{newModel.email}} <i class=\"fa fa-envelope-o\"></i></a></p>\n\n\t\t\t</div>\n\t\t\t<!-- /.box-body -->\n\t\t</div>\n\t</div>\n\t\n\t<div class=\"col-xs-12 col-sm-6\">\n\t\t<div class=\"box box-primary\">\n\t\t\t<div class=\"box-header with-border\">\n\t\t\t\t<h3 class=\"box-title\">Más Detalles <i class=\"fa fa-graduation-cap\" style=\"color:#3c8dbc;\"></i></h3>\n\t\t\t</div>\n\t\t\t<!-- /.box-header -->\n\t\t\t<div class=\"box-body\">\n\n\n\t\t\t\t<strong><i class=\"fa fa-briefcase margin-r-5\"></i> Tipo de Contrato</strong>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\t<span class=\"label label-success\" v-if=\"newModel.tipo_contrato=='TIEMPO_COMPLETO'\">\n\t\t\t\t\t\tTiempo Completo <i class=\"fa fa-clock-o\"></i>\n\t\t\t\t\t</span>\n\t\t\t\t\t<span class=\"label label-warning\" v-else=\"\">\n\t\t\t\t\t\tMedio Tiempo <i class=\"fa fa-clock-o\"></i>\n\t\t\t\t\t</span>\n\t\t\t\t</p>\n\n\t\t\t\t<hr>\n\t\t\t\t\n\n\t\t\t\t<strong><i class=\"fa fa-book margin-r-5\"></i> Educación</strong>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tTítulo PostGrado: {{newModel.titulo_postgrado ? newModel.titulo_postgrado : 'N/A'}}\n\t\t\t\t</p>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tTítulo Pregredo: {{newModel.titulo_pregrado ? newModel.titulo_pregrado : 'N/A'}}\n\t\t\t\t</p>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tTítulo MBA: {{newModel.titulo_mba ? newModel.titulo_mba : 'N/A'}}\n\t\t\t\t</p>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tTítulo Pregredo: {{newModel.titulo_pregrado ? newModel.titulo_pregrado : 'N/A'}}\n\t\t\t\t</p>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tRegistro Senescyt: {{newModel.registro_senescyt ? newModel.registro_senescyt : 'N/A'}}\n\t\t\t\t</p>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tEmail Corporativo: <a href=\"mailto:{{newModel.email_corporativo}}\">{{newModel.email_corporativo ? newModel.email_corporativo : 'N/A'}}</a>\n\t\t\t\t</p>\n\n\t\t\t\t<hr>\n\n\t\t\t\t<strong><i class=\"fa fa-map-marker margin-r-5\"></i> Localización</strong>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tNacionalidad: {{newModel.nacionalidad}}\n\t\t\t\t</p>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tResidencia: {{newModel.residencia}}\n\t\t\t\t</p>\n\n\t\t\t\t<p class=\"text-muted\">\n\t\t\t\t\tDirección: {{newModel.direccion}}\n\t\t\t\t</p>\n\n\t\t\t</div>\n\t\t\t<!-- /.box-body -->\n\t\t</div>\n\t</div>\n\n\t<div class=\"col-xs-12\">\n\t\t<a v-link=\"{path: '/docentes'}\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-reply\"></i> VOLVER</a>\n\t</div>\n</div>\n"
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  if (!module.hot.data) {
-    hotAPI.createRecord("_v-f51292da", module.exports)
-  } else {
-    hotAPI.update("_v-f51292da", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
-},{"./mixins":80,"vue":24,"vue-hot-reload-api":20}],82:[function(require,module,exports){
+
+},{"../../../util/reusable_functions":104}],79:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18435,12 +18320,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-fe937324", module.exports)
+    hotAPI.createRecord("_v-76796c70", module.exports)
   } else {
-    hotAPI.update("_v-fe937324", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-76796c70", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./form-fields.vue":84,"./mixins":88,"vue":24,"vue-hot-reload-api":20}],83:[function(require,module,exports){
+},{"./form-fields.vue":81,"./mixins":85,"vue":24,"vue-hot-reload-api":20}],80:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18483,12 +18368,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-06266dc0", module.exports)
+    hotAPI.createRecord("_v-4de587a2", module.exports)
   } else {
-    hotAPI.update("_v-06266dc0", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-4de587a2", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./form-fields.vue":84,"./mixins":88,"vue":24,"vue-hot-reload-api":20}],84:[function(require,module,exports){
+},{"./form-fields.vue":81,"./mixins":85,"vue":24,"vue-hot-reload-api":20}],81:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n.profile-ima-edit{\n\twidth: 200px;\n\theight: 200px;\n\tborder-radius: 50%;\n\tmargin-right: 10px;\n\tmargin-top: -2px;\n}\n")
 'use strict';
@@ -18563,14 +18448,14 @@ if (module.hot) {(function () {  module.hot.accept()
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-fd3cc10c", module.exports)
+    hotAPI.createRecord("_v-7724c57c", module.exports)
   } else {
-    hotAPI.update("_v-fd3cc10c", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-7724c57c", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/select-list.vue":106,"vue":24,"vue-hot-reload-api":20,"vueify/lib/insert-css":25}],85:[function(require,module,exports){
+},{"../../reusable/select-list.vue":103,"vue":24,"vue-hot-reload-api":20,"vueify/lib/insert-css":25}],82:[function(require,module,exports){
 arguments[4][32][0].apply(exports,arguments)
-},{"./create-view.vue":82,"./edit-view.vue":83,"./index.vue":86,"./list-view.vue":87,"./read-view.vue":89,"dup":32}],86:[function(require,module,exports){
+},{"./create-view.vue":79,"./edit-view.vue":80,"./index.vue":83,"./list-view.vue":84,"./read-view.vue":86,"dup":32}],83:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18603,12 +18488,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-7006cf2c", module.exports)
+    hotAPI.createRecord("_v-fee63028", module.exports)
   } else {
-    hotAPI.update("_v-7006cf2c", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-fee63028", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../new-layout/content-header.vue":91,"vue":24,"vue-hot-reload-api":20}],87:[function(require,module,exports){
+},{"../../new-layout/content-header.vue":88,"vue":24,"vue-hot-reload-api":20}],84:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n.profile-ima{\n\tfloat: left;\n\twidth: 25px;\n\theight: 25px;\n\tborder-radius: 50%;\n\tmargin-right: 10px;\n\tmargin-top: -2px;\n\tborder: 1px solid #222d32;\n}\n\n")
 'use strict';
@@ -18738,12 +18623,12 @@ if (module.hot) {(function () {  module.hot.accept()
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-79e92d0c", module.exports)
+    hotAPI.createRecord("_v-6a3c28e4", module.exports)
   } else {
-    hotAPI.update("_v-79e92d0c", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-6a3c28e4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../../util/reusable_functions":107,"../../reusable/cool-table.vue":98,"../../reusable/loading.vue":99,"./mixins":88,"vue":24,"vue-hot-reload-api":20,"vueify/lib/insert-css":25}],88:[function(require,module,exports){
+},{"../../../util/reusable_functions":104,"../../reusable/cool-table.vue":95,"../../reusable/loading.vue":96,"./mixins":85,"vue":24,"vue-hot-reload-api":20,"vueify/lib/insert-css":25}],85:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18797,7 +18682,7 @@ exports.default = {
     * cada metodo declarado aquí hará referencia con "this" a su propio "scope"
     */
 
-},{"../../../util/reusable_functions":107}],89:[function(require,module,exports){
+},{"../../../util/reusable_functions":104}],86:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18830,12 +18715,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-35891b14", module.exports)
+    hotAPI.createRecord("_v-f2fc4cd4", module.exports)
   } else {
-    hotAPI.update("_v-35891b14", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-f2fc4cd4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./mixins":88,"vue":24,"vue-hot-reload-api":20}],90:[function(require,module,exports){
+},{"./mixins":85,"vue":24,"vue-hot-reload-api":20}],87:[function(require,module,exports){
 'use strict';
 
 var menu = require('../config/menus.js');
@@ -18894,12 +18779,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-3e7b0efa", module.exports)
+    hotAPI.createRecord("_v-32136a05", module.exports)
   } else {
-    hotAPI.update("_v-3e7b0efa", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-32136a05", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../config/menus.js":28,"../util/reusable_functions.js":107,"./new-layout/content.vue":92,"./new-layout/control.vue":93,"./new-layout/footer.vue":94,"./new-layout/header.vue":95,"./new-layout/menu.vue":97,"vue":24,"vue-hot-reload-api":20}],91:[function(require,module,exports){
+},{"../config/menus.js":28,"../util/reusable_functions.js":104,"./new-layout/content.vue":89,"./new-layout/control.vue":90,"./new-layout/footer.vue":91,"./new-layout/header.vue":92,"./new-layout/menu.vue":94,"vue":24,"vue-hot-reload-api":20}],88:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -18927,12 +18812,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-154a0082", module.exports)
+    hotAPI.createRecord("_v-5028ca80", module.exports)
   } else {
-    hotAPI.update("_v-154a0082", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-5028ca80", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":24,"vue-hot-reload-api":20}],92:[function(require,module,exports){
+},{"vue":24,"vue-hot-reload-api":20}],89:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -18945,12 +18830,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-3f6872a8", module.exports)
+    hotAPI.createRecord("_v-100e7bac", module.exports)
   } else {
-    hotAPI.update("_v-3f6872a8", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-100e7bac", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":24,"vue-hot-reload-api":20}],93:[function(require,module,exports){
+},{"vue":24,"vue-hot-reload-api":20}],90:[function(require,module,exports){
 "use strict";
 if (module.exports.__esModule) module.exports = module.exports.default
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t<!-- Control Sidebar -->\n\t<aside class=\"control-sidebar control-sidebar-dark\">\n\t\t<!-- Create the tabs -->\n\t\t<ul class=\"nav nav-tabs nav-justified control-sidebar-tabs\">\n\t\t\t<li class=\"active\"><a href=\"#control-sidebar-home-tab\" data-toggle=\"tab\"><i class=\"fa fa-home\"></i></a></li>\n\t\t\t<li><a href=\"#control-sidebar-settings-tab\" data-toggle=\"tab\"><i class=\"fa fa-gears\"></i></a></li>\n\t\t</ul>\n\t\t<!-- Tab panes -->\n\t\t<div class=\"tab-content\">\n\t\t\t<!-- Home tab content -->\n\t\t\t<div class=\"tab-pane active\" id=\"control-sidebar-home-tab\">\n\t\t\t\t<h3 class=\"control-sidebar-heading\">Actividad reciente</h3>\n\t\t\t\t<ul class=\"control-sidebar-menu\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<a href=\"javascript::;\">\n\t\t\t\t\t\t\t<i class=\"menu-icon fa fa-birthday-cake bg-red\"></i>\n\t\t\t\t\t\t\t<div class=\"menu-info\">\n\t\t\t\t\t\t\t\t<h4 class=\"control-sidebar-subheading\">Cumpleaños</h4>\n\t\t\t\t\t\t\t\t<p>01-07-1990</p>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</li>\n\t\t\t\t</ul><!-- /.control-sidebar-menu -->\n\n\t\t\t\t<h3 class=\"control-sidebar-heading\">Progreso</h3>\n\t\t\t\t<ul class=\"control-sidebar-menu\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<a href=\"javascript::;\">\n\t\t\t\t\t\t\t<h4 class=\"control-sidebar-subheading\">\n\t\t\t\t\t\t\t\tCustom Template\n\t\t\t\t\t\t\t\t<span class=\"label label-danger pull-right\">70%</span>\n\t\t\t\t\t\t\t</h4>\n\t\t\t\t\t\t\t<div class=\"progress progress-xxs\">\n\t\t\t\t\t\t\t\t<div class=\"progress-bar progress-bar-danger\" style=\"width: 70%\"></div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</li>\n\t\t\t\t</ul><!-- /.control-sidebar-menu -->\n\n\t\t\t</div><!-- /.tab-pane -->\n\t\t\t<!-- Stats tab content -->\n\t\t\t<div class=\"tab-pane\" id=\"control-sidebar-stats-tab\">Status</div><!-- /.tab-pane -->\n\t\t\t<!-- Settings tab content -->\n\t\t\t<div class=\"tab-pane\" id=\"control-sidebar-settings-tab\">\n\t\t\t\t<form method=\"post\">\n\t\t\t\t\t<h3 class=\"control-sidebar-heading\">Ajustes Generales</h3>\n\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t<label class=\"control-sidebar-subheading\">\n\t\t\t\t\t\t\tPanel de reporte\n\t\t\t\t\t\t\t<input type=\"checkbox\" class=\"pull-right\">\n\t\t\t\t\t\t</label>\n\t\t\t\t\t\t<p>\n\t\t\t\t\t\t\tAjustes de información\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div><!-- /.form-group -->\n\t\t\t\t</form>\n\t\t\t</div><!-- /.tab-pane -->\n\t\t</div>\n</aside><!-- /.control-sidebar\n\n<!-- Add the sidebar's background. This div must be placed\n\timmediately after the control sidebar -->\n\t<div class=\"control-sidebar-bg\"></div>\n"
@@ -18959,12 +18844,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-1f44dce8", module.exports)
+    hotAPI.createRecord("_v-ae243de4", module.exports)
   } else {
-    hotAPI.update("_v-1f44dce8", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-ae243de4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":24,"vue-hot-reload-api":20}],94:[function(require,module,exports){
+},{"vue":24,"vue-hot-reload-api":20}],91:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -19010,12 +18895,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-59745888", module.exports)
+    hotAPI.createRecord("_v-238c8bfa", module.exports)
   } else {
-    hotAPI.update("_v-59745888", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-238c8bfa", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":24,"vue-hot-reload-api":20}],95:[function(require,module,exports){
+},{"vue":24,"vue-hot-reload-api":20}],92:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -19091,12 +18976,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-170f90a4", module.exports)
+    hotAPI.createRecord("_v-44beefec", module.exports)
   } else {
-    hotAPI.update("_v-170f90a4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-44beefec", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":24,"vue-hot-reload-api":20}],96:[function(require,module,exports){
+},{"vue":24,"vue-hot-reload-api":20}],93:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\t.lockscreen-name{\n\t\ttext-align: center;\n    \tfont-weight: 600;\n\t}\n\t.lockscreen-logo{\n\t\tmargin-top: 25px;\n\t}\n\n")
 'use strict';
@@ -19123,12 +19008,12 @@ if (module.hot) {(function () {  module.hot.accept()
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-adbc2610", module.exports)
+    hotAPI.createRecord("_v-ea935394", module.exports)
   } else {
-    hotAPI.update("_v-adbc2610", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-ea935394", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":24,"vue-hot-reload-api":20,"vueify/lib/insert-css":25}],97:[function(require,module,exports){
+},{"vue":24,"vue-hot-reload-api":20,"vueify/lib/insert-css":25}],94:[function(require,module,exports){
 'use strict';
 
 var _reusable_functions = require('../../util/reusable_functions');
@@ -19191,14 +19076,14 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-33114080", module.exports)
+    hotAPI.createRecord("_v-04eb0f7e", module.exports)
   } else {
-    hotAPI.update("_v-33114080", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-04eb0f7e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../util/reusable_functions":107,"../reusable/menuItemLevel1.vue":100,"vue":24,"vue-hot-reload-api":20}],98:[function(require,module,exports){
+},{"../../util/reusable_functions":104,"../reusable/menuItemLevel1.vue":97,"vue":24,"vue-hot-reload-api":20}],95:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n.font-success{\n\tcolor: #00a65a;\n}\n\n.font-error{\n\tcolor: #dd4b39;\n}\n\n.pagination{\n\tmargin: 0 !important;\n}\n\n.cool-table-loading-icon{\n\tposition: absolute;\n\tmargin-left: 45%;\n\tmargin-top: 50%;\n}\n\n.cool-table-sortable{\n\tcursor: pointer;\n}\n.cool-table-sortable:hover{\n\tcolor: #2185d0;\n}\n\n.loading-mask{\t\n\tz-index: 99;\t\n\tposition: absolute;\n\twidth: 100%;\n\tbackground: rgba(236, 240, 245, 0.31);\n}\n.l-open{\n\tdisplay: inherit;\n}\n\n.l-close{\n\tdisplay: none;\t\n}\n")
+var __vueify_style__ = __vueify_insert__.insert("\n.font-success{\n\t color: #00a65a;\n }\n\n.font-error{\n\tcolor: #dd4b39;\n}\n\n.pagination{\n\tmargin: 0 !important;\n}\n\n.cool-table-loading-icon{\n\tposition: absolute;\n\tmargin-left: 45%;\n\tmargin-top: 50%;\n}\n\n.cool-table-sortable{\n\tcursor: pointer;\n}\n.cool-table-sortable:hover{\n\tcolor: #2185d0;\n}\n\n.loading-mask{\t\n\tz-index: 99;\t\n\tposition: absolute;\n\twidth: 100%;\n\tbackground: rgba(236, 240, 245, 0.31);\n}\n.l-open{\n\tdisplay: inherit;\n}\n\n.l-close{\n\tdisplay: none;\t\n}\n")
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -19501,22 +19386,22 @@ exports.default = {
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n\t<!-- Head Confi toolbar -->\n\t<div class=\"box box-primary\">\n\t\t<div class=\"box-header with-border\" v-if=\"optionToolbar\">\n\t\t\t<div class=\"col-sm-2 col-xs-12\" v-if=\"optionToolbar\">\n\t\t\t\t<button :class=\"optionToolbar.btnClass\" @click.prevent=\"dispacher(optionToolbar.nameEmit)\"><i :class=\"optionToolbar.iconClass\"></i> {{optionToolbar.label}}</button>\n\t\t\t</div>\n\t\t\t<div class=\"col-xs-6 col-sm-6\">\n\t\t\t\t<form action=\"#\" method=\"get\" @submit.prevent=\"search\">\n\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t<input type=\"text\" name=\"filter\" v-model=\"search_filter\" class=\"form-control\" placeholder=\"Buscar...\">\n\t\t\t\t\t\t<span class=\"input-group-btn\">\n\t\t\t\t\t\t\t<button type=\"submit\" name=\"search_table\" id=\"search-btn\" class=\"btn btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t</div>\n\t\t\t\t</form>\n\t\t\t</div>\n\t\t\t<div class=\"col-xs-4 col-sm-3\">\n\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t<select class=\"form-control\" v-model=\"pagination.per_page\" @change=\"changePerPage\">\n\t\t\t\t\t\t<option value=\"\" disabled=\"\">Rigistros por página</option>\n\t\t\t\t\t\t<option v-for=\"item in pagination.per_page_list | orderBy item\" track-by=\"$index\" :value=\"item\">{{item}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"col-xs-2 col-sm-1\">\n\t\t\t\t<button class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"true\" :title=\"optionToolbar.labelOptions\">\n\t\t\t\t\t<i :class=\"optionToolbar.iconClassOptions\"></i>\n\t\t\t\t</button>\n\t\t\t\t<ul class=\"dropdown-menu pull-right\">\n\t\t\t\t\t<li v-for=\"(idx, col) in columns\">\n\t\t\t\t\t\t<span class=\"checkbox\">\n\t\t\t\t\t\t\t<label @click=\"toggleColumns(idx)\">\n\t\t\t\t\t\t\t\t<strong>{{ col.title }} <i class=\"fa fa-check font-success\" v-if=\"!col.hidden\"></i><i class=\"fa fa-close font-error\" v-else=\"\"></i></strong>\n\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Body table -->\n\t\t<div class=\"box-body table-responsive\">\n\t\t\t<div class=\"loading-mask l-close\">\n\t\t\t\t<i :class=\"pagination.loadingIconClass\"></i>\n\t\t\t\t<span class=\"sr-only\">Loading...</span>\n\t\t\t</div>\n\t\t\t<table :class=\"tableClass\">\n\t\t\t\t\n\t\t\t\t<thead v-if=\"requireHeader\">\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<th v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.titleClass\">\n\t\t\t\t\t\t\t<template v-if=\"sortable &amp;&amp; col.sortable &amp;&amp; !col.itemActions\">\n\t\t\t\t\t\t\t\t<div class=\"cool-table-sortable\" @click.prevent=\"orderColumn(col.field)\">\n\t\t\t\t\t\t\t\t\t<span>{{col.title}}</span>\n\t\t\t\t\t\t\t\t\t<template v-if=\"sortable.column == col.field\">\n\t\t\t\t\t\t\t\t\t\t<template v-if=\"sortable.order == 'desc'\">\n\t\t\t\t\t\t\t\t\t\t\t<span class=\"pull-right\"><i :class=\"sortable.descendingIcon\"></i></span>\n\t\t\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t\t\t\t<template v-else=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<span class=\"pull-right\"><i :class=\"sortable.ascendingIcon\"></i></span>\n\t\t\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t<template v-else=\"\">\n\t\t\t\t\t\t\t\t{{col.title}}\n\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t</th>\n\t\t\t\t\t</tr>\n\t\t\t\t</thead>\n\n\t\t\t\t<tbody>\n\t\t\t\t\t<tr v-for=\"item in data\">\n\n\t\t\t\t\t\t<td v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.fieldClass\">\n\n\t\t\t\t\t\t\t<template v-if=\"col.template\">\n\t\t\t\t\t\t\t\t{{{renderTemplate(item, col.template)}}}\n\t\t\t\t\t\t\t</template>\n\n\t\t\t\t\t\t\t<template v-else=\"\">\n\n\t\t\t\t\t\t\t\t<div v-if=\"!col.itemActions\">{{ item[col.field] }}</div>\n\n\t\t\t\t\t\t\t\t<div v-else=\"\" class=\"btn-group\">\n\n\t\t\t\t\t\t\t\t\t<a v-for=\"act in col.itemActions\" :class=\"act.btnClass\" href=\"\" @click.prevent=\"dispacher(act.nameEmit, item)\">\n\t\t\t\t\t\t\t\t\t\t<i :class=\"act.iconClass\" data-toggle=\"tooltip\" :title=\"act.label\"></i>\n\t\t\t\t\t\t\t\t\t</a>\n\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t</template>\n\n\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t</td>\n\n\t\t\t\t\t</tr>\n\t\t\t\t</tbody>\n\n\t\t\t</table>\n\t\t</div>\n\n\t\t<!-- Footer pagination -->\n\t\t<div class=\"box-footer\" v-if=\"pagination\">\n\t\t\t<div class=\"row\" v-if=\"pagination.data.length>0\">\n\t\t\t\t<div class=\"col-xs-12 col-sm-8\">\n\t\t\t\t\t<nav>\n\t\t\t\t\t\t<ul class=\"pagination pagination-sm\">\n\t\t\t\t\t\t\t<li class=\"{{firstActive}}\" @click.prevent=\"paginate(1)\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Previous\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.first}}</span>\n\t\t\t\t\t\t\t\t</a><!-- begin -->\n\t\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t\t<li class=\"{{firstActive}}\" @click.prevent=\"paginatePrev\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Previous\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.back}}</span>\n\t\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t\t<li v-if=\"pagination.current_page>pagination.limitPaginate\" @click.prevent=\"pagScroll('prev')\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Prev\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">...</span>\n\t\t\t\t\t\t\t\t</a><!-- more back -->\n\t\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t\t<li v-for=\"pag in 5, pagination.last_page\" class=\"{{isActive(pag+1)}}\" @click.prevent=\"paginate(pag+1)\" v-if=\"numToShow(pag+1)\"><a href=\"#\">{{pag + 1}}</a></li>\n\n\t\t\t\t\t\t\t<li v-if=\"pagination.moreTemp < (pagination.last_page/pagination.limitPaginate)\" @click.prevent=\"pagScroll('next')\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">...</span>\n\t\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t\t</li><!-- more next -->\n\n\t\t\t\t\t\t\t<li class=\"{{lastActive}}\" @click.prevent=\"paginateNext\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.next}}</span>\n\t\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t\t<li class=\"{{lastActive}}\" @click.prevent=\"paginate(pagination.last_page)\">\n\t\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.last}}</span>\n\t\t\t\t\t\t\t\t</a><!-- end -->\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</nav>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"col-xs-12 col-sm-4 text-right\" v-if=\"pagination\">\n\t\t\t\t\t<span>{{pagination.showText}}: {{pagination.from}} - {{pagination.to}} {{pagination.of}} {{pagination.total}} {{pagination.register}}</span>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"row\" v-else=\"\">\n\t\t\t\t<div class=\"col-xs-12 text-center\">\n\t\t\t\t\t<span>{{pagination.noData}}</span>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t</div>\n\n\t<!--\n\t<div v-if=\"optionToolbar\" :class=\"divSeparatorClass\">\n\t\t<div class=\"col-xs-7\">\n\t\t\t<form action=\"#\" method=\"get\">\n\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t<input type=\"text\" name=\"table_q\" class=\"form-control\" placeholder=\"Buscar...\">\n\t\t\t\t\t<span class=\"input-group-btn\">\n\t\t\t\t\t\t<button type=\"submit\" name=\"search_table\" id=\"search-btn\" class=\"btn btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t\t</span>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\t\t<div class=\"col-xs-4\">\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<select class=\"form-control\" v-model=\"pagination.data.per_page\">\n\t\t\t\t\t<option value=\"\" disabled>Rigistros por página</option>\n\t\t\t\t\t<option v-for=\"item in pagination.data.per_page_list | orderBy item\"  track-by=\"$index\" :value=\"item\">{{item}}</option>\n\t\t\t\t</select>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"col-xs-1\">\n\t\t\t<button class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"true\" :title=\"optionToolbar.label\">\n\t\t\t\t<i :class=\"optionToolbar.iconClass\"></i>\n\t\t\t</button>\n\t\t\t<ul class=\"dropdown-menu\">\n\t\t\t\t<li v-for=\"(idx, col) in columns\">\n\t\t\t\t\t<span class=\"checkbox\">\n\t\t\t\t\t\t<label @click=\"toggleColumns(idx)\">\n\t\t\t\t\t\t\t<strong>{{ col.title }} <i class=\"fa fa-check font-success\" v-if=\"!col.hidden\"></i><i class=\"fa fa-close font-error\" v-else></i></strong>\n\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</span>\n\t\t\t\t</li>\n\t\t\t</ul>\n\t\t</div>\n\t</div>\n\n\t<div :class=\"divSeparatorClass\">\n\t\t<table :class=\"tableClass\">\n\t\t\t<thead v-if=\"requireHeader\">\n\t\t\t\t<tr>\n\t\t\t\t\t<th v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.titleClass\">{{col.title}}</th>\n\t\t\t\t</tr>\n\t\t\t</thead>\n\t\t\t\n\t\t\t<tbody>\n\t\t\t\t<tr v-for=\"item in data\">\n\n\t\t\t\t\t<td v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.fieldClass\">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div v-if=\"!col.itemActions\">{{ item[col.field] }}</div>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div v-else class=\"btn-group\">\n\n\t\t\t\t\t\t\t<a v-for=\"act in col.itemActions\" :class=\"act.btnClass\" href=\"\" @click.prevent=\"dispacher(act.nameEmit, item)\" >\n\t\t\t\t\t\t\t\t<i :class=\"act.iconClass\" data-toggle=\"tooltip\" :title=\"act.label\"></i>\n\t\t\t\t\t\t\t</a>\n\n\t\t\t\t\t\t</div>\n\n\n\n\t\t\t\t</td>\n\n\t\t\t</tr>\n\t\t</tbody>\n\t\t\n\t</table>\n</div>\n-->\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<!-- Head Confi toolbar -->\n<div class=\"box box-primary\">\n\t<div class=\"box-header with-border\" v-if=\"optionToolbar\">\n\t\t<div class=\"col-sm-2 col-xs-12\" v-if=\"optionToolbar\">\n\t\t\t<button :class=\"optionToolbar.btnClass\" @click.prevent=\"dispacher(optionToolbar.nameEmit)\"><i :class=\"optionToolbar.iconClass\"></i> {{optionToolbar.label}}</button>\n\t\t</div>\n\t\t<div class=\"col-xs-6 col-sm-6\">\n\t\t\t<form action=\"#\" method=\"get\" @submit.prevent=\"search\">\n\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t<input type=\"text\" name=\"filter\" v-model=\"search_filter\" class=\"form-control\" placeholder=\"Buscar...\">\n\t\t\t\t\t<span class=\"input-group-btn\">\n\t\t\t\t\t\t<button type=\"submit\" name=\"search_table\" id=\"search-btn\" class=\"btn btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t\t</span>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\t\t<div class=\"col-xs-4 col-sm-3\">\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<select class=\"form-control\" v-model=\"pagination.per_page\" @change=\"changePerPage\">\n\t\t\t\t\t<option value=\"\" disabled=\"\">Rigistros por página</option>\n\t\t\t\t\t<option v-for=\"item in pagination.per_page_list | orderBy item\" track-by=\"$index\" :value=\"item\">{{item}}</option>\n\t\t\t\t</select>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"col-xs-2 col-sm-1\">\n\t\t\t<button class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"true\" :title=\"optionToolbar.labelOptions\">\n\t\t\t\t<i :class=\"optionToolbar.iconClassOptions\"></i>\n\t\t\t</button>\n\t\t\t<ul class=\"dropdown-menu pull-right\">\n\t\t\t\t<li v-for=\"(idx, col) in columns\">\n\t\t\t\t\t<span class=\"checkbox\">\n\t\t\t\t\t\t<label @click=\"toggleColumns(idx)\">\n\t\t\t\t\t\t\t<strong>{{ col.title }} <i class=\"fa fa-check font-success\" v-if=\"!col.hidden\"></i><i class=\"fa fa-close font-error\" v-else=\"\"></i></strong>\n\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</span>\n\t\t\t\t</li>\n\t\t\t</ul>\n\t\t</div>\n\t</div>\n\t<!-- Body table -->\n\t<div class=\"box-body table-responsive\">\n\t\t<div class=\"loading-mask l-close\">\n\t\t\t<i :class=\"pagination.loadingIconClass\"></i>\n\t\t\t<span class=\"sr-only\">Loading...</span>\n\t\t</div>\n\t\t<table :class=\"tableClass\">\n\t\t\t\n\t\t\t<thead v-if=\"requireHeader\">\n\t\t\t\t<tr>\n\t\t\t\t\t<th v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.titleClass\">\n\t\t\t\t\t\t<template v-if=\"sortable &amp;&amp; col.sortable &amp;&amp; !col.itemActions\">\n\t\t\t\t\t\t\t<div class=\"cool-table-sortable\" @click.prevent=\"orderColumn(col.field)\">\n\t\t\t\t\t\t\t\t<span>{{col.title}}</span>\n\t\t\t\t\t\t\t\t<template v-if=\"sortable.column == col.field\">\n\t\t\t\t\t\t\t\t\t<template v-if=\"sortable.order == 'desc'\">\n\t\t\t\t\t\t\t\t\t\t<span class=\"pull-right\"><i :class=\"sortable.descendingIcon\"></i></span>\n\t\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t\t\t<template v-else=\"\">\n\t\t\t\t\t\t\t\t\t\t<span class=\"pull-right\"><i :class=\"sortable.ascendingIcon\"></i></span>\n\t\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</template>\n\t\t\t\t\t\t<template v-else=\"\">\n\t\t\t\t\t\t\t{{col.title}}\n\t\t\t\t\t\t</template>\n\t\t\t\t\t</th>\n\t\t\t\t</tr>\n\t\t\t</thead>\n\n\t\t\t<tbody>\n\t\t\t\t<tr v-for=\"item in data\">\n\n\t\t\t\t\t<td v-for=\"col in columns | filterBy false in 'hidden'\" :class=\"col.fieldClass\">\n\n\t\t\t\t\t\t<template v-if=\"col.template\">\n\t\t\t\t\t\t\t{{{renderTemplate(item, col.template)}}}\n\t\t\t\t\t\t</template>\n\n\t\t\t\t\t\t<template v-else=\"\">\n\n\t\t\t\t\t\t\t<div v-if=\"!col.itemActions\">{{ item[col.field] }}</div>\n\n\t\t\t\t\t\t\t<div v-else=\"\" class=\"btn-group\">\n\n\t\t\t\t\t\t\t\t<a v-for=\"act in col.itemActions\" :class=\"act.btnClass\" href=\"\" @click.prevent=\"dispacher(act.nameEmit, item)\">\n\t\t\t\t\t\t\t\t\t<i :class=\"act.iconClass\" data-toggle=\"tooltip\" :title=\"act.label\"></i>\n\t\t\t\t\t\t\t\t</a>\n\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</template>\n\n\t\t\t\t\t\t\n\n\t\t\t\t\t</td>\n\n\t\t\t\t</tr>\n\t\t\t</tbody>\n\n\t\t</table>\n\t</div>\n\n\t<!-- Footer pagination -->\n\t<div class=\"box-footer\" v-if=\"pagination\">\n\t\t<div class=\"row\" v-if=\"pagination.data.length>0\">\n\t\t\t<div class=\"col-xs-12 col-sm-8\">\n\t\t\t\t<nav>\n\t\t\t\t\t<ul class=\"pagination pagination-sm\">\n\t\t\t\t\t\t<li class=\"{{firstActive}}\" @click.prevent=\"paginate(1)\">\n\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Previous\">\n\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.first}}</span>\n\t\t\t\t\t\t\t</a><!-- begin -->\n\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t<li class=\"{{firstActive}}\" @click.prevent=\"paginatePrev\">\n\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Previous\">\n\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.back}}</span>\n\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t<li v-if=\"pagination.current_page>pagination.limitPaginate\" @click.prevent=\"pagScroll('prev')\">\n\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Prev\">\n\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">...</span>\n\t\t\t\t\t\t\t</a><!-- more back -->\n\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t<li v-for=\"pag in 5, pagination.last_page\" class=\"{{isActive(pag+1)}}\" @click.prevent=\"paginate(pag+1)\" v-if=\"numToShow(pag+1)\"><a href=\"#\">{{pag + 1}}</a></li>\n\n\t\t\t\t\t\t<li v-if=\"pagination.moreTemp < (pagination.last_page/pagination.limitPaginate)\" @click.prevent=\"pagScroll('next')\">\n\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">...</span>\n\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t</li><!-- more next -->\n\n\t\t\t\t\t\t<li class=\"{{lastActive}}\" @click.prevent=\"paginateNext\">\n\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.next}}</span>\n\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t</li>\n\n\t\t\t\t\t\t<li class=\"{{lastActive}}\" @click.prevent=\"paginate(pagination.last_page)\">\n\t\t\t\t\t\t\t<a href=\"#\" aria-label=\"Next\">\n\t\t\t\t\t\t\t\t<span aria-hidden=\"true\">{{pagination.last}}</span>\n\t\t\t\t\t\t\t</a><!-- end -->\n\t\t\t\t\t\t</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</nav>\n\t\t\t</div>\n\n\t\t\t<div class=\"col-xs-12 col-sm-4 text-right\" v-if=\"pagination\">\n\t\t\t\t<span>{{pagination.showText}}: {{pagination.from}} - {{pagination.to}} {{pagination.of}} {{pagination.total}} {{pagination.register}}</span>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"row\" v-else=\"\">\n\t\t\t<div class=\"col-xs-12 text-center\">\n\t\t\t\t<span>{{pagination.noData}}</span>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\n</div>\n\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\n.font-success{\n\tcolor: #00a65a;\n}\n\n.font-error{\n\tcolor: #dd4b39;\n}\n\n.pagination{\n\tmargin: 0 !important;\n}\n\n.cool-table-loading-icon{\n\tposition: absolute;\n\tmargin-left: 45%;\n\tmargin-top: 50%;\n}\n\n.cool-table-sortable{\n\tcursor: pointer;\n}\n.cool-table-sortable:hover{\n\tcolor: #2185d0;\n}\n\n.loading-mask{\t\n\tz-index: 99;\t\n\tposition: absolute;\n\twidth: 100%;\n\tbackground: rgba(236, 240, 245, 0.31);\n}\n.l-open{\n\tdisplay: inherit;\n}\n\n.l-close{\n\tdisplay: none;\t\n}\n"] = false
+    __vueify_insert__.cache["\n.font-success{\n\t color: #00a65a;\n }\n\n.font-error{\n\tcolor: #dd4b39;\n}\n\n.pagination{\n\tmargin: 0 !important;\n}\n\n.cool-table-loading-icon{\n\tposition: absolute;\n\tmargin-left: 45%;\n\tmargin-top: 50%;\n}\n\n.cool-table-sortable{\n\tcursor: pointer;\n}\n.cool-table-sortable:hover{\n\tcolor: #2185d0;\n}\n\n.loading-mask{\t\n\tz-index: 99;\t\n\tposition: absolute;\n\twidth: 100%;\n\tbackground: rgba(236, 240, 245, 0.31);\n}\n.l-open{\n\tdisplay: inherit;\n}\n\n.l-close{\n\tdisplay: none;\t\n}\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-78e977f7", module.exports)
+    hotAPI.createRecord("_v-5b39ce96", module.exports)
   } else {
-    hotAPI.update("_v-78e977f7", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-5b39ce96", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"babel-runtime/core-js/object/assign":1,"vue":24,"vue-hot-reload-api":20,"vueify/lib/insert-css":25}],99:[function(require,module,exports){
+},{"babel-runtime/core-js/object/assign":1,"vue":24,"vue-hot-reload-api":20,"vueify/lib/insert-css":25}],96:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n* {margin: 0;padding:0;}\n.mask-loading {\n\tbackground-color: #ecf0f5;\n\tmargin: 150px 0px;\n}\n.spinner {\n\twidth: 50px;\n\theight: 50px;\n\tposition: relative;\n\tmargin: 0 auto;\n}\n\n.double-bounce1, .double-bounce2 {\n\twidth: 100%;\n\theight: 100%;\n\tborder-radius: 50%;\n\tbackground-color: #3c8dbc;\n\topacity: 0.6;\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\n\t-webkit-animation: sk-bounce 2.0s infinite ease-in-out;\n\tanimation: sk-bounce 2.0s infinite ease-in-out;\n}\n\n.double-bounce2 {\n\t-webkit-animation-delay: -1.0s;\n\tanimation-delay: -1.0s;\n}\n\n@-webkit-keyframes sk-bounce {\n\t0%, 100% { -webkit-transform: scale(0.0) }\n\t50% { -webkit-transform: scale(1.0) }\n}\n\n@keyframes sk-bounce {\n\t0%, 100% { \n\t\ttransform: scale(0.0);\n\t\t-webkit-transform: scale(0.0);\n\t} 50% { \n\t\ttransform: scale(1.0);\n\t\t-webkit-transform: scale(1.0);\n\t}\n}\n")
 "use strict";
@@ -19535,12 +19420,12 @@ if (module.hot) {(function () {  module.hot.accept()
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-38efffdf", module.exports)
+    hotAPI.createRecord("_v-2e1b703e", module.exports)
   } else {
-    hotAPI.update("_v-38efffdf", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-2e1b703e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":24,"vue-hot-reload-api":20,"vueify/lib/insert-css":25}],100:[function(require,module,exports){
+},{"vue":24,"vue-hot-reload-api":20,"vueify/lib/insert-css":25}],97:[function(require,module,exports){
 'use strict';
 
 var _menuItemLevel = require('./menuItemLevel2.vue');
@@ -19586,12 +19471,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-d28a50e8", module.exports)
+    hotAPI.createRecord("_v-64d9e94a", module.exports)
   } else {
-    hotAPI.update("_v-d28a50e8", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-64d9e94a", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./menuItemLevel2.vue":101,"vue":24,"vue-hot-reload-api":20}],101:[function(require,module,exports){
+},{"./menuItemLevel2.vue":98,"vue":24,"vue-hot-reload-api":20}],98:[function(require,module,exports){
 'use strict';
 
 var _menuItemLevel = require('./menuItemLevel3.vue');
@@ -19637,12 +19522,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-d26e21e6", module.exports)
+    hotAPI.createRecord("_v-64e800cb", module.exports)
   } else {
-    hotAPI.update("_v-d26e21e6", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-64e800cb", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./menuItemLevel3.vue":102,"vue":24,"vue-hot-reload-api":20}],102:[function(require,module,exports){
+},{"./menuItemLevel3.vue":99,"vue":24,"vue-hot-reload-api":20}],99:[function(require,module,exports){
 'use strict';
 
 var _menuItemLevel = require('./menuItemLevel1.vue');
@@ -19688,12 +19573,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-d251f2e4", module.exports)
+    hotAPI.createRecord("_v-64f6184c", module.exports)
   } else {
-    hotAPI.update("_v-d251f2e4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-64f6184c", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./menuItemLevel1.vue":100,"vue":24,"vue-hot-reload-api":20}],103:[function(require,module,exports){
+},{"./menuItemLevel1.vue":97,"vue":24,"vue-hot-reload-api":20}],100:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\t#menu-content {\n\t\tbackground:white;\n\t\tfont:normal normal 13px/1.4 Segoe,\"Segoe UI\",Calibri,Helmet,FreeSans,Sans-Serif;\n\t\tpadding:10px;\n\t}\n\n\n/**\n * Framework starts from here ...\n * ------------------------------\n */\n\n .tree,\n .tree ul {\n \tmargin:0 0 0 1em; /* indentation */\n \tpadding:0;\n \tlist-style:none;\n \tcolor:#369;\n \tposition:relative;\n }\n\n .tree ul {margin-left:.5em} /* (indentation/2) */\n\n .tree:before,\n .tree ul:before {\n \tcontent:\"\";\n \tdisplay:block;\n \twidth:0;\n \tposition:absolute;\n \ttop:0;\n \tbottom:0;\n \tleft:0;\n \tborder-left:1px solid;\n }\n\n .tree li {\n \tmargin:0;\n \tpadding:0 1.5em; /* indentation + .5em */\n \tline-height:2em; /* default list item's `line-height` */\n \tposition:relative;\n }\n\n .tree li:before {\n \tcontent:\"\";\n \tdisplay:block;\n \twidth:10px; /* same with indentation */\n \theight:0;\n \tborder-top:1px solid;\n \tmargin-top:-1px; /* border top width */\n \tposition:absolute;\n \ttop:1em; /* (line-height/2) */\n \tleft:0;\n }\n\n .tree li:last-child:before {\n \tbackground:white; /* same with body background */\n \theight:auto;\n \ttop:1em; /* (line-height/2) */\n \tbottom:0;\n }\n\n .edit-option, .delete-option{\n \tcolor: #336699;\n }\n .edit-option:hover{\n \tcursor: pointer;\n \tcolor: orange;\n }\n\n .delete-option:hover{\n \tcursor: pointer;\n \tcolor: red;\n }\n\n .add-btn{\n \tpadding: 1px 50px !important;\n }\n")
 'use strict';
@@ -19774,14 +19659,14 @@ if (module.hot) {(function () {  module.hot.accept()
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-4e25b7a2", module.exports)
+    hotAPI.createRecord("_v-b1e79426", module.exports)
   } else {
-    hotAPI.update("_v-4e25b7a2", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-b1e79426", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../util/reusable_functions":107,"babel-runtime/helpers/defineProperty":3,"vue":24,"vue-hot-reload-api":20,"vueify/lib/insert-css":25}],104:[function(require,module,exports){
+},{"../../util/reusable_functions":104,"babel-runtime/helpers/defineProperty":3,"vue":24,"vue-hot-reload-api":20,"vueify/lib/insert-css":25}],101:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n.modal[_v-216fff90] {\n    display: block;\n}\n.modal-transition[_v-216fff90] {\n    -webkit-transition: all .6s ease;\n    transition: all .6s ease;\n}\n.modal-leave[_v-216fff90] {\n    border-radius: 1px !important;\n}\n.modal-transition .modal-dialog[_v-216fff90], .modal-transition .modal-backdrop[_v-216fff90] {\n    -webkit-transition: all .5s ease;\n    transition: all .5s ease;\n}\n.modal-enter .modal-dialog[_v-216fff90], .modal-leave .modal-dialog[_v-216fff90] {\n    opacity: 0;\n    -webkit-transform: translateY(-30%);\n            transform: translateY(-30%);\n}\n.modal-enter .modal-backdrop[_v-216fff90], .modal-leave .modal-backdrop[_v-216fff90] {\n    opacity: 0;\n}\n")
+var __vueify_style__ = __vueify_insert__.insert("\n.modal[_v-d3ef3fdc] {\n    display: block;\n}\n.modal-transition[_v-d3ef3fdc] {\n    -webkit-transition: all .6s ease;\n    transition: all .6s ease;\n}\n.modal-leave[_v-d3ef3fdc] {\n    border-radius: 1px !important;\n}\n.modal-transition .modal-dialog[_v-d3ef3fdc], .modal-transition .modal-backdrop[_v-d3ef3fdc] {\n    -webkit-transition: all .5s ease;\n    transition: all .5s ease;\n}\n.modal-enter .modal-dialog[_v-d3ef3fdc], .modal-leave .modal-dialog[_v-d3ef3fdc] {\n    opacity: 0;\n    -webkit-transform: translateY(-30%);\n            transform: translateY(-30%);\n}\n.modal-enter .modal-backdrop[_v-d3ef3fdc], .modal-leave .modal-backdrop[_v-d3ef3fdc] {\n    opacity: 0;\n}\n")
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -19844,6 +19729,14 @@ exports.default = {
         closeWhenOK: {
             type: Boolean,
             default: false
+        },
+        emitWhenClose: {
+            type: String,
+            default: 'ev-close'
+        },
+        emitWhenOk: {
+            type: String,
+            default: 'ev-ok'
         }
     },
     data: function data() {
@@ -19887,12 +19780,14 @@ exports.default = {
     },
     methods: {
         ok: function ok() {
+            this.$dispatch(this.emitWhenOk);
             this.$emit('ok');
             if (this.closeWhenOK) {
                 this.show = false;
             }
         },
         cancel: function cancel() {
+            this.$dispatch(this.emitWhenClose);
             this.$emit('cancel');
             this.show = false;
         },
@@ -19904,22 +19799,22 @@ exports.default = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div v-show=\"show\" :transition=\"transition\" _v-216fff90=\"\">\n    <div class=\"modal\" @click.self=\"clickMask\" _v-216fff90=\"\">\n        <div class=\"modal-dialog\" :class=\"modalClass\" v-el:dialog=\"\" _v-216fff90=\"\">\n            <div class=\"modal-content\" _v-216fff90=\"\">\n                <!--Header-->\n                <div class=\"modal-header\" _v-216fff90=\"\">\n                    <slot name=\"header\" _v-216fff90=\"\">\n                        <a type=\"button\" class=\"close\" @click=\"cancel\" _v-216fff90=\"\">x</a>\n                        <h4 class=\"modal-title\" _v-216fff90=\"\">\n                            <slot name=\"title\" _v-216fff90=\"\">\n                                {{title}}\n                            </slot>\n                        </h4>\n                    </slot>\n                </div>\n                <!--Container-->\n                <div class=\"modal-body\" _v-216fff90=\"\">\n                    <slot _v-216fff90=\"\"></slot>\n                </div>\n                <!--Footer-->\n                <div class=\"modal-footer\" _v-216fff90=\"\">\n                    <slot name=\"footer\" _v-216fff90=\"\">\n                        <button type=\"button\" :class=\"cancelClass\" @click=\"cancel\" _v-216fff90=\"\">{{cancelText}}</button>\n                        <button type=\"button\" :class=\"okClass\" @click=\"ok\" _v-216fff90=\"\">{{okText}}</button>\n                    </slot>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div class=\"modal-backdrop in\" _v-216fff90=\"\"></div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div v-show=\"show\" :transition=\"transition\" _v-d3ef3fdc=\"\">\n    <div class=\"modal\" @click.self=\"clickMask\" _v-d3ef3fdc=\"\">\n        <div class=\"modal-dialog\" :class=\"modalClass\" v-el:dialog=\"\" _v-d3ef3fdc=\"\">\n            <div class=\"modal-content\" _v-d3ef3fdc=\"\">\n                <!--Header-->\n                <div class=\"modal-header\" _v-d3ef3fdc=\"\">\n                    <slot name=\"header\" _v-d3ef3fdc=\"\">\n                        <a type=\"button\" class=\"close\" @click=\"cancel\" _v-d3ef3fdc=\"\">x</a>\n                        <h4 class=\"modal-title\" _v-d3ef3fdc=\"\">\n                            <slot name=\"title\" _v-d3ef3fdc=\"\">\n                                {{title}}\n                            </slot>\n                        </h4>\n                    </slot>\n                </div>\n                <!--Container-->\n                <div class=\"modal-body\" _v-d3ef3fdc=\"\">\n                    <slot _v-d3ef3fdc=\"\"></slot>\n                </div>\n                <!--Footer-->\n                <div class=\"modal-footer\" _v-d3ef3fdc=\"\">\n                    <slot name=\"footer\" _v-d3ef3fdc=\"\">\n                        <button type=\"button\" :class=\"cancelClass\" @click=\"cancel\" _v-d3ef3fdc=\"\">{{cancelText}}</button>\n                        <button type=\"button\" :class=\"okClass\" @click=\"ok\" _v-d3ef3fdc=\"\">{{okText}}</button>\n                    </slot>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div class=\"modal-backdrop in\" _v-d3ef3fdc=\"\"></div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\n.modal[_v-216fff90] {\n    display: block;\n}\n.modal-transition[_v-216fff90] {\n    -webkit-transition: all .6s ease;\n    transition: all .6s ease;\n}\n.modal-leave[_v-216fff90] {\n    border-radius: 1px !important;\n}\n.modal-transition .modal-dialog[_v-216fff90], .modal-transition .modal-backdrop[_v-216fff90] {\n    -webkit-transition: all .5s ease;\n    transition: all .5s ease;\n}\n.modal-enter .modal-dialog[_v-216fff90], .modal-leave .modal-dialog[_v-216fff90] {\n    opacity: 0;\n    -webkit-transform: translateY(-30%);\n            transform: translateY(-30%);\n}\n.modal-enter .modal-backdrop[_v-216fff90], .modal-leave .modal-backdrop[_v-216fff90] {\n    opacity: 0;\n}\n"] = false
+    __vueify_insert__.cache["\n.modal[_v-d3ef3fdc] {\n    display: block;\n}\n.modal-transition[_v-d3ef3fdc] {\n    -webkit-transition: all .6s ease;\n    transition: all .6s ease;\n}\n.modal-leave[_v-d3ef3fdc] {\n    border-radius: 1px !important;\n}\n.modal-transition .modal-dialog[_v-d3ef3fdc], .modal-transition .modal-backdrop[_v-d3ef3fdc] {\n    -webkit-transition: all .5s ease;\n    transition: all .5s ease;\n}\n.modal-enter .modal-dialog[_v-d3ef3fdc], .modal-leave .modal-dialog[_v-d3ef3fdc] {\n    opacity: 0;\n    -webkit-transform: translateY(-30%);\n            transform: translateY(-30%);\n}\n.modal-enter .modal-backdrop[_v-d3ef3fdc], .modal-leave .modal-backdrop[_v-d3ef3fdc] {\n    opacity: 0;\n}\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-216fff90", module.exports)
+    hotAPI.createRecord("_v-d3ef3fdc", module.exports)
   } else {
-    hotAPI.update("_v-216fff90", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-d3ef3fdc", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":24,"vue-hot-reload-api":20,"vueify/lib/insert-css":25}],105:[function(require,module,exports){
+},{"vue":24,"vue-hot-reload-api":20,"vueify/lib/insert-css":25}],102:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -19935,12 +19830,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-b382fa48", module.exports)
+    hotAPI.createRecord("_v-12f589cc", module.exports)
   } else {
-    hotAPI.update("_v-b382fa48", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-12f589cc", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":24,"vue-hot-reload-api":20}],106:[function(require,module,exports){
+},{"vue":24,"vue-hot-reload-api":20}],103:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -20024,12 +19919,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-43fb7a72", module.exports)
+    hotAPI.createRecord("_v-19b5f174", module.exports)
   } else {
-    hotAPI.update("_v-43fb7a72", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-19b5f174", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":24,"vue-hot-reload-api":20}],107:[function(require,module,exports){
+},{"vue":24,"vue-hot-reload-api":20}],104:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

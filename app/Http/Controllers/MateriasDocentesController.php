@@ -28,6 +28,9 @@ class MateriasDocentesController extends Controller
 
     public function __construct(MateriasDocenteRepository $repository, MateriasDocenteValidator $validator)
     {
+
+
+
         $this->repository = $repository;
         $this->validator  = $validator;
     }
@@ -64,6 +67,8 @@ class MateriasDocentesController extends Controller
     {
 
         try {
+
+            dd($request->all());
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
 
@@ -143,6 +148,8 @@ class MateriasDocentesController extends Controller
     {
 
         try {
+
+            dd($request);
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
 

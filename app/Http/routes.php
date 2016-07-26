@@ -52,6 +52,9 @@ Route::group(['middleware' => 'auth'], function(){
 		Route::resource('malla_academica', 'MallaAcademicaController');
 
 		Route::resource('docentes', 'DocentesController');
+		//Route::post('docentes/materias', ['uses' => 'DocentesController@storeMaterias', 'as' => 'api.docentes.materias']);
+		Route::put('docentes/materias/{id}', ['uses' => 'DocentesController@updateMaterias', 'as' => 'api.docentes.materias']);
+
 
 	});
 

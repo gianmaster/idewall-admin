@@ -19,6 +19,10 @@ class Docente extends Model implements Transformable
 
 
     public function materias(){
+    	return $this->HasMany(MateriasDocente::class, 'docente', 'id')->with('materiaDetail')->where('activo', true);
+    }
+
+    public function materiasAll(){
     	return $this->HasMany(MateriasDocente::class, 'docente', 'id')->with('materiaDetail');
     }
 

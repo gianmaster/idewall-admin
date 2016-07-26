@@ -2,17 +2,24 @@
 
 	<div class="col-xs-12">
 		<div class="{'invalid': isInvalid}">
-			<label>Seleccione las materias para </label>
+			<label>Docente: <span class="__user">{{docente}}</span></label>
 			<multiselect
-					:options="options",
-					:selected.sync="selected",
-					:multiple="true",
-					:searchable="true",
-					:allow-empty="false",
-					:hide-selected="true",
-					:max-height="400",
-					:max="5"
-					placeholder="Al menos una, máximo 3"></multiselect>
+			:options="options"
+			  :selected.sync="selected"
+			  :multiple="true"
+			  :searchable="true"
+			  :close-on-select="true"
+			  :clear-on-select="false"
+			  placeholder="Seleccione máximo 3 materias"
+			  :hide-selected="true"
+			  label="desc"
+			  :close-on-select="true"
+			  :max="3"
+			  :taggable="true"
+			  select-label="Presione enter para seleccionar"
+			  deselect-label="Presione enter para remover"
+			  :limit-text="templateLimit"
+			  key="materia"></multiselect>
 		</div>
 
 	</div>
@@ -21,11 +28,13 @@
 
 <style>
 
+	.__user{
+		color: #656464;
+	}
+
 </style>
 
 <script>
-
-	import selectList from '../../reusable/select-list.vue';
 
 	import Multiselect from 'vue-multiselect';
 
@@ -34,37 +43,74 @@
 			isInvalid () {
 				return this.isTouched && this.selected.length === 0
 			},
-		},
-		beforeCompile(){
-			if (this.createMode){
-				this.dataModel = this.initModel();
+			docente(){
+				const {nombres, abreviatura, apellidos} = this.dataModel;
+				return `${abreviatura}. ${nombres} ${apellidos}`;
 			}
 		},
+		
 		components: {
-			'select-list': selectList,
 			'multiselect': Multiselect
 		},
-		methods: {
-			initModel: function(){
-				return {
-					selected: []
-				}
-			},
-		},
+
 		props: {
-			createMode: {
-				type: Boolean,
-				required: false,
-				default: true
+			selected: {
+				type: Array,
+				default: function(){
+					return [];
+				}
 			},
 			dataModel: {
 				type: Object,
 				required: false,
 				default: function(){
 					return {
-						selected: null
+						id: null,
+						nombres: null,
+						apellidos: null,
+						abrevatura: null,
 					}
 				}
+			}
+		},
+		data(){
+			return {
+				options: [
+					{
+						materia:17,
+						desc: 'Opcion 1'
+					},
+					{
+						materia:18,
+						desc: 'Opcion 2'
+					},
+					{
+						materia:19,
+						desc: 'Opcion 3'
+					},
+					{
+						materia:20,
+						desc: 'Opcion 4'
+					},
+					{
+						materia:12,
+						desc: 'Opcion 5'
+					},
+					{
+						materia:34,
+						desc: 'Opcion 6'
+					},
+					{
+						materia:41,
+						desc: 'Opcion 7'
+					},
+					{
+						materia:33,
+						desc: 'Opcion 8'
+					},
+				],
+				templateLimit: count => `y ${count} más`
+
 			}
 		}
 	}

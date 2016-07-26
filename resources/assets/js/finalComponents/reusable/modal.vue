@@ -54,7 +54,15 @@
             closeWhenOK: {
                 type: Boolean,
                 default: false
-            }
+            },
+            emitWhenClose:{
+                type: String,
+                default: 'ev-close'
+            },
+            emitWhenOk:{
+                type: String,
+                default: 'ev-ok'
+            },
         },
         data () {
             return {
@@ -96,12 +104,14 @@
         },
         methods: {
             ok () {
+                this.$dispatch(this.emitWhenOk);
                 this.$emit('ok');
                 if (this.closeWhenOK) {
                     this.show = false;
                 }
             },
             cancel () {
+                this.$dispatch(this.emitWhenClose);
                 this.$emit('cancel');
                 this.show = false;
             },

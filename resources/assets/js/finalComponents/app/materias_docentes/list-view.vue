@@ -13,11 +13,17 @@
 		filter-key-word="search">
 	</cool-table>
 
-		<app-modal title="Asignación de Materias" :show.sync="showModal" @ok="toggleModal" @cancel="toggleModal">
-			<div class="row">
-				<formulario></formulario>
-			</div>
-		</app-modal>
+	<!-- Modal logic -->
+
+	<app-modal title="Asignación de Materias" :show.sync="showModal" @ok="toggleModal" @cancel="toggleModal" emit-when-ok="event-end-edit">
+		<div class="row">
+			<form action="" @submit.prevent="update">
+
+				<formulario :data-model.sync="currentModel" :selected.sync="materiasSeleccionadas"></formulario>
+
+			</form>
+		</div>
+	</app-modal>
 
 </div>
 
@@ -48,36 +54,38 @@
 				showModal: false,
 				url: 'api/docentes',
 				toolbar: null,
+				currentModel: {},
+				materiasSeleccionadas: [],
 				datos: [],
 				columnas: [
+				{
+					title: 'Docente',
+					field: 'nombres',
+					hidden: false,
+					sortable: true,
+					template: '${col.abreviatura}. ${col.nombres} ${col.apellidos}'
+				},
+				{
+					title: 'Materias',
+					field: 'materias',
+					hidden: false,
+					sortable: false,
+					template: '${col.materias.map(function(ele){return ele.materia_detail.nombre_materia;}).join(", ")}'					
+				},
+				{
+					title: 'Gestionar Materias',
+					titleClass: 'text-center',
+					hidden: false,
+					fieldClass: 'text-center',
+					itemActions: [
 					{
-						title: 'Docente',
-						field: 'nombres',
-						hidden: false,
-						sortable: true,
-						template: '${col.abreviatura}. ${col.nombres} ${col.apellidos}'
-					},
-					{
-						title: 'Materias',
-						field: 'materias',
-						hidden: false,
-						sortable: false,
-						template: '${col.materias.map(function(ele){return ele.materia_detail.nombre_materia;}).join(", ")}'					
-					},
-					{
-						title: 'Acciones',
-						titleClass: 'text-center',
-						hidden: false,
-						fieldClass: 'text-center',
-						itemActions: [
-							{
-								nameEmit: 'materias-docente-update-event',
-								btnClass: 'btn btn-warning btn-xs',
-								iconClass: 'fa fa-edit',
-								label: 'Editar',
-							}						
-						]
-					}
+						nameEmit: 'materias-docente-update-event',
+						btnClass: 'btn btn-primary btn-xs',
+						iconClass: 'fa fa-pencil',
+						label: 'Modificar',
+					}						
+					]
+				}
 				],
 				loading: false,
 			}
@@ -90,7 +98,12 @@
 		},
 		events: {
 			'materias-docente-update-event' : function(model){
+				this.toggleDataModel(model);
 				this.toggleModal();
+			},
+			//when modal emit ok
+			'event-end-edit': function(){
+				this.update();
 			}
 		}
 	}

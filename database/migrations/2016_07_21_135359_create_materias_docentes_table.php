@@ -22,6 +22,8 @@ class CreateMateriasDocentesTable extends Migration
             $table->integer('materia')->unsigned();
             $table->foreign('materia')->references('id')->on('malla_academica')->onDelete('cascade')->onUpdate('cascade');
 
+            $table->boolean('activo')->default(true);
+
             $table->timestamps();
 		});
 	}

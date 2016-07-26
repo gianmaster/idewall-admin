@@ -24,8 +24,9 @@ class DocenteTransformer extends TransformerAbstract
         $materias = array();
         foreach ($model->materias as $key => $value) {
             array_push($materias, array(
-                'nombre'    => $value->materia_detail->nombre_materia
-                'semestre'  => $value->materia_detail->semestre
+                'nombre'    => $value->materiaDetail->nombre_materia,
+                'semestre'  => $value->materiaDetail->semestre,
+                'id'        => $value->materiaDetail->id
             )); 
         }
 
@@ -55,6 +56,7 @@ class DocenteTransformer extends TransformerAbstract
             'tipo_contrato' => $model->tipo_contrato, 
             'estado' => $model->estado, 
             'materias' => $materias,
+            'materias_all' => $model->materiasAll->toArray(),
 
             'created_at' => $model->created_at,
             'updated_at' => $model->updated_at

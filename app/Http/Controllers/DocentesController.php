@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Entities\MateriasDocente;
+use App\Entities\Docente;
+
 use App\Http\Requests;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Repositories\DocenteRepository;
 use App\Validators\DocenteValidator;
+use App\Validators\MateriasDocenteValidator;
 
 
 class DocentesController extends Controller
@@ -35,10 +39,11 @@ class DocentesController extends Controller
      */
     protected $validator;
 
-    public function __construct(DocenteRepository $repository, DocenteValidator $validator)
+    public function __construct(DocenteRepository $repository, DocenteValidator $validator, MateriasDocenteValidator $validatorMaterias)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
+        $this->validatorMaterias = $validatorMaterias;
     }
 
 
@@ -204,6 +209,71 @@ class DocentesController extends Controller
             'deleted' => $deleted,
         ]);
 
+    }
+
+
+    public function updateMaterias(Request $request, $id){
+
+        if(!$request->has('materias')){
+            return response()->json(array(
+                'message' => 'No existe el atributo materias',
+                'dev_message' => $e->getMessage()), 401);
+        }
+
+        //$materiasDocente = Docente::with('materias')->where('id', $id)->toArray();
+        $materiasDocente = $this->repository->find($id)['data'];
+
+        //desactivar todas las materias previo a validacion y actualizacion
+        MateriasDocente::where('docente', $id)->update(['activo' => false]);
+
+        foreach ($request->materias as $rKey => $rValue) {
+
+            $flagUpdated = false;
+
+            foreach ($materiasDocente['materias_all'] as $mKey => $mValue) {
+
+                if ($mValue['materia'] == $rValue['materia']) {
+                    MateriasDocente::where('id', $mValue['materia'])->update(['materia' => $rValue['materia'], 'docente' => $id, 'activo' => true]);
+                    $flagUpdated = true;
+                }
+            }
+
+            if(!$flagUpdated){
+                MateriasDocente::create(['materia' => $rValue['materia'], 'docente' => $id]);
+            }
+
+        }
+
+        return response()->json(['data' => $materiasDocente]);
+    }
+
+
+    public function storeMaterias(Request $request)
+    {
+
+        try {
+
+            $this->validatorMaterias->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
+
+            $materias = MateriasDocente::create($request->only(['materia', 'docente']));
+
+            return response()->json(['data' => $materias]);
+
+        } catch (ValidatorException $e) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'dev_message' => $e->getMessage(),
+                    'message' => $e->getMessageBag()
+                ], 403);
+            }
+
+            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+
+        } catch (Exception $e){
+            return response()->json(array(
+                'message' => 'Se presento un error al tratar de hacer esta acción',
+                'dev_message' => $e->getMessage()), 405);
+        }
     }
 
 

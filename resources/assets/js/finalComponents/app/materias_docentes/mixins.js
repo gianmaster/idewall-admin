@@ -5,43 +5,46 @@
 
  import fnc from '../../../util/reusable_functions';
 
+ const API_URL = 'api/docentes/materias'
+
  export default {
  	methods: {
+ 		//For list-view.vue
 		toggleModal: function(){
 			this.showModal = !this.showModal;
 		},
- 		create: function(){
- 			this.$http.post(this.url, this.newModel).then(function(resp){
- 				fnc.niceAlert('success', 'Se creó el registro correctamente!');
- 				this.$router.go('/docentes');
- 			}, fnc.tryError);
- 		},
- 		update: function(){
- 			this.$http.put(this.url + '/' + this.newModel.id, this.newModel).then(function(resp){
- 				fnc.niceAlert('success', 'Se modificó el registro correctamente!');
- 				this.$router.go('/docentes');
- 			}, fnc.tryError);
- 		},
- 		read: function(){
- 			this.loading = true;
- 			this.$http.get(this.url + '/' + this.$route.params.model_id).then(function(resp){
- 				this.newModel = resp.data.data;
- 				this.loading = false;
- 			}, fnc.tryError);
- 		},
- 		destroy: function(model){
- 			if (confirm('¿Estás seguro?')) {
- 				this.$http.delete(this.url + '/' + model.id).then(function(resp){
- 					fnc.niceAlert('success', 'Se eliminó correctamente');
- 					this.load();
- 				}, fnc.tryError);
- 			}
- 		},
- 		load: function(){
+		toggleDataModel: function(model){
+			this.currentModel = model;
+			this.toggleMaterias();
+		},
+		toggleMaterias: function(){
+			let data = [], materia_id, desc, self = this, materias = self.currentModel.materias;
+
+			for (let idx in materias) {
+				materia_id = materias[idx].materia;
+				desc = materias[idx].materia_detail.nombre_materia + ' | ' + materias[idx].materia_detail.semestre;
+				data.push({materia: materia_id, desc: desc });
+			}
+
+			this.materiasSeleccionadas = data;
+		},
+		load: function(){
  			this.loading = true;
  			this.$http.get(this.url).then(function(resp){
  				this.loading = false;
  			}, fnc.tryError)
+ 		},
+
+ 		//for edit-view.vue
+ 		update: function(){ 
+ 			const materias = this.materiasSeleccionadas;
+ 			const self = this;
+ 			self.$http.put(API_URL + '/' + this.currentModel.id, {materias: materias}).then(function(resp){
+ 					fnc.niceAlert('success', 'Esta información ha sido modificada correctamente!');
+ 					//setTimeout(function(){self.$router.go('/materias_docentes');}, 10);
+ 					self.$router.go('/materias_docentes?' + (+new Date())); //random token
+ 				}, fnc.tryError);
+
  		},
 
  	}

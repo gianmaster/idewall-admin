@@ -14,6 +14,7 @@ class MateriasDocenteValidator extends LaravelValidator
         	'docente'	=> 'required',
         ],
         ValidatorInterface::RULE_UPDATE => [
+        	'id'		=> 'required|unique:materias_docente',
         	'materia'	=> 'required',
         	'docente'	=> 'required',
         ],
