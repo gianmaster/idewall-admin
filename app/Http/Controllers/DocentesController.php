@@ -233,7 +233,7 @@ class DocentesController extends Controller
             foreach ($materiasDocente['materias_all'] as $mKey => $mValue) {
 
                 if ($mValue['materia'] == $rValue['materia']) {
-                    MateriasDocente::where('id', $mValue['materia'])->update(['materia' => $rValue['materia'], 'docente' => $id, 'activo' => true]);
+                    MateriasDocente::where('id', $mValue['id'])->update(['materia' => $rValue['materia'], 'docente' => $id, 'activo' => true]);
                     $flagUpdated = true;
                 }
             }

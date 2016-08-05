@@ -23,7 +23,7 @@
     methods: {
       loadProfile: function(){
         this.$http.get('api/me').then(function(resp){
-          this.profile = resp.data.data;
+          this.profile = resp.data;
         }, fnc.tryError);
       }
     },
@@ -32,7 +32,7 @@
         if(this.profile.created_at){
           return this.profile.created_at.substr(0, 10);
         }
-        return this.profile;
+        return this.profile.created_at;
       }
     },
     data: function(){

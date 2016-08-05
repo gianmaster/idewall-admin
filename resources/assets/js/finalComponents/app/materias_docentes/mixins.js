@@ -7,6 +7,8 @@
 
  const API_URL = 'api/docentes/materias'
 
+ const API_URL_LIST_MATERIAS = 'api/malla_academica/all';
+
  export default {
  	methods: {
  		//For list-view.vue
@@ -46,6 +48,18 @@
  				}, fnc.tryError);
 
  		},
+ 		loadList: function(){
+ 			const self = this;
+ 			self.$http.get(API_URL_LIST_MATERIAS).then(function(resp){
+ 					self.formatedList(resp.data.data);
+ 				}, fnc.tryError);
+ 		},
+ 		formatedList: function(data){
+ 			this.options = [];
+ 			for(let i in data){
+ 				this.options.push({materia: data[i].id, desc: data[i].nombre_materia + ' | ' + data[i].semestre});
+ 			}
+ 		}
 
  	}
  }

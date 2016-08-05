@@ -158,42 +158,44 @@
 
 <script>
 
+
     export default {
-      props:{
-        username: {
-          type: String,
-          required:false,
-          default: "Giancarlos Cercado"
-      },
-      avatar: {
-        type: String,
-        required: false,
-        default: 'img/user2-160x160.jpg'
-      },
-      fromDate: {
-        type: String, 
-        required: false,
-        default: 'Ago. 2016'
-      },
-      notifications: {
+        name:'app-header',
+        props:{
+            username: {
+              type: String,
+              required:false,
+              default: "Giancarlos Cercado"
+          },
+          avatar: {
+            type: String,
+            required: false,
+            default: 'img/user2-160x160.jpg'
+        },
+        fromDate: {
+            type: String, 
+            required: false,
+            default: 'Ago. 2016'
+        },
+        notifications: {
           required: false,
           type: Object,
           default: function(){
-            return [];
+            return []
         }
     },
     messages: {
       required: false,
       type: Object,
       default: function(){
-        return [];
+        return []
     } 
 },
 tasks: {
   required: false,
   type: Object,
   default: function(){
-    return [];
+    return []
 }
 },
 control: {
@@ -205,19 +207,19 @@ largeLogo:{
   type: Array,
   required: false,
   default: function(){
-    return ["!De", "WALL"];
+    return ["!De", "WALL"]
 }
 },
 shortLogo:{
   type: Array,
   required: false,
   default: function(){
-    return ["!D", "e"];
+    return ["!D", "e"]
 }
 },
 auth: {
   type: Boolean,
-  default: true,
+  default: true
 }
 }
 }

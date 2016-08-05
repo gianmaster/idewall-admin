@@ -18,4 +18,10 @@ class MallaAcademica extends Model implements Transformable
     	return $this->hasOne('App\Entities\CatalogoItem', 'codigo', 'semestre')->where('catalogo', 2);//catalogo de semestres
     }
 
+   
+    public function docentes(){
+    	return $this->hasMany('App\Entities\MateriasDocente', 'materia', 'id')->where('activo', true);
+    }
+    
+
 }

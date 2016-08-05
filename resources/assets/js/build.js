@@ -36,10 +36,11 @@ const router = new VueRouter();
 router.map({
   '*' : {
     component: require('./finalComponents/reusable/notFound.vue'),
-  },/*
-  '/': {
-    component: require('./components2/dashboard.vue')
   },
+  '/': {
+    component: require('./finalComponents/app/dashboard/index.vue'),
+  },
+  /*
   '/usuarios': {
     component: require('./finalComponents/app/usuariosView.vue')
   },

@@ -201,4 +201,13 @@ class MallaAcademicaController extends Controller
     }
 
 
+
+    public function indexAll(){
+
+        $materias = $this->repository->all();
+        return response()->json($materias);
+
+    }
+
+
 }

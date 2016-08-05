@@ -29,9 +29,10 @@ class MallaAcademicaTransformer extends TransformerAbstract
             'semestre'      => $model->semestre,
             'horas'         => $model->horas,
             'estado'        => $model->estado,
+            'docentes'      => $model->docentes,
 
-            'created_at' => $model->created_at,
-            'updated_at' => $model->updated_at
+            'created_at' => (string)$model->created_at,
+            'updated_at' => (string)$model->updated_at
         ];
     }
 }

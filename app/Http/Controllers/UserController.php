@@ -17,9 +17,14 @@ use App\Entities\Menu;
 class UserController extends Controller
 {
 
+    /**
+     * Display the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function getProfile(){
-        $id = Auth::user()->id;
-        return $this->show($id);
+        $user = Auth::user();
+        return response()->json($user->toArray());
     }
 
     /**
@@ -95,7 +100,7 @@ class UserController extends Controller
     {
         $user = User::find($id);
         if($user)
-            return response()->json(array('data' => $user));
+            return response()->json(array($user->toArray()));
         else
             return response()->json(array('data' => []));
     }

@@ -925,5 +925,20 @@ class ConfigurationSeeder extends Seeder
         ]);
 
 
+        //menu principal de GESTION DE CARGA HORARIA
+        $menuCargaH = App\Menu::create([
+            'nombre'    => 'carga_horaria',
+            'titulo'    => 'Cargas Horarias',
+            'url'     => '/cargas_horarias',
+            'iconclass'   => 'fa fa-calendar-o',
+            'orden'     => 4,
+            'cod_padre'   => null
+        ]);
+
+        App\RolMenu::create([
+            'rol' => $rolAdmin->id,
+            'menu'  => $menuCargaH->id,
+        ]);
+
     }
 }
