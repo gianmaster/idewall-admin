@@ -6,6 +6,7 @@
 		<section class="content">
 			<!--<router-view class="animated" transition="fade" transition-mode="out-in" keep-alive></router-view>-->
 
+
 			<div class="col-xs-12 col-sm-6 col-md-4">
 				<!-- Apply any bg-* class to to the info-box to color it -->
 				<div class="info-box bg-green">
