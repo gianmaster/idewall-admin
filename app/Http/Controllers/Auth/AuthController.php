@@ -70,4 +70,13 @@ class AuthController extends Controller
             'password' => bcrypt($data['password']),
         ]);
     }
+
+
+    public function register(){
+        return view('errors.404_view');
+    }
+
+    public function showRegistrationForm(){
+        return view('errors.404_view');
+    }
 }
