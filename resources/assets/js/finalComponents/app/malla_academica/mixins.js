@@ -7,6 +7,24 @@
 
  export default {
  	methods: {
+ 		//For list-view.vue
+		toggleModal: function(){
+			this.showModal = !this.showModal;
+		},
+		toggleDataModel: function(model){
+			this.currentModel = model;
+		},
+		//for send files silabos
+		uploadFiles: function(){
+			let idMateriaMalla = this.currentModel.id;
+			let formData = new FormData(document.querySelector("#frm-silabos"));
+			this.$http.post(this.url+'/' + idMateriaMalla + '/silabos', formData).then(function(resp){
+				fnc.niceAlert('success', 'Se Subieron los archivos correctamente!');
+				this.toggleModal();
+			}, fnc.tryError);
+		},
+
+		//for crud
  		create: function(){
  			this.$http.post(this.url, this.newModel).then(function(resp){
  				fnc.niceAlert('success', 'Se creó la materia correctamente!');

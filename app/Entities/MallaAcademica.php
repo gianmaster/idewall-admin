@@ -22,6 +22,10 @@ class MallaAcademica extends Model implements Transformable
     public function docentes(){
     	return $this->hasMany('App\Entities\MateriasDocente', 'materia', 'id')->where('activo', true);
     }
+
+    public function silabos(){
+    	return $this->hasMany(Silabo::class, 'id_materia_malla', 'id')->where('estado', true);
+    }
     
 
 }

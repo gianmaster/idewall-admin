@@ -238,20 +238,6 @@ class ConfigurationSeeder extends Seeder
             'menu'  => $menuDocentes->id,
         ]);
 
-        //menu materias docentes
-        $menuMateriasDocentes = App\Menu::create([
-            'nombre'    => 'materias_docentes',
-            'titulo'    => 'Materias Docentes',
-            'url'     => '/materias_docentes',
-            'iconclass'   => 'fa fa-link',
-            'orden'     => 2,
-            'cod_padre'   => $menuAdmin->id
-        ]);
-
-        App\RolMenu::create([
-            'rol' => $rolAdmin->id,
-            'menu'  => $menuMateriasDocentes->id,
-        ]);
 
 
        //Semestres
@@ -844,87 +830,6 @@ class ConfigurationSeeder extends Seeder
         ]);
 
 
-        //creacion de docentes para pruebas
-        App\Entities\Docente::create([
-          'abreviatura'         => 'Ing',
-          'nombres'             => 'Jose Antonio',
-          'apellidos'           => 'Alcivar Gonzales', 
-          'identificacion'      => '0919210419', 
-          'tipo_identificacion' => 'CEDULA', 
-          'email'               => 'josant_83@hotmail.com',
-          'email_corporativo'   => 'josealcivar@prueba.com', 
-          'celular'             => '09889000925', 
-          'telefono'            => '04-6-030-825', 
-          'estado_civil'        => 'CASADO', 
-          'genero'              => 'MASCULINO', 
-          'titulo_pregrado'     => '',
-          'titulo_postgrado'    => '', 
-          'titulo_mba'          => '', 
-          'registro_senescyt'   => '', 
-          'fecha_nacimiento'    => '1983-03-06', 
-          'nacionalidad'        => 'Ecuatoriano',
-          'residencia'          => 'Ecuador', 
-          'direccion'           => 'Metropolis 2g Mz 2060 Villa 8',
-          'tipo_contrato'       => 'MEDIO_TIEMPO'
-          ]);
-
-
-        App\Entities\Docente::create([
-          'abreviatura'         => 'Ing',
-          'nombres'             => 'Cesar Gabriel',
-          'apellidos'           => 'Barrionuevo De la rosa', 
-          'identificacion'      => '0920214731', 
-          'tipo_identificacion' => 'CEDULA', 
-          'email'               => 'cesar.barrionuevod@hotmail.com',
-          'email_corporativo'   => 'cesar.barrionuevo@edu.ug.ec', 
-          'celular'             => '0994696504', 
-          'telefono'            => '(04)2 267-145', 
-          'estado_civil'        => 'CASADO', 
-          'genero'              => 'MASCULINO', 
-          'titulo_pregrado'     => '',
-          'titulo_postgrado'    => '', 
-          'titulo_mba'          => '', 
-          'registro_senescyt'   => '', 
-          'fecha_nacimiento'    => '1982-10-08', 
-          'nacionalidad'        => 'Ecuatoriano',
-          'residencia'          => 'Ecuador', 
-          'direccion'           => 'Latamendi #4818 y la 23',
-          'tipo_contrato'       => 'TIEMPO_COMPLETO'
-          ]);
-
-
-        //Asignación de materias docentes para pruebas
-        App\Entities\MateriasDocente::create([
-          'docente' => 1,
-          'materia' => 12,
-        ]);
-
-        App\Entities\MateriasDocente::create([
-          'docente' => 1,
-          'materia' => 34,
-        ]);
-
-        App\Entities\MateriasDocente::create([
-          'docente' => 1,
-          'materia' => 41,
-        ]);
-
-        App\Entities\MateriasDocente::create([
-          'docente' => 2,
-          'materia' => 2,
-        ]);
-
-        App\Entities\MateriasDocente::create([
-          'docente' => 2,
-          'materia' => 22,
-        ]);
-
-        App\Entities\MateriasDocente::create([
-          'docente' => 2,
-          'materia' => 17,
-        ]);
-
-
         //menu principal de GESTION DE CARGA HORARIA
         $menuCargaH = App\Menu::create([
             'nombre'    => 'carga_horaria',
@@ -938,6 +843,22 @@ class ConfigurationSeeder extends Seeder
         App\RolMenu::create([
             'rol' => $rolAdmin->id,
             'menu'  => $menuCargaH->id,
+        ]);
+
+
+        //menu materias docentes
+        $menuMateriasDocentes = App\Menu::create([
+            'nombre'    => 'materias_docentes',
+            'titulo'    => 'Materias Docentes',
+            'url'     => '/materias_docentes',
+            'iconclass'   => 'fa fa-link',
+            'orden'     => 2,
+            'cod_padre'   => $menuCargaH->id
+        ]);
+
+        App\RolMenu::create([
+            'rol' => $rolAdmin->id,
+            'menu'  => $menuMateriasDocentes->id,
         ]);
 
     }
