@@ -4,20 +4,25 @@
 
 		<!-- sidebar: style can be found in sidebar.less -->
 		<section class="sidebar">
+			<div class="logo-panel">
+				<img src="img/ug/logo.png" class="img-circle" alt="Logo Universidad Image" />
+			</div>
 
 			<!-- Sidebar user panel (optional) -->
+			<!--
 			<div class="user-panel">
 				<div class="pull-left image">
 					<img :src="avatar" class="img-circle" alt="User Image" />
 				</div>
 				<div class="pull-left info">
 					<p>{{ username }}</p>
-					<!-- Status -->
 					<a href="#"><i class="fa fa-circle text-success"></i> Online</a>
 				</div>
 			</div>
+			-->
 
 			<!-- search form (Optional) -->
+			<!--
 			<form action="#" method="get" class="sidebar-form">
 				<div class="input-group">
 					<input type="text" name="q" class="form-control" placeholder="Search..."/>
@@ -26,6 +31,7 @@
 					</span>
 				</div>
 			</form>
+			-->
 			<!-- /.search form -->
 
 			<!-- Sidebar Menu -->
@@ -41,6 +47,15 @@
 	</aside>
 
 </template>
+
+<style>
+	.logo-panel{
+		position: relative;
+	}
+	.logo-panel img{
+		width: 100%;
+	}
+</style>
 
 <script>
 

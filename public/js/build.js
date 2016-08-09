@@ -16708,6 +16708,8 @@ if (module.hot) {(function () {  module.hot.accept()
   }
 })()}
 },{"./mixins":43,"vue":24,"vue-hot-reload-api":20}],45:[function(require,module,exports){
+var __vueify_insert__ = require("vueify/lib/insert-css")
+var __vueify_style__ = __vueify_insert__.insert("\n.bg-green{\n\tbackground: #4e9b78 !important;\n}\n")
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16727,7 +16729,7 @@ exports.default = {
 	},
 	data: function data() {
 		return {
-			path: ['Prueba']
+			path: []
 		};
 	}
 
@@ -16738,13 +16740,17 @@ if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
+  module.hot.dispose(function () {
+    __vueify_insert__.cache["\n.bg-green{\n\tbackground: #4e9b78 !important;\n}\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
   if (!module.hot.data) {
     hotAPI.createRecord("_v-0e64a02a", module.exports)
   } else {
     hotAPI.update("_v-0e64a02a", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../new-layout/content-header.vue":89,"vue":24,"vue-hot-reload-api":20}],46:[function(require,module,exports){
+},{"../../new-layout/content-header.vue":89,"vue":24,"vue-hot-reload-api":20,"vueify/lib/insert-css":25}],46:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18837,7 +18843,7 @@ module.exports = {
         created_at: 'Ago. 2016'
       },
       login: true,
-      body_class: "skin-blue sidebar-mini fixed",
+      body_class: "sidebar-mini skin-blue-light fixed",
       menus: menu || [] //esto deberia ser cargado una vez logoneado
     };
   },
@@ -19093,6 +19099,8 @@ if (module.hot) {(function () {  module.hot.accept()
   }
 })()}
 },{"vue":24,"vue-hot-reload-api":20,"vueify/lib/insert-css":25}],95:[function(require,module,exports){
+var __vueify_insert__ = require("vueify/lib/insert-css")
+var __vueify_style__ = __vueify_insert__.insert("\n.logo-panel{\n\tposition: relative;\n}\n.logo-panel img{\n\twidth: 100%;\n\t\n}\n")
 'use strict';
 
 var _reusable_functions = require('../../util/reusable_functions');
@@ -19149,18 +19157,22 @@ module.exports = {
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<!-- Left side column. contains the logo and sidebar -->\n<aside class=\"main-sidebar\">\n\n\t<!-- sidebar: style can be found in sidebar.less -->\n\t<section class=\"sidebar\">\n\n\t\t<!-- Sidebar user panel (optional) -->\n\t\t<div class=\"user-panel\">\n\t\t\t<div class=\"pull-left image\">\n\t\t\t\t<img :src=\"avatar\" class=\"img-circle\" alt=\"User Image\">\n\t\t\t</div>\n\t\t\t<div class=\"pull-left info\">\n\t\t\t\t<p>{{ username }}</p>\n\t\t\t\t<!-- Status -->\n\t\t\t\t<a href=\"#\"><i class=\"fa fa-circle text-success\"></i> Online</a>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- search form (Optional) -->\n\t\t<form action=\"#\" method=\"get\" class=\"sidebar-form\">\n\t\t\t<div class=\"input-group\">\n\t\t\t\t<input type=\"text\" name=\"q\" class=\"form-control\" placeholder=\"Search...\">\n\t\t\t\t<span class=\"input-group-btn\">\n\t\t\t\t\t<button type=\"submit\" name=\"search\" id=\"search-btn\" class=\"btn btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t</span>\n\t\t\t</div>\n\t\t</form>\n\t\t<!-- /.search form -->\n\n\t\t<!-- Sidebar Menu -->\n\t\t<ul class=\"sidebar-menu\">\n\t\t\t<li class=\"header\">MAIN NAVIGATION</li>\n\t\t\t<menu-item v-for=\"itemenu in menu\" :item=\"itemenu\" :is-parent=\"hasChildren(itemenu.children)\"></menu-item>\n\t\t\t\n\t\t</ul>\n\t\t\n\t\t<!-- /.sidebar-menu -->\n\t</section>\n\t<!-- /.sidebar -->\n</aside>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<!-- Left side column. contains the logo and sidebar -->\n<aside class=\"main-sidebar\">\n\n\t<!-- sidebar: style can be found in sidebar.less -->\n\t<section class=\"sidebar\">\n\t\t<div class=\"logo-panel\">\n\t\t\t<img src=\"img/ug/logo.png\" class=\"img-circle\" alt=\"Logo Universidad Image\">\n\t\t</div>\n\n\t\t<!-- Sidebar user panel (optional) -->\n\t\t<!--\n\t\t<div class=\"user-panel\">\n\t\t\t<div class=\"pull-left image\">\n\t\t\t\t<img :src=\"avatar\" class=\"img-circle\" alt=\"User Image\" />\n\t\t\t</div>\n\t\t\t<div class=\"pull-left info\">\n\t\t\t\t<p>{{ username }}</p>\n\t\t\t\t<a href=\"#\"><i class=\"fa fa-circle text-success\"></i> Online</a>\n\t\t\t</div>\n\t\t</div>\n\t\t-->\n\n\t\t<!-- search form (Optional) -->\n\t\t<!--\n\t\t<form action=\"#\" method=\"get\" class=\"sidebar-form\">\n\t\t\t<div class=\"input-group\">\n\t\t\t\t<input type=\"text\" name=\"q\" class=\"form-control\" placeholder=\"Search...\"/>\n\t\t\t\t<span class=\"input-group-btn\">\n\t\t\t\t\t<button type='submit' name='search' id='search-btn' class=\"btn btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t</span>\n\t\t\t</div>\n\t\t</form>\n\t\t-->\n\t\t<!-- /.search form -->\n\n\t\t<!-- Sidebar Menu -->\n\t\t<ul class=\"sidebar-menu\">\n\t\t\t<li class=\"header\">MAIN NAVIGATION</li>\n\t\t\t<menu-item v-for=\"itemenu in menu\" :item=\"itemenu\" :is-parent=\"hasChildren(itemenu.children)\"></menu-item>\n\t\t\t\n\t\t</ul>\n\t\t\n\t\t<!-- /.sidebar-menu -->\n\t</section>\n\t<!-- /.sidebar -->\n</aside>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
+  module.hot.dispose(function () {
+    __vueify_insert__.cache["\n.logo-panel{\n\tposition: relative;\n}\n.logo-panel img{\n\twidth: 100%;\n\t\n}\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
   if (!module.hot.data) {
     hotAPI.createRecord("_v-33114080", module.exports)
   } else {
     hotAPI.update("_v-33114080", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../util/reusable_functions":105,"../reusable/menuItemLevel1.vue":98,"vue":24,"vue-hot-reload-api":20}],96:[function(require,module,exports){
+},{"../../util/reusable_functions":105,"../reusable/menuItemLevel1.vue":98,"vue":24,"vue-hot-reload-api":20,"vueify/lib/insert-css":25}],96:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n.font-success{\n\t color: #00a65a;\n }\n\n.font-error{\n\tcolor: #dd4b39;\n}\n\n.pagination{\n\tmargin: 0 !important;\n}\n\n.cool-table-loading-icon{\n\tposition: absolute;\n\tmargin-left: 45%;\n\tmargin-top: 50%;\n}\n\n.cool-table-sortable{\n\tcursor: pointer;\n}\n.cool-table-sortable:hover{\n\tcolor: #2185d0;\n}\n\n.loading-mask{\t\n\tz-index: 99;\t\n\tposition: absolute;\n\twidth: 100%;\n\tbackground: rgba(236, 240, 245, 0.31);\n}\n.l-open{\n\tdisplay: inherit;\n}\n\n.l-close{\n\tdisplay: none;\t\n}\n")
 'use strict';

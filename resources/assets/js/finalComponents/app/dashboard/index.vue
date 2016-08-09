@@ -60,6 +60,12 @@
 		</section>
 </template>
 
+<style>
+	.bg-green{
+		background: #4e9b78 !important;
+	}
+</style>
+
 <script>
 
 	import ContentHeader from '../../new-layout/content-header.vue';
@@ -71,7 +77,7 @@
 		},
 		data: function(){
 			return {
-				path: ['Prueba'],
+				path: []
 			}
 		},
 		

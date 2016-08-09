@@ -39,7 +39,7 @@
 					<!-- Apply any bg-* class to to the info-box to color it -->
 					<div class="info-box">
 					  <!-- Apply any bg-* class to to the icon to color it -->
-					  <span class="info-box-icon bg-green"><i class="fa fa-star-o"></i></span>
+					  <span class="info-box-icon bg-green" style="color: #4e9b78"><i class="fa fa-star-o"></i></span>
 					  <div class="info-box-content">
 					    <span class="info-box-text">Ciclo Actual</span>
 					    <span class="info-box-number">2016 - C2</span>
