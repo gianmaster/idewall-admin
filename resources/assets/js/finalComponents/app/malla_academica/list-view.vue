@@ -26,11 +26,16 @@
 				<div class="col-xs-12 col-sm-5 text-center">
 					<p class="text-light-blue"><i class="fa fa-info-circle"></i> Solo se admiten archivos PDF</p>
 					<p class="text-red"><i class="fa fa-warning"></i> <strong>Nota:</strong> Sí ya existe algún archivo subido, éste o estos serán elmininados para subir los nuevos!</p>
-					<button type="submit" class="btn btn-primary btn-flat"><i class="fa fa-upload"></i> SUBIR ARCHIVOS</button>
+					<template v-if="load_button">
+						<button type="submit" class="btn btn-primary btn-flat" disabled><i class="fa fa-refresh fa-spin"></i> SUBIENDO ARCHIVOS</button>						
+					</template>
+					<template v-else>
+						<button type="submit" class="btn btn-primary btn-flat"><i class="fa fa-upload"></i> SUBIR ARCHIVOS</button>
+					</template>
 				</div>
 			</form>
 				
-			<div class="col-xs-12" v-if="currentModel.silabos.lenght<=0">
+			<div class="col-xs-12" v-if="currentModel.silabos.length<=0">
 				<hr>
 				<div class="text-center">
 					<p>No hay archivos subidos</p>
@@ -38,8 +43,10 @@
 			</div>
 
 			<div class="col-xs-12" v-else>
+				<hr>
 				<div class="col-xs-12" v-for="item in currentModel.silabos">
-					<iframe :src="item.ruta" frameborder="0" height="300px" width="100%"></iframe>	
+					<iframe :src="item.ruta" frameborder="0" height="400" width="100%"></iframe>
+					<hr>	
 				</div>
 			</div>
 		</div>
@@ -120,6 +127,15 @@
 						sortable: true
 					},
 					{
+						titleClass: 'text-center',
+						fieldClass: 'text-center',
+						title: 'Sílabos',
+						field: "silabos",
+						hidden: false,
+						sortable: false,
+						template: '<i class="${col.silabos.length > 0 ? "fa fa-check text-green" : "fa fa-close text-red"}" ><i>'
+					},
+					{
 						title: 'Acciones',
 						titleClass: 'text-center',
 						hidden: false,
@@ -147,6 +163,7 @@
 					}
 				],
 				loading: false,
+				loading_button: false,
 				currentModel: {silabos:[]},
 				showModal: false,
 			}

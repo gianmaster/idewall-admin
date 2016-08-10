@@ -14,12 +14,18 @@
 		toggleDataModel: function(model){
 			this.currentModel = model;
 		},
+		toggleLoadButton: function(){
+			this.load_button = !this.load_button;
+		},
 		//for send files silabos
 		uploadFiles: function(){
+			this.load_button = true;
 			let idMateriaMalla = this.currentModel.id;
 			let formData = new FormData(document.querySelector("#frm-silabos"));
 			this.$http.post(this.url+'/' + idMateriaMalla + '/silabos', formData).then(function(resp){
 				fnc.niceAlert('success', 'Se Subieron los archivos correctamente!');
+				this.toggleLoadButton();
+				this.load();//load table
 				this.toggleModal();
 			}, fnc.tryError);
 		},

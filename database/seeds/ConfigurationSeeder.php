@@ -38,7 +38,7 @@ class ConfigurationSeeder extends Seeder
         * Creacion de los usuarios por defecto el administrador
         * */
        $admin = App\User::create([
-       		'name' 			     => 'Chuck Norris',
+       		'name' 			     => 'Super Admin',
         	'email' 		     => 'admin@admin.com',
         	'password' 		    => bcrypt('admin'),
         	'rol'			       => $rolAdmin->id,
@@ -192,6 +192,9 @@ class ConfigurationSeeder extends Seeder
           'rol' => $rolAdmin->id,
           'menu'  => $menuTipoContrato->id,
         ]);
+
+
+       
 
         //menu principal de administracion
         $menuAdmin = App\Menu::create([
@@ -415,6 +418,51 @@ class ConfigurationSeeder extends Seeder
         App\RolMenu::create([
             'rol' => $rolAdmin->id,
             'menu'  => $menuAulas->id,
+        ]);
+
+
+        //Tipo de Jornada
+       $tipoJornada = App\Entities\Catalogo::create([
+          'nombre'      => 'Tipos Jornada',
+          'descripcion' => 'Tipo de Jornadas para los Semestres'
+        ]);
+
+       App\Entities\CatalogoItem::create([
+          'catalogo'    => $tipoJornada->id,
+          'codigo'      => 'MAT',
+          'descripcion' => 'Matutína',
+          'orden'       => 1,
+          'activo'      => true
+        ]);
+
+       App\Entities\CatalogoItem::create([
+          'catalogo'    => $tipoJornada->id,
+          'codigo'      => 'VES',
+          'descripcion' => 'Vespertina',
+          'orden'       => 2,
+          'activo'      => true
+        ]);
+
+       App\Entities\CatalogoItem::create([
+          'catalogo'    => $tipoJornada->id,
+          'codigo'      => 'NOC',
+          'descripcion' => 'Nocturna',
+          'orden'       => 2,
+          'activo'      => true
+        ]);
+
+       $menuTipoJornada = App\Menu::create([
+          'nombre'    => 'tipo_jornada',
+          'titulo'    => 'Jornadas Semestre',
+          'url'     => '/catalogos/5',
+          'iconclass'   => 'fa fa-link',
+          'orden'     => 5,
+          'cod_padre'   => $menuUsuariosV4->id
+        ]);
+
+       App\RolMenu::create([
+          'rol' => $rolAdmin->id,
+          'menu'  => $menuTipoJornada->id,
         ]);
 
         //agregar materias a la malla academica

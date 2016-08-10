@@ -255,11 +255,12 @@ class MallaAcademicaController extends Controller
 
         foreach ($request->file('documentos') as $key => $file) {
             $extFile = $file->getClientOriginalExtension();
-            $file->move("{$this->rootPath}/{$path}", utf8_decode("{$nombreArchivo}_{$path}_{$key}.{$extFile}"));
+            $nameFile = str_replace(' ', '_', $this->elimina_acentos("{$nombreArchivo}_{$path}_{$key}.{$extFile}"));
+            $file->move("{$this->rootPath}/{$path}", $nameFile);
 
             Silabo::firstOrCreate([
                 'id_materia_malla' => $id,
-                'ruta'      => utf8_decode("{$this->rootPath}/{$path}/{$nombreArchivo}_{$path}_{$key}.{$extFile}"),
+                'ruta'      => "{$this->rootPath}/{$path}/{$nameFile}",
                 'estado'    => true
             ]);
         }

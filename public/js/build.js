@@ -17487,6 +17487,14 @@ exports.default = {
 				hidden: false,
 				sortable: true
 			}, {
+				titleClass: 'text-center',
+				fieldClass: 'text-center',
+				title: 'Sílabos',
+				field: "silabos",
+				hidden: false,
+				sortable: false,
+				template: '<i class="${col.silabos.length > 0 ? "fa fa-check text-green" : "fa fa-close text-red"}" ><i>'
+			}, {
 				title: 'Acciones',
 				titleClass: 'text-center',
 				hidden: false,
@@ -17509,6 +17517,7 @@ exports.default = {
 				}]
 			}],
 			loading: false,
+			loading_button: false,
 			currentModel: { silabos: [] },
 			showModal: false
 		};
@@ -17537,7 +17546,7 @@ exports.default = {
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t\n\t<div v-if=\"loading\">\n\t\t<app-loading></app-loading>\n\t</div>\n\n\t<div v-else=\"\">\n\t\t<cool-table :option-toolbar=\"toolbar\" :url=\"url\" :data.sync=\"datos\" :columns=\"columnas\" filter-key-word=\"search\">\n\t\t</cool-table>\n\n\t\t<app-modal title=\"Actualización de Sílabos\" :show.sync=\"showModal\" @ok=\"toggleModal\" @cancel=\"toggleModal\" emit-when-ok=\"event-end-edit-silabos\" :large=\"true\">\n\t\t\t\n\t\t<div class=\"row\">\n\t\t\t<form id=\"frm-silabos\" @submit.prevent=\"uploadFiles\">\n\t\t\t\t<div class=\"col-xs-12 col-sm-7\">\n\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t<label for=\"documentos\">Seleccione los Sílabos para: <span class=\"__materia\">{{currentModel.nombre_materia}} - {{currentModel.semestre}}</span> </label>\n\t\t\t\t\t\t<input type=\"file\" id=\"documentos\" name=\"documentos[]\" accept=\"application/pdf\" class=\"form-control\" multiple=\"\" required=\"\">\t\t\t\t\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"col-xs-12 col-sm-5 text-center\">\n\t\t\t\t\t<p class=\"text-light-blue\"><i class=\"fa fa-info-circle\"></i> Solo se admiten archivos PDF</p>\n\t\t\t\t\t<p class=\"text-red\"><i class=\"fa fa-warning\"></i> <strong>Nota:</strong> Sí ya existe algún archivo subido, éste o estos serán elmininados para subir los nuevos!</p>\n\t\t\t\t\t<button type=\"submit\" class=\"btn btn-primary btn-flat\"><i class=\"fa fa-upload\"></i> SUBIR ARCHIVOS</button>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t\t\t\n\t\t\t<div class=\"col-xs-12\" v-if=\"currentModel.silabos.lenght<=0\">\n\t\t\t\t<hr>\n\t\t\t\t<div class=\"text-center\">\n\t\t\t\t\t<p>No hay archivos subidos</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\n\t\t\t<div class=\"col-xs-12\" v-else=\"\">\n\t\t\t\t<div class=\"col-xs-12\" v-for=\"item in currentModel.silabos\">\n\t\t\t\t\t<iframe :src=\"item.ruta\" frameborder=\"0\" height=\"300px\" width=\"100%\"></iframe>\t\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t</app-modal>\n</div>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t\n\t<div v-if=\"loading\">\n\t\t<app-loading></app-loading>\n\t</div>\n\n\t<div v-else=\"\">\n\t\t<cool-table :option-toolbar=\"toolbar\" :url=\"url\" :data.sync=\"datos\" :columns=\"columnas\" filter-key-word=\"search\">\n\t\t</cool-table>\n\n\t\t<app-modal title=\"Actualización de Sílabos\" :show.sync=\"showModal\" @ok=\"toggleModal\" @cancel=\"toggleModal\" emit-when-ok=\"event-end-edit-silabos\" :large=\"true\">\n\t\t\t\n\t\t<div class=\"row\">\n\t\t\t<form id=\"frm-silabos\" @submit.prevent=\"uploadFiles\">\n\t\t\t\t<div class=\"col-xs-12 col-sm-7\">\n\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t<label for=\"documentos\">Seleccione los Sílabos para: <span class=\"__materia\">{{currentModel.nombre_materia}} - {{currentModel.semestre}}</span> </label>\n\t\t\t\t\t\t<input type=\"file\" id=\"documentos\" name=\"documentos[]\" accept=\"application/pdf\" class=\"form-control\" multiple=\"\" required=\"\">\t\t\t\t\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"col-xs-12 col-sm-5 text-center\">\n\t\t\t\t\t<p class=\"text-light-blue\"><i class=\"fa fa-info-circle\"></i> Solo se admiten archivos PDF</p>\n\t\t\t\t\t<p class=\"text-red\"><i class=\"fa fa-warning\"></i> <strong>Nota:</strong> Sí ya existe algún archivo subido, éste o estos serán elmininados para subir los nuevos!</p>\n\t\t\t\t\t<template v-if=\"load_button\">\n\t\t\t\t\t\t<button type=\"submit\" class=\"btn btn-primary btn-flat\" disabled=\"\"><i class=\"fa fa-refresh fa-spin\"></i> SUBIENDO ARCHIVOS</button>\t\t\t\t\t\t\n\t\t\t\t\t</template>\n\t\t\t\t\t<template v-else=\"\">\n\t\t\t\t\t\t<button type=\"submit\" class=\"btn btn-primary btn-flat\"><i class=\"fa fa-upload\"></i> SUBIR ARCHIVOS</button>\n\t\t\t\t\t</template>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t\t\t\n\t\t\t<div class=\"col-xs-12\" v-if=\"currentModel.silabos.length<=0\">\n\t\t\t\t<hr>\n\t\t\t\t<div class=\"text-center\">\n\t\t\t\t\t<p>No hay archivos subidos</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\n\t\t\t<div class=\"col-xs-12\" v-else=\"\">\n\t\t\t\t<hr>\n\t\t\t\t<div class=\"col-xs-12\" v-for=\"item in currentModel.silabos\">\n\t\t\t\t\t<iframe :src=\"item.ruta\" frameborder=\"0\" height=\"400\" width=\"100%\"></iframe>\n\t\t\t\t\t<hr>\t\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t</app-modal>\n</div>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -17574,12 +17583,18 @@ exports.default = {
     toggleDataModel: function toggleDataModel(model) {
       this.currentModel = model;
     },
+    toggleLoadButton: function toggleLoadButton() {
+      this.load_button = !this.load_button;
+    },
     //for send files silabos
     uploadFiles: function uploadFiles() {
+      this.load_button = true;
       var idMateriaMalla = this.currentModel.id;
       var formData = new FormData(document.querySelector("#frm-silabos"));
       this.$http.post(this.url + '/' + idMateriaMalla + '/silabos', formData).then(function (resp) {
         _reusable_functions2.default.niceAlert('success', 'Se Subieron los archivos correctamente!');
+        this.toggleLoadButton();
+        this.load(); //load table
         this.toggleModal();
       }, _reusable_functions2.default.tryError);
     },
