@@ -406,5 +406,259 @@ class DocentesSeeder extends Seeder
             'materia' => 25,
         ]);
 
+
+        $chavezChicaKerlySisiana = App\Entities\Docente::create([
+            'abreviatura'         => 'Ing',
+            'nombres'             => 'Kerly Sisiana',
+            'apellidos'           => 'Chavez Chica',
+            'identificacion'      => '0915399836',
+            'tipo_identificacion' => 'CEDULA',
+            'email'               => 'ksisiana@hotmail.com',
+            'email_corporativo'   => 'sisiana.chavezc@ug.edu.ec',
+            'celular'             => '0998155747',
+            'telefono'            => '(04) 2 813-932',
+            'estado_civil'        => 'CASADO',
+            'genero'              => 'FEMENINO',
+            'titulo_pregrado'     => '',
+            'titulo_postgrado'    => '',
+            'titulo_mba'          => '',
+            'registro_senescyt'   => '',
+            'fecha_nacimiento'    => '1973-07-28',
+            'nacionalidad'        => 'Ecuatoriano',
+            'residencia'          => 'Ecuador',
+            'direccion'           => 'CIUDAD CELESTE, URBANIZACION LA DORADA MZ. 7 VILLA 2',
+            'tipo_contrato'       => 'TIEMPO_COMPLETO'
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $chavezChicaKerlySisiana->id,
+            'materia' => 20,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $chavezChicaKerlySisiana->id,
+            'materia' => 24,
+        ]);
+
+
+
+        $chiluizaCordovaJorgeWashinton = App\Entities\Docente::create([
+            'abreviatura'         => 'Ing',
+            'nombres'             => 'Jorge Washington',
+            'apellidos'           => 'Chiluiza Cordova',
+            'identificacion'      => '0912397676',
+            'tipo_identificacion' => 'CEDULA',
+            'email'               => 'jorchicor21@hotmail.com',
+            'email_corporativo'   => 'jorge.chiluizaco@ug.edu.ec',
+            'celular'             => '0912397676',
+            'telefono'            => '(04) 2 276-387',
+            'estado_civil'        => 'CASADO',
+            'genero'              => 'MASCULINO',
+            'titulo_pregrado'     => '',
+            'titulo_postgrado'    => '',
+            'titulo_mba'          => '',
+            'registro_senescyt'   => '',
+            'fecha_nacimiento'    => '1973-07-28',
+            'nacionalidad'        => 'Ecuatoriano',
+            'residencia'          => 'Ecuador',
+            'direccion'           => 'CIUDAD CELESTE, URBANIZACION LA DORADA MZ. 7 VILLA 2',
+            'tipo_contrato'       => 'MEDIO_TIEMPO'
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $chiluizaCordovaJorgeWashinton->id,
+            'materia' => 38,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $chiluizaCordovaJorgeWashinton->id,
+            'materia' => 45,
+        ]);
+
+
+        $cordovaAragundijoseSaturnino = App\Entities\Docente::create([
+            'abreviatura'         => 'Ing',
+            'nombres'             => 'Jose Saturnino',
+            'apellidos'           => 'Cordova Aragundi',
+            'identificacion'      => '0917236663',
+            'tipo_identificacion' => 'CEDULA',
+            'email'               => 'jscordovaa@gmail.com',
+            'email_corporativo'   => 'jose.cordovaa@ug.edu.ec',
+            'celular'             => '0995433036',
+            'telefono'            => '(04) 6 002-114',
+            'estado_civil'        => 'CASADO',
+            'genero'              => 'MASCULINO',
+            'titulo_pregrado'     => '',
+            'titulo_postgrado'    => '',
+            'titulo_mba'          => '',
+            'registro_senescyt'   => '',
+            'fecha_nacimiento'    => '1981-10-10',
+            'nacionalidad'        => 'Ecuatoriano',
+            'residencia'          => 'Ecuador',
+            'direccion'           => 'LA JOYA, ESMERALDA MZ 9 VILL A18',
+            'tipo_contrato'       => 'MEDIO_TIEMPO'
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $cordovaAragundijoseSaturnino->id,
+            'materia' => 36,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $cordovaAragundijoseSaturnino->id,
+            'materia' => 34,
+        ]);
+
+
+
+
+        $guerreroLopezCarlosAndres = App\Entities\Docente::create([
+            'abreviatura'         => 'Ing',
+            'nombres'             => 'Carlos Andres',
+            'apellidos'           => 'Guerrero López',
+            'identificacion'      => '0921929634',
+            'tipo_identificacion' => 'CEDULA',
+            'email'               => 'cguerrero@impuestosecuador.com.ec',
+            'email_corporativo'   => 'carlos.guerrerolo@ug.edu.ec',
+            'celular'             => '0985039251',
+            'telefono'            => '(04) 2 238-647',
+            'estado_civil'        => 'CASADO',
+            'genero'              => 'MASCULINO',
+            'titulo_pregrado'     => '',
+            'titulo_postgrado'    => '',
+            'titulo_mba'          => '',
+            'registro_senescyt'   => '',
+            'fecha_nacimiento'    => '1982-03-29',
+            'nacionalidad'        => 'Ecuatoriano',
+            'residencia'          => 'Ecuador',
+            'direccion'           => 'KM. 14 VIA LEON FEBRES CORDERO',
+            'tipo_contrato'       => 'MEDIO_TIEMPO'
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $guerreroLopezCarlosAndres->id,
+            'materia' => 32,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $guerreroLopezCarlosAndres->id,
+            'materia' => 12,
+        ]);
+
+
+
+        $hurelGuzmanRaulSantiago = App\Entities\Docente::create([
+            'abreviatura'         => 'Ing',
+            'nombres'             => 'Raul Santiago',
+            'apellidos'           => 'Hurel Guzman',
+            'identificacion'      => '0916753650',
+            'tipo_identificacion' => 'CEDULA',
+            'email'               => 'rhurelg@gmail.com',
+            'email_corporativo'   => 'raul.hurelgu@ug.edu.ec',
+            'celular'             => '0992060314',
+            'telefono'            => '(04) 6 002-029',
+            'estado_civil'        => 'CASADO',
+            'genero'              => 'MASCULINO',
+            'titulo_pregrado'     => '',
+            'titulo_postgrado'    => '',
+            'titulo_mba'          => '',
+            'registro_senescyt'   => '',
+            'fecha_nacimiento'    => '1978-12-06',
+            'nacionalidad'        => 'Ecuatoriano',
+            'residencia'          => 'Ecuador',
+            'direccion'           => 'URB. VILLA CLUB, ETAPA HERMES, MZ. 9, VILLA 15',
+            'tipo_contrato'       => 'TIEMPO_COMPLETO'
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $hurelGuzmanRaulSantiago->id,
+            'materia' => 39,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $hurelGuzmanRaulSantiago->id,
+            'materia' => 21,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $hurelGuzmanRaulSantiago->id,
+            'materia' => 26,
+        ]);
+
+
+        $incaVelizJoseArturo = App\Entities\Docente::create([
+            'abreviatura'         => 'Ing',
+            'nombres'             => 'Jose Arturo',
+            'apellidos'           => 'Inca Veliz',
+            'identificacion'      => '0911146256',
+            'tipo_identificacion' => 'CEDULA',
+            'email'               => 'joseincaveliz@yahoo.com',
+            'email_corporativo'   => 'jose.incav@ug.edu.ec',
+            'celular'             => '0998873852',
+            'telefono'            => '(04) 3 081-680',
+            'estado_civil'        => 'CASADO',
+            'genero'              => 'MASCULINO',
+            'titulo_pregrado'     => '',
+            'titulo_postgrado'    => '',
+            'titulo_mba'          => '',
+            'registro_senescyt'   => '',
+            'fecha_nacimiento'    => '1970-04-24',
+            'nacionalidad'        => 'Ecuatoriano',
+            'residencia'          => 'Ecuador',
+            'direccion'           => 'CDLA.JUAN TANCA MARENGO Mz.B V.#2',
+            'tipo_contrato'       => 'TIEMPO_COMPLETO'
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $incaVelizJoseArturo->id,
+            'materia' => 13,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $incaVelizJoseArturo->id,
+            'materia' => 18,
+        ]);
+
+
+
+
+        $leonArreagaCecibelAlexandra = App\Entities\Docente::create([
+            'abreviatura'         => 'Ing',
+            'nombres'             => 'Cecibel Alexandra',
+            'apellidos'           => 'León Arreaga',
+            'identificacion'      => '0910427384',
+            'tipo_identificacion' => 'CEDULA',
+            'email'               => 'belucaarreag@gmail.com',
+            'email_corporativo'   => 'cecibel.leona@ug.edu.ec',
+            'celular'             => '0989854834',
+            'telefono'            => '(04) 2 449-374',
+            'estado_civil'        => 'CASADO',
+            'genero'              => 'FEMENINO',
+            'titulo_pregrado'     => '',
+            'titulo_postgrado'    => '',
+            'titulo_mba'          => '',
+            'registro_senescyt'   => '',
+            'fecha_nacimiento'    => '1972-02-28',
+            'nacionalidad'        => 'Ecuatoriano',
+            'residencia'          => 'Ecuador',
+            'direccion'           => 'LA B Y NICOLAS SEGOVIA',
+            'tipo_contrato'       => 'MEDIO_TIEMPO'
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $leonArreagaCecibelAlexandra->id,
+            'materia' => 40,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $leonArreagaCecibelAlexandra->id,
+            'materia' => 34,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $leonArreagaCecibelAlexandra->id,
+            'materia' => 29,
+        ]);//18
+
     }
 }
