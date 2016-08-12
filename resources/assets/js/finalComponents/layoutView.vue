@@ -46,7 +46,7 @@
           created_at: 'Ago. 2016'
         },
         login: true,
-        body_class: "sidebar-mini skin-blue-light fixed",
+        body_class: "sidebar-mini skin-blue fixed",
         menus: menu || [] //esto deberia ser cargado una vez logoneado
       }
     },

@@ -207,14 +207,14 @@ largeLogo:{
   type: Array,
   required: false,
   default: function(){
-    return ["!De", "WALL"]
+    return ["SDCH", "UG"]
 }
 },
 shortLogo:{
   type: Array,
   required: false,
   default: function(){
-    return ["!D", "e"]
+    return ["S", "CH"]
 }
 },
 auth: {

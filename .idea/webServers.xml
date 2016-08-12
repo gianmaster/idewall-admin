@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="6b8a6b9a-14b4-403c-ba98-a60d6792504d" name="ugtesis" url="http://45.55.237.179">
+        <fileTransfer host="45.55.237.179" port="22" rootFolder="/var/www/ugtesis.giancarloscercado.com" accessType="SFTP" password="dfcddfc3dfcbdfc4df9edfd8dfc5dfc9dfc1" username="root">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

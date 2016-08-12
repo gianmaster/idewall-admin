@@ -23,6 +23,10 @@ Route::group(['domain' => '{user}.ug_laravel_vue.dev'], function ($user) {
 	});
 });
 
+Route::get('test', function(){
+	return 'Esto es un test de funcionalidad';
+});
+
 Route::resource('/', 'HomeController');
 
 //Route::resource('menu2', 'MenusController');
@@ -51,10 +55,14 @@ Route::group(['middleware' => 'auth'], function(){
 
 		Route::get('malla_academica/all', 'MallaAcademicaController@indexAll');
 		Route::resource('malla_academica', 'MallaAcademicaController');
+		Route::get('malla_academica/{id}/silabos', 'MallaAcademicaController@silabosByMateria');
+		Route::post('malla_academica/{id}/silabos', 'MallaAcademicaController@uploadSilabosByMateria');
 
 		Route::resource('docentes', 'DocentesController');
 		//Route::post('docentes/materias', ['uses' => 'DocentesController@storeMaterias', 'as' => 'api.docentes.materias']);
 		Route::put('docentes/materias/{id}', ['uses' => 'DocentesController@updateMaterias', 'as' => 'api.docentes.materias']);
+
+		Route::resource('jornadasemestre', 'JornadasSemestresController');
 
 
 	});

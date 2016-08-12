@@ -17449,6 +17449,8 @@ if (module.hot) {(function () {  module.hot.accept()
   }
 })()}
 },{"../../../util/reusable_functions":105,"../../new-layout/content-header.vue":89,"vue":24,"vue-hot-reload-api":20}],59:[function(require,module,exports){
+var __vueify_insert__ = require("vueify/lib/insert-css")
+var __vueify_style__ = __vueify_insert__.insert("\n\n.__materia{\n\tcolor: #656464;\n}\n\n")
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17458,6 +17460,10 @@ Object.defineProperty(exports, "__esModule", {
 var _loading = require('../../reusable/loading.vue');
 
 var _loading2 = _interopRequireDefault(_loading);
+
+var _modal = require('../../reusable/modal.vue');
+
+var _modal2 = _interopRequireDefault(_modal);
 
 var _coolTable = require('../../reusable/cool-table.vue');
 
@@ -17516,11 +17522,24 @@ exports.default = {
 				hidden: false,
 				sortable: true
 			}, {
+				titleClass: 'text-center',
+				fieldClass: 'text-center',
+				title: 'Sílabos',
+				field: "silabos",
+				hidden: false,
+				sortable: false,
+				template: '<i class="${col.silabos.length > 0 ? "fa fa-check text-green" : "fa fa-close text-red"}" ><i>'
+			}, {
 				title: 'Acciones',
 				titleClass: 'text-center',
 				hidden: false,
 				fieldClass: 'text-center',
 				itemActions: [{
+					nameEmit: 'malla-silabos-event',
+					btnClass: 'btn bg-gray btn-xs',
+					iconClass: 'fa fa-file-pdf-o',
+					label: 'Sílabos'
+				}, {
 					nameEmit: 'malla-update-event',
 					btnClass: 'btn btn-default btn-xs',
 					iconClass: 'fa fa-edit',
@@ -17532,13 +17551,17 @@ exports.default = {
 					label: 'Eliminar'
 				}]
 			}],
-			loading: false
+			loading: false,
+			loading_button: false,
+			currentModel: { silabos: [] },
+			showModal: false
 		};
 	},
 
 	components: {
 		'cool-table': _coolTable2.default,
-		'app-loading': _loading2.default
+		'app-loading': _loading2.default,
+		'app-modal': _modal2.default
 	},
 	events: {
 		'malla-create-event': function mallaCreateEvent(model) {
@@ -17549,23 +17572,31 @@ exports.default = {
 		},
 		'malla-delete-event': function mallaDeleteEvent(model) {
 			this.destroy(model);
+		},
+		'malla-silabos-event': function mallaSilabosEvent(model) {
+			this.toggleDataModel(model);
+			this.toggleModal();
 		}
 	}
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t\n\t<div v-if=\"loading\">\n\t\t<app-loading></app-loading>\n\t</div>\n\n\t<div v-else=\"\">\n\t\t<cool-table :option-toolbar=\"toolbar\" :url=\"url\" :data.sync=\"datos\" :columns=\"columnas\" filter-key-word=\"search\">\n\t</cool-table>\n</div>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t\n\t<div v-if=\"loading\">\n\t\t<app-loading></app-loading>\n\t</div>\n\n\t<div v-else=\"\">\n\t\t<cool-table :option-toolbar=\"toolbar\" :url=\"url\" :data.sync=\"datos\" :columns=\"columnas\" filter-key-word=\"search\">\n\t\t</cool-table>\n\n\t\t<app-modal title=\"Actualización de Sílabos\" :show.sync=\"showModal\" @ok=\"toggleModal\" @cancel=\"toggleModal\" emit-when-ok=\"event-end-edit-silabos\" :large=\"true\">\n\t\t\t\n\t\t<div class=\"row\">\n\t\t\t<form id=\"frm-silabos\" @submit.prevent=\"uploadFiles\">\n\t\t\t\t<div class=\"col-xs-12 col-sm-7\">\n\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t<label for=\"documentos\">Seleccione los Sílabos para: <span class=\"__materia\">{{currentModel.nombre_materia}} - {{currentModel.semestre}}</span> </label>\n\t\t\t\t\t\t<input type=\"file\" id=\"documentos\" name=\"documentos[]\" accept=\"application/pdf\" class=\"form-control\" multiple=\"\" required=\"\">\t\t\t\t\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"col-xs-12 col-sm-5 text-center\">\n\t\t\t\t\t<p class=\"text-light-blue\"><i class=\"fa fa-info-circle\"></i> Solo se admiten archivos PDF</p>\n\t\t\t\t\t<p class=\"text-red\"><i class=\"fa fa-warning\"></i> <strong>Nota:</strong> Sí ya existe algún archivo subido, éste o estos serán elmininados para subir los nuevos!</p>\n\t\t\t\t\t<template v-if=\"load_button\">\n\t\t\t\t\t\t<button type=\"submit\" class=\"btn btn-primary btn-flat\" disabled=\"\"><i class=\"fa fa-refresh fa-spin\"></i> SUBIENDO ARCHIVOS</button>\t\t\t\t\t\t\n\t\t\t\t\t</template>\n\t\t\t\t\t<template v-else=\"\">\n\t\t\t\t\t\t<button type=\"submit\" class=\"btn btn-primary btn-flat\"><i class=\"fa fa-upload\"></i> SUBIR ARCHIVOS</button>\n\t\t\t\t\t</template>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t\t\t\n\t\t\t<div class=\"col-xs-12\" v-if=\"currentModel.silabos.length<=0\">\n\t\t\t\t<hr>\n\t\t\t\t<div class=\"text-center\">\n\t\t\t\t\t<p>No hay archivos subidos</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\n\t\t\t<div class=\"col-xs-12\" v-else=\"\">\n\t\t\t\t<hr>\n\t\t\t\t<div class=\"col-xs-12\" v-for=\"item in currentModel.silabos\">\n\t\t\t\t\t<iframe :src=\"item.ruta\" frameborder=\"0\" height=\"400\" width=\"100%\"></iframe>\n\t\t\t\t\t<hr>\t\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t</app-modal>\n</div>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
+  module.hot.dispose(function () {
+    __vueify_insert__.cache["\n\n.__materia{\n\tcolor: #656464;\n}\n\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
   if (!module.hot.data) {
     hotAPI.createRecord("_v-5909e9fe", module.exports)
   } else {
     hotAPI.update("_v-5909e9fe", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/cool-table.vue":96,"../../reusable/loading.vue":97,"./mixins":60,"vue":24,"vue-hot-reload-api":20}],60:[function(require,module,exports){
+},{"../../reusable/cool-table.vue":96,"../../reusable/loading.vue":97,"../../reusable/modal.vue":102,"./mixins":60,"vue":24,"vue-hot-reload-api":20,"vueify/lib/insert-css":25}],60:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17580,6 +17611,30 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = {
   methods: {
+    //For list-view.vue
+    toggleModal: function toggleModal() {
+      this.showModal = !this.showModal;
+    },
+    toggleDataModel: function toggleDataModel(model) {
+      this.currentModel = model;
+    },
+    toggleLoadButton: function toggleLoadButton() {
+      this.load_button = !this.load_button;
+    },
+    //for send files silabos
+    uploadFiles: function uploadFiles() {
+      this.load_button = true;
+      var idMateriaMalla = this.currentModel.id;
+      var formData = new FormData(document.querySelector("#frm-silabos"));
+      this.$http.post(this.url + '/' + idMateriaMalla + '/silabos', formData).then(function (resp) {
+        _reusable_functions2.default.niceAlert('success', 'Se Subieron los archivos correctamente!');
+        this.toggleLoadButton();
+        this.load(); //load table
+        this.toggleModal();
+      }, _reusable_functions2.default.tryError);
+    },
+
+    //for crud
     create: function create() {
       this.$http.post(this.url, this.newModel).then(function (resp) {
         _reusable_functions2.default.niceAlert('success', 'Se creó la materia correctamente!');
@@ -18843,7 +18898,7 @@ module.exports = {
         created_at: 'Ago. 2016'
       },
       login: true,
-      body_class: "sidebar-mini skin-blue-light fixed",
+      body_class: "sidebar-mini skin-blue fixed",
       menus: menu || [] //esto deberia ser cargado una vez logoneado
     };
   },
@@ -19038,14 +19093,14 @@ exports.default = {
       type: Array,
       required: false,
       default: function _default() {
-        return ["!De", "WALL"];
+        return ["SDCH", "UG"];
       }
     },
     shortLogo: {
       type: Array,
       required: false,
       default: function _default() {
-        return ["!D", "e"];
+        return ["S", "CH"];
       }
     },
     auth: {
@@ -19100,7 +19155,7 @@ if (module.hot) {(function () {  module.hot.accept()
 })()}
 },{"vue":24,"vue-hot-reload-api":20,"vueify/lib/insert-css":25}],95:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n.logo-panel{\n\tposition: relative;\n}\n.logo-panel img{\n\twidth: 100%;\n\t\n}\n")
+var __vueify_style__ = __vueify_insert__.insert("\n.logo-panel{\n\tposition: relative;\n}\n.logo-panel img{\n\twidth: 100%;\n}\n.logo-menu-title{\n    background: #222d32;\n    color: #b8c7bf;\n    font-variant: small-caps;\n    font-weight: bold;\n    font-size: 1.2em;\n    border-radius: 0px !important;\n    border: 0px !important;\n    margin: 0px !important;\n}\n\n\n.user-panel > .image > img {\n    max-width: 50px !important;\n}\n.img-circle {\n    border-radius: 15% !important;\n    background: white !important;\n}\n\n")
 'use strict';
 
 var _reusable_functions = require('../../util/reusable_functions');
@@ -19157,13 +19212,13 @@ module.exports = {
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<!-- Left side column. contains the logo and sidebar -->\n<aside class=\"main-sidebar\">\n\n\t<!-- sidebar: style can be found in sidebar.less -->\n\t<section class=\"sidebar\">\n\t\t<div class=\"logo-panel\">\n\t\t\t<img src=\"img/ug/logo.png\" class=\"img-circle\" alt=\"Logo Universidad Image\">\n\t\t</div>\n\n\t\t<!-- Sidebar user panel (optional) -->\n\t\t<!--\n\t\t<div class=\"user-panel\">\n\t\t\t<div class=\"pull-left image\">\n\t\t\t\t<img :src=\"avatar\" class=\"img-circle\" alt=\"User Image\" />\n\t\t\t</div>\n\t\t\t<div class=\"pull-left info\">\n\t\t\t\t<p>{{ username }}</p>\n\t\t\t\t<a href=\"#\"><i class=\"fa fa-circle text-success\"></i> Online</a>\n\t\t\t</div>\n\t\t</div>\n\t\t-->\n\n\t\t<!-- search form (Optional) -->\n\t\t<!--\n\t\t<form action=\"#\" method=\"get\" class=\"sidebar-form\">\n\t\t\t<div class=\"input-group\">\n\t\t\t\t<input type=\"text\" name=\"q\" class=\"form-control\" placeholder=\"Search...\"/>\n\t\t\t\t<span class=\"input-group-btn\">\n\t\t\t\t\t<button type='submit' name='search' id='search-btn' class=\"btn btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t</span>\n\t\t\t</div>\n\t\t</form>\n\t\t-->\n\t\t<!-- /.search form -->\n\n\t\t<!-- Sidebar Menu -->\n\t\t<ul class=\"sidebar-menu\">\n\t\t\t<li class=\"header\">MAIN NAVIGATION</li>\n\t\t\t<menu-item v-for=\"itemenu in menu\" :item=\"itemenu\" :is-parent=\"hasChildren(itemenu.children)\"></menu-item>\n\t\t\t\n\t\t</ul>\n\t\t\n\t\t<!-- /.sidebar-menu -->\n\t</section>\n\t<!-- /.sidebar -->\n</aside>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<!-- Left side column. contains the logo and sidebar -->\n<aside class=\"main-sidebar\">\n\n\t<!-- sidebar: style can be found in sidebar.less -->\n\t<section class=\"sidebar\">\n\t\t<!--\n\t\t<div class=\"logo-panel\">\n\t\t\t<img src=\"img/ug/logo.png\" class=\"img-circle\" alt=\"Logo Universidad Image\" />\n\t\t</div>\n\t\t-->\n\t\t<div class=\"user-panel\">\n\t\t\t<div class=\"pull-left image\">\n\t\t\t\t<img src=\"img/ug/icon-logo-without-letters-min.png\" class=\"img-circle\" alt=\"Logo universidad\">\n\t\t\t</div>\n\t\t\t<div class=\"pull-left info\">\n\t\t\t\t<p><small>UNIVERSIDAD DE GUAYAQUIL</small></p>\n\t\t\t\t<p>FCA - ISAC</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"sidebar-form logo-menu-title\">\n\t\t\t<p class=\"text-center\">Sistema de Distribución de Cargas Horarias</p>\n\t\t</div>\n\n\t\t<!-- Sidebar user panel (optional) -->\n\t\t<!--\n\t\t<div class=\"user-panel\">\n\t\t\t<div class=\"pull-left image\">\n\t\t\t\t<img :src=\"avatar\" class=\"img-circle\" alt=\"User Image\" />\n\t\t\t</div>\n\t\t\t<div class=\"pull-left info\">\n\t\t\t\t<p>{{ username }}</p>\n\t\t\t\t<a href=\"#\"><i class=\"fa fa-circle text-success\"></i> Online</a>\n\t\t\t</div>\n\t\t</div>\n\t\t-->\n\n\t\t<!-- search form (Optional) -->\n\t\t<!--\n\t\t<form action=\"#\" method=\"get\" class=\"sidebar-form\">\n\t\t\t<div class=\"input-group\">\n\t\t\t\t<input type=\"text\" name=\"q\" class=\"form-control\" placeholder=\"Search...\"/>\n\t\t\t\t<span class=\"input-group-btn\">\n\t\t\t\t\t<button type='submit' name='search' id='search-btn' class=\"btn btn-flat\"><i class=\"fa fa-search\"></i></button>\n\t\t\t\t</span>\n\t\t\t</div>\n\t\t</form>\n\t\t-->\n\t\t<!-- /.search form -->\n\n\t\t<!-- Sidebar Menu -->\n\t\t<ul class=\"sidebar-menu\">\n\t\t\t<li class=\"header\">Menú Principal</li>\n\t\t\t<menu-item v-for=\"itemenu in menu\" :item=\"itemenu\" :is-parent=\"hasChildren(itemenu.children)\"></menu-item>\n\t\t\t\n\t\t</ul>\n\t\t\n\t\t<!-- /.sidebar-menu -->\n\t</section>\n\t<!-- /.sidebar -->\n</aside>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\n.logo-panel{\n\tposition: relative;\n}\n.logo-panel img{\n\twidth: 100%;\n\t\n}\n"] = false
+    __vueify_insert__.cache["\n.logo-panel{\n\tposition: relative;\n}\n.logo-panel img{\n\twidth: 100%;\n}\n.logo-menu-title{\n    background: #222d32;\n    color: #b8c7bf;\n    font-variant: small-caps;\n    font-weight: bold;\n    font-size: 1.2em;\n    border-radius: 0px !important;\n    border: 0px !important;\n    margin: 0px !important;\n}\n\n\n.user-panel > .image > img {\n    max-width: 50px !important;\n}\n.img-circle {\n    border-radius: 15% !important;\n    background: white !important;\n}\n\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
