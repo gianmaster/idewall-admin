@@ -148,16 +148,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="45.55.237.179" pinned="false" current-in-tab="false">
-        <entry file="mock:///45.55.237.179">
-          <provider selected="true" editor-type-id="terminal-session-editor">
-            <state />
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="DocentesSeeder.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/database/seeds/DocentesSeeder.php">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
 <<<<<<< HEAD
             <state relative-caret-position="44">
               <caret line="4" column="50" selection-start-line="4" selection-start-column="50" selection-end-line="4" selection-end-column="50" />
@@ -165,6 +159,10 @@
             <state relative-caret-position="265">
               <caret line="407" column="0" selection-start-line="407" selection-start-column="0" selection-end-line="407" selection-end-column="0" />
 >>>>>>> c7b7bbf536824397f5f7520e37e53eb282a84790
+=======
+            <state relative-caret-position="281">
+              <caret line="656" column="0" selection-start-line="656" selection-start-column="0" selection-end-line="656" selection-end-column="0" />
+>>>>>>> 0d85d01da53103d2426fdfe13f6fae5f2f19b286
               <folding />
             </state>
           </provider>
@@ -445,17 +443,25 @@
       <workItem from="1470888337716" duration="615000" />
 =======
       <workItem from="1470723873379" duration="4100000" />
+<<<<<<< HEAD
       <workItem from="1470843241724" duration="14753000" />
 >>>>>>> c7b7bbf536824397f5f7520e37e53eb282a84790
+=======
+      <workItem from="1470843241724" duration="19066000" />
+>>>>>>> 0d85d01da53103d2426fdfe13f6fae5f2f19b286
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
 <<<<<<< HEAD
+<<<<<<< HEAD
     <option name="totallyTimeSpent" value="98375000" />
 =======
     <option name="totallyTimeSpent" value="112365000" />
 >>>>>>> c7b7bbf536824397f5f7520e37e53eb282a84790
+=======
+    <option name="totallyTimeSpent" value="116678000" />
+>>>>>>> 0d85d01da53103d2426fdfe13f6fae5f2f19b286
   </component>
   <component name="ToolWindowManager">
     <frame x="1358" y="-8" width="1382" height="784" extended-state="6" />
@@ -478,7 +484,7 @@
       <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32977098" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33027524" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.164155" sideWeight="0.5045662" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -900,9 +906,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/database/seeds/DocentesSeeder.php">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="265">
           <caret line="407" column="0" selection-start-line="407" selection-start-column="0" selection-end-line="407" selection-end-column="0" />
 >>>>>>> c7b7bbf536824397f5f7520e37e53eb282a84790
+=======
+        <state relative-caret-position="281">
+          <caret line="656" column="0" selection-start-line="656" selection-start-column="0" selection-end-line="656" selection-end-column="0" />
+>>>>>>> 0d85d01da53103d2426fdfe13f6fae5f2f19b286
           <folding />
         </state>
       </provider>
