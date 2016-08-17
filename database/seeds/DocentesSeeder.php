@@ -840,5 +840,40 @@ class DocentesSeeder extends Seeder
             'materia' => 46,
         ]);
 
+
+
+        $QuirozMartinezMiguel = App\Entities\Docente::create([
+            'abreviatura'         => 'Ing',
+            'nombres'             => 'Miguel Angel',
+            'apellidos'           => 'Quiroz Martinez',
+            'identificacion'      => '0922799655',
+            'tipo_identificacion' => 'CEDULA',
+            'email'               => 'fer281174@hotmail.com',
+            'email_corporativo'   => 'fernando.proanosa@ug.edu.ec',
+            'celular'             => '0959209889',
+            'telefono'            => '(04) 6 036-375',
+            'estado_civil'        => 'CASADO',
+            'genero'              => 'MASCULINO',
+            'titulo_pregrado'     => '',
+            'titulo_postgrado'    => '',
+            'titulo_mba'          => '',
+            'registro_senescyt'   => '',
+            'fecha_nacimiento'    => '1973-02-07',
+            'nacionalidad'        => 'Ecuatoriano',
+            'residencia'          => 'Ecuador',
+            'direccion'           => '28 NOVIEMBRE 1974',
+            'tipo_contrato'       => 'TIEMPO_COMPLETO'
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $fernandoXavierProanio->id,
+            'materia' => 1,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $fernandoXavierProanio->id,
+            'materia' => 46,
+        ]);
+
     }
 }
