@@ -848,31 +848,496 @@ class DocentesSeeder extends Seeder
             'apellidos'           => 'Quiroz Martinez',
             'identificacion'      => '0922799655',
             'tipo_identificacion' => 'CEDULA',
-            'email'               => 'fer281174@hotmail.com',
-            'email_corporativo'   => 'fernando.proanosa@ug.edu.ec',
-            'celular'             => '0959209889',
-            'telefono'            => '(04) 6 036-375',
+            'email'               => 'mquirozm1984@hotmail.com',
+            'email_corporativo'   => 'miguel.quirozmar@ug.edu.ec',
+            'celular'             => '0999262523',
+            'telefono'            => '(04) 2 590-630',
             'estado_civil'        => 'CASADO',
             'genero'              => 'MASCULINO',
             'titulo_pregrado'     => '',
             'titulo_postgrado'    => '',
             'titulo_mba'          => '',
             'registro_senescyt'   => '',
-            'fecha_nacimiento'    => '1973-02-07',
+            'fecha_nacimiento'    => '1984-06-25',
             'nacionalidad'        => 'Ecuatoriano',
             'residencia'          => 'Ecuador',
-            'direccion'           => '28 NOVIEMBRE 1974',
+            'direccion'           => 'URB. LA JOYA ETAPA MURANO MZ. 13 V.13',
             'tipo_contrato'       => 'TIEMPO_COMPLETO'
         ]);
 
         App\Entities\MateriasDocente::create([
-            'docente' => $fernandoXavierProanio->id,
-            'materia' => 1,
+            'docente' => $QuirozMartinezMiguel->id,
+            'materia' => 32,
         ]);
 
         App\Entities\MateriasDocente::create([
-            'docente' => $fernandoXavierProanio->id,
-            'materia' => 46,
+            'docente' => $QuirozMartinezMiguel->id,
+            'materia' => 35,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $QuirozMartinezMiguel->id,
+            'materia' => 36,
+        ]);
+
+
+
+
+        $romanBarrezuetaLogioDavid = App\Entities\Docente::create([
+            'abreviatura'         => 'Ing',
+            'nombres'             => 'Lugio David',
+            'apellidos'           => 'Roman Barrezueta',
+            'identificacion'      => '0914619358',
+            'tipo_identificacion' => 'CEDULA',
+            'email'               => 'lugio_david@hotmail.com',
+            'email_corporativo'   => 'lugio.romanb@ug.edu.ec',
+            'celular'             => '0985736785',
+            'telefono'            => '(04) 2 402-594',
+            'estado_civil'        => 'CASADO',
+            'genero'              => 'MASCULINO',
+            'titulo_pregrado'     => '',
+            'titulo_postgrado'    => '',
+            'titulo_mba'          => '',
+            'registro_senescyt'   => '',
+            'fecha_nacimiento'    => '1974-08-05',
+            'nacionalidad'        => 'Ecuatoriano',
+            'residencia'          => 'Ecuador',
+            'direccion'           => 'SAUCES 6 MZ 306 V 5',
+            'tipo_contrato'       => 'TIEMPO_COMPLETO'
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $romanBarrezuetaLogioDavid->id,
+            'materia' => 21,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $romanBarrezuetaLogioDavid->id,
+            'materia' => 28,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $romanBarrezuetaLogioDavid->id,
+            'materia' => 41,
+        ]);
+
+
+
+        $romanFrancoWalterJavier = App\Entities\Docente::create([
+            'abreviatura'         => 'Ing',
+            'nombres'             => 'Walter Javier',
+            'apellidos'           => 'Roman Franco',
+            'identificacion'      => '0906908488',
+            'tipo_identificacion' => 'CEDULA',
+            'email'               => 'xavier.f@live.com',
+            'email_corporativo'   => 'walter.romanf@ug.edu.ec',
+            'celular'             => '0993576958',
+            'telefono'            => '(04) 2 431-328',
+            'estado_civil'        => 'CASADO',
+            'genero'              => 'MASCULINO',
+            'titulo_pregrado'     => '',
+            'titulo_postgrado'    => '',
+            'titulo_mba'          => '',
+            'registro_senescyt'   => '',
+            'fecha_nacimiento'    => '1958-09-30',
+            'nacionalidad'        => 'Ecuatoriano',
+            'residencia'          => 'Ecuador',
+            'direccion'           => 'CDLA. MORAN VALVERDE MZ 12 VILLA 23',
+            'tipo_contrato'       => 'TIEMPO_COMPLETO'
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $romanFrancoWalterJavier->id,
+            'materia' => 33,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $romanFrancoWalterJavier->id,
+            'materia' => 18,
+        ]);
+
+
+
+        $salazarGuevaraFranklinArmando = App\Entities\Docente::create([
+            'abreviatura'         => 'Ing',
+            'nombres'             => 'Franklin Armando',
+            'apellidos'           => 'Salazar Guevara',
+            'identificacion'      => '0914663448',
+            'tipo_identificacion' => 'CEDULA',
+            'email'               => 'salazarfrank@hotmail.com',
+            'email_corporativo'   => 'franklin.salazargu@ug.edu.ec',
+            'celular'             => '0997662733',
+            'telefono'            => '(04) 2 125-380',
+            'estado_civil'        => 'CASADO',
+            'genero'              => 'MASCULINO',
+            'titulo_pregrado'     => '',
+            'titulo_postgrado'    => '',
+            'titulo_mba'          => '',
+            'registro_senescyt'   => '',
+            'fecha_nacimiento'    => '1975-05-17',
+            'nacionalidad'        => 'Ecuatoriano',
+            'residencia'          => 'Ecuador',
+            'direccion'           => 'CDLA. ALBORADA 10ma. ETAPA MZ. 410 V.1',
+            'tipo_contrato'       => 'TIEMPO_COMPLETO'
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $salazarGuevaraFranklinArmando->id,
+            'materia' => 34,
+        ]);
+
+
+
+
+        $tamaraUgarte = App\Entities\Docente::create([
+            'abreviatura'         => 'Ing',
+            'nombres'             => 'Tamara Johana',
+            'apellidos'           => 'Ugarte Almeida',
+            'identificacion'      => '0918051012',
+            'tipo_identificacion' => 'CEDULA',
+            'email'               => 'tamy_ugarte2711@hotmail.com',
+            'email_corporativo'   => 'tamara.ugartea@ug.edu.ec',
+            'celular'             => '0987686212',
+            'telefono'            => '(04) 506-5485',
+            'estado_civil'        => 'CASADO',
+            'genero'              => 'FEMENINO',
+            'titulo_pregrado'     => '',
+            'titulo_postgrado'    => '',
+            'titulo_mba'          => '',
+            'registro_senescyt'   => '',
+            'fecha_nacimiento'    => '1980-11-27',
+            'nacionalidad'        => 'Ecuatoriano',
+            'residencia'          => 'Ecuador',
+            'direccion'           => 'URB. PORTAL AL SOL MZ 1394 V. 38. KM 11,5 VIA A LA COSTA',
+            'tipo_contrato'       => 'TIEMPO_COMPLETO'
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $tamaraUgarte->id,
+            'materia' => 37,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $tamaraUgarte->id,
+            'materia' => 22,
+        ]);
+
+
+
+        $cesarVallejo = App\Entities\Docente::create([
+            'abreviatura'         => 'Ing',
+            'nombres'             => 'Cesar Alejandro',
+            'apellidos'           => 'Vallejo De La Torre',
+            'identificacion'      => '0912211299',
+            'tipo_identificacion' => 'CEDULA',
+            'email'               => 'cvallejod@hotmail.com',
+            'email_corporativo'   => 'cesar.vallejod@ug.edu.ec',
+            'celular'             => '0994627586',
+            'telefono'            => '(04) 2 437-240',
+            'estado_civil'        => 'CASADO',
+            'genero'              => 'MASCULINO',
+            'titulo_pregrado'     => '',
+            'titulo_postgrado'    => '',
+            'titulo_mba'          => '',
+            'registro_senescyt'   => '',
+            'fecha_nacimiento'    => '1982-03-27',
+            'nacionalidad'        => 'Ecuatoriano',
+            'residencia'          => 'Ecuador',
+            'direccion'           => 'CDLA LOS ESTEROS MZ19A VILLA 47',
+            'tipo_contrato'       => 'TIEMPO_COMPLETO'
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $cesarVallejo->id,
+            'materia' => 42,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $cesarVallejo->id,
+            'materia' => 28,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $cesarVallejo->id,
+            'materia' => 49,
+        ]);
+
+
+
+        $velezFreireCarlosEduardo = App\Entities\Docente::create([
+            'abreviatura'         => 'Ing',
+            'nombres'             => 'Carlos Eduardo',
+            'apellidos'           => 'Velez Freire',
+            'identificacion'      => '0915387153',
+            'tipo_identificacion' => 'CEDULA',
+            'email'               => 'carlosevelez100@yahoo.com',
+            'email_corporativo'   => '',
+            'celular'             => '0991408144',
+            'telefono'            => '(04) 2 274-480',
+            'estado_civil'        => 'CASADO',
+            'genero'              => 'MASCULINO',
+            'titulo_pregrado'     => '',
+            'titulo_postgrado'    => '',
+            'titulo_mba'          => '',
+            'registro_senescyt'   => '',
+            'fecha_nacimiento'    => '1974-08-18',
+            'nacionalidad'        => 'Ecuatoriano',
+            'residencia'          => 'Ecuador',
+            'direccion'           => 'URB. PLAZA MADEIRA II ETAPA, MZ. 11 V.1',
+            'tipo_contrato'       => 'MEDIO_TIEMPO'
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $velezFreireCarlosEduardo->id,
+            'materia' => 26,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $velezFreireCarlosEduardo->id,
+            'materia' => 14,
+        ]);
+
+
+
+        $villacrecesParedesLuis = App\Entities\Docente::create([
+            'abreviatura'         => 'Ing',
+            'nombres'             => 'Luis Germanico',
+            'apellidos'           => 'Villacres Paredes',
+            'identificacion'      => '1801697101',
+            'tipo_identificacion' => 'CEDULA',
+            'email'               => 'luisgermanico@hotmail.com',
+            'email_corporativo'   => 'luis.villacresp@ug.edu.ec',
+            'celular'             => '0997528276',
+            'telefono'            => '(04) 2 218-311',
+            'estado_civil'        => 'CASADO',
+            'genero'              => 'MASCULINO',
+            'titulo_pregrado'     => '',
+            'titulo_postgrado'    => '',
+            'titulo_mba'          => '',
+            'registro_senescyt'   => '',
+            'fecha_nacimiento'    => '1962-05-16',
+            'nacionalidad'        => 'Ecuatoriano',
+            'residencia'          => 'Ecuador',
+            'direccion'           => 'URB. PLAZA MADEIRA II ETAPA, MZ. 11 V.1',
+            'tipo_contrato'       => 'TIEMPO_COMPLETO'
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $villacrecesParedesLuis->id,
+            'materia' => 16,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $villacrecesParedesLuis->id,
+            'materia' => 30,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $villacrecesParedesLuis->id,
+            'materia' => 37,
+        ]);
+
+
+
+        $villegasAlavaMilton = App\Entities\Docente::create([
+            'abreviatura'         => 'Ing. Com',
+            'nombres'             => 'Milton Alexander',
+            'apellidos'           => 'Villegas Alava',
+            'identificacion'      => '1705271680',
+            'tipo_identificacion' => 'CEDULA',
+            'email'               => 'miltonvillegas58@gmail.com',
+            'email_corporativo'   => 'milton.villegasa@ug.edu.ec',
+            'celular'             => '0999510496',
+            'telefono'            => '(04) 2 176-331',
+            'estado_civil'        => 'CASADO',
+            'genero'              => 'MASCULINO',
+            'titulo_pregrado'     => '',
+            'titulo_postgrado'    => '',
+            'titulo_mba'          => '',
+            'registro_senescyt'   => '',
+            'fecha_nacimiento'    => '1958-03-08',
+            'nacionalidad'        => 'Ecuatoriano',
+            'residencia'          => 'Ecuador',
+            'direccion'           => 'ALBORADA ETAPA 11, MZ 40 VILLA 5',
+            'tipo_contrato'       => 'TIEMPO_COMPLETO'
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $villegasAlavaMilton->id,
+            'materia' => 33,
+        ]);
+
+
+
+        $DuqueCarmen = App\Entities\Docente::create([
+            'abreviatura'         => 'Ing',
+            'nombres'             => 'Carmen Jazmín',
+            'apellidos'           => 'Washbrum Duque',
+            'identificacion'      => '0923065437',
+            'tipo_identificacion' => 'CEDULA',
+            'email'               => 'jazminwd_08@hotmail.com',
+            'email_corporativo'   => 'jazmin.washbrumd@ug.edu.ec',
+            'celular'             => '0986779907',
+            'telefono'            => '(04) 6 025-396',
+            'estado_civil'        => 'CASADO',
+            'genero'              => 'FEMENINO',
+            'titulo_pregrado'     => '',
+            'titulo_postgrado'    => '',
+            'titulo_mba'          => '',
+            'registro_senescyt'   => '',
+            'fecha_nacimiento'    => '1983-08-22',
+            'nacionalidad'        => 'Ecuatoriano',
+            'residencia'          => 'Ecuador',
+            'direccion'           => 'VILLA DEL REY ETAPA, MZ. 12 V.50',
+            'tipo_contrato'       => 'TIEMPO_COMPLETO'
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $DuqueCarmen->id,
+            'materia' => 34,
+        ]);
+
+
+
+        $zambranoFernandoJose = App\Entities\Docente::create([
+            'abreviatura'         => 'Ing',
+            'nombres'             => 'Fernando Jose',
+            'apellidos'           => 'Zambrano Farias',
+            'identificacion'      => '0917300113',
+            'tipo_identificacion' => 'CEDULA',
+            'email'               => 'fernando.zambrano@hotmail.com',
+            'email_corporativo'   => 'fernando.zambranof@ug.edu.ec',
+            'celular'             => '0986542753',
+            'telefono'            => '(04) 6 044-716',
+            'estado_civil'        => 'CASADO',
+            'genero'              => 'MASCULINO',
+            'titulo_pregrado'     => '',
+            'titulo_postgrado'    => '',
+            'titulo_mba'          => '',
+            'registro_senescyt'   => '',
+            'fecha_nacimiento'    => '1982-03-18',
+            'nacionalidad'        => 'Ecuatoriano',
+            'residencia'          => 'Ecuador',
+            'direccion'           => 'URBANIZACION VERANDA MZ 1201 V 11',
+            'tipo_contrato'       => 'TIEMPO_COMPLETO'
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $zambranoFernandoJose->id,
+            'materia' => 8,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $zambranoFernandoJose->id,
+            'materia' => 34,
+        ]);
+
+
+
+        $zambranoFernandoJose = App\Entities\Docente::create([
+            'abreviatura'         => 'Ing',
+            'nombres'             => 'Fernando Jose',
+            'apellidos'           => 'Zambrano Farias',
+            'identificacion'      => '0917300113',
+            'tipo_identificacion' => 'CEDULA',
+            'email'               => 'fernando.zambrano@hotmail.com',
+            'email_corporativo'   => 'fernando.zambranof@ug.edu.ec',
+            'celular'             => '0986542753',
+            'telefono'            => '(04) 6 044-716',
+            'estado_civil'        => 'CASADO',
+            'genero'              => 'MASCULINO',
+            'titulo_pregrado'     => '',
+            'titulo_postgrado'    => '',
+            'titulo_mba'          => '',
+            'registro_senescyt'   => '',
+            'fecha_nacimiento'    => '1982-03-18',
+            'nacionalidad'        => 'Ecuatoriano',
+            'residencia'          => 'Ecuador',
+            'direccion'           => 'URBANIZACION VERANDA MZ 1201 V 11',
+            'tipo_contrato'       => 'TIEMPO_COMPLETO'
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $zambranoFernandoJose->id,
+            'materia' => 8,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $zambranoFernandoJose->id,
+            'materia' => 34,
+        ]);
+
+
+        $zambranoBryan = App\Entities\Docente::create([
+            'abreviatura'         => 'Ing',
+            'nombres'             => 'Bryan Nagib',
+            'apellidos'           => 'Zambrano Manzur',
+            'identificacion'      => '0920140472',
+            'tipo_identificacion' => 'CEDULA',
+            'email'               => 'bryan_nagib@hotmail.com',
+            'email_corporativo'   => 'bryan.zambranom@ug.edu.ec',
+            'celular'             => '0994285058',
+            'telefono'            => '(04) 6 031-913',
+            'estado_civil'        => 'CASADO',
+            'genero'              => 'MASCULINO',
+            'titulo_pregrado'     => '',
+            'titulo_postgrado'    => '',
+            'titulo_mba'          => '',
+            'registro_senescyt'   => '',
+            'fecha_nacimiento'    => '1981-06-09',
+            'nacionalidad'        => 'Ecuatoriano',
+            'residencia'          => 'Ecuador',
+            'direccion'           => 'URB. BELLOHORIZONTE, MZ 41 VILLA 29',
+            'tipo_contrato'       => 'MEDIO_TIEMPO'
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $zambranoBryan->id,
+            'materia' => 28,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $zambranoBryan->id,
+            'materia' => 34,
+        ]);
+
+
+        $zumbaPatricia = App\Entities\Docente::create([
+            'abreviatura'         => 'Ing',
+            'nombres'             => 'Johana Patricia',
+            'apellidos'           => 'Zumba Gamboa',
+            'identificacion'      => '0919922252',
+            'tipo_identificacion' => 'CEDULA',
+            'email'               => 'johanna.zumba@gmail.com',
+            'email_corporativo'   => 'johanna.zumbag@ug.edu.ec',
+            'celular'             => '0982927929',
+            'telefono'            => '(04) 2 057-156',
+            'estado_civil'        => 'CASADO',
+            'genero'              => 'FENENINO',
+            'titulo_pregrado'     => '',
+            'titulo_postgrado'    => '',
+            'titulo_mba'          => '',
+            'registro_senescyt'   => '',
+            'fecha_nacimiento'    => '1981-05-11',
+            'nacionalidad'        => 'Ecuatoriano',
+            'residencia'          => 'Ecuador',
+            'direccion'           => 'CALLE CHILLA Y PTO. LOPEZ',
+            'tipo_contrato'       => 'TIEMPO_COMPLETO'
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $zumbaPatricia->id,
+            'materia' => 27,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $zumbaPatricia->id,
+            'materia' => 34,
+        ]);
+
+        App\Entities\MateriasDocente::create([
+            'docente' => $zumbaPatricia->id,
+            'materia' => 29,
         ]);
 
     }

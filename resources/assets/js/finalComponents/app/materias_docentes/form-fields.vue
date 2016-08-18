@@ -10,18 +10,17 @@
 			  :searchable="true"
 			  :close-on-select="true"
 			  :clear-on-select="false"
-			  placeholder="Máximo 3 materias"
+			  placeholder="Hasta 3 materias"
 			  :hide-selected="true"
 			  label="desc"
 			  :close-on-select="true"
-			  :max="3"
+			  :max="4"
 			  :taggable="true"
 			  select-label="Presione enter para seleccionar"
 			  deselect-label="Presione enter para remover"
 			  :limit-text="templateLimit"
 			  key="materia"></multiselect>
 		</div>
-
 	</div>
 
 </template>

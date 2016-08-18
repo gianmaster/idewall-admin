@@ -368,7 +368,7 @@
 						searchable: false,
 						per_page_list: [5,10, 15, 20, 30, 50],
 						total:150,
-						per_page:5,
+						per_page:10,
 						current_page:1,
 						last_page:10,
 						next_page_url:"http:\/\/vuetable.ratiw.net\/api\/users?page=2",

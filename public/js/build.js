@@ -18153,7 +18153,7 @@ exports.default = {
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"col-xs-12\">\n\t<div class=\"{'invalid': isInvalid}\">\n\t\t<label>Docente: <span class=\"__user\">{{docente}}</span></label>\n\t\t<multiselect :options=\"options\" :selected.sync=\"selected\" :multiple=\"true\" :searchable=\"true\" :close-on-select=\"true\" :clear-on-select=\"false\" placeholder=\"Máximo 3 materias\" :hide-selected=\"true\" label=\"desc\" :max=\"3\" :taggable=\"true\" select-label=\"Presione enter para seleccionar\" deselect-label=\"Presione enter para remover\" :limit-text=\"templateLimit\" key=\"materia\"></multiselect>\n\t</div>\n\n</div>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"col-xs-12\">\n\t<div class=\"{'invalid': isInvalid}\">\n\t\t<label>Docente: <span class=\"__user\">{{docente}}</span></label>\n\t\t<multiselect :options=\"options\" :selected.sync=\"selected\" :multiple=\"true\" :searchable=\"true\" :close-on-select=\"true\" :clear-on-select=\"false\" placeholder=\"Hasta 3 materias\" :hide-selected=\"true\" label=\"desc\" :max=\"4\" :taggable=\"true\" select-label=\"Presione enter para seleccionar\" deselect-label=\"Presione enter para remover\" :limit-text=\"templateLimit\" key=\"materia\"></multiselect>\n\t</div>\n</div>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -19386,7 +19386,7 @@ exports.default = {
 					searchable: false,
 					per_page_list: [5, 10, 15, 20, 30, 50],
 					total: 150,
-					per_page: 5,
+					per_page: 10,
 					current_page: 1,
 					last_page: 10,
 					next_page_url: "http:\/\/vuetable.ratiw.net\/api\/users?page=2",
