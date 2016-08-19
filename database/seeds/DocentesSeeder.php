@@ -1197,41 +1197,7 @@ class DocentesSeeder extends Seeder
             'materia' => 34,
         ]);
 
-
-
-        $zambranoFernandoJose = App\Entities\Docente::create([
-            'abreviatura'         => 'Ing',
-            'nombres'             => 'Fernando Jose',
-            'apellidos'           => 'Zambrano Farias',
-            'identificacion'      => '0917300113',
-            'tipo_identificacion' => 'CEDULA',
-            'email'               => 'fernando.zambrano@hotmail.com',
-            'email_corporativo'   => 'fernando.zambranof@ug.edu.ec',
-            'celular'             => '0986542753',
-            'telefono'            => '(04) 6 044-716',
-            'estado_civil'        => 'CASADO',
-            'genero'              => 'MASCULINO',
-            'titulo_pregrado'     => '',
-            'titulo_postgrado'    => '',
-            'titulo_mba'          => '',
-            'registro_senescyt'   => '',
-            'fecha_nacimiento'    => '1982-03-18',
-            'nacionalidad'        => 'Ecuatoriano',
-            'residencia'          => 'Ecuador',
-            'direccion'           => 'URBANIZACION VERANDA MZ 1201 V 11',
-            'tipo_contrato'       => 'TIEMPO_COMPLETO'
-        ]);
-
-        App\Entities\MateriasDocente::create([
-            'docente' => $zambranoFernandoJose->id,
-            'materia' => 8,
-        ]);
-
-        App\Entities\MateriasDocente::create([
-            'docente' => $zambranoFernandoJose->id,
-            'materia' => 34,
-        ]);
-
+        
 
 
         $zambranoFernandoJose = App\Entities\Docente::create([

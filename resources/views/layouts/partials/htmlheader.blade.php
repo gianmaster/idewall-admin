@@ -1,7 +1,7 @@
 <head>
     <meta charset="UTF-8">
     <meta id="csrf_token" value="{{ csrf_token() }}">
-    <title> AdminLTE 2 with Laravel - @yield('htmlheader_title', 'Vue') </title>
+    <title> Sistema de distribución de cargas horarias </title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <!-- Bootstrap 3.3.4 -->
     <link href="{{ asset('/css/bootstrap.css') }}" rel="stylesheet" type="text/css" />

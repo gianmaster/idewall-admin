@@ -894,6 +894,22 @@ class ConfigurationSeeder extends Seeder
         ]);
 
 
+        //menu jornadas por semestres
+        $menuJornadaSemestre = App\Menu::create([
+            'nombre'    => 'jornadas_semestre',
+            'titulo'    => 'Jornadas Semestre',
+            'url'     => '/jornadasemestres',
+            'iconclass'   => 'fa fa-link',
+            'orden'     => 1,
+            'cod_padre'   => $menuCargaH->id
+        ]);
+
+        App\RolMenu::create([
+            'rol' => $rolAdmin->id,
+            'menu'  => $menuJornadaSemestre->id,
+        ]);
+
+
         //menu materias docentes
         $menuMateriasDocentes = App\Menu::create([
             'nombre'    => 'materias_docentes',
