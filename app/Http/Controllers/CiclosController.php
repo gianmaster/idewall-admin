@@ -67,6 +67,18 @@ class CiclosController extends Controller
                 ]);
             }else{
                 $ciclo = Ciclo::all()->last();
+
+                if($ciclo->ciclo == 2){
+                    Ciclo::create([
+                        'anio'  => ($ciclo->anio + 1),
+                        'ciclo' => 1
+                    ]);
+                }else{
+                    Ciclo::create([
+                        'anio'  => ($ciclo->anio),
+                        'ciclo' => 2
+                    ]);
+                }
             }
 
         } catch (\Exception $e) {
