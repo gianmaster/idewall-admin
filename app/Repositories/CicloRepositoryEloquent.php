@@ -40,8 +40,8 @@ class CicloRepositoryEloquent extends BaseRepository implements CicloRepository
      * Specify Searchable fields
      * */
     protected $fieldSearchable = [
-        'nombre' => 'like',
-        'periodo' => 'like',
+        'ciclo' => 'like',
+        'anio' => 'like',
         'id',
         //'titulo' => 'like', //with condition
     ];

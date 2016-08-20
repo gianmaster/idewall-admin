@@ -12,6 +12,6 @@ class Ciclo extends Model implements Transformable
 
     protected $table = 'ciclos';
 
-    protected $fillable = ['id', 'periodo', 'nombre', 'estado'];
+    protected $fillable = ['id', 'anio', 'ciclo', 'estado'];
 
 }

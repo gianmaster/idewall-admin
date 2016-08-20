@@ -64,6 +64,8 @@ Route::group(['middleware' => 'auth'], function(){
 
 		Route::resource('jornadasemestre', 'JornadasSemestresController');
 
+		Route::get('ciclo', 'CiclosController@index');
+
 
 	});
 

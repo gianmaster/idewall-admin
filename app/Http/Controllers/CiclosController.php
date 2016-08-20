@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Entities\Ciclo;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -40,17 +41,10 @@ class CiclosController extends Controller
      */
     public function index()
     {
-        $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
-        $ciclos = $this->repository->all();
+        $ciclo = Ciclo::where('estado', 'VIGENTE')->first();
 
-        if (request()->wantsJson()) {
+        return response()->json(array('data' => $ciclo));
 
-            return response()->json([
-                'data' => $ciclos,
-            ]);
-        }
-
-        return view('ciclos.index', compact('ciclos'));
     }
 
     /**
@@ -65,53 +59,33 @@ class CiclosController extends Controller
 
         try {
 
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
+            $ciclos = Ciclo::where('estado', 'VIGENTE')->first();
 
-            $ciclo = $this->repository->create($request->all());
-
-            $response = [
-                'message' => 'Ciclo created.',
-                'data'    => $ciclo->toArray(),
-            ];
-
-            if ($request->wantsJson()) {
-
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
-        } catch (ValidatorException $e) {
-            if ($request->wantsJson()) {
+            if(!$ciclos){
                 return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
+                    'message' => 'Ya hay un ciclo vigente, debe cerrarlos para poder generar uno nuevo'
                 ]);
+            }else{
+                $ciclo = Ciclo::all()->last();
             }
 
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+        } catch (\Exception $e) {
+            return response()->json([
+                'error'   => true,
+                'message' => $e->getMessageBag()
+            ]);
         }
     }
 
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return mixed
+     * Muestra el ciclo vigente
      */
     public function show($id)
     {
-        $ciclo = $this->repository->find($id);
-
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'data' => $ciclo,
-            ]);
-        }
-
-        return view('ciclos.show', compact('ciclo'));
+        response()->json(array('data' => 'Nothing to do here'));
     }
 
 
@@ -125,9 +99,7 @@ class CiclosController extends Controller
     public function edit($id)
     {
 
-        $ciclo = $this->repository->find($id);
-
-        return view('ciclos.edit', compact('ciclo'));
+        response()->json(array('data' => 'Nothing to do here'));
     }
 
 
@@ -141,58 +113,24 @@ class CiclosController extends Controller
      */
     public function update(CicloUpdateRequest $request, $id)
     {
-
-        try {
-
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
-
-            $ciclo = $this->repository->update($id, $request->all());
-
-            $response = [
-                'message' => 'Ciclo updated.',
-                'data'    => $ciclo->toArray(),
-            ];
-
-            if ($request->wantsJson()) {
-
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
-        } catch (ValidatorException $e) {
-
-            if ($request->wantsJson()) {
-
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
-            }
-
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
-        }
+        response()->json(array('data' => 'Nothing to do here'));
     }
 
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return mixed
+     * Dar de baja a un ciclo, esto cierra el proceso de asignacion de horarios
      */
     public function destroy($id)
     {
-        $deleted = $this->repository->delete($id);
+        $ciclo = Ciclo::find($id);
+        $ciclo->estado = 'CERRADO';
+        $ciclo->save();
 
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'message' => 'Ciclo deleted.',
-                'deleted' => $deleted,
-            ]);
-        }
-
-        return redirect()->back()->with('message', 'Ciclo deleted.');
+        return response()->json([
+            'message' => 'Ciclo cerrado.',
+            'deleted' => $ciclo,
+        ]);
     }
 }

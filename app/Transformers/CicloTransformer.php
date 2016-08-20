@@ -24,8 +24,8 @@ class CicloTransformer extends TransformerAbstract
             'id'         => (int) $model->id,
 
             /* place your other model properties here */
-            'periodo'       => $model->periodo,
-            'nombre'        => $model->nombre,
+            'anio'       => $model->anio,
+            'ciclo'        => $model->ciclo,
 
             'created_at' => $model->created_at,
             'updated_at' => $model->updated_at
