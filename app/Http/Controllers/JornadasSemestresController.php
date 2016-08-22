@@ -40,10 +40,30 @@ class JornadasSemestresController extends Controller
      */
     public function index()
     {
-        $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
-        $jornadasSemestres = $this->repository->all();
+        $this->repository->skipPresenter();
 
-        return response()->json($jornadasSemestres);
+        $perPage = request()->has('per_page') ? (int) request()->per_page :10 ;
+
+        if (request()->has('sort')) {
+            list($sortCol, $sortDir) = explode('|', request()->sort);
+            $jornadasemestre = $this->repository
+                ->with('semestre')
+                ->with('aula')
+                ->with('jornada')
+                ->with('descripcionCiclo')
+                ->orderBy($sortCol, $sortDir)
+                ->paginate($perPage);
+        } else {
+            $jornadasemestre = $this->repository
+                ->with('semestre')
+                ->with('aula')
+                ->with('jornada')
+                ->with('descripcionCiclo')
+                ->orderBy('id', 'asc')
+                ->paginate($perPage);
+        }
+
+        return response()->json($jornadasemestre);
     }
 
     /**

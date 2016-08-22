@@ -27,9 +27,9 @@
 		},
 		data: function(){
 			return {
-				path: ['Cargas Horarias', 'Materias Docentes'],
+				path: ['Cargas Horarias', 'Jornadas Semestres'],
 				loading: true,
-				titulo: 'Materias Docentes',
+				titulo: 'Jornadas por semestres',
 				url: ''
 			}
 		}

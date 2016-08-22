@@ -34,7 +34,7 @@
 	import Loading from '../../reusable/loading.vue';
 
 	import Modal from '../../reusable/modal.vue';
-	
+
 	import coolTable from '../../reusable/cool-table.vue';
 
 	import formulario from './form-fields.vue';

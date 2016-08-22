@@ -71,10 +71,11 @@ router.map({
 
   '/catalogos/:catalogo_id': require('./finalComponents/app/catalogoItems/index.js'),
 
+  '/jornadasemestres': require('./finalComponents/app/jornadas_semestres/index.js'),
+
   '/lockscreen': {
     component: require('./finalComponents/new-layout/lockscreen.vue')
-  },
-  
+  }
 });
 
 

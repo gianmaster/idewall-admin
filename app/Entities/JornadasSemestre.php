@@ -20,17 +20,20 @@ class JornadasSemestre extends Model implements Transformable
 
     public function semestre(){
     	return $this->hasOne(CatalogoItem::class, 'codigo', 'catalogo_semestre')
-    				->where('id_catalogo', 2);
+    				->where('catalogo', 2)
+                    ->where('activo', true);
     }
 
     public function aula(){
     	return $this->hasOne(CatalogoItem::class, 'codigo', 'catalogo_aula')
-    				->where('id_catalogo', 4);
+    				->where('catalogo', 4)
+                    ->where('activo', true);
     }
 
     public function jornada(){
     	return $this->hasOne(CatalogoItem::class, 'codigo', 'catalogo_jornada')
-    				->where('id_catalogo', 5);
+    				->where('catalogo', 5)
+                    ->where('activo', true);
     }
 
 }

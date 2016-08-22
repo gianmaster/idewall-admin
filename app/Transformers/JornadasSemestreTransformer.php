@@ -28,6 +28,9 @@ class JornadasSemestreTransformer extends TransformerAbstract
             'semestre'      => $model->semestre,
             'jornada'      => $model->jornada,
             'ciclo'     => $model->descripcionCiclo,
+            'catalogo_aula' => $model->catalogo_aula,
+            'catalogo_jornada' => $model->catalogo_jornada,
+            'catalogo_semestre' => $model->catalogo_semestre,
 
             'created_at' => $model->created_at,
             'updated_at' => $model->updated_at
