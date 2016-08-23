@@ -1,17 +1,17 @@
 <template>
 	<div class="col-sm-6 col-xs-12">
 		<label>Jornada</label>
-		<select-list class-name="form-control col-xs-6" :select-value.sync="dataModel.catalogo_jornada" value-key="codigo" label-key="descripcion" url="api/catalogos-list/5"></select-list>
+		<select-list class-name="form-control col-xs-6" :select-value.sync="dataModel.catalogo_jornada" value-key="codigo" label-key="descripcion" url="api/catalogos-list/5"  :is-required="true"></select-list>
 	</div>
 
 	<div class="col-sm-6 col-xs-12">
 		<label>Semestre</label>
-		<select-list class-name="form-control col-xs-6" :select-value.sync="dataModel.catalogo_semestre" value-key="codigo" label-key="descripcion" url="api/catalogos-list/2"></select-list>
+		<select-list class-name="form-control col-xs-6" :select-value.sync="dataModel.catalogo_semestre" value-key="codigo" label-key="descripcion" url="api/catalogos-list/2" :is-required="true"></select-list>
 	</div>
 
 	<div class="col-sm-6 col-xs-12">
 		<label>Aula</label>
-		<select-list class-name="form-control col-xs-6" :select-value.sync="dataModel.catalogo_aula" value-key="codigo" label-key="descripcion" url="api/catalogos-list/4"></select-list>
+		<select-list class-name="form-control col-xs-6" :select-value.sync="dataModel.catalogo_aula" value-key="codigo" label-key="descripcion" url="api/catalogos-list/4" :is-required="true"></select-list>
 	</div>
 
 	<div class="col-xs-12">

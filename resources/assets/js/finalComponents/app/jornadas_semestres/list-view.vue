@@ -5,6 +5,9 @@
 	</div>
 
 	<div v-else>
+		<div class="col-xs-12 show-div">
+			<a v-link="{path: '/jornadasemestres/create'}" class="btn btn-primary btn-flat btn-spacing"> <i class="fa fa-plus-o"></i> AGREGAR JORNADA</a>
+		</div>
 		<cool-table 
 		:option-toolbar="toolbar"
 		:url="url" 
@@ -19,6 +22,16 @@
 </div>
 
 </template>
+
+<style>
+	.show-div{
+		z-index: 999;
+	}
+	.btn-spacing{
+		margin: .5em;
+	}
+</style>
+
 
 <script>
 
@@ -57,7 +70,8 @@
 					field: 'jornada',
 					hidden: false,
 					sortable: false,
-					template: '${col.jornada.descripcion}'
+					template: '<span class="text-${col.catalogo_jornada=="MAT"?"aqua":col.catalogo_jornada=="VES"?"yellow":"light-blue"}">${col.jornada.descripcion} </span>'
+
 				},
 				{
 					title: 'Semestre',
@@ -79,12 +93,14 @@
 					hidden: false,
 					fieldClass: 'text-center',
 					itemActions: [
+							/*
 						{
 							nameEmit: 'jornadasemestre-update-event',
 							btnClass: 'btn btn-primary btn-xs',
 							iconClass: 'fa fa-pencil',
 							label: 'Modificar'
 						},
+						*/
 						{
 							nameEmit: 'jornadasemestre-delete-event',
 							btnClass: 'btn btn-danger btn-xs',
@@ -102,9 +118,6 @@
 			'app-loading' : Loading
 		},
 		events: {
-			'jornadasemestre-create-event' : function(model){
-				this.$router.go('/jornadasemestres/create');
-			},
 			'jornadasemestre-update-event' : function(model){
 				this.$router.go('/jornadasemestres/edit/' + model.id);
 			},

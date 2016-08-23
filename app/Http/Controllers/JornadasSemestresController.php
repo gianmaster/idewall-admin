@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Entities\Ciclo;
+use App\Entities\JornadasSemestre;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -51,7 +53,7 @@ class JornadasSemestresController extends Controller
                 ->with('aula')
                 ->with('jornada')
                 ->with('descripcionCiclo')
-                ->orderBy($sortCol, $sortDir)
+                ->orderBy('catalogo_semestre', $sortDir)
                 ->paginate($perPage);
         } else {
             $jornadasemestre = $this->repository
@@ -59,7 +61,7 @@ class JornadasSemestresController extends Controller
                 ->with('aula')
                 ->with('jornada')
                 ->with('descripcionCiclo')
-                ->orderBy('id', 'asc')
+                ->orderBy('catalogo_semestre', 'asc')
                 ->paginate($perPage);
         }
 
@@ -78,16 +80,26 @@ class JornadasSemestresController extends Controller
 
         try {
 
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
+            $cicloVigente = CiclosController::currentCiclo();
 
-            $jornadasSemestre = $this->repository->create($request->all());
+            $data = $request->only(['catalogo_semestre', 'catalogo_jornada', 'catalogo_aula']);
 
-            $response = [
-                'message' => 'JornadasSemestre created.',
-                $jornadasSemestre->toArray(),
-            ];
+            $this->validator->with($data)->passesOrFail(ValidatorInterface::RULE_CREATE);
 
-            return response()->json($response);
+            $data['ciclo'] = $cicloVigente->id;
+
+            $existe = JornadasSemestre::where($data)->get()->toArray();
+
+            if(array_has($existe, 0)){
+                return response()->json([
+                    'error'   => true,
+                    'message' => 'Ya se ha registrado esta jornada a este semestre con el mismo curso!'
+                ], 403);
+            }
+
+            $jornadasSemestre = $this->repository->create($data);
+
+            return response()->json($jornadasSemestre);
 
         } catch (ValidatorException $e) {
             return response()->json([
@@ -178,5 +190,11 @@ class JornadasSemestresController extends Controller
             'message' => 'JornadasSemestre deleted.',
             'deleted' => $deleted,
         ]);
+    }
+
+
+
+    public function validaJornada($data){
+
     }
 }

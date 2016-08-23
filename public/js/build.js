@@ -17373,7 +17373,7 @@ exports.default = {
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Jornada</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.catalogo_jornada\" value-key=\"codigo\" label-key=\"descripcion\" url=\"api/catalogos-list/5\"></select-list>\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Semestre</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.catalogo_semestre\" value-key=\"codigo\" label-key=\"descripcion\" url=\"api/catalogos-list/2\"></select-list>\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Aula</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.catalogo_aula\" value-key=\"codigo\" label-key=\"descripcion\" url=\"api/catalogos-list/4\"></select-list>\n</div>\n\n<div class=\"col-xs-12\">\n\t<div class=\"content\">\n\t\t<button v-if=\"createMode\" class=\"btn btn-success btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR</button>\n\t\t<button v-else=\"\" class=\"btn btn-warning btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR CAMBIOS</button>\n\t\t<a v-link=\"{path: '/jornadasemestres'}\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-reply\"></i> VOLVER</a>\n\t</div>\n\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Jornada</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.catalogo_jornada\" value-key=\"codigo\" label-key=\"descripcion\" url=\"api/catalogos-list/5\" :is-required=\"true\"></select-list>\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Semestre</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.catalogo_semestre\" value-key=\"codigo\" label-key=\"descripcion\" url=\"api/catalogos-list/2\" :is-required=\"true\"></select-list>\n</div>\n\n<div class=\"col-sm-6 col-xs-12\">\n\t<label>Aula</label>\n\t<select-list class-name=\"form-control col-xs-6\" :select-value.sync=\"dataModel.catalogo_aula\" value-key=\"codigo\" label-key=\"descripcion\" url=\"api/catalogos-list/4\" :is-required=\"true\"></select-list>\n</div>\n\n<div class=\"col-xs-12\">\n\t<div class=\"content\">\n\t\t<button v-if=\"createMode\" class=\"btn btn-success btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR</button>\n\t\t<button v-else=\"\" class=\"btn btn-warning btn-flat\" type=\"submit\"><i class=\"fa fa-save\"></i> GUARDAR CAMBIOS</button>\n\t\t<a v-link=\"{path: '/jornadasemestres'}\" class=\"btn btn-default btn-flat\"><i class=\"fa fa-reply\"></i> VOLVER</a>\n\t</div>\n\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -17473,6 +17473,8 @@ if (module.hot) {(function () {  module.hot.accept()
   }
 })()}
 },{"../../../util/reusable_functions":112,"../../new-layout/content-header.vue":96,"vue":24,"vue-hot-reload-api":20}],59:[function(require,module,exports){
+var __vueify_insert__ = require("vueify/lib/insert-css")
+var __vueify_style__ = __vueify_insert__.insert("\n.show-div{\n\tz-index: 999;\n}\n.btn-spacing{\n\tmargin: .5em;\n}\n")
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17520,7 +17522,8 @@ exports.default = {
 				field: 'jornada',
 				hidden: false,
 				sortable: false,
-				template: '${col.jornada.descripcion}'
+				template: '<span class="text-${col.catalogo_jornada=="MAT"?"aqua":col.catalogo_jornada=="VES"?"yellow":"light-blue"}">${col.jornada.descripcion} </span>'
+
 			}, {
 				title: 'Semestre',
 				field: 'semestre',
@@ -17538,12 +17541,16 @@ exports.default = {
 				titleClass: 'text-center',
 				hidden: false,
 				fieldClass: 'text-center',
-				itemActions: [{
-					nameEmit: 'jornadasemestre-update-event',
-					btnClass: 'btn btn-primary btn-xs',
-					iconClass: 'fa fa-pencil',
-					label: 'Modificar'
-				}, {
+				itemActions: [
+				/*
+    {
+    nameEmit: 'jornadasemestre-update-event',
+    btnClass: 'btn btn-primary btn-xs',
+    iconClass: 'fa fa-pencil',
+    label: 'Modificar'
+    },
+    */
+				{
 					nameEmit: 'jornadasemestre-delete-event',
 					btnClass: 'btn btn-danger btn-xs',
 					iconClass: 'fa fa-close',
@@ -17559,9 +17566,6 @@ exports.default = {
 		'app-loading': _loading2.default
 	},
 	events: {
-		'jornadasemestre-create-event': function jornadasemestreCreateEvent(model) {
-			this.$router.go('/jornadasemestres/create');
-		},
 		'jornadasemestre-update-event': function jornadasemestreUpdateEvent(model) {
 			this.$router.go('/jornadasemestres/edit/' + model.id);
 		},
@@ -17571,18 +17575,22 @@ exports.default = {
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t\n\t<div v-if=\"loading\">\n\t\t<app-loading></app-loading>\n\t</div>\n\n\t<div v-else=\"\">\n\t\t<cool-table :option-toolbar=\"toolbar\" :url=\"url\" :data.sync=\"datos\" :columns=\"columnas\" filter-key-word=\"search\">\n\t</cool-table>\n\n\t<!-- Modal logic -->\n\n\n</div>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t\n\t<div v-if=\"loading\">\n\t\t<app-loading></app-loading>\n\t</div>\n\n\t<div v-else=\"\">\n\t\t<div class=\"col-xs-12 show-div\">\n\t\t\t<a v-link=\"{path: '/jornadasemestres/create'}\" class=\"btn btn-primary btn-flat btn-spacing\"> <i class=\"fa fa-plus-o\"></i> AGREGAR JORNADA</a>\n\t\t</div>\n\t\t<cool-table :option-toolbar=\"toolbar\" :url=\"url\" :data.sync=\"datos\" :columns=\"columnas\" filter-key-word=\"search\">\n\t</cool-table>\n\n\t<!-- Modal logic -->\n\n\n</div>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
+  module.hot.dispose(function () {
+    __vueify_insert__.cache["\n.show-div{\n\tz-index: 999;\n}\n.btn-spacing{\n\tmargin: .5em;\n}\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
   if (!module.hot.data) {
     hotAPI.createRecord("_v-066b3ed3", module.exports)
   } else {
     hotAPI.update("_v-066b3ed3", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../reusable/cool-table.vue":103,"../../reusable/loading.vue":104,"./mixins":60,"vue":24,"vue-hot-reload-api":20}],60:[function(require,module,exports){
+},{"../../reusable/cool-table.vue":103,"../../reusable/loading.vue":104,"./mixins":60,"vue":24,"vue-hot-reload-api":20,"vueify/lib/insert-css":25}],60:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

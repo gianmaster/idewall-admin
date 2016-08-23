@@ -9,7 +9,15 @@ class JornadasSemestreValidator extends LaravelValidator
 {
 
     protected $rules = [
-        ValidatorInterface::RULE_CREATE => [],
-        ValidatorInterface::RULE_UPDATE => [],
+        ValidatorInterface::RULE_CREATE => [
+            'catalogo_semestre' => 'required',
+            'catalogo_aula'     => 'required',
+            'catalogo_jornada'  => 'required',
+        ],
+        ValidatorInterface::RULE_UPDATE => [
+            'catalogo_semestre' => 'required',
+            'catalogo_aula'     => 'required',
+            'catalogo_jornada'  => 'required',
+        ],
    ];
 }

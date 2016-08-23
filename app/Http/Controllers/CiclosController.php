@@ -145,4 +145,10 @@ class CiclosController extends Controller
             'deleted' => $ciclo,
         ]);
     }
+
+
+    public static function currentCiclo(){
+        return Ciclo::where('estado', 'VIGENTE')->first();
+    }
+
 }
