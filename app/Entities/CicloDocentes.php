@@ -23,7 +23,7 @@ class CicloDocentes extends Model implements Transformable
     }
 
     public function materiasDocenteCiclo(){
-        return $this->hasMany(MateriasDocente::class, 'materia_docente', 'id');
+        return $this->hasMany(MateriasDocente::class, 'ciclo_docente', 'id')->with('materiaDetail');
     }
     
 }

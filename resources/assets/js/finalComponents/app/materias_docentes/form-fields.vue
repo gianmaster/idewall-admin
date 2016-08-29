@@ -41,7 +41,7 @@
 	export default {
 		mixins: [Mixins],
 		computed: {
-			isInvalid () {
+			isInvalid(){
 				return this.isTouched && this.selected.length === 0
 			},
 			docente(){
@@ -70,6 +70,7 @@
 						nombres: null,
 						apellidos: null,
 						abrevatura: null,
+						docente_detail: {}
 					}
 				}
 			}

@@ -18548,7 +18548,8 @@ exports.default = {
 					id: null,
 					nombres: null,
 					apellidos: null,
-					abrevatura: null
+					abrevatura: null,
+					docente_detail: {}
 				};
 			}
 		}
@@ -18698,23 +18699,29 @@ exports.default = {
 	data: function data() {
 		return {
 			showModal: false,
-			url: 'api/docentes',
+			url: 'api/ciclo/param/docentes',
 			toolbar: null,
 			currentModel: {},
 			materiasSeleccionadas: [],
 			datos: [],
 			columnas: [{
+				title: 'Ciclo',
+				field: 'ciclo',
+				hidden: false,
+				sortable: true,
+				template: '${col.ciclo_detail.anio} - ${col.ciclo_detail.anio+1} (${col.ciclo_detail.ciclo})'
+			}, {
 				title: 'Docente',
 				field: 'nombres',
 				hidden: false,
 				sortable: true,
-				template: '${col.abreviatura}. ${col.nombres} ${col.apellidos}'
+				template: '${col.docente_detail.abreviatura}. ${col.docente_detail.nombres} ${col.docente_detail.apellidos}'
 			}, {
 				title: 'Materias',
 				field: 'materias',
 				hidden: false,
 				sortable: false,
-				template: '${col.materias.map(function(ele){return ele.materia_detail.nombre_materia;}).join(", ")}'
+				template: '${col.materias_docente_ciclo.map(function(ele){return ele.materia_detail.nombre_materia;}).join(", ")}'
 			}, {
 				title: 'Gestionar Materias',
 				titleClass: 'text-center',
@@ -18739,7 +18746,7 @@ exports.default = {
 	},
 	events: {
 		'materias-docente-update-event': function materiasDocenteUpdateEvent(model) {
-			this.toggleDataModel(model);
+			this.toggleDataModel(model.docente_detail, model.materias_docente_ciclo);
 			this.toggleModal();
 		},
 		//when modal emit ok
@@ -18778,6 +18785,10 @@ var API_URL = 'api/docentes/materias'; /**
                                         * cada metodo declarado aquí hará referencia con "this" a su propio "scope"
                                         */
 
+var URL_CICLO = 'api/ciclo';
+
+var URL_CICLO_DOCENTES = 'api/ciclo/param/docentes';
+
 var API_URL_LIST_MATERIAS = 'api/malla_academica/all';
 
 exports.default = {
@@ -18786,16 +18797,15 @@ exports.default = {
     toggleModal: function toggleModal() {
       this.showModal = !this.showModal;
     },
-    toggleDataModel: function toggleDataModel(model) {
+    toggleDataModel: function toggleDataModel(model, materias) {
       this.currentModel = model;
-      this.toggleMaterias();
+      this.toggleMaterias(materias);
     },
-    toggleMaterias: function toggleMaterias() {
+    toggleMaterias: function toggleMaterias(materias) {
       var data = [],
           materia_id = void 0,
           desc = void 0,
-          self = this,
-          materias = self.currentModel.materias;
+          self = this;
 
       for (var idx in materias) {
         materia_id = materias[idx].materia;
@@ -18806,9 +18816,12 @@ exports.default = {
       this.materiasSeleccionadas = data;
     },
     load: function load() {
-      this.loading = true;
-      this.$http.get(this.url).then(function (resp) {
-        this.loading = false;
+      var self = this;
+      self.loading = true;
+      self.$http.get(URL_CICLO).then(function (resp) {
+        var idCiclo = resp.data.data.id ? resp.data.data.id : 0;
+        self.url = URL_CICLO_DOCENTES.replace('param', idCiclo);
+        self.loading = false;
       }, _reusable_functions2.default.tryError);
     },
 

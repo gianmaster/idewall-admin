@@ -52,25 +52,32 @@
 		data(){
 			return {
 				showModal: false,
-				url: 'api/docentes',
+				url: 'api/ciclo/param/docentes',
 				toolbar: null,
 				currentModel: {},
 				materiasSeleccionadas: [],
 				datos: [],
 				columnas: [
 				{
+					title: 'Ciclo',
+					field: 'ciclo',
+					hidden: false,
+					sortable: true,
+					template: '${col.ciclo_detail.anio} - ${col.ciclo_detail.anio+1} (${col.ciclo_detail.ciclo})'
+				},
+				{
 					title: 'Docente',
 					field: 'nombres',
 					hidden: false,
 					sortable: true,
-					template: '${col.abreviatura}. ${col.nombres} ${col.apellidos}'
+					template: '${col.docente_detail.abreviatura}. ${col.docente_detail.nombres} ${col.docente_detail.apellidos}'
 				},
 				{
 					title: 'Materias',
 					field: 'materias',
 					hidden: false,
 					sortable: false,
-					template: '${col.materias.map(function(ele){return ele.materia_detail.nombre_materia;}).join(", ")}'					
+					template: '${col.materias_docente_ciclo.map(function(ele){return ele.materia_detail.nombre_materia;}).join(", ")}'
 				},
 				{
 					title: 'Gestionar Materias',
@@ -98,7 +105,7 @@
 		},
 		events: {
 			'materias-docente-update-event' : function(model){
-				this.toggleDataModel(model);
+				this.toggleDataModel(model.docente_detail, model.materias_docente_ciclo);
 				this.toggleModal();
 			},
 			//when modal emit ok

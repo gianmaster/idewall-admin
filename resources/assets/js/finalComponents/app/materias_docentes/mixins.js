@@ -5,7 +5,11 @@
 
  import fnc from '../../../util/reusable_functions';
 
- const API_URL = 'api/docentes/materias'
+ const API_URL = 'api/docentes/materias';
+
+const URL_CICLO = 'api/ciclo';
+
+const URL_CICLO_DOCENTES = 'api/ciclo/param/docentes';
 
  const API_URL_LIST_MATERIAS = 'api/malla_academica/all';
 
@@ -15,12 +19,12 @@
 		toggleModal: function(){
 			this.showModal = !this.showModal;
 		},
-		toggleDataModel: function(model){
+		toggleDataModel: function(model, materias){
 			this.currentModel = model;
-			this.toggleMaterias();
+			this.toggleMaterias(materias);
 		},
-		toggleMaterias: function(){
-			let data = [], materia_id, desc, self = this, materias = self.currentModel.materias;
+		toggleMaterias: function(materias){
+			let data = [], materia_id, desc, self = this;
 
 			for (let idx in materias) {
 				materia_id = materias[idx].materia;
@@ -31,9 +35,12 @@
 			this.materiasSeleccionadas = data;
 		},
 		load: function(){
- 			this.loading = true;
- 			this.$http.get(this.url).then(function(resp){
- 				this.loading = false;
+			let self = this;
+			self.loading = true;
+			self.$http.get(URL_CICLO).then(function(resp){
+				const idCiclo = resp.data.data.id ? resp.data.data.id : 0;
+				self.url = URL_CICLO_DOCENTES.replace('param', idCiclo);
+				self.loading = false;
  			}, fnc.tryError)
  		},
 
