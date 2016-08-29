@@ -213,7 +213,7 @@ class CiclosController extends Controller
 
             $flagUpdated = false;
 
-            foreach ($materiasDocente['materias_all'] as $mKey => $mValue) {
+            foreach ($materiasDocente as $mKey => $mValue) {
 
                 if ($mValue['materia'] == $rValue['materia']) {
                     MateriasDocente::where('id', $mValue['id'])->update(['materia' => $rValue['materia'], 'ciclo_docente' => $id, 'activo' => true]);

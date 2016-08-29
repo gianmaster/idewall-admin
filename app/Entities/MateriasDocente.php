@@ -16,7 +16,7 @@ class MateriasDocente extends Model implements Transformable
 
 
     public function materiaDetail(){
-        return $this->BelongsTo(MallaAcademica::class, 'materia', 'id')->where('activo', true);
+        return $this->BelongsTo(MallaAcademica::class, 'materia', 'id');
     }
 
     public function materiaDetailAll(){
