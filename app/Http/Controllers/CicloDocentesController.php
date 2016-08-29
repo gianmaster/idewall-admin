@@ -7,28 +7,27 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
-use App\Http\Requests\MateriasDocenteCreateRequest;
-use App\Http\Requests\MateriasDocenteUpdateRequest;
-use App\Repositories\MateriasDocenteRepository;
-use App\Validators\MateriasDocenteValidator;
+use App\Http\Requests\CicloDocentesCreateRequest;
+use App\Http\Requests\CicloDocentesUpdateRequest;
+use App\Repositories\CicloDocentesRepository;
+use App\Validators\CicloDocentesValidator;
 
 
-class MateriasDocentesController extends Controller
+class CicloDocentesController extends Controller
 {
 
     /**
-     * @var MateriasDocenteRepository
+     * @var CicloDocentesRepository
      */
     protected $repository;
 
     /**
-     * @var MateriasDocenteValidator
+     * @var CicloDocentesValidator
      */
     protected $validator;
 
-    public function __construct(MateriasDocenteRepository $repository, MateriasDocenteValidator $validator)
+    public function __construct(CicloDocentesRepository $repository, CicloDocentesValidator $validator)
     {
-
         $this->repository = $repository;
         $this->validator  = $validator;
     }
@@ -41,47 +40,38 @@ class MateriasDocentesController extends Controller
      */
     public function index()
     {
-        $this->repository->skipPresenter();
+        $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
+        $cicloDocentes = $this->repository->all();
 
-        $perPage = request()->has('per_page') ? (int) request()->per_page : 5;
+        if (request()->wantsJson()) {
 
-        if (request()->has('sort')) {
-            list($sortCol, $sortDir) = explode('|', request()->sort);
-            $docentes = $this->repository
-                ->with('detalleDocente')
-                ->with('detalleMateria')
-                ->with('detalleCiclo')
-                ->orderBy($sortCol, $sortDir)
-                ->paginate($perPage);
-        } else {
-            $docentes = $this->repository->with('materias')->orderBy('id', 'asc')->paginate($perPage);
+            return response()->json([
+                'data' => $cicloDocentes,
+            ]);
         }
 
-        return response()->json($docentes);
-
+        return view('cicloDocentes.index', compact('cicloDocentes'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  MateriasDocenteCreateRequest $request
+     * @param  CicloDocentesCreateRequest $request
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(MateriasDocenteCreateRequest $request)
+    public function store(CicloDocentesCreateRequest $request)
     {
 
         try {
 
-            dd($request->all());
-
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
 
-            $materiasDocente = $this->repository->create($request->all());
+            $cicloDocente = $this->repository->create($request->all());
 
             $response = [
-                'message' => 'MateriasDocente created.',
-                'data'    => $materiasDocente->toArray(),
+                'message' => 'CicloDocentes created.',
+                'data'    => $cicloDocente->toArray(),
             ];
 
             if ($request->wantsJson()) {
@@ -112,16 +102,16 @@ class MateriasDocentesController extends Controller
      */
     public function show($id)
     {
-        $materiasDocente = $this->repository->find($id);
+        $cicloDocente = $this->repository->find($id);
 
         if (request()->wantsJson()) {
 
             return response()->json([
-                'data' => $materiasDocente,
+                'data' => $cicloDocente,
             ]);
         }
 
-        return view('materiasDocentes.show', compact('materiasDocente'));
+        return view('cicloDocentes.show', compact('cicloDocente'));
     }
 
 
@@ -135,34 +125,32 @@ class MateriasDocentesController extends Controller
     public function edit($id)
     {
 
-        $materiasDocente = $this->repository->find($id);
+        $cicloDocente = $this->repository->find($id);
 
-        return view('materiasDocentes.edit', compact('materiasDocente'));
+        return view('cicloDocentes.edit', compact('cicloDocente'));
     }
 
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  MateriasDocenteUpdateRequest $request
+     * @param  CicloDocentesUpdateRequest $request
      * @param  string            $id
      *
      * @return Response
      */
-    public function update(MateriasDocenteUpdateRequest $request, $id)
+    public function update(CicloDocentesUpdateRequest $request, $id)
     {
 
         try {
 
-            dd($request);
-
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
 
-            $materiasDocente = $this->repository->update($id, $request->all());
+            $cicloDocente = $this->repository->update($id, $request->all());
 
             $response = [
-                'message' => 'MateriasDocente updated.',
-                'data'    => $materiasDocente->toArray(),
+                'message' => 'CicloDocentes updated.',
+                'data'    => $cicloDocente->toArray(),
             ];
 
             if ($request->wantsJson()) {
@@ -200,11 +188,11 @@ class MateriasDocentesController extends Controller
         if (request()->wantsJson()) {
 
             return response()->json([
-                'message' => 'MateriasDocente deleted.',
+                'message' => 'CicloDocentes deleted.',
                 'deleted' => $deleted,
             ]);
         }
 
-        return redirect()->back()->with('message', 'MateriasDocente deleted.');
+        return redirect()->back()->with('message', 'CicloDocentes deleted.');
     }
 }

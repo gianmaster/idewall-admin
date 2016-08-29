@@ -34,6 +34,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(\App\Repositories\MateriasDocenteRepository::class, \App\Repositories\MateriasDocenteRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\SilaboRepository::class, \App\Repositories\SilaboRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\JornadasSemestreRepository::class, \App\Repositories\JornadasSemestreRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\CicloDocentesRepository::class, \App\Repositories\CicloDocentesRepositoryEloquent::class);
         //:end-bindings:
     }
 }

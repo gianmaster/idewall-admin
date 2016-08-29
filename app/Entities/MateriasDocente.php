@@ -10,20 +10,17 @@ class MateriasDocente extends Model implements Transformable
 {
     use TransformableTrait;
 
-    protected $table = 'materias_docente';
+    protected $table = 'ciclo_materias_docente';
 
-    protected $fillable = ['docente', 'materia', 'id', 'activo'];
+    protected $fillable = ['ciclo_docente', 'materia', 'id', 'activo'];
 
-    public function docenteOwner(){
-    	return $this->BelongsTo(Docente::class, 'id', 'docente');
-    }
-
-    public function docentes(){
-    	return $this->HasMany(Docente::class, 'id', 'docente');
-    }
 
     public function materiaDetail(){
     	return $this->BelongsTo(MallaAcademica::class, 'materia', 'id');
+    }
+
+    public function decenteDetail(){
+        return $this->belongsTo(CicloDocentes::class, 'id', 'ciclo_docente');
     }
 
 }

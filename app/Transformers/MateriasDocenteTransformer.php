@@ -28,6 +28,8 @@ class MateriasDocenteTransformer extends TransformerAbstract
             'docente'   => $model->docente,
             'detalle_docente' => $model->docenteOwner,
             'detalle_materia' => $model->materiaDetail,
+            'ciclo'     => $model->ciclo,
+            'detalle_ciclo' => $model->cicloDetail,
 
             'created_at' => (string)$model->created_at,
             'updated_at' => (string)$model->updated_at

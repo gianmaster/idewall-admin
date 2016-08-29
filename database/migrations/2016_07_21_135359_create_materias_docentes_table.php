@@ -13,11 +13,11 @@ class CreateMateriasDocentesTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('materias_docente', function(Blueprint $table) {
+		Schema::create('ciclo_materias_docente', function(Blueprint $table) {
             $table->increments('id');
-
-            $table->integer('docente')->unsigned();
-            $table->foreign('docente')->references('id')->on('docentes')->onDelete('cascade')->onUpdate('cascade');
+			
+			$table->integer('ciclo_docente')->unsigned();
+			$table->foreign('ciclo_docente')->references('id')->on('ciclo_docentes')->onDelete('cascade')->onUpdate('cascade');
 
             $table->integer('materia')->unsigned();
             $table->foreign('materia')->references('id')->on('malla_academica')->onDelete('cascade')->onUpdate('cascade');
@@ -35,7 +35,7 @@ class CreateMateriasDocentesTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('materias_docente');
+		Schema::dropIfExists('ciclo_materias_docente');
 	}
 
 }

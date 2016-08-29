@@ -147,8 +147,32 @@ class CiclosController extends Controller
     }
 
 
+    /**
+     * @return mixed
+     */
     public static function currentCiclo(){
         return Ciclo::where('estado', 'VIGENTE')->first();
+    }
+
+
+    /**
+     * @param $id_ciclo
+     * @return mixed
+     * Retorna todos los docentes del ciclo enviado por parametro con sus datos aninados o relacionados
+     */
+    public function docentesCiclo($id_ciclo){
+        try{
+
+            $data = Ciclo::find($id_ciclo)->with('docentes');
+            return response()->json(array('data' => $data));
+
+        }catch (\Exception $e) {
+            return response()->json([
+                'error'   => true,
+                'message' => $e->getMessage()
+            ]);
+        }
+
     }
 
 }
