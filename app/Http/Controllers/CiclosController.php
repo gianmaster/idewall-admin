@@ -196,6 +196,12 @@ class CiclosController extends Controller
     }
 
 
+    /**
+     * @param Request $request
+     * @param $id
+     * @return mixed
+     * Actualizar y/o crear materias para un docente durante un ciclo
+     */
     public function updateMateriasDocenteCiclo(Request $request, $id){
         if(!$request->has('materias')){
             return response()->json(array(
@@ -229,5 +235,7 @@ class CiclosController extends Controller
 
         return response()->json(['data' => $materiasDocente]);
     }
+    
+
 
 }
