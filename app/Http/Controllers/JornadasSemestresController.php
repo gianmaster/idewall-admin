@@ -198,6 +198,7 @@ class JornadasSemestresController extends Controller
         $data = JornadasSemestre::with('descripcionCiclo')
             ->with('aula')
             ->with('jornada')
+            ->with('semestre')
             ->with('materiasSemestre')
             ->with('horario')
             ->find($id);

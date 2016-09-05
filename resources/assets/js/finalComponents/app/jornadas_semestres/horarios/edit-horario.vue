@@ -39,7 +39,7 @@
             <!-- Cuadro de asignacion del horarion -->
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Semestre III - Paralelo 603 Bloque C <small>(18H40 – 22H40)</small></h3>
+                    <h3 class="box-title">{{semestre.descripcion}} - {{aula.descripcion}} <small>({{jornada.aux1}} – jornada.aux2)</small></h3>
                     <div class="box-tools pull-right">
                         <!-- Buttons, labels, and many other things can be placed here! -->
                         <!-- Here is a label for example -->
@@ -118,12 +118,11 @@
 
                         </tab>
 
-
                     </tabs>
 
                 </div><!-- /.box-body -->
                 <div class="box-footer">
-                    Ciclo 2016-2017 (2)
+                    <p class="text-blue">Período {{ciclo.anio}}-{{ciclo.anio+1}} Ciclo {{ciclo.ciclo}}</p>
                 </div><!-- box-footer -->
             </div><!-- /.box -->
         </div>
@@ -212,6 +211,10 @@
         name: 'jornadaSemestreHorario',
         data(){
             return{
+                aula:{},
+                jornada:{},
+                ciclo:{},
+                semestre:{},
                 materias: [
                     {
                         nombre: 'Matematicas',
@@ -345,6 +348,10 @@
                 this.loading = true;
                 this.$http.get('api/jornadasemestre/' + this.$route.params.model_id + '/horario').then(function(resp){
                     this.materias = resp.data.data.materias_semestre;
+                    this.semestre = resp.data.data.semestre;
+                    this.aula = resp.data.data.aula;
+                    this.ciclo = resp.data.data.descripcion_ciclo;
+                    this.jornada = resp.data.data.jornada;
                 }, fnc.tryError);
             },
             addMateria(idxDia){
