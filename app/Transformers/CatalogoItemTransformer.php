@@ -27,6 +27,8 @@ class CatalogoItemTransformer extends TransformerAbstract
             'catalogo'      =>(int) $model->catalogo,
             'codigo'        => $model->codigo,
             'descripcion'   => $model->descripcion,
+            'aux1'          => $model->aux1,
+            'aux2'          => $model->aux2,
             'orden'         => $model->orden,
             'activo'        => $model->activo,
 

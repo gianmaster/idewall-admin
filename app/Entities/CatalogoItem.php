@@ -12,7 +12,7 @@ class CatalogoItem extends Model implements Transformable
 
     protected $table = 'catalogo_items';
 
-    protected $fillable = ['catalogo', 'codigo', 'descripcion', 'orden', 'activo'];
+    protected $fillable = ['catalogo', 'codigo', 'descripcion', 'aux1', 'aux2', 'orden', 'activo'];
 
     public function padre(){
         return $this->belongsTo(Catalogo::class, 'id', 'catalogo');

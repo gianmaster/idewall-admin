@@ -9,7 +9,7 @@
 	<div class="lockscreen-item">
 		<!-- lockscreen image -->
 		<div class="lockscreen-image">
-			<img src="img/user2-160x160.jpg" alt="User Image">
+			<img :src="avatar" alt="User Image">
 		</div>
 		<!-- /.lockscreen-image -->
 
@@ -61,6 +61,11 @@
 		methods: {
 			retrieveLogin: function(){
 				alert('Recuperando tu sesion');
+			}
+		},
+		data(){
+			return{
+				avatar: 'img/user2-160x160.jpg'
 			}
 		}
 	}

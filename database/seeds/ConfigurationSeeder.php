@@ -431,6 +431,8 @@ class ConfigurationSeeder extends Seeder
           'catalogo'    => $tipoJornada->id,
           'codigo'      => 'MAT',
           'descripcion' => 'Matutína',
+           'aux1'       => '08:30',
+           'aux2'       => '12:30',
           'orden'       => 1,
           'activo'      => true
         ]);
@@ -439,6 +441,8 @@ class ConfigurationSeeder extends Seeder
           'catalogo'    => $tipoJornada->id,
           'codigo'      => 'VES',
           'descripcion' => 'Vespertina',
+           'aux1'       => '14:00',
+           'aux2'       => '18:00',
           'orden'       => 2,
           'activo'      => true
         ]);
@@ -447,7 +451,9 @@ class ConfigurationSeeder extends Seeder
           'catalogo'    => $tipoJornada->id,
           'codigo'      => 'NOC',
           'descripcion' => 'Nocturna',
-          'orden'       => 2,
+           'aux1'       => '18:40',
+           'aux2'       => '22:40',
+          'orden'       => 3,
           'activo'      => true
         ]);
 
@@ -881,7 +887,7 @@ class ConfigurationSeeder extends Seeder
         //menu principal de GESTION DE CARGA HORARIA
         $menuCargaH = App\Menu::create([
             'nombre'    => 'carga_horaria',
-            'titulo'    => 'Cargas Horarias',
+            'titulo'    => 'Proceso Distributivo',
             'url'     => '/cargas_horarias',
             'iconclass'   => 'fa fa-calendar-o',
             'orden'     => 4,
@@ -894,13 +900,29 @@ class ConfigurationSeeder extends Seeder
         ]);
 
 
+        //menu materias docentes
+        $menuMateriasDocentes = App\Menu::create([
+            'nombre'    => 'materias_docentes',
+            'titulo'    => 'Materias Docentes',
+            'url'     => '/materias_docentes',
+            'iconclass'   => 'fa fa-link',
+            'orden'     => 1,
+            'cod_padre'   => $menuCargaH->id
+        ]);
+
+        App\RolMenu::create([
+            'rol' => $rolAdmin->id,
+            'menu'  => $menuMateriasDocentes->id,
+        ]);
+
+
         //menu jornadas por semestres
         $menuJornadaSemestre = App\Menu::create([
             'nombre'    => 'jornadas_semestre',
             'titulo'    => 'Jornadas Semestre',
             'url'     => '/jornadasemestres',
             'iconclass'   => 'fa fa-link',
-            'orden'     => 1,
+            'orden'     => 2,
             'cod_padre'   => $menuCargaH->id
         ]);
 
@@ -910,20 +932,7 @@ class ConfigurationSeeder extends Seeder
         ]);
 
 
-        //menu materias docentes
-        $menuMateriasDocentes = App\Menu::create([
-            'nombre'    => 'materias_docentes',
-            'titulo'    => 'Materias Docentes',
-            'url'     => '/materias_docentes',
-            'iconclass'   => 'fa fa-link',
-            'orden'     => 2,
-            'cod_padre'   => $menuCargaH->id
-        ]);
 
-        App\RolMenu::create([
-            'rol' => $rolAdmin->id,
-            'menu'  => $menuMateriasDocentes->id,
-        ]);
 
     }
 }

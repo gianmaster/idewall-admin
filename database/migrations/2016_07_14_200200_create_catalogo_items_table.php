@@ -20,7 +20,11 @@ class CreateCatalogoItemsTable extends Migration
             $table->foreign('catalogo')->references('id')->on('catalogos')->onUpdate('cascade')->onDelete('cascade');
 
             $table->string('codigo')->nullable(false);
-            $table->string('descripcion')->nullable(false);
+			$table->string('descripcion')->nullable(false);
+
+			$table->string('aux1')->default('');
+			$table->string('aux2')->default('');
+
             $table->integer('orden')->default(0);
             $table->boolean('activo')->default(true);
 

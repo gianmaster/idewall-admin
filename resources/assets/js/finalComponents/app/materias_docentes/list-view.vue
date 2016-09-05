@@ -85,12 +85,12 @@
 					hidden: false,
 					fieldClass: 'text-center',
 					itemActions: [
-					{
-						nameEmit: 'materias-docente-update-event',
-						btnClass: 'btn btn-primary btn-xs',
-						iconClass: 'fa fa-pencil',
-						label: 'Modificar',
-					}						
+						{
+							nameEmit: 'materias-docente-update-event',
+							btnClass: 'btn btn-primary btn-xs',
+							iconClass: 'fa fa-pencil',
+							label: 'Modificar',
+						}
 					]
 				}
 				],

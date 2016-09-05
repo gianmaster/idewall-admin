@@ -6,12 +6,12 @@
 		<section class="sidebar">
 			<!--
 			<div class="logo-panel">
-				<img src="img/ug/logo.png" class="img-circle" alt="Logo Universidad Image" />
+				<img :src="logo" class="img-circle" alt="Logo Universidad Image" />
 			</div>
 			-->
 			<div class="user-panel">
 				<div class="pull-left image">
-					<img src="img/ug/icon-logo-without-letters-min.png" class="img-circle" alt="Logo universidad" />
+					<img :src="logo" class="img-circle" alt="Logo universidad" />
 				</div>
 				<div class="pull-left info">
 					<p><small>UNIVERSIDAD DE GUAYAQUIL</small></p>
@@ -113,6 +113,11 @@ module.exports = {
 			type: String,
 			required:false,
 			default: 'img/user2-160x160.jpg'
+		},
+		logo:{
+			type: String,
+			required: false,
+			default: 'img/ug/icon-logo-without-letters-min.png'
 		}
 	},
 	methods: {

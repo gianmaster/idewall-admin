@@ -29,7 +29,7 @@
 			return {
 				path: ['Cargas Horarias', 'Jornadas Semestres'],
 				loading: true,
-				titulo: 'Jornadas por semestres',
+				titulo: 'Jornadas Semestres',
 				url: ''
 			}
 		}
