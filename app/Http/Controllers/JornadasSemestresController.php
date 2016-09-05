@@ -195,6 +195,15 @@ class JornadasSemestresController extends Controller
 
     public function horarioJornadaSemestre($id){
         //falta escribir el codigo
+        $data = JornadasSemestre::with('descripcionCiclo')
+            ->with('aula')
+            ->with('jornada')
+            ->with('materiasSemestre')
+            ->with('horario')
+            ->find($id);
+        
+        return response()->json(array('data' => $data));
+
     }
 
 

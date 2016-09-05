@@ -36,4 +36,12 @@ class JornadasSemestre extends Model implements Transformable
                     ->where('activo', true);
     }
 
+    public function materiasSemestre(){
+        return $this->hasMany(MallaAcademica::class, 'semestre', 'catalogo_semestre');
+    }
+
+    public function horario(){
+        return $this->hasMany(HorariosCursos::class, 'ciclo_jornada_semestre', 'id');
+    }
+
 }

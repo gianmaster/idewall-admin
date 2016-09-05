@@ -26,7 +26,10 @@
                     <hr>
                     <h4>Horas Materias <small>(Por Semana)</small></h4>
                     <ul class="list-group">
-                        <li class="list-group-item" v-for="item in materias">{{item.nombre}} - {{item.horas}}H</li>
+                        <li class="list-group-item" v-for="item in materias">
+                            <span class="text-blue">{{item.nombre_materia}}</span><br>
+                            <small>Cod: {{item.codigo_materia}} - <i>{{item.horas}}Horas</i></small>
+                        </li>
                     </ul>
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
@@ -203,6 +206,8 @@
 
     import _ from 'lodash';
 
+    import fnc from './../../../../util/reusable_functions';
+
     export default{
         name: 'jornadaSemestreHorario',
         data(){
@@ -329,8 +334,20 @@
             vSelect : VueStrap.select,
             vueTimepicker : VueTimepicker
         },
+        route: {
+            data: function(transition){
+                this.loadData();
+                transition.next();
+            }
+        },
         methods:{
-            addMateria: function(idxDia){
+            loadData(){
+                this.loading = true;
+                this.$http.get('api/jornadasemestre/' + this.$route.params.model_id + '/horario').then(function(resp){
+                    this.materias = resp.data.data.materias_semestre;
+                }, fnc.tryError);
+            },
+            addMateria(idxDia){
 
                 const materias = this.horario[idxDia].materias;
 
@@ -355,7 +372,7 @@
                 }
 
             },
-            saveMateria: function(idxDia){
+            saveMateria(idxDia){
                 const tmp = this.horario[idxDia].materiaTmp;
                 const ini = parseInt(tmp.desde.HH + tmp.desde.mm);
                 const fin = parseInt(tmp.hasta.HH + tmp.hasta.mm);
