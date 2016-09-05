@@ -3,6 +3,8 @@ import List from './list-view.vue';
 import Create from './create-view.vue';
 import Edit from './edit-view.vue';
 
+import EditHorario from './horarios/edit-horario.vue';
+
 module.exports = {
 	component: Index,
     subRoutes: {
@@ -17,6 +19,10 @@ module.exports = {
 		'/edit/:model_id' : {
 			name: 'Edición',
 			component: Edit
+		},
+		'/edit/:model_id/horario': {
+			name: ' Horario',
+			component: EditHorario
 		}
     }
 };

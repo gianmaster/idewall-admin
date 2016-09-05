@@ -60,12 +60,14 @@ Route::group(['middleware' => 'auth'], function(){
 
 		Route::resource('docentes', 'DocentesController');
 		//Route::post('docentes/materias', ['uses' => 'DocentesController@storeMaterias', 'as' => 'api.docentes.materias']);
-		Route::put('docentes/materias/{id}', ['uses' => 'DocentesController@updateMaterias', 'as' => 'api.docentes.materias']);
+
+		Route::get('ciclo', 'CiclosController@index');
+		Route::get('ciclo/{ciclo}/docentes', 'CiclosController@docentesCiclo');
+		Route::put('docentes/materias/{id}', ['uses' => 'CiclosController@updateMateriasDocenteCiclo', 'as' => 'api.docentes.materias']);
 
 		Route::resource('jornadasemestre', 'JornadasSemestresController');
 
-		Route::get('ciclo', 'CiclosController@index');
-
+		//Route::resource('ciclo.docentes.materias', 'MateriasDocentesController');
 
 	});
 

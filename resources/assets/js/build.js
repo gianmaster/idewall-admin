@@ -4,7 +4,6 @@ import VueResource from 'vue-resource';
 //import VueFilter from 'vue-filter';
 import ExternalComponents from './config/externalComponents';
 
-
 Vue.config.debug = true;
 
 //global filters

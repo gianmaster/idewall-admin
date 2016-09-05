@@ -29,8 +29,6 @@ class MateriasDocentesController extends Controller
     public function __construct(MateriasDocenteRepository $repository, MateriasDocenteValidator $validator)
     {
 
-
-
         $this->repository = $repository;
         $this->validator  = $validator;
     }
@@ -43,17 +41,24 @@ class MateriasDocentesController extends Controller
      */
     public function index()
     {
-        $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
-        $materiasDocentes = $this->repository->all();
+        $this->repository->skipPresenter();
 
-        if (request()->wantsJson()) {
+        $perPage = request()->has('per_page') ? (int) request()->per_page : 5;
 
-            return response()->json([
-                'data' => $materiasDocentes,
-            ]);
+        if (request()->has('sort')) {
+            list($sortCol, $sortDir) = explode('|', request()->sort);
+            $docentes = $this->repository
+                ->with('detalleDocente')
+                ->with('detalleMateria')
+                ->with('detalleCiclo')
+                ->orderBy($sortCol, $sortDir)
+                ->paginate($perPage);
+        } else {
+            $docentes = $this->repository->with('materias')->orderBy('id', 'asc')->paginate($perPage);
         }
 
-        return view('materiasDocentes.index', compact('materiasDocentes'));
+        return response()->json($docentes);
+
     }
 
     /**

@@ -102,11 +102,18 @@
 						},
 						*/
 						{
+							nameEmit: 'jornadasemestre-calendario-edit-event',
+							btnClass: 'btn btn-success btn-xs',
+							iconClass: 'fa fa-calendar',
+							label: 'Asignar Horario'
+						},
+						{
 							nameEmit: 'jornadasemestre-delete-event',
 							btnClass: 'btn btn-danger btn-xs',
 							iconClass: 'fa fa-close',
 							label: 'Eliminar'
 						}
+
 					]
 				}
 				],
@@ -123,6 +130,9 @@
 			},
 			'jornadasemestre-delete-event' : function(model){
 				this.destroy(model);
+			},
+			'jornadasemestre-calendario-edit-event' : function(model){
+				this.$router.go('jornadasemestres/edit/' + model.id + '/horario');
 			}
 		}
 	}

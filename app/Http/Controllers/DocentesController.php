@@ -61,9 +61,9 @@ class DocentesController extends Controller
 
         if (request()->has('sort')) {
             list($sortCol, $sortDir) = explode('|', request()->sort);
-            $docentes = $this->repository->with('materias')->orderBy($sortCol, $sortDir)->paginate($perPage);
+            $docentes = $this->repository->orderBy($sortCol, $sortDir)->paginate($perPage);
         } else {
-            $docentes = $this->repository->with('materias')->orderBy('id', 'asc')->paginate($perPage);
+            $docentes = $this->repository->orderBy('id', 'asc')->paginate($perPage);
         }
 
         return response()->json($docentes);
@@ -217,7 +217,7 @@ class DocentesController extends Controller
         if(!$request->has('materias')){
             return response()->json(array(
                 'message' => 'No existe el atributo materias',
-                'dev_message' => $e->getMessage()), 401);
+                'dev_message' => 'No se recibe el parametro materias'), 401);
         }
 
         //$materiasDocente = Docente::with('materias')->where('id', $id)->toArray();

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Entities\Ciclo;
+use App\Entities\CicloDocentes;
+use App\Entities\MateriasDocente;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -147,8 +149,93 @@ class CiclosController extends Controller
     }
 
 
+    /**
+     * @return mixed
+     */
     public static function currentCiclo(){
         return Ciclo::where('estado', 'VIGENTE')->first();
     }
+
+
+    /**
+     * @param $id_ciclo
+     * @return mixed
+     * Retorna todos los docentes del ciclo enviado por parametro con sus datos aninados o relacionados
+     */
+    public function docentesCiclo($ciclo){
+        try{
+
+            $perPage = request()->has('per_page') ? (int) request()->per_page : 5;
+
+            if (request()->has('sort')) {
+                list($sortCol, $sortDir) = explode('|', request()->sort);
+                $data = CicloDocentes::with('cicloDetail')->with('materiasDocenteCiclo')->with('docenteDetail')
+                    ->where('ciclo', $ciclo)
+                    ->orderBy($sortCol, $sortDir)
+                    ->paginate($perPage);
+            } else {
+                $data = CicloDocentes::with('cicloDetail')->with('materiasDocenteCiclo')->with('docenteDetail')
+                    ->where('ciclo', $ciclo)
+                    ->orderBy('id', 'asc')
+                    ->paginate($perPage);
+            }
+            /*
+            $data = CicloDocentes::with('cicloDetail')->with('materiasDocenteCiclo')->with('docenteDetail')
+                ->where('ciclo', $ciclo)->get();
+            */
+
+            return response()->json($data);
+
+        }catch (\Exception $e) {
+            return response()->json([
+                'error'   => true,
+                'message' => $e->getMessage()
+            ]);
+        }
+
+    }
+
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return mixed
+     * Actualizar y/o crear materias para un docente durante un ciclo
+     */
+    public function updateMateriasDocenteCiclo(Request $request, $id){
+        if(!$request->has('materias')){
+            return response()->json(array(
+                'message' => 'No existe el atributo materias',
+                'dev_message' => 'No se recibe el parametro materias'), 401);
+        }
+
+        //$materiasDocente = Docente::with('materias')->where('id', $id)->toArray();
+        $materiasDocente = MateriasDocente::where('ciclo_docente', $id)->get();
+
+        //desactivar todas las materias previo a validacion y actualizacion
+        MateriasDocente::where('ciclo_docente', $id)->update(['activo' => false]);
+
+        foreach ($request->materias as $rKey => $rValue) {
+
+            $flagUpdated = false;
+
+            foreach ($materiasDocente as $mKey => $mValue) {
+
+                if ($mValue['materia'] == $rValue['materia']) {
+                    MateriasDocente::where('id', $mValue['id'])->update(['materia' => $rValue['materia'], 'ciclo_docente' => $id, 'activo' => true]);
+                    $flagUpdated = true;
+                }
+            }
+
+            if(!$flagUpdated){
+                MateriasDocente::create(['materia' => $rValue['materia'], 'ciclo_docente' => $id]);
+            }
+
+        }
+
+        return response()->json(['data' => $materiasDocente]);
+    }
+    
+
 
 }

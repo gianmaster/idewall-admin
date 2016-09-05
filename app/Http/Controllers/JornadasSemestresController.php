@@ -193,8 +193,9 @@ class JornadasSemestresController extends Controller
     }
 
 
-
-    public function validaJornada($data){
-
+    public function horarioJornadaSemestre($id){
+        //falta escribir el codigo
     }
+
+
 }
