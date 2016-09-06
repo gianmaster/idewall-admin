@@ -5,32 +5,18 @@
             <!-- Cuadro de asignacion de docentes -->
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-users"></i> Materias - Docentes</h3>
+                    <h3 class="box-title"><i class="fa fa-book"></i> Horas Materias <small>(Por Semana)</small></h3>
                     <div class="box-tools pull-right">
-
-                        <tooltip effect="scale" placement="bottom" trigger="hover" content="Una vez seleccionado todos los docentes para este curso al hacer algun cambio en esta lista se borraran todos los avances que haya realizado en la asignación de horario. (Prudencia)">
-                        <span class="label label-primary"><i class="fa fa-info-circle"></i> Info </span></tooltip>
-
+                        <span class="label label-primary" data-toggle="tooltip" data-placement="bottom" title="Aqui va un texto de ayuda para el usuario que tiene el pensamiento de un mono pendejo"><i class="fa fa-info-circle"></i> Info </span>
                         <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     </div><!-- /.box-tools -->
                 </div><!-- /.box-header -->
                 <div class="box-body">
-                    <v-select
-                            :value.sync="docentes_materias_permitidos"
-                            :options.sync="lista_docentes_materias"
-                            multiple name="permitidos[]"
-                            :limit="maxMaterias"
-                            search justified required clear-button>
+                    <p v-for="item in materias">
+                        <span class="text-blue">{{item.nombre_materia}}</span><br>
+                        <small>Cod: {{item.codigo_materia}} - <i>{{item.horas}}Horas</i></small>
+                    </p>
 
-                    </v-select>
-                    <hr>
-                    <h4>Horas Materias <small>(Por Semana)</small></h4>
-                    <ul class="list-group">
-                        <li class="list-group-item" v-for="item in materias">
-                            <span class="text-blue">{{item.nombre_materia}}</span><br>
-                            <small>Cod: {{item.codigo_materia}} - <i>{{item.horas}}Horas</i></small>
-                        </li>
-                    </ul>
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
         </div>
@@ -39,11 +25,11 @@
             <!-- Cuadro de asignacion del horarion -->
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title">{{semestre.descripcion}} - {{aula.descripcion}} <small>({{jornada.aux1}} – jornada.aux2)</small></h3>
+                    <h3 class="box-title">{{semestre.descripcion}} - {{aula.descripcion}} <small>({{jornada.aux1}} – {{jornada.aux2}})</small></h3>
                     <div class="box-tools pull-right">
                         <!-- Buttons, labels, and many other things can be placed here! -->
                         <!-- Here is a label for example -->
-                        <span class="label label-primary"><i class="fa fa-clock-o"></i> Nocturna</span>
+                        <span :class="classJornada"><i class="fa fa-clock-o"></i> {{jornada.descripcion}}</span>
                         <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     </div><!-- /.box-tools -->
                 </div><!-- /.box-header -->
@@ -70,7 +56,7 @@
                                         {{row.hasta.HH}}H{{row.hasta.mm}}
                                     </td>
                                     <td class="td-formato">
-                                        {{row.materia}}
+                                        {{getNombreMateria(row.materia)}}
                                     </td>
                                     <td class="td-formato">
                                         <a href="javascript:;" class="text-red" data-toggle="tooltip" title="Eliminar este registro" data-placement="left"><i class="fa fa-minus-circle" @click="deleteMateria($parent.$index, $index)"></i></a>
@@ -93,7 +79,7 @@
                                         <td>
                                             <v-select
                                                     :value.sync="dia.materiaTmp.materia"
-                                                    :options.sync="docentes_materias_permitidos"
+                                                    :options.sync="lista_materias"
                                                     name="materia[]"
                                                     justified required close-on-select>
 
@@ -118,6 +104,37 @@
 
                         </tab>
 
+                        <!-- tab de asignacion de maestros -->
+                        <tab header="<span>Docentes Asignados <i class='fa fa-bookmark-o'></i></span>">
+
+                            <multiselect
+                                    :options="lista_docentes_materias"
+                                    :selected.sync="docentes_materias_permitidos"
+                                    :multiple="true"
+                                    :searchable="true"
+                                    :close-on-select="true"
+                                    :clear-on-select="false"
+                                    placeholder="Seleccione los docentes por materia"
+                                    :hide-selected="true"
+                                    label="label"
+                                    :close-on-select="true"
+                                    :max="maxMaterias"
+                                    :taggable="true"
+                                    select-label="Presione enter para seleccionar"
+                                    deselect-label="Presione enter para remover"
+                                    :limit-text="templateLimit"
+                                    key="value"></multiselect>
+                            <!--
+                            <v-select
+                                    :value.sync="docentes_materias_permitidos"
+                                    :options.sync="lista_docentes_materias"
+                                    multiple name="permitidos[]"
+                                    :limit="maxMaterias"
+                                    search justified required close-on-select clear-button>
+
+                            </v-select>
+                            -->
+                        </tab>
                     </tabs>
 
                 </div><!-- /.box-body -->
@@ -126,7 +143,6 @@
                 </div><!-- box-footer -->
             </div><!-- /.box -->
         </div>
-
         <!-- Table que muestra la asignacion del horario en formato legible -->
         <div class="col-xs-12">
             <div class="box box-success collapsed-box">
@@ -201,6 +217,8 @@
 
     import VueStrap from 'vue-strap';
 
+    import Multiselect from 'vue-multiselect';
+
     import VueTimepicker from 'vue-time-picker';
 
     import _ from 'lodash';
@@ -211,6 +229,9 @@
         name: 'jornadaSemestreHorario',
         data(){
             return{
+                templateLimit: function(count){
+                    return `y ${count} más`;
+                },
                 aula:{},
                 jornada:{},
                 ciclo:{},
@@ -244,15 +265,15 @@
                 horario:[
                     {
                         title: 'Lunes',
-                        materias: [
+                        materias: [/*
                             {
                                 materia: 1,
                                 desde: {HH: '18', mm: '40'},
                                 hasta: {HH: '20', mm: '00'}
                             }
-                        ],
+                        */],
                         materiaTmp:{
-                            materia: 1,
+                            materia: null,
                             desde: {HH: '18', mm: '40'},
                             hasta: {HH: '20', mm: '00'}
                         },
@@ -294,6 +315,7 @@
                         materiasDisponible: []
                     }
                 ],
+                lista_materias: [],
                 lista_docentes_materias: [
                     {
                         value : 1,
@@ -326,7 +348,12 @@
         },
         computed: {
             tabsEnable: function(){
-                return this.docentes_materias_permitidos.length != this.maxMaterias;
+                return false;
+            },
+            classJornada: function(){
+                //bg-navy color-palette
+                const val = this.jornada.codigo;
+                return (val == 'MAT' ? 'bg-primary' : val == 'NOC' ? 'bg-navy' : 'bg-orange') + ' color-palette label';
             }
         },
         components: {
@@ -335,7 +362,8 @@
             tab: VueStrap.tab,
             tooltip : VueStrap.tooltip,
             vSelect : VueStrap.select,
-            vueTimepicker : VueTimepicker
+            vueTimepicker : VueTimepicker,
+            multiselect: Multiselect
         },
         route: {
             data: function(transition){
@@ -352,6 +380,9 @@
                     this.aula = resp.data.data.aula;
                     this.ciclo = resp.data.data.descripcion_ciclo;
                     this.jornada = resp.data.data.jornada;
+                    this.horas_limite = {min: this.jornada.aux1, max: this.jornada.aux2};
+                    this.formateaListaMaterias(resp.data.data.materias_semestre);
+                    this.formateaDocenteMaterias(resp.data.materias_docentes_disponibles); //formate la data de docentes y materias anidados
                 }, fnc.tryError);
             },
             addMateria(idxDia){
@@ -416,12 +447,36 @@
                 };
             },
             deleteMateria(idxDia, idxRow){
-                console.log(idxDia, idxRow);
                 if(confirm('Atención, sí existen registros despúes de este, serán eliminados. ¿Estás seguro? ')){
                     this.horario[idxDia].materias.splice(idxRow, 99);//elimida desde el indice hasta el 99 si existe
                 }
+            },
+            formateaDocenteMaterias(data){
+                this.lista_docentes_materias = [];
+                for(let idx in data){
+                    const {abreviatura, nombres, apellidos, semestre, ciclo_materia_docente, nombre_materia, codigo_materia} = data[idx];
+                    this.lista_docentes_materias.push({
+                        value: ciclo_materia_docente,
+                        label: `${codigo_materia} - ${nombres} ${apellidos}`
+                    });
+                }
+            },
+            formateaListaMaterias(data){
+                this.lista_materias = [];
+                for(let idx in data){
+                    const {nombre_materia, id, codigo_materia} = data[idx];
+                    this.lista_materias.push({
+                        value: id,
+                        label: `${codigo_materia} - ${nombre_materia}`
+                    });
+                }
+            },
+            getNombreMateria: function(idMateria){
+                if(this.lista_materias.length > 0){
+                    return _.filter(this.lista_materias, {value: idMateria})[0].label;
+                }
+                return idMateria;
             }
-
         }
     }
 

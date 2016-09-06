@@ -203,7 +203,7 @@ class JornadasSemestresController extends Controller
             ->with('horario')
             ->find($id);
         
-        return response()->json(array('data' => $data));
+        return response()->json(array('data' => $data, 'materias_docentes_disponibles' => $data->materiasDocentesQry()));
 
     }
 
