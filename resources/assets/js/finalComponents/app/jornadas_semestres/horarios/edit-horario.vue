@@ -26,7 +26,10 @@
                     <hr>
                     <h4>Horas Materias <small>(Por Semana)</small></h4>
                     <ul class="list-group">
-                        <li class="list-group-item" v-for="item in materias">{{item.nombre}} - {{item.horas}}H</li>
+                        <li class="list-group-item" v-for="item in materias">
+                            <span class="text-blue">{{item.nombre_materia}}</span><br>
+                            <small>Cod: {{item.codigo_materia}} - <i>{{item.horas}}Horas</i></small>
+                        </li>
                     </ul>
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
@@ -36,7 +39,7 @@
             <!-- Cuadro de asignacion del horarion -->
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Semestre III - Paralelo 603 Bloque C <small>(18H40 – 22H40)</small></h3>
+                    <h3 class="box-title">{{semestre.descripcion}} - {{aula.descripcion}} <small>({{jornada.aux1}} – jornada.aux2)</small></h3>
                     <div class="box-tools pull-right">
                         <!-- Buttons, labels, and many other things can be placed here! -->
                         <!-- Here is a label for example -->
@@ -115,12 +118,11 @@
 
                         </tab>
 
-
                     </tabs>
 
                 </div><!-- /.box-body -->
                 <div class="box-footer">
-                    Ciclo 2016-2017 (2)
+                    <p class="text-blue">Período {{ciclo.anio}}-{{ciclo.anio+1}} Ciclo {{ciclo.ciclo}}</p>
                 </div><!-- box-footer -->
             </div><!-- /.box -->
         </div>
@@ -203,10 +205,16 @@
 
     import _ from 'lodash';
 
+    import fnc from './../../../../util/reusable_functions';
+
     export default{
         name: 'jornadaSemestreHorario',
         data(){
             return{
+                aula:{},
+                jornada:{},
+                ciclo:{},
+                semestre:{},
                 materias: [
                     {
                         nombre: 'Matematicas',
@@ -329,8 +337,24 @@
             vSelect : VueStrap.select,
             vueTimepicker : VueTimepicker
         },
+        route: {
+            data: function(transition){
+                this.loadData();
+                transition.next();
+            }
+        },
         methods:{
-            addMateria: function(idxDia){
+            loadData(){
+                this.loading = true;
+                this.$http.get('api/jornadasemestre/' + this.$route.params.model_id + '/horario').then(function(resp){
+                    this.materias = resp.data.data.materias_semestre;
+                    this.semestre = resp.data.data.semestre;
+                    this.aula = resp.data.data.aula;
+                    this.ciclo = resp.data.data.descripcion_ciclo;
+                    this.jornada = resp.data.data.jornada;
+                }, fnc.tryError);
+            },
+            addMateria(idxDia){
 
                 const materias = this.horario[idxDia].materias;
 
@@ -355,7 +379,7 @@
                 }
 
             },
-            saveMateria: function(idxDia){
+            saveMateria(idxDia){
                 const tmp = this.horario[idxDia].materiaTmp;
                 const ini = parseInt(tmp.desde.HH + tmp.desde.mm);
                 const fin = parseInt(tmp.hasta.HH + tmp.hasta.mm);

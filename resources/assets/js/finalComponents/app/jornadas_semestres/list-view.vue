@@ -132,7 +132,7 @@
 				this.destroy(model);
 			},
 			'jornadasemestre-calendario-edit-event' : function(model){
-				this.$router.go('jornadasemestres/edit/' + model.id + '/horario');
+				this.$router.go('jornadasemestres/horario/' + model.id);
 			}
 		}
 	}

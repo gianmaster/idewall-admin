@@ -1,9 +1,9 @@
 <template>
 	<div class="lockscreen-logo">
-		<a href="#"><i class="fa fa-lock fa-3x"></i><!--<b>Admin</b>LTE</a>-->
+		<a href="#"><i class="fa fa-lock fa-3x"></i><!--<b>Admin</b>LTE--></a>
 	</div>
 	<!-- User name -->
-	<div class="lockscreen-name">Giancarlos Cercado</div>
+	<div class="lockscreen-name">{{name}}</div>
 
 	<!-- START LOCK SCREEN ITEM -->
 	<div class="lockscreen-item">
@@ -16,8 +16,7 @@
 		<!-- lockscreen credentials (contains the form) -->
 		<form class="lockscreen-credentials" @submit.prevent="retrieveLogin">
 			<div class="input-group">
-				<input type="password" class="form-control" placeholder="password">
-
+				<input type="password" class="form-control" placeholder="password" name="password" id="pass" required>
 				<div class="input-group-btn">
 					<button type="submit" class="btn"><i class="fa fa-arrow-right text-muted"></i></button>
 				</div>
@@ -56,16 +55,41 @@
 </style>
 
 <script>
+
+	var fnc = require('../../util/reusable_functions.js');
+
 	export default {
 		name: 'lockscreen',
+		route: {
+			data: function(transition){
+				this.loadProfile();
+				transition.next();
+			}
+		},
 		methods: {
 			retrieveLogin: function(){
-				alert('Recuperando tu sesion');
+				this.$http.post(this.urlLogin, {
+					email: this.email,
+					password: document.querySelector('#pass').value
+				}).then(function(resp){
+					fnc.niceAlert('success', 'Su sesión vuelve a estar activa');
+					this.$router.go('/');
+				}, fnc.tryError);
+			},
+			loadProfile: function(){
+				const profile = this.$parent.$parent.profile;
+				this.name = profile.name;
+				this.email = profile.email;
+				this.avatar = profile.avatar;
+				this.name = profile.name;
 			}
 		},
 		data(){
 			return{
-				avatar: 'img/user2-160x160.jpg'
+				name: 'Giancarlos Cercado',
+				avatar: 'img/user2-160x160.jpg',
+				email: 'giancarloscercado@gmail.com',
+				urlLogin: 'login'
 			}
 		}
 	}

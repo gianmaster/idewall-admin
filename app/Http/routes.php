@@ -17,6 +17,11 @@ Route::get('/', function () {
 });
 */
 
+//para pruebas con metodos protegidos a travez de postman
+Route::get('csrf', function() {
+	return Session::token();
+});
+
 Route::group(['domain' => '{user}.ug_laravel_vue.dev'], function ($user) {
 	Route::get('/', function ($user) {
 		return 'hola '.$user;
@@ -66,6 +71,8 @@ Route::group(['middleware' => 'auth'], function(){
 		Route::put('docentes/materias/{id}', ['uses' => 'CiclosController@updateMateriasDocenteCiclo', 'as' => 'api.docentes.materias']);
 
 		Route::resource('jornadasemestre', 'JornadasSemestresController');
+
+		Route::get('jornadasemestre/{jornadasemestre}/horario', 'JornadasSemestresController@horarioJornadaSemestre');
 
 		//Route::resource('ciclo.docentes.materias', 'MateriasDocentesController');
 

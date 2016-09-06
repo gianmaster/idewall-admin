@@ -20,7 +20,7 @@ module.exports = {
 			name: 'Edición',
 			component: Edit
 		},
-		'/edit/:model_id/horario': {
+		'/horario/:model_id': {
 			name: ' Horario',
 			component: EditHorario
 		}
