@@ -59,7 +59,7 @@
                                 </thead>
                                 <tbody>
                                 <tr v-for="row in dia.materias">
-                                    
+
                                     <td class="td-formato">
                                         {{row.desde.HH}}H{{row.desde.mm}}
                                     </td>
