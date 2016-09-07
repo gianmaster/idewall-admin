@@ -17,9 +17,17 @@ Route::get('/', function () {
 });
 */
 
-//para pruebas con metodos protegidos a travez de postman
-Route::get('csrf', function() {
-	return Session::token();
+Route::get('query/{ciclojornadasemestre}', function($ciclojornadasemestre){
+	$result = DB::select("select d.abreviatura, d.nombres, d.apellidos, ma.semestre, cmd.id ciclo_materia_docente, ma.nombre_materia, ma.codigo_materia, ma.id id_materia
+      from docentes d, ciclo_docentes cd, malla_academica ma, ciclo_materias_docente cmd, jornadas_semestres js
+      where js.id = $ciclojornadasemestre
+            AND js.ciclo = cd.ciclo
+            AND cd.docente = d.id
+            AND cmd.ciclo_docente = cd.id
+            and cmd.materia = ma.id
+            AND ma.semestre = js.catalogo_semestre");
+
+	return response()->json(array('data' => $result));
 });
 
 Route::group(['domain' => '{user}.ug_laravel_vue.dev'], function ($user) {

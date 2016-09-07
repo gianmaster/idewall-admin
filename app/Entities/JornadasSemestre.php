@@ -3,6 +3,7 @@
 namespace App\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -37,11 +38,22 @@ class JornadasSemestre extends Model implements Transformable
     }
 
     public function materiasSemestre(){
-        return $this->hasMany(MallaAcademica::class, 'semestre', 'catalogo_semestre');
+        return $this->hasMany(MallaAcademica::class, 'semestre', 'catalogo_semestre')->where('estado', 'VIGENTE');
     }
 
     public function horario(){
         return $this->hasMany(HorariosCursos::class, 'ciclo_jornada_semestre', 'id');
+    }
+
+    public function materiasDocentesQry(){
+        return DB::select("select d.abreviatura, d.nombres, d.apellidos, ma.semestre, cmd.id ciclo_materia_docente, ma.nombre_materia, ma.codigo_materia, ma.id id_materia
+      from docentes d, ciclo_docentes cd, malla_academica ma, ciclo_materias_docente cmd, jornadas_semestres js
+      where js.id = $this->id
+            AND js.ciclo = cd.ciclo
+            AND cd.docente = d.id
+            AND cmd.ciclo_docente = cd.id
+            and cmd.materia = ma.id
+            AND ma.semestre = js.catalogo_semestre");
     }
 
 }
