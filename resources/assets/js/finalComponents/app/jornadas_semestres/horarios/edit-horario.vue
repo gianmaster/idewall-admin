@@ -5,9 +5,9 @@
             <!-- Cuadro de asignacion de docentes -->
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-book"></i> Horas Materias <small>(Por Semana)</small></h3>
+                    <h3 class="box-title"><i class="fa fa-book"></i> Horas Materias <small>Semanales</small></h3>
                     <div class="box-tools pull-right">
-                        <span class="label label-primary" data-toggle="tooltip" data-placement="bottom" title="Aqui va un texto de ayuda para el usuario que tiene el pensamiento de un mono pendejo"><i class="fa fa-info-circle"></i> Info </span>
+                        <a v-link="{path:'/jornadasemestres'}" class="btn btn-default btn-xs"><i class="fa fa-reply"></i> Volver</a>
                         <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     </div><!-- /.box-tools -->
                 </div><!-- /.box-header -->
@@ -16,8 +16,10 @@
                         <span class="text-blue">{{item.nombre_materia}}</span><br>
                         <small>Cod: {{item.codigo_materia}} - <i>{{item.horas}}Horas</i></small>
                     </p>
-
                 </div><!-- /.box-body -->
+                <div class="box-footer">
+                    <p class="text-green">Período {{ciclo.anio}}-{{ciclo.anio+1}} Ciclo {{ciclo.ciclo}}</p>
+                </div>
             </div><!-- /.box -->
         </div>
 
@@ -114,43 +116,19 @@
                                 </button-group>
                             </div>
 
-
-                            <!--
-                            <multiselect
-                                    :options="lista_docentes_materias"
-                                    :selected.sync="ciclo_docentes"
-                                    :multiple="true"
-                                    :searchable="true"
-                                    :close-on-select="true"
-                                    :clear-on-select="false"
-                                    placeholder="Seleccione los docentes por materia"
-                                    :hide-selected="true"
-                                    label="label"
-                                    :close-on-select="true"
-                                    :max="maxMaterias"
-                                    :taggable="true"
-                                    select-label="Presione enter para seleccionar"
-                                    deselect-label="Presione enter para remover"
-                                    :limit-text="templateLimit"
-                                    @select="onChangeDocentesSelect"
-                                    key="value"></multiselect>
-                                    -->
-                            <!--
-                            <v-select
-                                    :value.sync="docentes_materias_permitidos"
-                                    :options.sync="lista_docentes_materias"
-                                    multiple name="permitidos[]"
-                                    :limit="maxMaterias"
-                                    search justified required close-on-select clear-button>
-
-                            </v-select>
-                            -->
                         </tab>
                     </tabs>
 
                 </div><!-- /.box-body -->
-                <div class="box-footer">
-                    <p class="text-blue">Período {{ciclo.anio}}-{{ciclo.anio+1}} Ciclo {{ciclo.ciclo}}</p>
+
+                <div class="box-footer" v-show="!horarioHabilidato">
+
+                    <div class="alert alert-danger" role="alert" >
+                        <strong>Alerta!</strong>
+                        <p>No hay los suficientes docentes para cubrir todas las materias de este curso.Para distribuir las materias de los docentes de click <a v-link="{path: '/materias_docentes'}">aquí</a>
+                        </p>
+                    </div>
+
                 </div><!-- box-footer -->
             </div><!-- /.box -->
         </div>
@@ -342,6 +320,9 @@
                 //bg-navy color-palette
                 const val = this.jornada.codigo;
                 return (val == 'MAT' ? 'bg-primary' : val == 'NOC' ? 'bg-navy' : 'bg-orange') + ' color-palette label';
+            },
+            horarioHabilidato: function(){
+                return this.lista_materias.length == _.size(this.grupo_materias_docentes);
             }
         },
         components: {
@@ -351,7 +332,6 @@
             tooltip : VueStrap.tooltip,
             vSelect : VueStrap.select,
             vueTimepicker : VueTimepicker,
-            multiselect: Multiselect,
             radio : VueStrap.radio,
             buttonGroup : VueStrap.buttonGroup
         },
@@ -367,6 +347,7 @@
                 this.$http.get('api/jornadasemestre/' + this.$route.params.model_id + '/horario').then(function(resp){
                     this.materias = resp.data.data.materias_semestre;
                     this.maxMaterias = resp.data.data.materias_semestre.length;
+                    this.initDocentesSeleccionados(resp.data.data.materias_semestre);
                     this.semestre = resp.data.data.semestre;
                     this.aula = resp.data.data.aula;
                     this.ciclo = resp.data.data.descripcion_ciclo;
@@ -376,6 +357,11 @@
                     this.formateaListaMaterias(resp.data.data.materias_semestre);
                     this.formateaDocenteMaterias(resp.data.materias_docentes_disponibles); //formate la data de docentes y materias anidados
                 }, fnc.tryError);
+            },
+            initDocentesSeleccionados(data){
+                for(let i in data){
+                    this.docentes_seleccionados.push(null);
+                }
             },
             addMateria(idxDia){
 
@@ -463,7 +449,7 @@
                     });
                 }
             },
-            getNombreMateria: function(idMateria){
+            getNombreMateria(idMateria){
                 if(this.lista_materias.length > 0){
                     return _.filter(this.lista_materias, {value: idMateria})[0].label;
                 }

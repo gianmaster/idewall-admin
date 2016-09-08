@@ -46,14 +46,16 @@ class JornadasSemestre extends Model implements Transformable
     }
 
     public function materiasDocentesQry(){
-        return DB::select("select d.abreviatura, d.nombres, d.apellidos, ma.semestre, cmd.id ciclo_materia_docente, ma.nombre_materia, ma.codigo_materia, ma.id id_materia
+        return DB::select("select d.abreviatura, d.nombres, d.apellidos, ma.semestre, cmd.id ciclo_materia_docente, ma.nombre_materia, ma.codigo_materia, ma.id id_materia, ma.estado estado_materia
       from docentes d, ciclo_docentes cd, malla_academica ma, ciclo_materias_docente cmd, jornadas_semestres js
       where js.id = $this->id
             AND js.ciclo = cd.ciclo
             AND cd.docente = d.id
             AND cmd.ciclo_docente = cd.id
             and cmd.materia = ma.id
-            AND ma.semestre = js.catalogo_semestre");
+            AND ma.semestre = js.catalogo_semestre
+            AND ma.estado = 'VIGENTE'
+            ");
     }
 
 }
