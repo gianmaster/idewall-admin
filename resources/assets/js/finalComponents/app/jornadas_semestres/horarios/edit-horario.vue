@@ -345,16 +345,17 @@
             loadData(){
                 this.loading = true;
                 this.$http.get('api/jornadasemestre/' + this.$route.params.model_id + '/horario').then(function(resp){
-                    this.materias = resp.data.data.materias_semestre;
-                    this.maxMaterias = resp.data.data.materias_semestre.length;
-                    this.initDocentesSeleccionados(resp.data.data.materias_semestre);
+                    const materias = resp.data.data.catalogo_jornada == 'ESP' ? resp.data.data.materias_especiales_semestre : resp.data.data.materias_normales_semestre;
+                    this.materias = materias;
+                    this.maxMaterias = materias.length;
+                    this.initDocentesSeleccionados(materias);
                     this.semestre = resp.data.data.semestre;
                     this.aula = resp.data.data.aula;
                     this.ciclo = resp.data.data.descripcion_ciclo;
                     this.jornada = resp.data.data.jornada;
                     this.grupo_materias_docentes = _.groupBy(resp.data.materias_docentes_disponibles, 'nombre_materia');
                     this.horas_limite = {min: this.jornada.aux1, max: this.jornada.aux2};
-                    this.formateaListaMaterias(resp.data.data.materias_semestre);
+                    this.formateaListaMaterias(materias);
                     this.formateaDocenteMaterias(resp.data.materias_docentes_disponibles); //formate la data de docentes y materias anidados
                 }, fnc.tryError);
             },

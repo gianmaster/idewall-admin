@@ -20,7 +20,9 @@ class CreateMallaAcademicasTable extends Migration
 			$table->string('nombre_materia')->nullable(false);
 			$table->string('semestre')->nullable(false);
 			$table->integer('horas')->nullable(false);
-			$table->enum('estado', ['VIGENTE', 'INACTIVO', 'NO_CALCULABLE'])->nullable(false);
+			$table->enum('tipo_materia', ['BASICA', 'PROFESIONAL', 'GENERAL', 'OPTATIVA']);
+			$table->enum('tipo_asignacion', ['NORMAL', 'ESPECIAL']);
+			$table->enum('estado', ['ACTIVO', 'INACTIVO'])->nullable(false);
 
             $table->timestamps();
 		});

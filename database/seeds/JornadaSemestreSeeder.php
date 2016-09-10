@@ -73,5 +73,64 @@ class JornadaSemestreSeeder extends Seeder
             'catalogo_aula'     => 'A56',
             'catalogo_jornada'  => 'NOC',
         ]);
+
+        //jornadas especiales
+        JornadasSemestre::create([
+            'ciclo'             => $ciclo->id,
+            'catalogo_semestre' => 'SEM1',
+            'catalogo_aula'     => 'A56',
+            'catalogo_jornada'  => 'ESP',
+        ]);
+
+        JornadasSemestre::create([
+            'ciclo'             => $ciclo->id,
+            'catalogo_semestre' => 'SEM2',
+            'catalogo_aula'     => 'A56',
+            'catalogo_jornada'  => 'ESP',
+        ]);
+
+        JornadasSemestre::create([
+            'ciclo'             => $ciclo->id,
+            'catalogo_semestre' => 'SEM3',
+            'catalogo_aula'     => 'A56',
+            'catalogo_jornada'  => 'ESP',
+        ]);
+
+        JornadasSemestre::create([
+            'ciclo'             => $ciclo->id,
+            'catalogo_semestre' => 'SEM4',
+            'catalogo_aula'     => 'A56',
+            'catalogo_jornada'  => 'ESP',
+        ]);
+
+
+        JornadasSemestre::create([
+            'ciclo'             => $ciclo->id,
+            'catalogo_semestre' => 'SEM5',
+            'catalogo_aula'     => 'A56',
+            'catalogo_jornada'  => 'ESP',
+        ]);
+
+        JornadasSemestre::create([
+            'ciclo'             => $ciclo->id,
+            'catalogo_semestre' => 'SEM6',
+            'catalogo_aula'     => 'A56',
+            'catalogo_jornada'  => 'ESP',
+        ]);
+
+        JornadasSemestre::create([
+            'ciclo'             => $ciclo->id,
+            'catalogo_semestre' => 'SEM7',
+            'catalogo_aula'     => 'A56',
+            'catalogo_jornada'  => 'ESP',
+        ]);
+
+        JornadasSemestre::create([
+            'ciclo'             => $ciclo->id,
+            'catalogo_semestre' => 'SEM8',
+            'catalogo_aula'     => 'A56',
+            'catalogo_jornada'  => 'ESP',
+        ]);
+
     }
 }

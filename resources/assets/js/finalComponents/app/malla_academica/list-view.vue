@@ -121,6 +121,18 @@
 						sortable: true
 					},
 					{
+						title: 'Tipo',
+						field: 'tipo_materia',
+						hidden: false,
+						sortable: true
+					},
+					{
+						title: 'Asignación',
+						field: 'tipo_asignacion',
+						hidden: false,
+						sortable: true
+					},
+					{
 						title: 'Estado',
 						field: 'estado',
 						hidden: false,

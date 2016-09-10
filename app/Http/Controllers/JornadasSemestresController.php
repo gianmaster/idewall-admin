@@ -199,7 +199,8 @@ class JornadasSemestresController extends Controller
             ->with('aula')
             ->with('jornada')
             ->with('semestre')
-            ->with('materiasSemestre')
+            ->with('materiasNormalesSemestre')
+            ->with('materiasEspecialesSemestre')
             ->with('horario')
             ->find($id);
         

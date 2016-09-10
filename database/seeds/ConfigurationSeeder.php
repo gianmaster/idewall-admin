@@ -447,14 +447,24 @@ class ConfigurationSeeder extends Seeder
           'activo'      => true
         ]);
 
-       App\Entities\CatalogoItem::create([
-          'catalogo'    => $tipoJornada->id,
-          'codigo'      => 'NOC',
-          'descripcion' => 'Nocturna',
-           'aux1'       => '18:40',
-           'aux2'       => '22:40',
-          'orden'       => 3,
-          'activo'      => true
+        App\Entities\CatalogoItem::create([
+            'catalogo'    => $tipoJornada->id,
+            'codigo'      => 'NOC',
+            'descripcion' => 'Nocturna',
+            'aux1'       => '18:40',
+            'aux2'       => '22:40',
+            'orden'       => 3,
+            'activo'      => true
+        ]);
+
+        App\Entities\CatalogoItem::create([
+            'catalogo'    => $tipoJornada->id,
+            'codigo'      => 'ESP',
+            'descripcion' => 'Especial',
+            'aux1'       => '07:30',
+            'aux2'       => '22:00',
+            'orden'       => 3,
+            'activo'      => true
         ]);
 
        $menuTipoJornada = App\Menu::create([
@@ -477,7 +487,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Contabilidad Básica',
             'codigo_materia'    => '101',
             'horas'             => 8,
-            'estado'            => 'VIGENTE',
+            'estado'            => 'ACTIVO',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'NORMAL',
             'semestre'          => 'SEM1',
         ]);
 
@@ -485,7 +497,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Matemáticas Aplicadas',
             'codigo_materia'    => '102',
             'horas'             => 8,
-            'estado'            => 'VIGENTE',
+            'estado'            => 'ACTIVO',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'NORMAL',
             'semestre'          => 'SEM1',
         ]);
 
@@ -493,7 +507,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Derecho I',
             'codigo_materia'    => '106',
             'horas'             => 4,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM1',
         ]);
 
@@ -501,7 +517,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Computación I',
             'codigo_materia'    => '108',
             'horas'             => 2,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'ESPECIAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM1',
         ]);
 
@@ -509,7 +527,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Ingles I',
             'codigo_materia'    => '109',
             'horas'             => 3,
-            'estado'            => 'NO_CALCULABLE',
+            'tipo_materia'      => 'GENERAL',
+            'tipo_asignacion'   => 'ESPECIAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM1',
         ]);
 
@@ -517,7 +537,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Metodología de la Investigación I',
             'codigo_materia'    => '107',
             'horas'             => 4,
-            'estado'            => 'NO_CALCULABLE',
+            'tipo_materia'      => 'GENERAL',
+            'tipo_asignacion'   => 'ESPECIAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM1',
         ]);
 
@@ -526,7 +548,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Contabilidad Intermadia',
             'codigo_materia'    => '201',
             'horas'             => 8,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM2',
         ]);
 
@@ -534,7 +558,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Matemáticas Financieras I',
             'codigo_materia'    => '202',
             'horas'             => 8,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM2',
         ]);
 
@@ -542,7 +568,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Derecho II',
             'codigo_materia'    => '206',
             'horas'             => 4,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM2',
         ]);
 
@@ -550,7 +578,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Computación II',
             'codigo_materia'    => '208',
             'horas'             => 2,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'ESPECIAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM2',
         ]);
 
@@ -558,7 +588,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Ingles II',
             'codigo_materia'    => '209',
             'horas'             => 3,
-            'estado'            => 'NO_CALCULABLE',
+            'tipo_materia'      => 'GENERAL',
+            'tipo_asignacion'   => 'ESPECIAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM2',
         ]);
 
@@ -567,7 +599,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Contabilidad de Costos y Administrativa',
             'codigo_materia'    => '301',
             'horas'             => 9,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM3',
         ]);
 
@@ -575,7 +609,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Estadística I',
             'codigo_materia'    => '302',
             'horas'             => 5,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM3',
         ]);
 
@@ -583,7 +619,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Derecho III',
             'codigo_materia'    => '303',
             'horas'             => 4,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM3',
         ]);
 
@@ -591,7 +629,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Organización Computacional',
             'codigo_materia'    => '304',
             'horas'             => 3,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'PROFESIONAL',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM3',
         ]);
 
@@ -599,7 +639,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Ingles III',
             'codigo_materia'    => '309',
             'horas'             => 3,
-            'estado'            => 'NO_CALCULABLE',
+            'tipo_materia'      => 'GENERAL',
+            'tipo_asignacion'   => 'ESPECIAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM3',
         ]);
 
@@ -607,7 +649,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Computación III',
             'codigo_materia'    => '308',
             'horas'             => 3,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'ESPECIAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM3',
         ]);
 
@@ -616,7 +660,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Estadística II',
             'codigo_materia'    => '401',
             'horas'             => 5,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM4',
         ]);
 
@@ -624,7 +670,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Micro y Macro',
             'codigo_materia'    => '402',
             'horas'             => 4,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM4',
         ]);
 
@@ -632,7 +680,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Programación I',
             'codigo_materia'    => '403',
             'horas'             => 5,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'PROFESIONAL',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM4',
         ]);
 
@@ -640,7 +690,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Arquitectura Computacional',
             'codigo_materia'    => '404',
             'horas'             => 5,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'PROFESIONAL',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM4',
         ]);
 
@@ -648,7 +700,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Ingles IV',
             'codigo_materia'    => '409',
             'horas'             => 3,
-            'estado'            => 'NO_CALCULABLE',
+            'tipo_materia'      => 'GENERAL',
+            'tipo_asignacion'   => 'ESPECIAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM4',
         ]);
 
@@ -656,7 +710,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Computación IV',
             'codigo_materia'    => '408',
             'horas'             => 3,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'ESPECIAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM4',
         ]);
 
@@ -664,7 +720,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Mantenimiento de Computadoras',
             'codigo_materia'    => '405',
             'horas'             => 2,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'PROFESIONAL',
+            'tipo_asignacion'   => 'ESPECIAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM4',
         ]);
 
@@ -673,7 +731,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Administración de Empresas',
             'codigo_materia'    => '501',
             'horas'             => 5,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM5',
         ]);
 
@@ -681,7 +741,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Negociación y solución de conflictos',
             'codigo_materia'    => '502',
             'horas'             => 3,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM5',
         ]);
 
@@ -689,7 +751,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Programación II',
             'codigo_materia'    => '503',
             'horas'             => 5,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'PROFESIONAL',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM5',
         ]);
 
@@ -697,7 +761,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Redes Computacionales',
             'codigo_materia'    => '504',
             'horas'             => 4,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'PROFESIONAL',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM5',
         ]);
 
@@ -705,7 +771,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Análisis y Diseño de Sistemas',
             'codigo_materia'    => '505',
             'horas'             => 3,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'PROFESIONAL',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM5',
         ]);
 
@@ -713,7 +781,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Ingles V',
             'codigo_materia'    => '509',
             'horas'             => 3,
-            'estado'            => 'NO_CALCULABLE',
+            'tipo_materia'      => 'GENERAL',
+            'tipo_asignacion'   => 'ESPECIAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM5',
         ]);
 
@@ -721,7 +791,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Comutación V',
             'codigo_materia'    => '508',
             'horas'             => 2,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'ESPECIAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM5',
         ]);
 
@@ -729,7 +801,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Emprendedores',
             'codigo_materia'    => '506',
             'horas'             => 3,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'ESPECIAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM5',
         ]);
 
@@ -738,7 +812,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Administración Financiera I',
             'codigo_materia'    => '601',
             'horas'             => 8,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM6',
         ]);
 
@@ -746,7 +822,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Estructura de Datos',
             'codigo_materia'    => '602',
             'horas'             => 4,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'PROFESIONAL',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM6',
         ]);
 
@@ -754,7 +832,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Punto Net',
             'codigo_materia'    => '603',
             'horas'             => 4,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'PROFESIONAL',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM6',
         ]);
 
@@ -762,7 +842,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Base de Datos',
             'codigo_materia'    => '604',
             'horas'             => 4,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'PROFESIONAL',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM6',
         ]);
 
@@ -770,7 +852,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Ingles VI',
             'codigo_materia'    => '609',
             'horas'             => 3,
-            'estado'            => 'NO_CALCULABLE',
+            'tipo_materia'      => 'GENERAL',
+            'tipo_asignacion'   => 'ESPECIAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM6',
         ]);
 
@@ -781,7 +865,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Administración Financiera II',
             'codigo_materia'    => '701',
             'horas'             => 6,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM7',
         ]);
 
@@ -789,7 +875,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Sistemas de Información Gerencial',
             'codigo_materia'    => '702',
             'horas'             => 3,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM7',
         ]);
 
@@ -797,7 +885,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Programación Orientada a Objetos',
             'codigo_materia'    => '703',
             'horas'             => 4,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'PROFESIONAL',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM7',
         ]);
 
@@ -805,7 +895,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Auditoria de Sistemas',
             'codigo_materia'    => '704',
             'horas'             => 3,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'PROFESIONAL',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM7',
         ]);
 
@@ -813,7 +905,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'E-BUSSINESS',
             'codigo_materia'    => '705',
             'horas'             => 3,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'PROFESIONAL',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM7',
         ]);
 
@@ -821,7 +915,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Ingles VII',
             'codigo_materia'    => '709',
             'horas'             => 3,
-            'estado'            => 'NO_CALCULABLE',
+            'tipo_materia'      => 'GENERAL',
+            'tipo_asignacion'   => 'ESPECIAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM7',
         ]);
 
@@ -829,7 +925,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Comutación VI',
             'codigo_materia'    => '708',
             'horas'             => 2,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'ESPECIAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM7',
         ]);
 
@@ -839,7 +937,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Banca y Mercado de Valores',
             'codigo_materia'    => '801',
             'horas'             => 5,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM8',
         ]);
 
@@ -847,23 +947,40 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Planeación Estratégica',
             'codigo_materia'    => '802',
             'horas'             => 5,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'BASICA',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM8',
         ]);
 
         App\Entities\MallaAcademica::create([
-            'nombre_materia'    => 'OPTATIVA',
+            'nombre_materia'    => 'Organización y Métodos',
             'codigo_materia'    => '805',
             'horas'             => 4,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'OPTATIVA',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM8',
         ]);
+
+        App\Entities\MallaAcademica::create([
+            'nombre_materia'    => 'Organización y Métodos',
+            'codigo_materia'    => '805',
+            'horas'             => 4,
+            'tipo_materia'      => 'OPTATIVA',
+            'tipo_asignacion'   => 'ESPECIAL',
+            'estado'            => 'ACTIVO',
+            'semestre'          => 'SEM8',
+        ]);
+
 
         App\Entities\MallaAcademica::create([
             'nombre_materia'    => 'Tecnología de la Información',
             'codigo_materia'    => '803',
             'horas'             => 3,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'PROFESIONAL',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM8',
         ]);
 
@@ -871,7 +988,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Administración de Redes Sociales',
             'codigo_materia'    => '804',
             'horas'             => 3,
-            'estado'            => 'VIGENTE',
+            'tipo_materia'      => 'PROFESIONAL',
+            'tipo_asignacion'   => 'NORMAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM8',
         ]);
 
@@ -879,7 +998,9 @@ class ConfigurationSeeder extends Seeder
             'nombre_materia'    => 'Ingles VIII',
             'codigo_materia'    => '809',
             'horas'             => 3,
-            'estado'            => 'NO_CALCULABLE',
+            'tipo_materia'      => 'GENERAL',
+            'tipo_asignacion'   => 'ESPECIAL',
+            'estado'            => 'ACTIVO',
             'semestre'          => 'SEM8',
         ]);
 

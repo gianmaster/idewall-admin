@@ -30,6 +30,8 @@ class MallaAcademicaTransformer extends TransformerAbstract
             'horas'         => $model->horas,
             'estado'        => $model->estado,
             'docentes'      => $model->docentes,
+            'tipo_materia'  => $model->tipo_materia,
+            'tipo_asignacion'=> $model->tipo_asignacion,
             'silabos'       => $model->silabos,
 
             'created_at' => (string)$model->created_at,

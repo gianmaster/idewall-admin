@@ -37,8 +37,16 @@ class JornadasSemestre extends Model implements Transformable
                     ->where('activo', true);
     }
 
-    public function materiasSemestre(){
-        return $this->hasMany(MallaAcademica::class, 'semestre', 'catalogo_semestre')->where('estado', 'VIGENTE');
+    public function materiasNormalesSemestre(){
+        return $this->hasMany(MallaAcademica::class, 'semestre', 'catalogo_semestre')
+            ->where('tipo_asignacion', 'NORMAL')
+            ->where('estado', 'ACTIVO');
+    }
+
+    public function materiasEspecialesSemestre(){
+        return $this->hasMany(MallaAcademica::class, 'semestre', 'catalogo_semestre')
+            ->where('tipo_asignacion', 'ESPECIAL')
+            ->where('estado', 'ACTIVO');
     }
 
     public function horario(){
@@ -46,6 +54,7 @@ class JornadasSemestre extends Model implements Transformable
     }
 
     public function materiasDocentesQry(){
+        $tipo_asignacion = $this->catalogo_jornada == 'ESP' ? 'ESPECIAL' : 'NORMAL';
         return DB::select("select d.abreviatura, d.nombres, d.apellidos, ma.semestre, cmd.id ciclo_materia_docente, ma.nombre_materia, ma.codigo_materia, ma.id id_materia, ma.estado estado_materia
       from docentes d, ciclo_docentes cd, malla_academica ma, ciclo_materias_docente cmd, jornadas_semestres js
       where js.id = $this->id
@@ -54,7 +63,8 @@ class JornadasSemestre extends Model implements Transformable
             AND cmd.ciclo_docente = cd.id
             and cmd.materia = ma.id
             AND ma.semestre = js.catalogo_semestre
-            AND ma.estado = 'VIGENTE'
+            AND ma.tipo_asignacion = '$tipo_asignacion'
+            AND ma.estado = 'ACTIVO'
             ");
     }
 
