@@ -12,12 +12,12 @@
                     </div><!-- /.box-tools -->
                 </div><!-- /.box-header -->
                 <div class="box-body">
-                    <p v-for="item in materias">
+                    <p v-dragable-for="item in materias" options='{"group":"people"}' @drag="onDragMateria($event, item)" class="__is_draggable">
                         <span class="text-blue">{{item.nombre_materia}}</span><br>
                         <small>Cod: {{item.codigo_materia}} - <i>{{item.horas}}Horas</i></small>
                     </p>
                 </div><!-- /.box-body -->
-                <div class="box-footer">
+                <div class="box-footer" @dragover.prevent @drop="onDropMateria">
                     <p class="text-green">Período {{ciclo.anio}}-{{ciclo.anio+1}} Ciclo {{ciclo.ciclo}}</p>
                 </div>
             </div><!-- /.box -->
@@ -38,19 +38,21 @@
                 <div class="box-body">
 
                     <tabs>
-                        <tab v-for="dia in horario" :header="dia.title" :disabled.sync="tabsEnable">
-                            <table class="table" v-if="!tabsEnable">
+                        <tab v-for="dia in horario" :header="dia.title" :disabled="tabsEnable($index)">
+                            <table class="table">
                                 <thead>
                                 <tr>
+                                    <td class="td-formato"><strong>Materia</strong></td>
                                     <td class="td-formato"><strong>Desde</strong></td>
                                     <td class="td-formato"><strong>Hasta</strong></td>
-                                    <td class="td-formato"><strong>Materia</strong></td>
                                     <td class="td-formato" width="10%"><a href="javascript:;" class="text-green" title="Agregar registro" data-toggle="tooltip" data-placement="left" @click="addMateria($index)" v-show="!dia.modoAgregar"><i class="fa fa-plus-circle"></i> </a></td>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr v-for="row in dia.materias">
-
+                                    <td class="td-formato">
+                                        {{getNombreMateria(row.materia)}}
+                                    </td>
                                     <td class="td-formato">
                                         {{row.desde.HH}}H{{row.desde.mm}}
                                     </td>
@@ -58,27 +60,24 @@
                                         {{row.hasta.HH}}H{{row.hasta.mm}}
                                     </td>
                                     <td class="td-formato">
-                                        {{getNombreMateria(row.materia)}}
-                                    </td>
-                                    <td class="td-formato">
                                         <a href="javascript:;" class="text-red" data-toggle="tooltip" title="Eliminar este registro" data-placement="left"><i class="fa fa-minus-circle" @click="deleteMateria($parent.$index, $index)"></i></a>
                                     </td>
                                 </tr>
+
+                                <tr v-if="dia.materias.length <= 0">
+                                    <td colspan="4">
+                                        <div class="text-center">
+                                            <p>No se há asiginado aún horario para este día</p>
+                                        </div>
+                                    </td>
+                                </tr>
+
                                 </tbody>
                                 <tfoot v-if="dia.modoAgregar">
-                                    <tr>
-                                        <td class="td-formato">
-                                            <span style="font-size: 1.26em;">
-                                                {{dia.materiaTmp.desde.HH}}:{{dia.materiaTmp.desde.mm}}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <vue-timepicker format="HH:mm"
-                                                            :minute-interval="10"
-                                                            :time-value.sync="dia.materiaTmp.hasta">
-                                            </vue-timepicker>
-                                        </td>
-                                        <td>
+                                <tr>
+                                    <td colspan="4">
+                                        <div class="col-xs-4 text-center dropzone" @dragover.prevent @drop="onDropMateria($event, dia.materiaTmp)" @dragleave="onMateriaLeave" @dragenter="onMateriaEnter">
+                                            <!--
                                             <v-select
                                                     :value.sync="dia.materiaTmp.materia"
                                                     :options.sync="lista_materias"
@@ -86,8 +85,25 @@
                                                     justified required close-on-select>
 
                                             </v-select>
-                                        </td>
-                                        <td>
+                                            -->
+
+                                            <template v-if="dia.materiaTmp.materia">
+                                                {{getNombreMateria(dia.materiaTmp.materia)}}
+                                            </template>
+
+                                        </div>
+                                        <div class="col-xs-3 text-center">
+                                            <span style="font-size: 1.26em;">
+                                                {{dia.materiaTmp.desde.HH}}:{{dia.materiaTmp.desde.mm}}
+                                            </span>
+                                        </div>
+                                        <div class="col-xs-3 text-center">
+                                            <vue-timepicker format="HH:mm"
+                                                            :minute-interval="10"
+                                                            :time-value.sync="dia.materiaTmp.hasta">
+                                            </vue-timepicker>
+                                        </div>
+                                        <div class="col-xs-2 text-center">
                                             <div class="btn-group">
                                                 <a href="javascript:;" class="btn btn-success btn-xs" @click="saveMateria($index)">
                                                     <i data-toggle="tooltip" class="fa fa-check" title="Guardar"></i>
@@ -96,13 +112,13 @@
                                                     <i data-toggle="tooltip" class="fa fa-close" title="Cancelar"></i>
                                                 </a>
                                             </div>
-                                        </td>
-                                    </tr>
+                                        </div>
+                                    </td>
+                                </tr>
+
                                 </tfoot>
 
                             </table>
-
-                            <p v-else class="text-red">No se puede mostrar esta sección, por favor seleccione los docentes.</p>
 
                         </tab>
 
@@ -121,15 +137,6 @@
 
                 </div><!-- /.box-body -->
 
-                <div class="box-footer" v-show="!horarioHabilidato">
-
-                    <div class="alert alert-danger" role="alert" >
-                        <strong>Alerta!</strong>
-                        <p>No hay los suficientes docentes para cubrir todas las materias de este curso.Para distribuir las materias de los docentes de click <a v-link="{path: '/materias_docentes'}">aquí</a>
-                        </p>
-                    </div>
-
-                </div><!-- box-footer -->
             </div><!-- /.box -->
         </div>
         <!-- Table que muestra la asignacion del horario en formato legible -->
@@ -187,6 +194,19 @@
 </template>
 <style>
 
+    .__is_draggable{
+        cursor: move;
+    }
+
+    .dropzone{
+        border: 1px dashed #a7cdbc;
+        height: 2.15em;
+        color: #7797aa;
+    }
+    .enter-item{
+        background: #e2ebe7;
+    }
+
     .td-formato{
         text-align: center;
     }
@@ -225,28 +245,7 @@
                 jornada:{},
                 ciclo:{},
                 semestre:{},
-                materias: [
-                    {
-                        nombre: 'Matematicas',
-                        horas: '5'
-                    },
-                    {
-                        nombre: 'Programacion',
-                        horas: '5'
-                    },
-                    {
-                        nombre: 'Base de Datos',
-                        horas: '5'
-                    },
-                    {
-                        nombre: 'Derecho I',
-                        horas: '4'
-                    },
-                    {
-                        nombre: 'Contabilidad',
-                        horas: '5'
-                    }
-                ],
+                materias: [],
                 horas_limite:{
                     min: '18:40',
                     max: '22:40'
@@ -298,7 +297,7 @@
                     },
                     {
                         title: 'Sábado',
-                        horario: [],
+                        materias: [],
                         materiaTmp:{},
                         modoAgregar: false,
                         materiasDisponible: []
@@ -308,21 +307,23 @@
                 lista_docentes_materias: [],
                 ciclo_docentes:[],
                 maxMaterias: 4,
+                current_materia_to_drop: [],
                 grupo_materias_docentes:[],
                 docentes_seleccionados:[]
             }
         },
         computed: {
-            tabsEnable: function(){
-                return false;
-            },
             classJornada: function(){
                 //bg-navy color-palette
                 const val = this.jornada.codigo;
-                return (val == 'MAT' ? 'bg-primary' : val == 'NOC' ? 'bg-navy' : 'bg-orange') + ' color-palette label';
+                return (val == 'MAT' ?
+                                'bg-primary' :
+                                    val == 'NOC' ? 'bg-navy' :
+                                            val == 'VES' ? 'bg-orange' :
+                                                    'bg-purple') + ' color-palette label';
             },
-            horarioHabilidato: function(){
-                return this.lista_materias.length == _.size(this.grupo_materias_docentes);
+            esHorarioNormal: function(){
+                return this.jornada.codigo != 'ESP';
             }
         },
         components: {
@@ -342,6 +343,25 @@
             }
         },
         methods:{
+            tabsEnable(idx){
+                return (this.jornada.codigo != 'ESP' && idx == 5); //index 5 del dia sabado
+            },
+            onDropMateria(ev, bindingModel){
+                console.log(bindingModel, ev);
+                bindingModel = this.current_materia_to_drop.codigo_materia;
+                alert('has soltado la materia ' + this.current_materia_to_drop.nombre_materia);
+                this.current_materia_to_drop = null;
+            },
+            onDragMateria(ev, item){
+                this.current_materia_to_drop = item;
+            },
+            onMateriaLeave(ev){
+                ev.target.classList.remove('enter-item');
+                console.log('salio del campo');
+            },
+            onMateriaEnter(ev){
+                ev.target.classList.add('enter-item');
+            },
             loadData(){
                 this.loading = true;
                 this.$http.get('api/jornadasemestre/' + this.$route.params.model_id + '/horario').then(function(resp){

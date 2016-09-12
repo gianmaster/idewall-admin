@@ -4,6 +4,10 @@ import VueResource from 'vue-resource';
 //import VueFilter from 'vue-filter';
 import ExternalComponents from './config/externalComponents';
 
+//directivas para hacer drag and drop
+import VueDragableFor from 'vuedragablefor';
+Vue.use(VueDragableFor);
+
 Vue.config.debug = true;
 
 //global filters

@@ -70,7 +70,7 @@
 					field: 'jornada',
 					hidden: false,
 					sortable: false,
-					template: '<span class="text-${col.catalogo_jornada=="MAT"?"aqua":col.catalogo_jornada=="VES"?"yellow":"light-blue"}">${col.jornada.descripcion} </span>'
+					template: '<span class="color-palette label ${col.catalogo_jornada=="MAT"?"bg-primary":col.catalogo_jornada=="VES"?"bg-orange":col.catalogo_jornada=="NOC"?"bg-navy":"bg-purple"}"> <i class="fa fa-clock-o"></i> ${col.jornada.descripcion} </span>'
 
 				},
 				{
