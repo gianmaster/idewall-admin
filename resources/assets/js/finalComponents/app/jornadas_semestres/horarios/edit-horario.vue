@@ -18,7 +18,7 @@
                     </p>
                 </div><!-- /.box-body -->
                 <div class="box-footer" @dragover.prevent @drop="onDropMateria">
-                    <p class="text-green">Período {{ciclo.anio}}-{{ciclo.anio+1}} Ciclo {{ciclo.ciclo}}</p>
+                    <p class="text-green">Arrastre las materias para agregar el horario</p>
                 </div>
             </div><!-- /.box -->
         </div>
@@ -76,7 +76,7 @@
                                 <tfoot v-if="dia.modoAgregar">
                                 <tr>
                                     <td colspan="4">
-                                        <div class="col-xs-4 text-center dropzone" @dragover.prevent @drop="onDropMateria($event, dia.materiaTmp)" @dragleave="onMateriaLeave" @dragenter="onMateriaEnter">
+                                        <div class="col-xs-4 text-center dropzone" @dragover.prevent @drop="onDropMateria($event, dia)" @dragleave="onMateriaLeave" @dragenter="onMateriaEnter">
                                             <!--
                                             <v-select
                                                     :value.sync="dia.materiaTmp.materia"
@@ -88,7 +88,7 @@
                                             -->
 
                                             <template v-if="dia.materiaTmp.materia">
-                                                {{getNombreMateria(dia.materiaTmp.materia)}}
+                                                {{getNombreMateria(dia.materiaTmp.materia)}} <i @click="onRemoveMateriaDropped(dia)" class="fa fa-close"></i>
                                             </template>
 
                                         </div>
@@ -130,8 +130,12 @@
                                 <button-group :value.sync="docentes_seleccionados[$index]" type="info" buttons="false">
                                     <radio v-for="item in row" :value="item.ciclo_materia_docente">{{item.nombres}} {{item.apellidos}}</radio>
                                 </button-group>
+
                             </div>
 
+                            <hr>
+                            <button class="btn btn-success">GUARDAR</button>
+                            
                         </tab>
                     </tabs>
 
@@ -204,7 +208,7 @@
         color: #7797aa;
     }
     .enter-item{
-        background: #e2ebe7;
+        border: 2px dashed #279664;
     }
 
     .td-formato{
@@ -346,11 +350,13 @@
             tabsEnable(idx){
                 return (this.jornada.codigo != 'ESP' && idx == 5); //index 5 del dia sabado
             },
-            onDropMateria(ev, bindingModel){
-                console.log(bindingModel, ev);
-                bindingModel = this.current_materia_to_drop.codigo_materia;
-                alert('has soltado la materia ' + this.current_materia_to_drop.nombre_materia);
+            onDropMateria(ev, dia){
+                dia.materiaTmp.materia = this.current_materia_to_drop.id;
+                //alert('has soltado la materia ' + this.current_materia_to_drop.nombre_materia);
                 this.current_materia_to_drop = null;
+            },
+            onRemoveMateriaDropped(dia){
+                dia.materiaTmp.materia = null;
             },
             onDragMateria(ev, item){
                 this.current_materia_to_drop = item;
