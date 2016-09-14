@@ -14,7 +14,7 @@
                 <div class="box-body">
                     <p v-dragable-for="item in materias" options='{"group":"people"}' @drag="onDragMateria($event, item)" class="__is_draggable">
                         <span class="text-blue">{{item.nombre_materia}}</span><br>
-                        <small>Cod: {{item.codigo_materia}} - <i>{{item.horas}}Horas</i> <sup class="text-green">Asig. {{item.total}}</sup></small>
+                        <small>Cod: {{item.codigo_materia}} - <i>{{item.horas}}Horas</i> <sup class="text-green pull-right">Asigado. {{item.total}}</sup></small>
                     </p>
                 </div><!-- /.box-body -->
                 <div class="box-footer" @dragover.prevent @drop="onDropMateria">
