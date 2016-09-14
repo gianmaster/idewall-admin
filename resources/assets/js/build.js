@@ -13,6 +13,9 @@ Vue.config.debug = true;
 //global filters
 //Vue.use(VueFilter);
 
+import moment from 'moment';
+window.moment = moment;
+
 // install router
 Vue.use(VueResource);
 Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#csrf_token').getAttribute('value');
