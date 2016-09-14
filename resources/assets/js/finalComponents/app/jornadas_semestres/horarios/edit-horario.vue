@@ -93,9 +93,17 @@
 
                                         </div>
                                         <div class="col-xs-3 text-center">
-                                            <span style="font-size: 1.26em;">
-                                                {{dia.materiaTmp.desde.HH}}:{{dia.materiaTmp.desde.mm}}
-                                            </span>
+                                            <template v-if="jornada.codigo == 'ESP'">
+                                                <vue-timepicker format="HH:mm"
+                                                                :minute-interval="10"
+                                                                :time-value.sync="dia.materiaTmp.desde">
+                                                </vue-timepicker>
+                                            </template>
+                                            <template v-else>
+                                                <span style="font-size: 1.26em;">
+                                                    {{dia.materiaTmp.desde.HH}}:{{dia.materiaTmp.desde.mm}}
+                                                </span>
+                                            </template>
                                         </div>
                                         <div class="col-xs-3 text-center">
                                             <vue-timepicker format="HH:mm"
@@ -135,7 +143,7 @@
 
                             <hr>
                             <button class="btn btn-success">GUARDAR</button>
-                            
+
                         </tab>
                     </tabs>
 
@@ -261,7 +269,8 @@
                             {
                                 materia: 1,
                                 desde: {HH: '18', mm: '40'},
-                                hasta: {HH: '20', mm: '00'}
+                                hasta: {HH: '20', mm: '00'},
+                                total: '01:20'
                             }
                         */],
                         materiaTmp:{
@@ -428,7 +437,8 @@
                             this.horario[idxDia].materias.push({
                                 materia: tmp.materia,
                                 desde: tmp.desde,
-                                hasta: tmp.hasta
+                                hasta: tmp.hasta,
+                                total: fnc.restarHoras(`${tmp.desde.HH}:${tmp.desde.mm}`, `${tmp.hasta.HH}:${tmp.hasta.mm}`)
                             });
                             this.horario[idxDia].modoAgregar = false;
                             this.clearMateria(idxDia);

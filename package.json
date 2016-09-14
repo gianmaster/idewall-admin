@@ -23,5 +23,8 @@
     "vue-strap": "^1.1.7",
     "vue-time-picker": "^0.2.2",
     "vuedragablefor": "^1.0.9"
+  },
+  "dependencies": {
+    "moment": "^2.15.0"
   }
 }
