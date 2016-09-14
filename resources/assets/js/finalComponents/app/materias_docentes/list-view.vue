@@ -41,6 +41,9 @@
 
 	import myMixins from './mixins';
 
+	const tagL = "<span class='color-palette label bg-primary'>";
+	const tagR = "</span>";
+
 	export default {
 		mixins: [myMixins],
 		route: {
@@ -77,8 +80,8 @@
 					field: 'materias',
 					hidden: false,
 					sortable: false,
-					template: '${col.materias_docente_ciclo.map(function(ele){return ele.materia_detail.nombre_materia;}).join(", ")}'
-				},
+					template: '${col.materias_docente_ciclo.map(function(ele){return "'+tagL+'"+ele.materia_detail.nombre_materia+"'+tagR+'";}).join(" ")}'
+				},//color-palette label bg-navy
 				{
 					title: 'Gestionar Materias',
 					titleClass: 'text-center',
@@ -87,14 +90,14 @@
 					itemActions: [
 						{
 							nameEmit: 'materias-docente-update-event',
-							btnClass: 'btn btn-primary btn-xs',
+							btnClass: 'btn btn-success btn-xs',
 							iconClass: 'fa fa-pencil',
-							label: 'Modificar',
+							label: 'Modificar'
 						}
 					]
 				}
 				],
-				loading: false,
+				loading: false
 			}
 		},
 		components: {

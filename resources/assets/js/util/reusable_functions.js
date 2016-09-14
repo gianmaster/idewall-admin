@@ -92,11 +92,12 @@ export default {
 			horas = "0" + horas;
 		}
 
-		if (horas.length < 2) {
-			horas = "0" + horas;
+		if (minutos.length < 2) {
+			horas = "0" + minutos;
 		}
 
 		return horas+":"+minutos;
 
 	}
+	
 }

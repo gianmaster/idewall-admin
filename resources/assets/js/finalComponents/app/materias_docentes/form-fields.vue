@@ -5,16 +5,16 @@
 			<label>Docente: <span class="__user">{{docente}}</span></label>
 			<multiselect
 			:options="options"
-			  :selected.sync="selected"
+			:selected="selected"
 			  :multiple="true"
 			  :searchable="true"
-			  :close-on-select="true"
 			  :clear-on-select="false"
-			  placeholder="Hasta 3 materias"
+			  placeholder="Máx. 4 materias"
 			  :hide-selected="true"
 			  label="desc"
 			  :close-on-select="true"
 			  :max="4"
+			@update="updateMultiSelect"
 			  :taggable="true"
 			  select-label="Presione enter para seleccionar"
 			  deselect-label="Presione enter para remover"
@@ -49,6 +49,12 @@
 				return `${abreviatura}. ${nombres} ${apellidos}`;
 			}
 		},
+
+		methods: {
+			updateMultiSelect(values){
+				this.selected = values;
+			}
+		},
 		
 		components: {
 			'multiselect': Multiselect
@@ -59,7 +65,8 @@
 				type: Array,
 				default: function(){
 					return [];
-				}
+				},
+				twoWay: true
 			},
 			dataModel: {
 				type: Object,

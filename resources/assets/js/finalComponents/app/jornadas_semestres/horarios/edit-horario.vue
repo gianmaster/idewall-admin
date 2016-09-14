@@ -14,7 +14,7 @@
                 <div class="box-body">
                     <p v-dragable-for="item in materias" options='{"group":"people"}' @drag="onDragMateria($event, item)" class="__is_draggable">
                         <span class="text-blue">{{item.nombre_materia}}</span><br>
-                        <small>Cod: {{item.codigo_materia}} - <i>{{item.horas}}Horas</i></small>
+                        <small>Cod: {{item.codigo_materia}} - <i>{{item.horas}}Horas</i> <sup class="text-green">Asig. {{item.total}}</sup></small>
                     </p>
                 </div><!-- /.box-body -->
                 <div class="box-footer" @dragover.prevent @drop="onDropMateria">
@@ -246,6 +246,8 @@
 
     import fnc from './../../../../util/reusable_functions';
 
+    import util from '../jornadas_semestre_util';
+
     export default{
         name: 'jornadaSemestreHorario',
         data(){
@@ -381,7 +383,12 @@
                 this.loading = true;
                 this.$http.get('api/jornadasemestre/' + this.$route.params.model_id + '/horario').then(function(resp){
                     const materias = resp.data.data.catalogo_jornada == 'ESP' ? resp.data.data.materias_especiales_semestre : resp.data.data.materias_normales_semestre;
-                    this.materias = materias;
+                    this.materias = [];
+                    for(let ma of materias){
+                        let materia = ma;
+                        materia.total = "00:00";
+                        this.materias.push(materia);
+                    }
                     this.maxMaterias = materias.length;
                     this.initDocentesSeleccionados(materias);
                     this.semestre = resp.data.data.semestre;
@@ -440,6 +447,9 @@
                                 hasta: tmp.hasta,
                                 total: fnc.restarHoras(`${tmp.desde.HH}:${tmp.desde.mm}`, `${tmp.hasta.HH}:${tmp.hasta.mm}`)
                             });
+                            //agregar el calculo de horas
+                            this.actualizaCalculoMaterias(tmp.materia);
+                            //fin de agregar el calculo al total
                             this.horario[idxDia].modoAgregar = false;
                             this.clearMateria(idxDia);
                         }else{
@@ -494,11 +504,24 @@
             },
             onChangeDocentesSelect(action){
                 console.log(action);
+            },
+            actualizaCalculoMaterias: function(idMateria){
+                const idxMat = _.findIndex(this.materias, {id: idMateria});
+                let hora = '00:00';
+                for(let dia of this.horario){
+                    for(let mat of dia.materias){
+                        if(typeof mat.materia !== 'undefined'){
+                            if(mat.materia == idMateria){
+                                hora = fnc.sumarHoras(hora, mat.total);
+                            }
+                        }
+                    }
+                }
+                this.materias[idxMat].total = hora;
             }
+
         }
     }
 
 </script>
-
-
 
