@@ -17,7 +17,7 @@ elixir(mix => {
     mix.sass('app.scss')
         .webpack('build.js');
     mix.browserSync({
-        proxy: 'http://ug_laravel_vue.dev/'
+        proxy: 'http://localhost:88/admin_lte/public'
     });
 });
 /*
