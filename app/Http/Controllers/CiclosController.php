@@ -208,7 +208,7 @@ class CiclosController extends Controller
                 'message' => 'No existe el atributo materias',
                 'dev_message' => 'No se recibe el parametro materias'), 401);
         }
-
+        
         //$materiasDocente = Docente::with('materias')->where('id', $id)->toArray();
         $materiasDocente = MateriasDocente::where('ciclo_docente', $id)->get();
 
