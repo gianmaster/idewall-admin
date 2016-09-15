@@ -14,7 +14,7 @@
                 <div class="box-body">
                     <p v-dragable-for="item in materias" options='{"group":"people"}' @drag="onDragMateria($event, item)" class="__is_draggable">
                         <span class="text-blue">{{item.nombre_materia}}</span><br>
-                        <small>Cod: {{item.codigo_materia}} - <i>{{item.horas}}Horas</i> <sup class="text-green pull-right">Asigado. {{item.total}}</sup></small>
+                        <small>Cod: {{item.codigo_materia}} - <i>{{item.horas}}Horas</i></small><span class="btn-success badge pull-right">{{item.total}}</span>
                     </p>
                 </div><!-- /.box-body -->
                 <div class="box-footer" @dragover.prevent @drop="onDropMateria">
@@ -142,6 +142,7 @@
                             </div>
 
                             <hr>
+                            <p class="text-info">Debe seleccionar los docentes por materia para poder guardar los cambios</p>
                             <button class="btn btn-success">GUARDAR</button>
 
                         </tab>
@@ -208,6 +209,11 @@
 
     .__is_draggable{
         cursor: move;
+    }
+    .__is_draggable:hover{
+        background: #f4f8f6;
+        padding: 0 1%;
+        border: dashed 1px #74ce74;
     }
 
     .dropzone{
