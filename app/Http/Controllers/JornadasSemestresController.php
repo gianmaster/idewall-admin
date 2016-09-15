@@ -7,6 +7,7 @@ use App\Entities\JornadasSemestre;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\DB;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Http\Requests\JornadasSemestreCreateRequest;
@@ -193,6 +194,11 @@ class JornadasSemestresController extends Controller
     }
 
 
+    /**
+     * @param $id
+     * @return mixed
+     * Method Get
+     */
     public function horarioJornadaSemestre($id){
         //falta escribir el codigo
         $data = JornadasSemestre::with('descripcionCiclo')
@@ -205,6 +211,33 @@ class JornadasSemestresController extends Controller
             ->find($id);
         
         return response()->json(array('data' => $data, 'materias_docentes_disponibles' => $data->materiasDocentesQry()));
+
+    }
+
+    /**
+     * @param $id
+     * Method Post
+     * Guarda un horario
+     */
+    public function saveHorarioJornadaSemestre(Request $request, $id){
+        try{
+            $req = $request->only(['horario']);
+
+            //1.- Eliminar los registros existentes para el id
+            $delete = JornadasSemestre::where('ciclo_jornada_semestre', $id)->delete();
+            //2.-Armar los campos a guardar
+            $data = array();
+            //3.hacer un bulk insert
+            $resp = DB::table('horarios_cursos')->insert($data);
+
+            return response()->json(array('data' => $resp));
+
+        }catch (\Exception $e) {
+            return response()->json([
+                'error'   => true,
+                'message' => $e->getMessage()
+            ], 500);
+        }
 
     }
 

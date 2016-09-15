@@ -133,17 +133,27 @@
                         <!-- tab de asignacion de maestros -->
                         <tab header="<span>Docentes Asignados <i class='fa fa-bookmark'></i></span>">
 
-                            <div v-for="(key, row) in grupo_materias_docentes">
-                                <h5 class="text-green">{{key}}</h5>
-                                <button-group :value.sync="docentes_seleccionados[$index]" type="info" buttons="false">
-                                    <radio v-for="item in row" :value="item.ciclo_materia_docente">{{item.nombres}} {{item.apellidos}}</radio>
-                                </button-group>
+                            <form action="" @submit.prevent="guardarHorario">
 
-                            </div>
+                                <div v-for="(key, row) in grupo_materias_docentes">
+                                    <h5 class="text-green">{{key}}</h5>
+                                    <button-group :value.sync="docentes_seleccionados[$index]" type="info" buttons="false">
+                                        <radio v-for="item in row" :value="{id_cmd: item.ciclo_materia_docente, id_mat: item.id_materia}">{{item.nombres}} {{item.apellidos}}</radio>
+                                    </button-group>
 
-                            <hr>
-                            <p class="text-info">Debe seleccionar los docentes por materia para poder guardar los cambios</p>
-                            <button class="btn btn-success">GUARDAR</button>
+                                </div>
+
+                                <hr>
+
+                                <p class="text-info">Debe seleccionar los docentes por materia para poder guardar los cambios.</p>
+                                <template v-if="guardarDisponible">
+                                    <button class="btn btn-success" type="submit">GUARDAR</button>
+                                </template>
+                                <template v-else>
+                                    <button class="btn btn-success" type="submit" disabled>GUARDAR</button>
+                                </template>
+
+                            </form>
 
                         </tab>
                     </tabs>
@@ -152,6 +162,16 @@
 
             </div><!-- /.box -->
         </div>
+
+        <!-- Alerta que indica si es posible asignar el horario -->
+        <div class="col-xs-12">
+            <div v-show="!creacionHorario" class="alert alert-warning alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong>Precaución!</strong> Existen materias en este semestre que aún no han sido asignadas a un docente. Por favor asigne las materias a los docentes respectivamente para no tener fallos en el sistema.
+                <a v-link="{path: '/materias_docentes'}">Link - Materias Docentes </a>
+            </div>
+        </div>
+
         <!-- Table que muestra la asignacion del horario en formato legible -->
         <div class="col-xs-12">
             <div class="box box-success collapsed-box">
@@ -273,6 +293,7 @@
                 horario:[
                     {
                         title: 'Lunes',
+                        name: 'LUNES',
                         materias: [/*
                             {
                                 materia: 1,
@@ -291,6 +312,7 @@
                     },
                     {
                         title: 'Martes',
+                        name: 'MARTES',
                         materias: [],
                         materiaTmp:{},
                         modoAgregar: false,
@@ -298,6 +320,7 @@
                     },
                     {
                         title: 'Miércole',
+                        name: 'MIERCOLES',
                         materias: [],
                         materiaTmp:{},
                         modoAgregar: false,
@@ -305,12 +328,14 @@
                     },
                     {
                         title: 'Jueves',
+                        name: 'JUEVES',
                         materias: [],
                         materiaTmp:{},
                         modoAgregar: false,
                         materiasDisponible: []
                     },{
                         title: 'Viernes',
+                        name: 'VIERNES',
                         materias: [],
                         materiaTmp:{},
                         modoAgregar: false,
@@ -318,6 +343,7 @@
                     },
                     {
                         title: 'Sábado',
+                        name: 'SABADO',
                         materias: [],
                         materiaTmp:{},
                         modoAgregar: false,
@@ -345,6 +371,12 @@
             },
             esHorarioNormal: function(){
                 return this.jornada.codigo != 'ESP';
+            },
+            guardarDisponible: function(){
+                return this.maxMaterias == _.filter(this.docentes_seleccionados, function(item){return item != null;}).length;
+            },
+            creacionHorario: function(){
+                return this.maxMaterias == _.toArray(this.grupo_materias_docentes).length;
             }
         },
         components: {
@@ -485,9 +517,9 @@
             formateaDocenteMaterias(data){
                 this.lista_docentes_materias = [];
                 for(let idx in data){
-                    const {abreviatura, nombres, apellidos, semestre, ciclo_materia_docente, nombre_materia, codigo_materia} = data[idx];
+                    const {abreviatura, nombres, apellidos, semestre, id_materia, ciclo_materia_docente, nombre_materia, codigo_materia} = data[idx];
                     this.lista_docentes_materias.push({
-                        value: {ciclo_materia_docente, codigo_materia},
+                        value: {ciclo_materia_docente, codigo_materia, id_materia},
                         label: `${codigo_materia} - ${nombres} ${apellidos}`
                     });
                 }
@@ -524,6 +556,19 @@
                     }
                 }
                 this.materias[idxMat].total = hora;
+            },
+            guardarHorario(){
+                /*
+                let dataToSend = [];
+                for(let dia of this.horario){
+                    for(let materia of dia.materias){
+                        dataToSend.push({
+                            ciclo_materia_docente: _.materia.materia
+                        });
+                    }
+                }
+                */
+                fnc.niceAlert('info', 'Se envia a guardar los datos');
             }
 
         }
