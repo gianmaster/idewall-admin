@@ -426,6 +426,7 @@
                 ev.target.classList.add('enter-item');
             },
             loadData(){
+                this.id_jornada_semestre = this.$route.params.model_id;
                 this.loading = true;
                 this.$http.get('api/jornadasemestre/' + this.$route.params.model_id + '/horario').then(function(resp){
                     const materias = resp.data.data.catalogo_jornada == 'ESP' ? resp.data.data.materias_especiales_semestre : resp.data.data.materias_normales_semestre;
@@ -573,11 +574,12 @@
                     for(let materia of dia.materias){
                         dataToSend.push({
                             ciclo_materia_docente: _.filter(this.docentes_seleccionados, {id_mat:materia.materia})[0].id_cmd,
-                            ciclo_jornada_semestre: this.jornada.id,
+                            ciclo_jornada_semestre: this.id_jornada_semestre,
                             dia: dia.name,
                             hora_inicio: `${materia.desde.HH}:${materia.desde.mm}`,
                             hora_fin: `${materia.hasta.HH}:${materia.hasta.mm}`
                         });
+                        console.log(dataToSend, 'data a enviar');
                     }
                 }
 

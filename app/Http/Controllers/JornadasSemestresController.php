@@ -226,10 +226,7 @@ class JornadasSemestresController extends Controller
             $request->only('horario');
             $data = $request['horario'];
             //1.- Eliminar los registros existentes para el id
-            $toDelete = HorariosCursos::where('ciclo_jornada_semestre', $id);
-            if($toDelete->get()){
-                $toDelete->delete();
-            }
+            $delete = HorariosCursos::where('ciclo_jornada_semestre', $id)->delete();
             //2.hacer un bulk insert
             $resp = DB::table('horarios_cursos')->insert($data);
 
