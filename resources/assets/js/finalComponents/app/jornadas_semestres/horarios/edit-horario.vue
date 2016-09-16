@@ -1,6 +1,10 @@
 <template>
 
-    <div class="row">
+    <div v-if="loading">
+        <app-loading></app-loading>
+    </div>
+
+    <div v-else class="row">
         <div class="col-xs-12 col-sm-4">
             <!-- Cuadro de asignacion de docentes -->
             <div class="box box-primary">
@@ -274,6 +278,8 @@
 
     import util from '../jornadas_semestre_util';
 
+    import Loading from '../../../reusable/loading.vue';
+
     export default{
         name: 'jornadaSemestreHorario',
         data(){
@@ -356,7 +362,8 @@
                 maxMaterias: 4,
                 current_materia_to_drop: [],
                 grupo_materias_docentes:[],
-                docentes_seleccionados:[]
+                docentes_seleccionados:[],
+                loading: true,
             }
         },
         computed: {
@@ -387,7 +394,8 @@
             vSelect : VueStrap.select,
             vueTimepicker : VueTimepicker,
             radio : VueStrap.radio,
-            buttonGroup : VueStrap.buttonGroup
+            buttonGroup : VueStrap.buttonGroup,
+            appLoading : Loading,
         },
         route: {
             data: function(transition){
@@ -437,6 +445,7 @@
                     this.horas_limite = {min: this.jornada.aux1, max: this.jornada.aux2};
                     this.formateaListaMaterias(materias);
                     this.formateaDocenteMaterias(resp.data.materias_docentes_disponibles); //formate la data de docentes y materias anidados
+                    this.loading = false;
                 }, fnc.tryError);
             },
             initDocentesSeleccionados(data){
@@ -558,17 +567,32 @@
                 this.materias[idxMat].total = hora;
             },
             guardarHorario(){
-                /*
+
                 let dataToSend = [];
                 for(let dia of this.horario){
                     for(let materia of dia.materias){
                         dataToSend.push({
-                            ciclo_materia_docente: _.materia.materia
+                            ciclo_materia_docente: _.filter(this.docentes_seleccionados, {id_mat:materia.materia})[0].id_cmd,
+                            ciclo_jornada_semestre: this.jornada.id,
+                            dia: dia.name,
+                            hora_inicio: `${materia.desde.HH}:${materia.desde.mm}`,
+                            hora_fin: `${materia.hasta.HH}:${materia.hasta.mm}`
                         });
                     }
                 }
-                */
-                fnc.niceAlert('info', 'Se envia a guardar los datos');
+
+                this.$http.post('api/jornadasemestre/' + this.$route.params.model_id + '/horario', {horario: dataToSend}).then(function(resp){
+                    console.log(resp);
+                    fnc.niceAlert('info', 'Se envia a guardar los datos');
+                }, fnc.tryError);
+
+                /*
+                 ciclo_materia_docente
+                 ciclo_jornada_semestre
+                 dia
+                 hora_inicio
+                 hora_fin
+                 */
             }
 
         }

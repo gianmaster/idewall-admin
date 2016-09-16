@@ -16,10 +16,10 @@ class CreateHorariosCursosTable extends Migration
 		Schema::create('horarios_cursos', function(Blueprint $table) {
             $table->increments('id');
 
-			$table->integer('ciclo_materia_docente')->unsigned();
+			$table->integer('ciclo_materia_docente')->unsigned()->nullable();
 			$table->foreign('ciclo_materia_docente')->references('id')->on('ciclo_materias_docente')->onDelete('cascade');
 
-			$table->integer('ciclo_jornada_semestre')->unsigned();
+			$table->integer('ciclo_jornada_semestre')->unsigned()->nullable();
 			$table->foreign('ciclo_jornada_semestre')->references('id')->on('jornadas_semestres')->onDelete('cascade');
 
 			$table->enum('dia', ['LUNES', 'MARTES','MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO'])->nullable(false);

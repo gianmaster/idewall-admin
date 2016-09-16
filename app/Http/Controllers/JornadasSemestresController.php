@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Entities\Ciclo;
+use App\Entities\HorariosCursos;
 use App\Entities\JornadasSemestre;
 use Illuminate\Http\Request;
 
@@ -221,16 +222,18 @@ class JornadasSemestresController extends Controller
      */
     public function saveHorarioJornadaSemestre(Request $request, $id){
         try{
-            $req = $request->only(['horario']);
 
+            $request->only('horario');
+            $data = $request['horario'];
             //1.- Eliminar los registros existentes para el id
-            $delete = JornadasSemestre::where('ciclo_jornada_semestre', $id)->delete();
-            //2.-Armar los campos a guardar
-            $data = array();
-            //3.hacer un bulk insert
+            $toDelete = HorariosCursos::where('ciclo_jornada_semestre', $id);
+            if($toDelete->get()){
+                $toDelete->delete();
+            }
+            //2.hacer un bulk insert
             $resp = DB::table('horarios_cursos')->insert($data);
 
-            return response()->json(array('data' => $resp));
+            return response()->json(array('data' => $resp, 'removes' => $delete));
 
         }catch (\Exception $e) {
             return response()->json([
