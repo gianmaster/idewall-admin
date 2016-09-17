@@ -98,6 +98,13 @@ export default {
 
 		return horas+":"+minutos;
 
+	},
+
+	generaRangoHora(ini, fin){
+		let hIni = parseInt(ini.substr(0,2));
+		let hFin = parseInt(fin.substr(0,2))+1;
+		return [hIni, hFin];
 	}
+
 	
 }

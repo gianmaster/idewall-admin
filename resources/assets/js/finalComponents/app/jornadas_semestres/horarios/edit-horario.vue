@@ -80,7 +80,7 @@
                                 <tfoot v-if="dia.modoAgregar">
                                 <tr>
                                     <td colspan="4">
-                                        <div class="col-xs-4 text-center dropzone" @dragover.prevent @drop="onDropMateria($event, dia)" @dragleave="onMateriaLeave" @dragenter="onMateriaEnter">
+                                        <div class="col-xs-7 text-center dropzone" @dragover.prevent @drop="onDropMateria($event, dia)" @dragleave="onMateriaLeave" @dragenter="onMateriaEnter">
                                             <!--
                                             <v-select
                                                     :value.sync="dia.materiaTmp.materia"
@@ -96,10 +96,11 @@
                                             </template>
 
                                         </div>
-                                        <div class="col-xs-3 text-center">
+                                        <div class="col-xs-2 text-center">
                                             <template v-if="jornada.codigo == 'ESP'">
                                                 <vue-timepicker format="HH:mm"
-                                                                :minute-interval="10"
+                                                                :hour-range="rangoHora"
+                                                                :minute-list="minutosPermitidos"
                                                                 :time-value.sync="dia.materiaTmp.desde">
                                                 </vue-timepicker>
                                             </template>
@@ -109,13 +110,14 @@
                                                 </span>
                                             </template>
                                         </div>
-                                        <div class="col-xs-3 text-center">
+                                        <div class="col-xs-2 text-center">
                                             <vue-timepicker format="HH:mm"
-                                                            :minute-interval="10"
+                                                            :hour-range="rangoHora"
+                                                            :minute-list="minutosPermitidos"
                                                             :time-value.sync="dia.materiaTmp.hasta">
                                             </vue-timepicker>
                                         </div>
-                                        <div class="col-xs-2 text-center">
+                                        <div class="col-xs-1 text-center">
                                             <div class="btn-group">
                                                 <a href="javascript:;" class="btn btn-success btn-xs" @click="saveMateria($index)">
                                                     <i data-toggle="tooltip" class="fa fa-check" title="Guardar"></i>
@@ -202,7 +204,7 @@
                             <tbody>
                             <tr>
                                 <td class="td-formato td-hora">07:00</td>
-                                <td></td>
+                                <td rowspan="2">Matematicas</td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -211,7 +213,7 @@
                             </tr>
                             <tr>
                                 <td class="td-formato td-hora">08:30</td>
-                                <td></td>
+
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -287,6 +289,8 @@
                 templateLimit: function(count){
                     return `y ${count} más`;
                 },
+                rangoHora:[],
+                minutosPermitidos: [],
                 aula:{},
                 jornada:{},
                 ciclo:{},
@@ -444,6 +448,8 @@
                     this.jornada = resp.data.data.jornada;
                     this.grupo_materias_docentes = _.groupBy(resp.data.materias_docentes_disponibles, 'nombre_materia');
                     this.horas_limite = {min: this.jornada.aux1, max: this.jornada.aux2};
+                    this.rangoHora = fnc.generaRangoHora(this.jornada.aux1, this.jornada.aux2);
+                    this.minutosPermitidos = this.jornada.codigo != 'NOC' ? ['00', '30'] : ['10', '40'];
                     this.formateaListaMaterias(materias);
                     this.formateaDocenteMaterias(resp.data.materias_docentes_disponibles); //formate la data de docentes y materias anidados
                     this.loading = false;
