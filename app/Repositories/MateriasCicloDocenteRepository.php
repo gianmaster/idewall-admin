@@ -8,7 +8,7 @@ use Prettus\Repository\Contracts\RepositoryInterface;
  * Interface MateriasDocenteRepository
  * @package namespace App\Repositories;
  */
-interface MateriasDocenteRepository extends RepositoryInterface
+interface MateriasCicloDocenteRepository extends RepositoryInterface
 {
     //
 }

@@ -2,7 +2,7 @@
 
 namespace App\Presenters;
 
-use App\Transformers\MateriasDocenteTransformer;
+use App\Transformers\MateriasCicloDocenteTransformer;
 use Prettus\Repository\Presenter\FractalPresenter;
 
 /**
@@ -10,7 +10,7 @@ use Prettus\Repository\Presenter\FractalPresenter;
  *
  * @package namespace App\Presenters;
  */
-class MateriasDocentePresenter extends FractalPresenter
+class MateriasCicloDocentePresenter extends FractalPresenter
 {
     /**
      * Transformer
@@ -19,6 +19,6 @@ class MateriasDocentePresenter extends FractalPresenter
      */
     public function getTransformer()
     {
-        return new MateriasDocenteTransformer();
+        return new MateriasCicloDocenteTransformer();
     }
 }

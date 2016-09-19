@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
-class MateriasDocente extends Model implements Transformable
+class MateriasCicloDocente extends Model implements Transformable
 {
     use TransformableTrait;
 
@@ -17,15 +17,15 @@ class MateriasDocente extends Model implements Transformable
 
 
     public function materiaDetail(){
-        return $this->BelongsTo(MallaAcademica::class, 'materia', 'id');
+        return $this->belongsTo(MallaAcademica::class, 'materia', 'id');
     }
 
     public function materiaDetailAll(){
-        return $this->BelongsTo(MallaAcademica::class, 'materia', 'id');
+        return $this->belongsTo(MallaAcademica::class, 'materia', 'id');
     }
 
     public function docenteDetail(){
-        return $this->belongsTo(CicloDocentes::class, 'id', 'ciclo_docente');
+        return $this->belongsTo(CicloDocentes::class, 'ciclo_docente');
     }
     
     public function horarioMateriaDocente(){

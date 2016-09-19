@@ -9,11 +9,11 @@ use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Http\Requests\MateriasDocenteCreateRequest;
 use App\Http\Requests\MateriasDocenteUpdateRequest;
-use App\Repositories\MateriasDocenteRepository;
-use App\Validators\MateriasDocenteValidator;
+use App\Repositories\MateriasCicloDocenteRepository;
+use App\Validators\MateriasCicloDocenteValidator;
 
 
-class MateriasDocentesController extends Controller
+class MateriasCicloDocentesController extends Controller
 {
 
     /**
@@ -26,7 +26,7 @@ class MateriasDocentesController extends Controller
      */
     protected $validator;
 
-    public function __construct(MateriasDocenteRepository $repository, MateriasDocenteValidator $validator)
+    public function __construct(MateriasCicloDocenteRepository $repository, MateriasCicloDocenteValidator $validator)
     {
 
         $this->repository = $repository;

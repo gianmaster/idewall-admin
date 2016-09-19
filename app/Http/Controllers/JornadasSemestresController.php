@@ -6,7 +6,7 @@ use App\Entities\Ciclo;
 use App\Entities\CicloDocentes;
 use App\Entities\HorariosCursos;
 use App\Entities\JornadasSemestre;
-use App\Entities\MateriasDocente;
+use App\Entities\MateriasCicloDocente;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -203,7 +203,8 @@ class JornadasSemestresController extends Controller
      * @return mixed
      * Method Get
      */
-    public function horarioJornadaSemestre($id){
+    public function horarioJornadaSemestre($id)
+    {
         //falta escribir el codigo
         $data = JornadasSemestre::with('descripcionCiclo')
             ->with('aula')
@@ -213,8 +214,20 @@ class JornadasSemestresController extends Controller
             ->with('materiasEspecialesSemestre')
             ->with('horario')
             ->find($id);
-        
-        return response()->json(array('data' => $data, 'materias_docentes_disponibles' => $data->materiasDocentesQry()));
+
+        $horario = HorariosCursos::where('ciclo_jornada_semestre', $id)
+            ->orderBy('id')
+            ->orderBy('dia')
+            ->orderBy('hora_inicio')
+            ->with('materiaDocente')
+            ->get();
+
+        return response()->json(array(
+                'data' => $data,
+                'materias_docentes_disponibles' => $data->materiasDocentesQry(),
+                'horario' => $horario
+            )
+        );
 
     }
 
@@ -264,10 +277,10 @@ class JornadasSemestresController extends Controller
 
     public function validaDocentes($data){
         foreach ($data as $item => $val) {
-            $materiaDocente = MateriasDocente::find($val['ciclo_materia_docente']);
-            $materiasDocente = MateriasDocente::where('ciclo_docente', $materiaDocente->ciclo_docente)->get();
+            $materiaDocente = MateriasCicloDocente::find($val['ciclo_materia_docente']);
+            $materiasDocente = MateriasCicloDocente::where('ciclo_docente', $materiaDocente->ciclo_docente)->get();
             foreach ($materiasDocente as $itemMat => $valMat){
-                $tmpModel = MateriasDocente::find($valMat['id']);
+                $tmpModel = MateriasCicloDocente::find($valMat['id']);
                 $horario = $tmpModel->horarioDetalleMateriasDocente();
                 foreach ($horario as $itemHorario => $valHorario) {
                     $fIniHorario = Carbon::createFromFormat('Y-m-d H:i', '2000-01-01 ' . $valHorario->hora_inicio);

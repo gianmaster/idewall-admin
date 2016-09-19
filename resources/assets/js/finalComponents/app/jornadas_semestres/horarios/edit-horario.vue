@@ -589,7 +589,6 @@
                             hora_fin: `${materia.hasta.HH}:${materia.hasta.mm}`,
                             num_horas: fnc.horaCharToNum(materia.total)
                         });
-                        console.log(dataToSend, 'data a enviar');
                     }
                 }
 

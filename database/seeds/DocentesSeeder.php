@@ -41,12 +41,12 @@ class DocentesSeeder extends Seeder
             'docente'   => $AguirreMadonadoLonardoVladimir->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 2,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 25,
         ]);
@@ -80,12 +80,12 @@ class DocentesSeeder extends Seeder
             'docente'   => $AlburquerqueProanioPedroDennys->id
         ]);
 
-            App\Entities\MateriasDocente::create([
+            App\Entities\MateriasCicloDocente::create([
                 'ciclo_docente' => $cicloDocente->id,
                 'materia' => 2,
             ]);
 
-            App\Entities\MateriasDocente::create([
+            App\Entities\MateriasCicloDocente::create([
                 'ciclo_docente' => $cicloDocente->id,
                 'materia' => 8,
             ]);
@@ -120,7 +120,7 @@ class DocentesSeeder extends Seeder
             'docente'   => $joseAntonioAlcivarGonzales->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 35,
         ]);
@@ -156,12 +156,12 @@ class DocentesSeeder extends Seeder
             'docente'   => $almeidaMoralesByronFernando->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 27,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 34,
         ]);
@@ -197,22 +197,22 @@ class DocentesSeeder extends Seeder
         ]);
 
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 15,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 24,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 48,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 39,
         ]);
@@ -248,7 +248,7 @@ class DocentesSeeder extends Seeder
             'docente'   => $cabezasPadillaRoddySalvador->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 25,
         ]);
@@ -282,17 +282,17 @@ class DocentesSeeder extends Seeder
             'docente'   => $cardenasBolaniosBrendaXiomara->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 3,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 9,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 6,
         ]);
@@ -328,17 +328,17 @@ class DocentesSeeder extends Seeder
             'docente'   => $cardenasGilerDavidXavier->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 21,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 29,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 41,
         ]);
@@ -373,12 +373,12 @@ class DocentesSeeder extends Seeder
             'docente'   => $carrilloVeraSusanaPaola->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 12,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 32,
         ]);
@@ -414,12 +414,12 @@ class DocentesSeeder extends Seeder
             'docente'   => $cedenioMoranFranciscoJose->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 1,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 3,
         ]);
@@ -454,12 +454,12 @@ class DocentesSeeder extends Seeder
             'docente'   => $changRamosFelixAlberto->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 20,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 25,
         ]);
@@ -493,12 +493,12 @@ class DocentesSeeder extends Seeder
             'docente'   => $chavezChicaKerlySisiana->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 20,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 24,
         ]);
@@ -533,12 +533,12 @@ class DocentesSeeder extends Seeder
             'docente'   => $chiluizaCordovaJorgeWashinton->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 38,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 45,
         ]);
@@ -572,12 +572,12 @@ class DocentesSeeder extends Seeder
             'docente'   => $cordovaAragundijoseSaturnino->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 36,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 34,
         ]);
@@ -613,12 +613,12 @@ class DocentesSeeder extends Seeder
             'docente'   => $guerreroLopezCarlosAndres->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 32,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 12,
         ]);
@@ -653,17 +653,17 @@ class DocentesSeeder extends Seeder
             'docente'   => $hurelGuzmanRaulSantiago->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 39,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 21,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 26,
         ]);
@@ -697,12 +697,12 @@ class DocentesSeeder extends Seeder
             'docente'   => $incaVelizJoseArturo->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 13,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 18,
         ]);
@@ -737,17 +737,17 @@ class DocentesSeeder extends Seeder
             'docente'   => $marcilloSanchezPatriciaMaria->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 35,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 25,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 27,
         ]);
@@ -782,12 +782,12 @@ class DocentesSeeder extends Seeder
             'docente'   => $martilloAvilesChristianNahun->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 14,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 26,
         ]);
@@ -822,22 +822,22 @@ class DocentesSeeder extends Seeder
             'docente'   => $jorgeMerchan->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 36,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 20
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 40,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 6
         ]);
@@ -872,7 +872,7 @@ class DocentesSeeder extends Seeder
             'docente'   => $wilsonEduardoNieto->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 15,
         ]);
@@ -908,12 +908,12 @@ class DocentesSeeder extends Seeder
             'docente'   => $anaRosaOrallana->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 7,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 25,
         ]);
@@ -948,12 +948,12 @@ class DocentesSeeder extends Seeder
             'docente'   => $fernandoXavierProanio->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 1,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 46,
         ]);
@@ -988,17 +988,17 @@ class DocentesSeeder extends Seeder
             'docente'   => $QuirozMartinezMiguel->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 32,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 35,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 36,
         ]);
@@ -1034,17 +1034,17 @@ class DocentesSeeder extends Seeder
             'docente'   => $romanBarrezuetaLogioDavid->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 21,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 28,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 41,
         ]);
@@ -1079,12 +1079,12 @@ class DocentesSeeder extends Seeder
             'docente'   => $romanFrancoWalterJavier->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 33,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 18,
         ]);
@@ -1119,7 +1119,7 @@ class DocentesSeeder extends Seeder
             'docente'   => $salazarGuevaraFranklinArmando->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 34,
         ]);
@@ -1155,12 +1155,12 @@ class DocentesSeeder extends Seeder
             'docente'   => $tamaraUgarte->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 37,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 22,
         ]);
@@ -1195,17 +1195,17 @@ class DocentesSeeder extends Seeder
             'docente'   => $cesarVallejo->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 42,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 28,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 49,
         ]);
@@ -1240,12 +1240,12 @@ class DocentesSeeder extends Seeder
             'docente'   => $velezFreireCarlosEduardo->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 26,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 14,
         ]);
@@ -1280,17 +1280,17 @@ class DocentesSeeder extends Seeder
             'docente'   => $villacrecesParedesLuis->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 16,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 30,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 37,
         ]);
@@ -1325,7 +1325,7 @@ class DocentesSeeder extends Seeder
             'docente'   => $villegasAlavaMilton->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 33,
         ]);
@@ -1360,7 +1360,7 @@ class DocentesSeeder extends Seeder
             'docente'   => $DuqueCarmen->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 34,
         ]);
@@ -1396,12 +1396,12 @@ class DocentesSeeder extends Seeder
             'docente'   => $zambranoFernandoJose->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 8,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 34,
         ]);
@@ -1435,12 +1435,12 @@ class DocentesSeeder extends Seeder
             'docente'   => $zambranoBryan->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 28,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 34,
         ]);
@@ -1474,17 +1474,17 @@ class DocentesSeeder extends Seeder
             'docente'   => $zumbaPatricia->id
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 27,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 34,
         ]);
 
-        App\Entities\MateriasDocente::create([
+        App\Entities\MateriasCicloDocente::create([
             'ciclo_docente' => $cicloDocente->id,
             'materia' => 29,
         ]);

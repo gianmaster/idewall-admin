@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Entities\MateriasDocente;
+use App\Entities\MateriasCicloDocente;
 use App\Entities\Docente;
 
 use App\Http\Requests;
@@ -12,7 +12,7 @@ use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Repositories\DocenteRepository;
 use App\Validators\DocenteValidator;
-use App\Validators\MateriasDocenteValidator;
+use App\Validators\MateriasCicloDocenteValidator;
 
 
 class DocentesController extends Controller
@@ -39,7 +39,7 @@ class DocentesController extends Controller
      */
     protected $validator;
 
-    public function __construct(DocenteRepository $repository, DocenteValidator $validator, MateriasDocenteValidator $validatorMaterias)
+    public function __construct(DocenteRepository $repository, DocenteValidator $validator, MateriasCicloDocenteValidator $validatorMaterias)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
@@ -224,7 +224,7 @@ class DocentesController extends Controller
         $materiasDocente = $this->repository->find($id)['data'];
 
         //desactivar todas las materias previo a validacion y actualizacion
-        MateriasDocente::where('docente', $id)->update(['activo' => false]);
+        MateriasCicloDocente::where('docente', $id)->update(['activo' => false]);
 
         foreach ($request->materias as $rKey => $rValue) {
 
@@ -233,13 +233,13 @@ class DocentesController extends Controller
             foreach ($materiasDocente['materias_all'] as $mKey => $mValue) {
 
                 if ($mValue['materia'] == $rValue['materia']) {
-                    MateriasDocente::where('id', $mValue['id'])->update(['materia' => $rValue['materia'], 'docente' => $id, 'activo' => true]);
+                    MateriasCicloDocente::where('id', $mValue['id'])->update(['materia' => $rValue['materia'], 'docente' => $id, 'activo' => true]);
                     $flagUpdated = true;
                 }
             }
 
             if(!$flagUpdated){
-                MateriasDocente::create(['materia' => $rValue['materia'], 'docente' => $id]);
+                MateriasCicloDocente::create(['materia' => $rValue['materia'], 'docente' => $id]);
             }
 
         }
@@ -255,7 +255,7 @@ class DocentesController extends Controller
 
             $this->validatorMaterias->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
 
-            $materias = MateriasDocente::create($request->only(['materia', 'docente']));
+            $materias = MateriasCicloDocente::create($request->only(['materia', 'docente']));
 
             return response()->json(['data' => $materias]);
 

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Entities\Ciclo;
 use App\Entities\CicloDocentes;
-use App\Entities\MateriasDocente;
+use App\Entities\MateriasCicloDocente;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -210,10 +210,10 @@ class CiclosController extends Controller
         }
         
         //$materiasDocente = Docente::with('materias')->where('id', $id)->toArray();
-        $materiasDocente = MateriasDocente::where('ciclo_docente', $id)->get();
+        $materiasDocente = MateriasCicloDocente::where('ciclo_docente', $id)->get();
 
         //desactivar todas las materias previo a validacion y actualizacion
-        MateriasDocente::where('ciclo_docente', $id)->update(['activo' => false]);
+        MateriasCicloDocente::where('ciclo_docente', $id)->update(['activo' => false]);
 
         foreach ($request->materias as $rKey => $rValue) {
 
@@ -222,13 +222,13 @@ class CiclosController extends Controller
             foreach ($materiasDocente as $mKey => $mValue) {
 
                 if ($mValue['materia'] == $rValue['materia']) {
-                    MateriasDocente::where('id', $mValue['id'])->update(['materia' => $rValue['materia'], 'ciclo_docente' => $id, 'activo' => true]);
+                    MateriasCicloDocente::where('id', $mValue['id'])->update(['materia' => $rValue['materia'], 'ciclo_docente' => $id, 'activo' => true]);
                     $flagUpdated = true;
                 }
             }
 
             if(!$flagUpdated){
-                MateriasDocente::create(['materia' => $rValue['materia'], 'ciclo_docente' => $id]);
+                MateriasCicloDocente::create(['materia' => $rValue['materia'], 'ciclo_docente' => $id]);
             }
 
         }

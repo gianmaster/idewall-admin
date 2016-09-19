@@ -2,18 +2,18 @@
 
 namespace App\Repositories;
 
-use App\Presenters\MateriasDocentePresenter;
+use App\Presenters\MateriasCicloDocentePresenter;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\MateriasDocenteRepository;
-use App\Entities\MateriasDocente;
-use App\Validators\MateriasDocenteValidator;
+use App\Repositories\MateriasCicloDocenteRepository;
+use App\Entities\MateriasCicloDocente;
+use App\Validators\MateriasCicloDocenteValidator;
 
 /**
  * Class MateriasDocenteRepositoryEloquent
  * @package namespace App\Repositories;
  */
-class MateriasDocenteRepositoryEloquent extends BaseRepository implements MateriasDocenteRepository
+class MateriasCicloDocenteRepositoryEloquent extends BaseRepository implements MateriasCicloDocenteRepository
 {
     /**
      * Specify Model class name
@@ -22,7 +22,7 @@ class MateriasDocenteRepositoryEloquent extends BaseRepository implements Materi
      */
     public function model()
     {
-        return MateriasDocente::class;
+        return MateriasCicloDocente::class;
     }
 
     /**
@@ -33,7 +33,7 @@ class MateriasDocenteRepositoryEloquent extends BaseRepository implements Materi
     public function validator()
     {
 
-        return MateriasDocenteValidator::class;
+        return MateriasCicloDocenteValidator::class;
     }
 
     /**
@@ -53,7 +53,7 @@ class MateriasDocenteRepositoryEloquent extends BaseRepository implements Materi
      */
     public function presenter()
     {
-        return MateriasDocentePresenter::class;
+        return MateriasCicloDocentePresenter::class;
     }
 
 
