@@ -39,6 +39,12 @@ export default {
     	}
 
     },
+	/**
+	 * Resta 2 fechas en cadena de texto con el siguiente formato HH:mm
+	 * @param inicio
+	 * @param fin
+	 * @returns {string}
+     */
 	restarHoras(inicio, fin) {
 
 		const inicioMinutos = parseInt(inicio.substr(3, 2));
@@ -69,6 +75,12 @@ export default {
 		return horas+":"+minutos;
 
 	},
+	/**
+	 * Suma 2 fechas en cadena con el siguiente formato HH:mm
+	 * @param inicio
+	 * @param fin
+	 * @returns {string}
+     */
 	sumarHoras(inicio, fin) {
 
 		const inicioMinutos = parseInt(inicio.substr(3, 2));
@@ -99,7 +111,44 @@ export default {
 		return horas+":"+minutos;
 
 	},
-
+	/**
+	 * Retorna la diferencia de entre 2 horas en una cadena de texto en los formatos HH:mm o HHhmm
+	 * @param ini
+	 * @param fin
+	 * @returns {number}
+     */
+	difHoras(ini, fin){
+		const horaIni = parseInt(ini.substr(0,2));
+		const horaFin = parseInt(fin.substr(0,2));
+		const minutoIni = parseInt(ini.substr(3,2));
+		const minutoFin = parseInt(fin.substr(3,2));
+		return (horaFin-horaIni) + (minutoFin-minutoIni === 0 ? 0 : 0.5);
+	},
+	/**
+	 * Retorna en decimal el equivalente a una hora en formato 00:30
+	 * @param hora
+	 * @returns {number}
+     */
+	horaCharToNum(hora){
+		return parseInt(hora.substr(0, 2)) + (parseInt(hora.substr(3, 2)) == 0 ? 0 :  0.5);
+	},
+	/**
+	 * 
+	 * @param val
+	 * @returns {string}
+     */
+	decimalToHoraStr(val){
+		if(val === null) return '0:00';
+		const hora = parseInt(val.split('.')[0]);
+		const minutos = parseInt(val.split('.')[1]) == 0 ? '00' : '30';
+		return (hora + ':' + minutos);
+	},
+	/**
+	 * retorna un array con 2 valores numericos que corresponde a un rango
+	 * @param ini
+	 * @param fin
+	 * @returns {*[]}
+     */
 	generaRangoHora(ini, fin){
 		let hIni = parseInt(ini.substr(0,2));
 		let hFin = parseInt(fin.substr(0,2))+1;

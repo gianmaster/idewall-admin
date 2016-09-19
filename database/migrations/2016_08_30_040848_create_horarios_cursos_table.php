@@ -26,6 +26,7 @@ class CreateHorariosCursosTable extends Migration
 
 			$table->char('hora_inicio', 5)->nullable(false);
 			$table->char('hora_fin', 5)->nullable(false);
+			$table->decimal('num_horas');
 
             $table->timestamps();
 		});

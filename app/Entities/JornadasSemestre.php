@@ -13,7 +13,7 @@ class JornadasSemestre extends Model implements Transformable
 
     protected $table = 'jornadas_semestres';
 
-    protected $fillable = ['id', 'ciclo','catalogo_semestre','catalogo_aula','catalogo_jornada'];
+    protected $fillable = ['id', 'ciclo','catalogo_semestre','catalogo_aula','catalogo_jornada', 'num_horas'];
 
     public function descripcionCiclo(){
     	return $this->hasOne(Ciclo::class, 'id', 'ciclo');
@@ -55,7 +55,7 @@ class JornadasSemestre extends Model implements Transformable
 
     public function materiasDocentesQry(){
         $tipo_asignacion = $this->catalogo_jornada == 'ESP' ? 'ESPECIAL' : 'NORMAL';
-        return DB::select("select d.abreviatura, d.nombres, d.apellidos, ma.semestre, cmd.id ciclo_materia_docente, ma.nombre_materia, ma.codigo_materia, ma.id id_materia, ma.estado estado_materia
+        return DB::select("select d.abreviatura, d.nombres, d.apellidos, ma.semestre, cmd.id ciclo_materia_docente, ma.nombre_materia, ma.codigo_materia, ma.id id_materia, ma.estado estado_materia, (select sum(num_horas) from horarios_cursos x where x.ciclo_materia_docente = cmd.id) horas
       from docentes d, ciclo_docentes cd, malla_academica ma, ciclo_materias_docente cmd, jornadas_semestres js
       where js.id = $this->id
             AND js.ciclo = cd.ciclo
@@ -66,6 +66,12 @@ class JornadasSemestre extends Model implements Transformable
             AND ma.tipo_asignacion = '$tipo_asignacion'
             AND ma.estado = 'ACTIVO'
             ");
+    }
+    
+
+
+    public function scopeHorarioDia($qry){
+        return $qry->where('dia', 'LUNES');
     }
 
 }

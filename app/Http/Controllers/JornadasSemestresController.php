@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Entities\Ciclo;
+use App\Entities\CicloDocentes;
 use App\Entities\HorariosCursos;
 use App\Entities\JornadasSemestre;
+use App\Entities\MateriasDocente;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -225,9 +228,17 @@ class JornadasSemestresController extends Controller
 
             $request->only('horario');
             $data = $request['horario'];
-            //1.- Eliminar los registros existentes para el id
+            //1.- validar los datos que se reciben
+            $hasError = $this->validaDocentes($data);
+            if($hasError){
+                return response()->json([
+                    'error'   => true,
+                    'message' => $hasError
+                ], 403);
+            }
+            //2.- Eliminar los registros existentes para el id
             $delete = HorariosCursos::where('ciclo_jornada_semestre', $id)->delete();
-            //2.hacer un bulk insert
+            //3.- Hacer un bulk insert
             $resp = DB::table('horarios_cursos')->insert($data);
 
             return response()->json(array('data' => $resp, 'removes' => $delete));
@@ -235,10 +246,41 @@ class JornadasSemestresController extends Controller
         }catch (\Exception $e) {
             return response()->json([
                 'error'   => true,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
+                'file'  => $e->getFile(),
+                'line'  => $e->getLine()
             ], 500);
         }
 
+    }
+
+
+
+    public function dataHorarioValidator(){
+        $horaIni = Carbon::create(2000, 1, 1, 18, 00);
+        $horaFin = Carbon::create(2000, 1, 1, 22, 40);
+        return $horaIni->diffInHours($horaFin) . 'H' . $horaIni->diffInMinutes($horaFin);
+    }
+
+    public function validaDocentes($data){
+        foreach ($data as $item => $val) {
+            $materiaDocente = MateriasDocente::find($val['ciclo_materia_docente']);
+            $materiasDocente = MateriasDocente::where('ciclo_docente', $materiaDocente->ciclo_docente)->get();
+            foreach ($materiasDocente as $itemMat => $valMat){
+                $tmpModel = MateriasDocente::find($valMat['id']);
+                $horario = $tmpModel->horarioDetalleMateriasDocente();
+                foreach ($horario as $itemHorario => $valHorario) {
+                    $fIniHorario = Carbon::createFromFormat('Y-m-d H:i', '2000-01-01 ' . $valHorario->hora_inicio);
+                    $fFinHorario = Carbon::createFromFormat('Y-m-d H:i', '2000-01-01 ' . $valHorario->hora_fin);
+                    $flagIni = Carbon::createFromFormat('Y-m-d H:i', '2000-01-01 ' . $val['hora_inicio'])->between($fIniHorario,$fFinHorario);
+                    $flagFin = Carbon::createFromFormat('Y-m-d H:i', '2000-01-01 ' . $val['hora_fin'])->between($fIniHorario,$fFinHorario);
+                    if(($flagFin || $flagIni ) && $val['dia'] == $valHorario->dia){
+                        return 'No se guardaron los cambios. La hora que trata de asignar a ' . $valHorario->abreviatura . '. ' . $valHorario->nombres .' '. $valHorario->apellidos .' choca con la materia ' . $valHorario->nombre_materia . ' (' . $valHorario->dia . ' de ' .$valHorario->hora_inicio . ' a ' . $valHorario->hora_fin . ' | ' . $valHorario->semestre;
+                    }
+                }
+            }
+            return false;
+        }
     }
 
 

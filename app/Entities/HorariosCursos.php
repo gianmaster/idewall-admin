@@ -15,7 +15,7 @@ class HorariosCursos extends Model implements Transformable
     protected $fillable = ['id','ciclo_materia_docente','ciclo_jornada_semestre','dia','hora_inicio','hora_fin'];
 
     public function materiasDocente(){
-        return $this->hasMany(MateriasDocente::class,'id', 'ciclo_materia_docente');
+        return $this->hasMany(MateriasDocente::class,'id', 'ciclo_materia_docente')->with('horarioMateriaDocente');
     }
 
     public function jornadaSemestre(){

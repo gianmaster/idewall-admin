@@ -144,7 +144,7 @@
                                 <div v-for="(key, row) in grupo_materias_docentes">
                                     <h5 class="text-green">{{key}}</h5>
                                     <button-group :value.sync="docentes_seleccionados[$index]" type="info" buttons="false">
-                                        <radio v-for="item in row" :value="{id_cmd: item.ciclo_materia_docente, id_mat: item.id_materia}">{{item.nombres}} {{item.apellidos}}</radio>
+                                        <radio v-for="item in row" :value="{id_cmd: item.ciclo_materia_docente, id_mat: item.id_materia}">{{item.nombres}} {{item.apellidos}} <span class="badge label-primary" data-toggle="tooltip" title="Horas académicas ya asignadas" data-placement="right">{{exec('decimalToHoraStr',item.horas)}}</span></radio>
                                     </button-group>
 
                                 </div>
@@ -408,6 +408,9 @@
             }
         },
         methods:{
+            exec(func, val){
+                return fnc[func](val);
+            },
             tabsEnable(idx){
                 return (this.jornada.codigo != 'ESP' && idx == 5); //index 5 del dia sabado
             },
@@ -583,7 +586,8 @@
                             ciclo_jornada_semestre: this.id_jornada_semestre,
                             dia: dia.name,
                             hora_inicio: `${materia.desde.HH}:${materia.desde.mm}`,
-                            hora_fin: `${materia.hasta.HH}:${materia.hasta.mm}`
+                            hora_fin: `${materia.hasta.HH}:${materia.hasta.mm}`,
+                            num_horas: fnc.horaCharToNum(materia.total)
                         });
                         console.log(dataToSend, 'data a enviar');
                     }
