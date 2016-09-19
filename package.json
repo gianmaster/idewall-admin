@@ -9,6 +9,7 @@
     "bootstrap-sass": "^3.3.7",
     "gulp": "^3.9.1",
     "jquery": "^3.1.0",
+    "jscs": "^3.0.7",
     "laravel-elixir": "^6.0.0-9",
     "laravel-elixir-browsersync-official": "^1.0.0",
     "laravel-elixir-vue": "^0.1.4",
