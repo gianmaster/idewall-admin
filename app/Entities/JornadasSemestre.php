@@ -55,7 +55,7 @@ class JornadasSemestre extends Model implements Transformable
 
     public function materiasDocentesQry(){
         $tipo_asignacion = $this->catalogo_jornada == 'ESP' ? 'ESPECIAL' : 'NORMAL';
-        return DB::select("select d.abreviatura, d.nombres, d.apellidos, ma.semestre, cmd.id ciclo_materia_docente, ma.nombre_materia, ma.codigo_materia, ma.id id_materia, ma.estado estado_materia, (select sum(num_horas) from horarios_cursos x where x.ciclo_materia_docente = cmd.id) horas
+        return DB::select("select d.abreviatura, d.nombres, d.apellidos, ma.semestre, cmd.id ciclo_materia_docente, ma.nombre_materia, ma.codigo_materia, ma.id id_materia, ma.estado estado_materia, (select sum(num_horas) from horarios_cursos x where x.ciclo_materia_docente = cmd.id) horas, (select count(*) > 0 from horarios_cursos h where h.ciclo_materia_docente = cmd.id and h.ciclo_jornada_semestre = js.id) seleccionado
       from docentes d, ciclo_docentes cd, malla_academica ma, ciclo_materias_docente cmd, jornadas_semestres js
       where js.id = $this->id
             AND js.ciclo = cd.ciclo

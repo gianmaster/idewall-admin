@@ -456,6 +456,7 @@
                     this.formateaListaMaterias(materias);
                     this.formateaDocenteMaterias(resp.data.materias_docentes_disponibles); //formate la data de docentes y materias anidados
                     this.loading = false;
+                    this.loadHorario(resp.data.horario);
                 }, fnc.tryError);
             },
             initDocentesSeleccionados(data){
@@ -604,6 +605,35 @@
                  hora_inicio
                  hora_fin
                  */
+            },
+            loadHorario(data){
+                if(data.length > 0){
+                    const horario = _.groupBy(data, 'dia');
+                    const configDia = {
+                        LUNES:{key: 0, val: 'Lunes'},
+                        MARTES:{key: 1, val: 'Martes'},
+                        MIERCOLES:{key: 2, val: 'Miércoles'},
+                        JUEVES:{key: 3, val: 'Jueves'},
+                        VIERNES:{key: 4, val: 'Viernes'},
+                        SABADO:{key: 5, val: 'Sábado'}
+                    };
+                    for(let key in horario){
+                        this.horario[configDia[key].key].name = key;
+                        this.horario[configDia[key].key].title= configDia[key].val;
+                        for(let dia of horario[key]){
+                            const hIni = dia.hora_inicio.split(':');
+                            const hFin = dia.hora_fin.split(':');
+                            this.horario[configDia[key].key].materiaTmp = {
+                                desde: {HH: hIni[0] , mm: hIni[1]},
+                                hasta: {HH: hFin[0] , mm: hFin[1]},
+                                materia: dia.materia_docente.materia
+                            };
+                            this.saveMateria([configDia[key].key]);
+                        }
+                    }
+                }else{
+                    console.log('No hay horario asignado para este curso');
+                }
             }
 
         }

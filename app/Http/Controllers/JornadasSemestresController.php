@@ -267,14 +267,10 @@ class JornadasSemestresController extends Controller
 
     }
 
-
-
-    public function dataHorarioValidator(){
-        $horaIni = Carbon::create(2000, 1, 1, 18, 00);
-        $horaFin = Carbon::create(2000, 1, 1, 22, 40);
-        return $horaIni->diffInHours($horaFin) . 'H' . $horaIni->diffInMinutes($horaFin);
-    }
-
+    /**
+     * @param $data
+     * @return bool|string
+     */
     public function validaDocentes($data){
         foreach ($data as $item => $val) {
             $materiaDocente = MateriasCicloDocente::find($val['ciclo_materia_docente']);
