@@ -144,7 +144,7 @@
                                 <div v-for="(key, row) in grupo_materias_docentes">
                                     <h5 class="text-green">{{key}}</h5>
                                     <button-group :value.sync="docentes_seleccionados[$index]" type="info" buttons="false">
-                                        <radio v-for="item in row" :value="{id_cmd: item.ciclo_materia_docente, id_mat: item.id_materia}">{{item.nombres}} {{item.apellidos}} <span class="badge label-primary" data-toggle="tooltip" title="Horas académicas ya asignadas" data-placement="right">{{exec('decimalToHoraStr',item.horas)}}</span></radio>
+                                        <radio v-for="item in row" :value="{id_cmd: item.ciclo_materia_docente, id_mat: item.id_materia}" >{{item.nombres}} {{item.apellidos}} <span class="badge label-primary {{item.seleccionado==1?'checkthis':''}}" data-toggle="tooltip" title="Horas académicas ya asignadas" data-placement="right">{{exec('decimalToHoraStr',item.horas)}}</span></radio>
                                     </button-group>
 
                                 </div>
@@ -444,7 +444,7 @@
                         this.materias.push(materia);
                     }
                     this.maxMaterias = materias.length;
-                    this.initDocentesSeleccionados(materias);
+                    this.initDocentesSeleccionados(materias, resp.data.horario, _.groupBy(resp.data.materias_docentes_disponibles, 'nombre_materia'));
                     this.semestre = resp.data.data.semestre;
                     this.aula = resp.data.data.aula;
                     this.ciclo = resp.data.data.descripcion_ciclo;
@@ -459,9 +459,30 @@
                     this.loadHorario(resp.data.horario);
                 }, fnc.tryError);
             },
-            initDocentesSeleccionados(data){
-                for(let i in data){
-                    this.docentes_seleccionados.push(null);
+            /**
+             * Selecciona la los docentes que ya han sido asignados, en el caso de que ya este creado el horario, sino los declara null
+             * @param data
+             * @param horario
+             */
+            initDocentesSeleccionados(data, horario, grupoMateriasDocentes){
+                let self = this;
+                if(horario.length > 0){
+                    let cont = 0;
+                    _.forEach(grupoMateriasDocentes, function(val, key){
+                        _.forEach(val, function(item, key){
+                            if (item.seleccionado == 1) {
+                                console.log('entra a al asignacion de docnets, omfg');
+                                self.docentes_seleccionados[cont] = {id_mat : item.id_materia, id_cmd: item.ciclo_materia_docente};
+                            }
+                        });
+                        cont++;
+                    });
+                    //forzar a que visualmente esten seleccionado los docentes
+                    //$(document.querySelector('.checkthis').closest('div')).click();
+                }else{
+                    for (let i in data) {
+                        this.docentes_seleccionados.push(null);
+                    }
                 }
             },
             addMateria(idxDia){
@@ -598,13 +619,7 @@
                     fnc.niceAlert('info', 'Se envia a guardar los datos');
                 }, fnc.tryError);
 
-                /*
-                 ciclo_materia_docente
-                 ciclo_jornada_semestre
-                 dia
-                 hora_inicio
-                 hora_fin
-                 */
+
             },
             loadHorario(data){
                 if(data.length > 0){
