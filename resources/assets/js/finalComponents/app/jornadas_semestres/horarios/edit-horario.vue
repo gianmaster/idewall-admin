@@ -7,12 +7,12 @@
     <div v-else class="row">
         <div class="col-xs-12 col-sm-4">
             <!-- Cuadro de asignacion de docentes -->
-            <div class="box box-primary">
+            <div class="box box-primary {{lista_horas.length > 0 ? 'collapsed-box' : ''}}">
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="fa fa-book"></i> Horas Materias <small>Semanales</small></h3>
                     <div class="box-tools pull-right">
                         <a v-link="{path:'/jornadasemestres'}" class="btn btn-default btn-xs"><i class="fa fa-reply"></i> Volver</a>
-                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-{{lista_horas.length <= 0 ? 'minus' : 'plus'}}"></i></button>
                     </div><!-- /.box-tools -->
                 </div><!-- /.box-header -->
                 <div class="box-body">
@@ -29,14 +29,14 @@
 
         <div class="col-xs-12 col-sm-8">
             <!-- Cuadro de asignacion del horarion -->
-            <div class="box box-primary">
+            <div class="box box-primary {{lista_horas.length > 0 ? 'collapsed-box' : ''}}">
                 <div class="box-header with-border">
                     <h3 class="box-title">{{semestre.descripcion}} - {{aula.descripcion}} <small>({{jornada.aux1}} – {{jornada.aux2}})</small></h3>
                     <div class="box-tools pull-right">
                         <!-- Buttons, labels, and many other things can be placed here! -->
                         <!-- Here is a label for example -->
                         <span :class="classJornada"><i class="fa fa-clock-o"></i> {{jornada.descripcion}}</span>
-                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-{{lista_horas.length <= 0 ? 'minus' : 'plus'}}"></i></button>
                     </div><!-- /.box-tools -->
                 </div><!-- /.box-header -->
                 <div class="box-body">
@@ -55,7 +55,7 @@
                                 <tbody>
                                 <tr v-for="row in dia.materias">
                                     <td class="td-formato">
-                                        {{getNombreMateria(row.materia)}}
+                                        {{getAtributoMateria(row.materia, 'nombre_materia')}}
                                     </td>
                                     <td class="td-formato">
                                         {{row.desde.HH}}H{{row.desde.mm}}
@@ -92,7 +92,7 @@
                                             -->
 
                                             <template v-if="dia.materiaTmp.materia">
-                                                {{getNombreMateria(dia.materiaTmp.materia)}} <i @click="onRemoveMateriaDropped(dia)" class="fa fa-close"></i>
+                                                {{getAtributoMateria(dia.materiaTmp.materia, 'nombre_materia')}} <i @click="onRemoveMateriaDropped(dia)" class="fa fa-close"></i>
                                             </template>
 
                                         </div>
@@ -180,16 +180,16 @@
 
         <!-- Table que muestra la asignacion del horario en formato legible -->
         <div class="col-xs-12">
-            <div class="box box-success collapsed-box">
+            <div class="box box-success {{lista_horas.length <= 0 ? 'collapsed-box' : ''}}">
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="fa fa-calendar-check-o" aria-hidden="true"></i> Horario - Vista Previa</h3>
                     <div class="box-tools pull-right">
-                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-{{lista_horas.length <= 0 ? 'plus' : 'minus'}}"></i></button>
                     </div><!-- /.box-tools -->
                 </div><!-- /.box-header -->
                 <div class="box-body">
                     <div class="table-responsive">
-                        <table class="table table-striped">
+                        <table class="table table-striped table-hover table-bordered">
                             <thead>
                             <tr>
                                 <td class="td-formato td-hora td-hora-title">HORA</td>
@@ -204,12 +204,24 @@
                             <tbody>
                             <tr v-for="item in lista_horas">
                                 <td class="td-formato td-hora">{{item.from}} - {{item.to}}</td>
-                                <td class="td-formato">{{obtenerMateriaHorario(0, item.from, item.to)}}</td>
-                                <td class="td-formato">{{obtenerMateriaHorario(1, item.from, item.to)}}</td>
-                                <td class="td-formato">{{obtenerMateriaHorario(2, item.from, item.to)}}</td>
-                                <td class="td-formato">{{obtenerMateriaHorario(3, item.from, item.to)}}</td>
-                                <td class="td-formato">{{obtenerMateriaHorario(4, item.from, item.to)}}</td>
-                                <td class="td-formato">{{obtenerMateriaHorario(5, item.from, item.to)}}</td>
+                                <td class="td-formato {{getAtributoMateria(obtenerMateriaHorario(0, item.from, item.to), 'tipo_materia')}}">
+                                    <small>{{getAtributoMateria(obtenerMateriaHorario(0, item.from, item.to), 'nombre_materia')}}</small>
+                                </td>
+                                <td class="td-formato {{getAtributoMateria(obtenerMateriaHorario(1, item.from, item.to), 'tipo_materia')}}">
+                                    <small>{{getAtributoMateria(obtenerMateriaHorario(1, item.from, item.to), 'nombre_materia')}}</small>
+                                </td>
+                                <td class="td-formato {{getAtributoMateria(obtenerMateriaHorario(2, item.from, item.to), 'tipo_materia')}}">
+                                    <small>{{getAtributoMateria(obtenerMateriaHorario(2, item.from, item.to), 'nombre_materia')}}</small>
+                                </td>
+                                <td class="td-formato {{getAtributoMateria(obtenerMateriaHorario(3, item.from, item.to), 'tipo_materia')}}">
+                                    <small>{{getAtributoMateria(obtenerMateriaHorario(3, item.from, item.to), 'nombre_materia')}}</small>
+                                </td>
+                                <td class="td-formato {{getAtributoMateria(obtenerMateriaHorario(4, item.from, item.to), 'tipo_materia')}}">
+                                    <small>{{getAtributoMateria(obtenerMateriaHorario(4, item.from, item.to), 'nombre_materia')}}</small>
+                                </td>
+                                <td class="td-formato {{getAtributoMateria(obtenerMateriaHorario(5, item.from, item.to), 'tipo_materia')}}">
+                                    <small>{{getAtributoMateria(obtenerMateriaHorario(5, item.from, item.to), 'nombre_materia')}}</small>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -255,6 +267,25 @@
     button.form-control{
         height: auto;
     }
+
+    .parrafo_horario{
+        margin: 0;
+    }
+
+
+    .BASICA{
+        background-color: wheat;
+    }
+    .GENERAL{
+        background-color: deepskyblue;
+    }
+    .PROFESIONAL{
+        background-color: rgba(61, 255, 152, 1);
+    }
+    .OPTATIVA{
+        background-color: #ffea6d;
+    }
+
 
 </style>
 <script>
@@ -429,11 +460,12 @@
                     let fin = parseInt(item.hasta.HH + item.hasta.mm);
                     let pInicio = parseInt(p_inicio.replace(':', ''));
                     let pFin = parseInt(p_fin.replace(':', ''));
-                    if(ini >= pInicio || ini < pFin || fin <= pFin){
+                    if((pInicio >= ini && pInicio < fin) || (pFin > ini && pFin < fin) ){
                         return item.materia;
                     }
                 }
-                return 'No asignado';
+                return null;
+
             },
             loadData(){
                 this.id_jornada_semestre = this.$route.params.model_id;
@@ -456,7 +488,7 @@
                     this.horas_limite = {min: this.jornada.aux1, max: this.jornada.aux2};
                     this.rangoHora = fnc.generaRangoHora(this.jornada.aux1, this.jornada.aux2);
                     this.minutosPermitidos = this.jornada.codigo != 'NOC' ? ['00', '30'] : ['10', '40'];
-                    this.formateaListaMaterias(materias);
+                    this.lista_materias = materias;
                     this.formateaDocenteMaterias(resp.data.materias_docentes_disponibles); //formate la data de docentes y materias anidados
                     this.loading = false;
                     this.loadHorario(resp.data.horario);
@@ -586,13 +618,16 @@
                 }
             },
             getNombreMateria(idMateria){
-                if(this.lista_materias.length > 0){
-                    return _.filter(this.lista_materias, {value: idMateria})[0].label;
+                if(this.lista_materias.length > 0 && idMateria){
+                    return _.filter(this.lista_materias, {id: idMateria})[0].nombre_materia;
                 }
                 return idMateria;
             },
-            onChangeDocentesSelect(action){
-                console.log(action);
+            getAtributoMateria(idMateria, atributo){
+                if(this.lista_materias.length > 0 && idMateria){
+                    return _.filter(this.lista_materias, {id: idMateria})[0][atributo];
+                }
+                return idMateria;
             },
             actualizaCalculoMaterias: function(idMateria){
                 const idxMat = _.findIndex(this.materias, {id: idMateria});
@@ -629,8 +664,6 @@
                         });
                     }
                 }
-                console.log(tmpDocentesSeleccionados, dataToSend);
-                return false;
 
                 this.$http.post('api/jornadasemestre/' + this.$route.params.model_id + '/horario', {horario: dataToSend}).then(function(resp){
                     console.log(resp);
