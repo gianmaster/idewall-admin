@@ -205,7 +205,7 @@ class JornadasSemestresController extends Controller
      */
     public function horarioJornadaSemestre($id)
     {
-        //falta escribir el codigo
+
         $data = JornadasSemestre::with('descripcionCiclo')
             ->with('aula')
             ->with('jornada')
@@ -222,10 +222,13 @@ class JornadasSemestresController extends Controller
             ->with('materiaDocente')
             ->get();
 
+        $listaHoras = $this->listaHorahorario($id);
+
         return response()->json(array(
-                'data' => $data,
+                'data'                          => $data,
                 'materias_docentes_disponibles' => $data->materiasDocentesQry(),
-                'horario' => $horario
+                'horario'                       => $horario,
+                'lista_horas'                   => $listaHoras
             )
         );
 
@@ -292,5 +295,14 @@ class JornadasSemestresController extends Controller
         }
     }
 
+
+    public function listaHorahorario($idJornadaSemestre){
+        $data = DB::select("select distinct x.hora from (
+    SELECT DISTINCT hora_inicio as hora FROM horarios_cursos WHERE ciclo_jornada_semestre  = $idJornadaSemestre
+           UNION
+           SELECT DISTINCT hora_fin as hora FROM horarios_cursos WHERE ciclo_jornada_semestre  = $idJornadaSemestre
+) x ORDER BY x.hora");
+        return $data;
+    }
 
 }

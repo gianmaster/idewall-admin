@@ -144,7 +144,7 @@
                                 <div v-for="(key, row) in grupo_materias_docentes">
                                     <h5 class="text-green">{{key}}</h5>
                                     <button-group :value.sync="docentes_seleccionados[$index]" type="info" buttons="false">
-                                        <radio v-for="item in row" :value="{id_cmd: item.ciclo_materia_docente, id_mat: item.id_materia}" >{{item.nombres}} {{item.apellidos}} <span class="badge label-primary {{item.seleccionado==1?'checkthis':''}}" data-toggle="tooltip" title="Horas académicas ya asignadas" data-placement="right">{{exec('decimalToHoraStr',item.horas)}}</span></radio>
+                                        <radio v-for="item in row" :value="item.ciclo_materia_docente+':'+item.id_materia" >{{item.nombres}} {{item.apellidos}} <span class="badge label-primary {{item.seleccionado==1?'checkthis':''}}" data-toggle="tooltip" title="Horas académicas ya asignadas" data-placement="right">{{exec('decimalToHoraStr',item.horas)}}</span></radio>
                                     </button-group>
 
                                 </div>
@@ -202,23 +202,14 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td class="td-formato td-hora">07:00</td>
-                                <td rowspan="2">Matematicas</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td class="td-formato td-hora">08:30</td>
-
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                            <tr v-for="item in lista_horas">
+                                <td class="td-formato td-hora">{{item.from}} - {{item.to}}</td>
+                                <td class="td-formato">{{obtenerMateriaHorario(0, item.from, item.to)}}</td>
+                                <td class="td-formato">{{obtenerMateriaHorario(1, item.from, item.to)}}</td>
+                                <td class="td-formato">{{obtenerMateriaHorario(2, item.from, item.to)}}</td>
+                                <td class="td-formato">{{obtenerMateriaHorario(3, item.from, item.to)}}</td>
+                                <td class="td-formato">{{obtenerMateriaHorario(4, item.from, item.to)}}</td>
+                                <td class="td-formato">{{obtenerMateriaHorario(5, item.from, item.to)}}</td>
                             </tr>
                             </tbody>
                         </table>
@@ -432,6 +423,18 @@
             onMateriaEnter(ev){
                 ev.target.classList.add('enter-item');
             },
+            obtenerMateriaHorario(idxDia, p_inicio, p_fin){
+                for(let item of this.horario[idxDia].materias){
+                    let ini = parseInt(item.desde.HH + item.desde.mm);
+                    let fin = parseInt(item.hasta.HH + item.hasta.mm);
+                    let pInicio = parseInt(p_inicio.replace(':', ''));
+                    let pFin = parseInt(p_fin.replace(':', ''));
+                    if(ini >= pInicio || ini < pFin || fin <= pFin){
+                        return item.materia;
+                    }
+                }
+                return 'No asignado';
+            },
             loadData(){
                 this.id_jornada_semestre = this.$route.params.model_id;
                 this.loading = true;
@@ -457,7 +460,15 @@
                     this.formateaDocenteMaterias(resp.data.materias_docentes_disponibles); //formate la data de docentes y materias anidados
                     this.loading = false;
                     this.loadHorario(resp.data.horario);
+                    this.loadListahoras(resp.data.lista_horas);
                 }, fnc.tryError);
+            },
+            loadListahoras(data){
+                let lista = [];
+                for(let i=1; i<data.length; i++){
+                    lista.push({from: data[i-1].hora, to: data[i].hora});
+                }
+                this.lista_horas = lista;
             },
             /**
              * Selecciona la los docentes que ya han sido asignados, en el caso de que ya este creado el horario, sino los declara null
@@ -471,8 +482,7 @@
                     _.forEach(grupoMateriasDocentes, function(val, key){
                         _.forEach(val, function(item, key){
                             if (item.seleccionado == 1) {
-                                console.log('entra a al asignacion de docnets, omfg');
-                                self.docentes_seleccionados[cont] = {id_mat : item.id_materia, id_cmd: item.ciclo_materia_docente};
+                                self.docentes_seleccionados[cont] = `${item.ciclo_materia_docente}:${item.id_materia}`;
                             }
                         });
                         cont++;
@@ -599,12 +609,18 @@
                 this.materias[idxMat].total = hora;
             },
             guardarHorario(){
+                let tmpDocentesSeleccionados=[];
+                for(let item of this.docentes_seleccionados){
+                    const cmd = parseInt(item.split(':')[0]);
+                    const mat = parseInt(item.split(':')[1]);
+                    tmpDocentesSeleccionados.push({id_mat: mat, id_cmd: cmd});
+                }
 
                 let dataToSend = [];
                 for(let dia of this.horario){
                     for(let materia of dia.materias){
                         dataToSend.push({
-                            ciclo_materia_docente: _.filter(this.docentes_seleccionados, {id_mat:materia.materia})[0].id_cmd,
+                            ciclo_materia_docente: _.filter(tmpDocentesSeleccionados, {id_mat:materia.materia})[0].id_cmd,
                             ciclo_jornada_semestre: this.id_jornada_semestre,
                             dia: dia.name,
                             hora_inicio: `${materia.desde.HH}:${materia.desde.mm}`,
@@ -613,6 +629,8 @@
                         });
                     }
                 }
+                console.log(tmpDocentesSeleccionados, dataToSend);
+                return false;
 
                 this.$http.post('api/jornadasemestre/' + this.$route.params.model_id + '/horario', {horario: dataToSend}).then(function(resp){
                     console.log(resp);
@@ -655,4 +673,5 @@
     }
 
 </script>
+
 
