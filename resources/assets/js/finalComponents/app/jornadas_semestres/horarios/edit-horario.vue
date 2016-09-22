@@ -182,45 +182,57 @@
         <div class="col-xs-12">
             <div class="box box-success {{lista_horas.length <= 0 ? 'collapsed-box' : ''}}">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-calendar-check-o" aria-hidden="true"></i> Horario - Vista Previa</h3>
+                    <h3 class="box-title"><i class="fa fa-calendar-{{lista_horas.length <= 0 ? 'times' : 'check'}}-o" aria-hidden="true"></i> Horario - Vista Previa</h3>
                     <div class="box-tools pull-right">
                         <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-{{lista_horas.length <= 0 ? 'plus' : 'minus'}}"></i></button>
                     </div><!-- /.box-tools -->
                 </div><!-- /.box-header -->
                 <div class="box-body">
-                    <div class="table-responsive">
+                    <div class="table-responsive" id="tabla_horario">
                         <table class="table table-striped table-hover table-bordered">
                             <thead>
                             <tr>
                                 <td class="td-formato td-hora td-hora-title">HORA</td>
-                                <td class="td-formato">LUNES</td>
-                                <td class="td-formato">MARTES</td>
-                                <td class="td-formato">MIERCOLES</td>
-                                <td class="td-formato">JUEVES</td>
-                                <td class="td-formato">VIERNES</td>
-                                <td class="td-formato">SABADO</td>
+                                <td class="td-formato td-hora td-hora-title">LUNES</td>
+                                <td class="td-formato td-hora td-hora-title">MARTES</td>
+                                <td class="td-formato td-hora td-hora-title">MIERCOLES</td>
+                                <td class="td-formato td-hora td-hora-title">JUEVES</td>
+                                <td class="td-formato td-hora td-hora-title">VIERNES</td>
+                                <td class="td-formato td-hora td-hora-title">SABADO</td>
                             </tr>
                             </thead>
                             <tbody>
                             <tr v-for="item in lista_horas">
                                 <td class="td-formato td-hora">{{item.from}} - {{item.to}}</td>
-                                <td class="td-formato {{getAtributoMateria(obtenerMateriaHorario(0, item.from, item.to), 'tipo_materia')}}">
+                                <td class="td-formato">
                                     <small>{{getAtributoMateria(obtenerMateriaHorario(0, item.from, item.to), 'nombre_materia')}}</small>
+                                    <br>
+                                    <small class="text-blue">{{getNombreDocenteAsignado(obtenerMateriaHorario(0, item.from, item.to))}}</small>
                                 </td>
-                                <td class="td-formato {{getAtributoMateria(obtenerMateriaHorario(1, item.from, item.to), 'tipo_materia')}}">
+                                <td class="td-formato">
                                     <small>{{getAtributoMateria(obtenerMateriaHorario(1, item.from, item.to), 'nombre_materia')}}</small>
+                                    <br>
+                                    <small class="text-blue">{{getNombreDocenteAsignado(obtenerMateriaHorario(1, item.from, item.to))}}</small>
                                 </td>
-                                <td class="td-formato {{getAtributoMateria(obtenerMateriaHorario(2, item.from, item.to), 'tipo_materia')}}">
+                                <td class="td-formato">
                                     <small>{{getAtributoMateria(obtenerMateriaHorario(2, item.from, item.to), 'nombre_materia')}}</small>
+                                    <br>
+                                    <small class="text-blue">{{getNombreDocenteAsignado(obtenerMateriaHorario(2, item.from, item.to))}}</small>
                                 </td>
-                                <td class="td-formato {{getAtributoMateria(obtenerMateriaHorario(3, item.from, item.to), 'tipo_materia')}}">
+                                <td class="td-formato">
                                     <small>{{getAtributoMateria(obtenerMateriaHorario(3, item.from, item.to), 'nombre_materia')}}</small>
+                                    <br>
+                                    <small class="text-blue">{{getNombreDocenteAsignado(obtenerMateriaHorario(3, item.from, item.to))}}</small>
                                 </td>
-                                <td class="td-formato {{getAtributoMateria(obtenerMateriaHorario(4, item.from, item.to), 'tipo_materia')}}">
+                                <td class="td-formato">
                                     <small>{{getAtributoMateria(obtenerMateriaHorario(4, item.from, item.to), 'nombre_materia')}}</small>
+                                    <br>
+                                    <small class="text-blue">{{getNombreDocenteAsignado(obtenerMateriaHorario(4, item.from, item.to))}}</small>
                                 </td>
-                                <td class="td-formato {{getAtributoMateria(obtenerMateriaHorario(5, item.from, item.to), 'tipo_materia')}}">
+                                <td class="td-formato">
                                     <small>{{getAtributoMateria(obtenerMateriaHorario(5, item.from, item.to), 'nombre_materia')}}</small>
+                                    <br>
+                                    <small class="text-blue">{{getNombreDocenteAsignado(obtenerMateriaHorario(5, item.from, item.to))}}</small>
                                 </td>
                             </tr>
                             </tbody>
@@ -383,7 +395,7 @@
                     }
                 ],
                 lista_materias: [],
-                lista_docentes_materias: [],
+                materias_docentes_disponibles: [],
                 ciclo_docentes:[],
                 maxMaterias: 4,
                 current_materia_to_drop: [],
@@ -489,7 +501,7 @@
                     this.rangoHora = fnc.generaRangoHora(this.jornada.aux1, this.jornada.aux2);
                     this.minutosPermitidos = this.jornada.codigo != 'NOC' ? ['00', '30'] : ['10', '40'];
                     this.lista_materias = materias;
-                    this.formateaDocenteMaterias(resp.data.materias_docentes_disponibles); //formate la data de docentes y materias anidados
+                    this.materias_docentes_disponibles = resp.data.materias_docentes_disponibles;
                     this.loading = false;
                     this.loadHorario(resp.data.horario);
                     this.loadListahoras(resp.data.lista_horas);
@@ -597,16 +609,6 @@
                     this.horario[idxDia].materias.splice(idxRow, 99);//elimida desde el indice hasta el 99 si existe
                 }
             },
-            formateaDocenteMaterias(data){
-                this.lista_docentes_materias = [];
-                for(let idx in data){
-                    const {abreviatura, nombres, apellidos, semestre, id_materia, ciclo_materia_docente, nombre_materia, codigo_materia} = data[idx];
-                    this.lista_docentes_materias.push({
-                        value: {ciclo_materia_docente, codigo_materia, id_materia},
-                        label: `${codigo_materia} - ${nombres} ${apellidos}`
-                    });
-                }
-            },
             formateaListaMaterias(data){
                 this.lista_materias = [];
                 for(let idx in data){
@@ -617,17 +619,29 @@
                     });
                 }
             },
-            getNombreMateria(idMateria){
-                if(this.lista_materias.length > 0 && idMateria){
-                    return _.filter(this.lista_materias, {id: idMateria})[0].nombre_materia;
-                }
-                return idMateria;
-            },
             getAtributoMateria(idMateria, atributo){
                 if(this.lista_materias.length > 0 && idMateria){
                     return _.filter(this.lista_materias, {id: idMateria})[0][atributo];
                 }
                 return idMateria;
+            },
+            getNombreDocenteAsignado(idMateria){
+                if(!idMateria) return null;
+
+                let self = this;
+                let codigos = {};
+                this.docentes_seleccionados.forEach(function(item, idx){
+                    if(item.split(':')[1] == idMateria){
+                        codigos = {id_materia : parseInt(item.split(':')[1]), id_cmd: parseInt(item.split(':')[0])};
+                    }
+                });
+
+                if(this.materias_docentes_disponibles.length > 0){
+                    const nombres = _.filter(this.materias_docentes_disponibles, {ciclo_materia_docente : codigos.id_cmd})[0].nombres;
+                    const apellidos = _.filter(this.materias_docentes_disponibles, {ciclo_materia_docente : codigos.id_cmd})[0].apellidos;
+                    return `${nombres} ${apellidos}`;
+                }
+                return null;
             },
             actualizaCalculoMaterias: function(idMateria){
                 const idxMat = _.findIndex(this.materias, {id: idMateria});
