@@ -100,7 +100,7 @@
                                             <template v-if="jornada.codigo == 'ESP'">
                                                 <vue-timepicker format="HH:mm"
                                                                 :hour-range="rangoHora"
-                                                                :minute-list="minutosPermitidos"
+                                                                :minute-custom-interval="minutosPermitidos"
                                                                 :time-value.sync="dia.materiaTmp.desde">
                                                 </vue-timepicker>
                                             </template>
@@ -113,7 +113,7 @@
                                         <div class="col-xs-2 text-center">
                                             <vue-timepicker format="HH:mm"
                                                             :hour-range="rangoHora"
-                                                            :minute-list="minutosPermitidos"
+                                                            :minute-custom-interval="minutosPermitidos"
                                                             :time-value.sync="dia.materiaTmp.hasta">
                                             </vue-timepicker>
                                         </div>
@@ -266,8 +266,10 @@
         border: 2px dashed #279664;
     }
 
+
     .td-formato{
         text-align: center;
+        vertical-align: middle !important;
     }
     .td-hora{
         background-color: #add8e6;
@@ -680,10 +682,9 @@
                 }
 
                 this.$http.post('api/jornadasemestre/' + this.$route.params.model_id + '/horario', {horario: dataToSend}).then(function(resp){
-                    console.log(resp);
                     fnc.niceAlert('info', 'Se envia a guardar los datos');
+                    //this.loadData();
                 }, fnc.tryError);
-
 
             },
             loadHorario(data){
