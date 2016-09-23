@@ -22,7 +22,7 @@ export default {
 		read: function(){
 			this.loading = true;
 			this.$http.get(this.url + '/' + this.$route.params.model_id).then(function(resp){
-				this.newModel = resp.data.data;
+				this.newModel = resp.data;
 				this.loading = false;
 			}, fnc.tryError);
 		},

@@ -6,7 +6,7 @@
 
 	<div v-else>
 		<div class="col-xs-12 show-div">
-			<a v-link="{path: '/jornadasemestres/create'}" class="btn btn-primary btn-flat btn-spacing"> <i class="fa fa-plus-o"></i> AGREGAR JORNADA</a>
+			<a v-link="{path: '/jornadasemestres/create'}" class="btn btn-primary btn-flat btn-spacing"> <i class="fa fa-plus"></i> AGREGAR JORNADA</a>
 		</div>
 		<cool-table 
 		:option-toolbar="toolbar"
@@ -17,7 +17,6 @@
 	</cool-table>
 
 	<!-- Modal logic -->
-
 
 </div>
 

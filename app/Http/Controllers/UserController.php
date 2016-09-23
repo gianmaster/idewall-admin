@@ -24,7 +24,7 @@ class UserController extends Controller
      */
     public function getProfile(){
         $user = Auth::user();
-        return response()->json($user->toArray());
+        return response()->json($user);
     }
 
     /**
@@ -99,10 +99,7 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::find($id);
-        if($user)
-            return response()->json(array($user->toArray()));
-        else
-            return response()->json(array('data' => []));
+        return $user;
     }
 
     /**

@@ -160,68 +160,68 @@
 
 
     export default {
-        name:'app-header',
-        props:{
+        name: 'app-header',
+        props: {
             username: {
-              type: String,
-              required:false,
-              default: "Giancarlos Cercado"
-          },
-          avatar: {
-            type: String,
-            required: false,
-            default: 'img/user2-160x160.jpg'
-        },
-        fromDate: {
-            type: String, 
-            required: false,
-            default: 'Ago. 2016'
-        },
-        notifications: {
-          required: false,
-          type: Object,
-          default: function(){
-            return []
+                type: String,
+                required: false,
+                default: "Giancarlos Cercado"
+            },
+            avatar: {
+                type: String,
+                required: false,
+                default: 'img/user2-160x160.jpg'
+            },
+            fromDate: {
+                type: String,
+                required: false,
+                default: 'Ago. 2016'
+            },
+            notifications: {
+                required: false,
+                type: Object,
+                default: function () {
+                    return []
+                }
+            },
+            messages: {
+                required: false,
+                type: Object,
+                default: function () {
+                    return []
+                }
+            },
+            tasks: {
+                required: false,
+                type: Object,
+                default: function () {
+                    return []
+                }
+            },
+            control: {
+                required: false,
+                type: Boolean,
+                default: false
+            },
+            largeLogo: {
+                type: Array,
+                required: false,
+                default: function () {
+                    return ["SDCH", "UG"]
+                }
+            },
+            shortLogo: {
+                type: Array,
+                required: false,
+                default: function () {
+                    return ["S", "CH"]
+                }
+            },
+            auth: {
+                type: Boolean,
+                default: true
+            }
         }
-    },
-    messages: {
-      required: false,
-      type: Object,
-      default: function(){
-        return []
-    } 
-},
-tasks: {
-  required: false,
-  type: Object,
-  default: function(){
-    return []
-}
-},
-control: {
-  required: false,
-  type: Boolean,
-  default: false
-},
-largeLogo:{
-  type: Array,
-  required: false,
-  default: function(){
-    return ["SDCH", "UG"]
-}
-},
-shortLogo:{
-  type: Array,
-  required: false,
-  default: function(){
-    return ["S", "CH"]
-}
-},
-auth: {
-  type: Boolean,
-  default: true
-}
-}
-}
+    }
 
 </script>

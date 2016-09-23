@@ -63,10 +63,6 @@
         .custom-login-logo{
             color: azure;
             background: #3c8dbc;
-            border-left: 10px solid #ffffff;
-            border-right: 10px solid #ffffff;
-            border-bottom: 5px solid #1f4860;
-            /*border-top: 5px solid #1f4860;*/
             border-radius: 1%;
             box-shadow: 1px 5px 10px gray;
         }

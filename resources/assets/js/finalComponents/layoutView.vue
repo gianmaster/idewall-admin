@@ -11,19 +11,18 @@
 
 <script>
 
-  var menu = require('../config/menus.js');
+  import fnc from '../util/reusable_functions';
 
-  var fnc = require('../util/reusable_functions.js');
-
-  module.exports = {
+  export default {
     name : 'Layout',
     ready(){
       this.loadProfile();
     },
     methods: {
       loadProfile: function(){
+        let self = this;
         this.$http.get('api/me').then(function(resp){
-          this.profile = resp.data;
+          self.profile = resp.data;
         }, fnc.tryError);
       }
     },
@@ -46,9 +45,7 @@
           created_at: 'Ago. 2016'
         },
         login: true,
-        body_class: "sidebar-mini skin-blue fixed",
-        menus: menu || [] //esto deberia ser cargado una vez logoneado
-      }
+        body_class: "sidebar-mini skin-blue fixed"}
     },
     replace: false,
     components: {
@@ -56,8 +53,9 @@
       'app-menu': require('./new-layout/menu.vue'),
       'app-content': require('./new-layout/content.vue'),
       'app-control': require('./new-layout/control.vue'),
-      'app-footer': require('./new-layout/footer.vue'),
+      'app-footer': require('./new-layout/footer.vue')
     }
   }
-  
+
+
 </script>
