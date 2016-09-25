@@ -99,8 +99,8 @@
                                         <div class="col-xs-2 text-center">
                                             <template v-if="jornada.codigo == 'ESP'">
                                                 <vue-timepicker format="HH:mm"
-                                                                :hour-range="rangoHora"
-                                                                :minute-custom-interval="minutosPermitidos"
+                                                                :hour-range.sync="rangoHora"
+                                                                :minute-custom-interval.sync="minutosPermitidos"
                                                                 :time-value.sync="dia.materiaTmp.desde">
                                                 </vue-timepicker>
                                             </template>
@@ -112,8 +112,8 @@
                                         </div>
                                         <div class="col-xs-2 text-center">
                                             <vue-timepicker format="HH:mm"
-                                                            :hour-range="rangoHora"
-                                                            :minute-custom-interval="minutosPermitidos"
+                                                            :hour-range.sync="rangoHora"
+                                                            :minute-custom-interval.sync="minutosPermitidos"
                                                             :time-value.sync="dia.materiaTmp.hasta">
                                             </vue-timepicker>
                                         </div>
@@ -608,7 +608,9 @@
             },
             deleteMateria(idxDia, idxRow){
                 if(confirm('Atención, sí existen registros despúes de este, serán eliminados. ¿Estás seguro? ')){
+                    const materiaToDelete = this.horario[idxDia].materias[idxRow].materia;
                     this.horario[idxDia].materias.splice(idxRow, 99);//elimida desde el indice hasta el 99 si existe
+                    this.actualizaCalculoMaterias(materiaToDelete);
                 }
             },
             formateaListaMaterias(data){

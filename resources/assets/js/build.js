@@ -67,6 +67,8 @@ router.map({
 
   '/malla_academica': require('./finalComponents/app/malla_academica/index.js'),
 
+  '/tipos_distributivo': require('./finalComponents/app/tipos_distributivos/index.js'),
+
   '/docentes': require('./finalComponents/app/docentes/index.js'),
 
   '/materias_docentes': require('./finalComponents/app/materias_docentes/index.js'),

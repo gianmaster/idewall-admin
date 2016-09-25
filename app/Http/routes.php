@@ -68,6 +68,8 @@ Route::group(['middleware' => 'auth'], function(){
 
 		Route::resource('catalogos.items', 'CatalogoItemsController');
 
+		Route::resource('tiposdistributivo', 'DistributivosController');
+
 		Route::get('malla_academica/all', 'MallaAcademicaController@indexAll');
 		Route::resource('malla_academica', 'MallaAcademicaController');
 		Route::get('malla_academica/{id}/silabos', 'MallaAcademicaController@silabosByMateria');
