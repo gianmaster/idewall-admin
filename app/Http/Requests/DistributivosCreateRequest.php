@@ -13,7 +13,7 @@ class DistributivosCreateRequest extends Request
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,10 @@ class DistributivosCreateRequest extends Request
     public function rules()
     {
         return [
-            //
+            'nombre'        => 'required|min:6',
+            'orden'         => '',
+            'activo'        => 'boolean',
+            'modificable'   => 'boolean'
         ];
     }
 }

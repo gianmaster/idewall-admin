@@ -21,7 +21,7 @@
 
 		<hr>
 
-		<button v-if="createMode" class="btn btn-success btn-flat btn-block" type="submit"><i class="fa fa-save"></i> GUARDAR</button>
+		<button v-if="createMode==true" class="btn btn-success btn-flat btn-block" type="submit"><i class="fa fa-save"></i> GUARDAR</button>
 		<button v-else class="btn btn-warning btn-flat btn-block" type="submit"><i class="fa fa-save"></i> GUARDAR CAMBIOS</button>
 
 	</div>

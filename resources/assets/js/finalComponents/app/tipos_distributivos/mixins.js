@@ -39,24 +39,34 @@
 				this.toggleModal();
 			}, fnc.tryError);
 		},
-
+		submitForm: function(){
+			if(this.createMode){
+				this.create();
+			}else{
+				this.update();
+			}
+		},
 		//for crud
  		create: function(){
- 			this.$http.post(this.url, this.newModel).then(function(resp){
+ 			this.$http.post(this.url, this.currentModel).then(function(resp){
  				fnc.niceAlert('success', 'Se creó la materia correctamente!');
- 				this.$router.go('/malla_academica');
+ 				//this.$router.go('/tipos_distributivo');
+				this.showModal = false;
+				this.load();
  			}, fnc.tryError);
  		},
  		update: function(){
- 			this.$http.put(this.url + '/' + this.newModel.id, this.newModel).then(function(resp){
+			console.log('entra a modificar', this.currentModel);
+			this.$http.put(this.url + '/' + this.currentModel.id, this.currentModel).then(function(resp){
  				fnc.niceAlert('success', 'Se modificó correctamente la materia!');
- 				this.$router.go('/malla_academica');
+				this.load();
+ 				//this.$router.go('/malla_academica');
  			}, fnc.tryError);
  		},
  		read: function(){
  			this.loading = true;
  			this.$http.get(this.url + '/' + this.$route.params.model_id).then(function(resp){
- 				this.newModel = resp.data.data;
+ 				this.currentModel = resp.data.data;
  				this.loading = false;
  			}, fnc.tryError);
  		},
@@ -73,7 +83,7 @@
  			this.$http.get(this.url).then(function(resp){
  				this.loading = false;
  			}, fnc.tryError)
- 		},
+ 		}
 
  	}
  }

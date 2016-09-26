@@ -13,17 +13,31 @@
 		filter-key-word="search">
 		</cool-table>
 
+		<!-- Modal para la creacion y/o edicion del tipo de distributivo -->
 		<app-modal :title="getModalTitle" :show.sync="showModal" @ok="toggleModal" @cancel="toggleModal" emit-when-ok="dispatch-ok-modal" :large="true">
 
 			<div class="row">
-				<form action="" @submit.prevent="update">
+				<form action="" @submit.prevent="submitForm">
 
-					<form-fields :data-model.sync="currentModel" :create-mode="createModel"></form-fields>
+					<form-fields :data-model.sync="currentModel" :create-mode="createMode"></form-fields>
 
 				</form>
 			</div>
 
 		</app-modal>
+
+
+		<!-- Modal para la creacion y/o edicion del tipo de distributivo -->
+		<app-modal title="Tipo Distributivo - Items" :show.sync="showModalItems" @ok="showModalItems=false" @cancel="showModalItems=false" emit-when-ok="dispatch-ok-modal" :large="true">
+
+			<div class="row">
+
+				<items-distributivo :current-distributivo.sync="currentModel" ></items-distributivo>
+
+			</div>
+
+		</app-modal>
+
 	</div>
 
 </template>
@@ -48,6 +62,8 @@
 	import myMixins from './mixins';
 
 	import formFields from './form-fields.vue';
+
+	import ItemsDistributivo from './distributivo_items/create-edit-item-view.vue';
 
 	export default {
 		mixins: [myMixins],
@@ -95,6 +111,13 @@
 						sortable: true
 					},
 					{
+						title: 'Registros',
+						field: 'items',
+						hidden: false,
+						sortable: true,
+						template: '<span class="badge">${col.items.length}</span>'
+					},
+					{
 						title: 'Activo',
 						field: 'activo',
 						hidden: false,
@@ -132,6 +155,7 @@
 				loading_button: false,
 				currentModel: {},
 				showModal: false,
+				showModalItems: false,
 				createMode: true
 			}
 		},
@@ -139,7 +163,8 @@
 			'cool-table' : coolTable,
 			'app-loading' : Loading,
 			'app-modal' : Modal,
-			'formFields' : formFields
+			'formFields' : formFields,
+			'itemsDistributivo': ItemsDistributivo
 		},
 		events: {
 			'distributivo-create-event' : function(model){
@@ -155,15 +180,15 @@
 			'distributivo-delete-event' : function(model){
 				this.destroy(model);
 			},
-			'distributivo-silabos-event': function(model){
+			'distributivo-view-event': function(model){
+				this.createMode = false;
 				this.toggleDataModel(model);
-				this.toggleModal();
+				this.showModalItems = true;
 			},
 			'dispatch-ok-modal' : function(){
-				alert('Ok pero no hace nada');
+				null;
 			}
-		},
-
+		}
 		
 	}
 
