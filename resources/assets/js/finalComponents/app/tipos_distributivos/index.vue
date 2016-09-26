@@ -16,7 +16,7 @@
 	import fnc from '../../../util/reusable_functions';
 
 	export default {
-		name: 'content-malla-academica',
+		name: 'tipos-distributivos',
 		components:{
 			'content-header' : ContentHeader
 		},

@@ -13,48 +13,21 @@
 		filter-key-word="search">
 		</cool-table>
 
-		<app-modal title="Actualización de Sílabos" :show.sync="showModal" @ok="toggleModal" @cancel="toggleModal" emit-when-ok="event-end-edit-silabos" :large="true">
-			
-		<div class="row">
-			<form id="frm-silabos" @submit.prevent="uploadFiles">
-				<div class="col-xs-12 col-sm-7">
-					<div class="form-group">
-						<label for="documentos">Seleccione los Sílabos para: <span class="__materia">{{currentModel.nombre_materia}} - {{currentModel.semestre}}</span> </label>
-						<input type="file" id="documentos" name="documentos[]" accept="application/pdf" class="form-control" multiple required>				
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-5 text-center">
-					<p class="text-light-blue"><i class="fa fa-info-circle"></i> Solo se admiten archivos PDF</p>
-					<p class="text-red"><i class="fa fa-warning"></i> <strong>Nota:</strong> Sí ya existe algún archivo subido, éste o estos serán elmininados para subir los nuevos!</p>
-					<template v-if="load_button">
-						<button type="submit" class="btn btn-primary btn-flat" disabled><i class="fa fa-refresh fa-spin"></i> SUBIENDO ARCHIVOS</button>						
-					</template>
-					<template v-else>
-						<button type="submit" class="btn btn-primary btn-flat"><i class="fa fa-upload"></i> SUBIR ARCHIVOS</button>
-					</template>
-				</div>
-			</form>
-				
-			<div class="col-xs-12" v-if="currentModel.silabos.length<=0">
-				<hr>
-				<div class="text-center">
-					<p>No hay archivos subidos</p>
-				</div>
+		<app-modal title="Creación Distributivos" :show.sync="showModal" @ok="toggleModal" @cancel="toggleModal" emit-when-ok="dispatch-ok-modal" :large="true">
+
+			<div class="row">
+				<form action="" @submit.prevent="update">
+
+					<form-fields :data-model.sync="currentModel" :create-mode="false"></form-fields>
+
+				</form>
 			</div>
 
-			<div class="col-xs-12" v-else>
-				<hr>
-				<div class="col-xs-12" v-for="item in currentModel.silabos">
-					<iframe :src="item.ruta" frameborder="0" height="400" width="100%"></iframe>
-					<hr>	
-				</div>
-			</div>
-		</div>
-
-	</app-modal>
-</div>
+		</app-modal>
+	</div>
 
 </template>
+
 
 <style>
 
@@ -73,6 +46,8 @@
 	import coolTable from '../../reusable/cool-table.vue';
 
 	import myMixins from './mixins';
+
+	import formFields from './form-fields.vue';
 
 	export default {
 		mixins: [myMixins],
@@ -127,7 +102,7 @@
 						fieldClass: 'text-center',
 						itemActions: [
 							{
-								nameEmit: 'view-event',
+								nameEmit: 'distributivo-view-event',
 								btnClass: 'btn bg-gray btn-xs',
 								iconClass: 'fa fa-list-ol',
 								label: 'Visualizar Items'
@@ -149,28 +124,33 @@
 				],
 				loading: false,
 				loading_button: false,
-				currentModel: {silabos:[]},
+				currentModel: {},
 				showModal: false,
 			}
 		},
 		components: {
 			'cool-table' : coolTable,
 			'app-loading' : Loading,
-			'app-modal' : Modal
+			'app-modal' : Modal,
+			'formFields' : formFields
 		},
 		events: {
-			'malla-create-event' : function(model){
+			'distributivo-view-event' : function(model){
 				this.$router.go('/malla_academica/create');
 			},
-			'malla-update-event' : function(model){
-				this.$router.go('/malla_academica/edit/' + model.id);
-			},
-			'malla-delete-event' : function(model){
-				this.destroy(model);
-			},
-			'malla-silabos-event': function(model){
+			'distributivo-update-event' : function(model){
 				this.toggleDataModel(model);
 				this.toggleModal();
+			},
+			'distributivo-delete-event' : function(model){
+				this.destroy(model);
+			},
+			'distributivo-silabos-event': function(model){
+				this.toggleDataModel(model);
+				this.toggleModal();
+			},
+			'dispatch-ok-modal' : function(){
+				alert('Ok pero no hace nada');
 			}
 		},
 
@@ -178,3 +158,4 @@
 	}
 
 </script>
+
