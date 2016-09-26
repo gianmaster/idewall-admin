@@ -12,7 +12,17 @@
 			this.showModal = !this.showModal;
 		},
 		toggleDataModel: function(model){
-			this.currentModel = model;
+			if(this.createMode){
+				this.currentModel = {
+					id: null,
+					activo: 0,
+					nombre: null,
+					orden: null,
+					items:[]
+				};
+			}else{
+				this.currentModel = model;
+			}
 		},
 		toggleLoadButton: function(){
 			this.load_button = !this.load_button;

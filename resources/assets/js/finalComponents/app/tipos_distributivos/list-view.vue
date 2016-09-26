@@ -13,12 +13,12 @@
 		filter-key-word="search">
 		</cool-table>
 
-		<app-modal title="Creación Distributivos" :show.sync="showModal" @ok="toggleModal" @cancel="toggleModal" emit-when-ok="dispatch-ok-modal" :large="true">
+		<app-modal :title="getModalTitle" :show.sync="showModal" @ok="toggleModal" @cancel="toggleModal" emit-when-ok="dispatch-ok-modal" :large="true">
 
 			<div class="row">
 				<form action="" @submit.prevent="update">
 
-					<form-fields :data-model.sync="currentModel" :create-mode="false"></form-fields>
+					<form-fields :data-model.sync="currentModel" :create-mode="createModel"></form-fields>
 
 				</form>
 			</div>
@@ -57,6 +57,12 @@
 				transition.next();
 			}
 		},
+		computed: {
+			getModalTitle: function(){
+				return this.createMode ? 'Crear Tipo Distributivo' : 'Modificar Tipo Distributivo'
+			}
+		},
+		name: 'TiposAtributosGrid',
 		data(){
 			return {
 				url: 'api/tiposdistributivo',
@@ -65,7 +71,7 @@
 					iconClassOptions: 'fa fa-cogs',
 					label: 'Agregar',
 					labelOptions: 'Campos visibles',
-					nameEmit: 'malla-create-event',
+					nameEmit: 'distributivo-create-event',
 					btnClass: 'btn btn-primary btn-flat'
 				},
 				datos: [],
@@ -126,6 +132,7 @@
 				loading_button: false,
 				currentModel: {},
 				showModal: false,
+				createMode: true
 			}
 		},
 		components: {
@@ -135,10 +142,13 @@
 			'formFields' : formFields
 		},
 		events: {
-			'distributivo-view-event' : function(model){
-				this.$router.go('/malla_academica/create');
+			'distributivo-create-event' : function(model){
+				this.createMode = true;
+				this.toggleDataModel(model);
+				this.toggleModal();
 			},
 			'distributivo-update-event' : function(model){
+				this.createMode = false;
 				this.toggleDataModel(model);
 				this.toggleModal();
 			},

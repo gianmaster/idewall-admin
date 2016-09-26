@@ -3,6 +3,7 @@
 	<div class="col-sm-6 col-xs-12">
 		<label>Nombre Distributivo</label>
 		<input type="text" class="form-control" v-model="dataModel.nombre" minlength="6" required>
+		<input type="hidden" class="form-control" :value="dataModel.id">
 	</div>
 
 	<div class="col-sm-3 col-xs-12">
