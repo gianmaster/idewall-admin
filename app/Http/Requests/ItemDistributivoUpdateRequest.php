@@ -13,7 +13,7 @@ class ItemDistributivoUpdateRequest extends Request
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,11 @@ class ItemDistributivoUpdateRequest extends Request
     public function rules()
     {
         return [
-            //
+            'id_distributivo'   => 'required',
+            'nombre'            => 'required|min:3',
+            'orden'             => 'numeric',
+            'modificable'       => 'boolean',
+            'activo'            => 'boolean'
         ];
     }
 }

@@ -41,7 +41,7 @@
                 <hr>
             </div>
 
-            <formulario :data-model.sync="model" :mode.sync="mode"></formulario>
+            <formulario :data-model.sync="model" :mode.sync="mode" :current-distributivo.sync="currentDistributivo"></formulario>
 
         </div>
 
@@ -57,7 +57,7 @@
             <button class="btn btn-primary" @click.prevent="createMode(currentDistributivo)"><i class="fa fa-plus"></i> Añadir</button>
         </div>
         <div v-else>
-            <formulario :data-model.sync="model" :mode.sync="mode"></formulario>
+            <formulario :data-model.sync="model" :mode.sync="mode" :current-distributivo.sync="currentDistributivo"></formulario>
         </div>
 
     </div>
@@ -68,6 +68,8 @@
 <script>
 
     import formulario from './form-fields.vue';
+
+    import mixins from './mixins';
 
     export default{
         components: {
@@ -98,30 +100,7 @@
                 mode: 'list' //edit, create, 'list'
             }
         },
-        methods: {
-            clearModel: function(distributivo){
-                this.model = {
-                    activo: 1,
-                    id: null,
-                    id_distributivo: distributivo.id,
-                    modificable: 0,
-                    nombre: '',
-                    orden: 0
-                }
-            },
-            updateMode: function(model){
-                this.model = model;
-                this.mode = 'edit';
-            },
-            createMode: function(distributivo){
-                this.clearModel(distributivo);
-                this.mode = 'create';
-            },
-            deleteItem: function(model){
-                console.log(model);
-                alert('Se borra este item ' + model.nombre);
-            }
-        }
+        mixins: [mixins]
 
     }
 </script>

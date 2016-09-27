@@ -36,19 +36,14 @@ class ItemDistributivosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id_distributivo)
     {
         $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
-        $itemDistributivos = $this->repository->all();
+        $itemDistributivos = $this->repository->findWhere(['id_distributivo' => $id_distributivo]);
 
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'data' => $itemDistributivos,
-            ]);
-        }
-
-        return view('itemDistributivos.index', compact('itemDistributivos'));
+        return response()->json([
+            'data' => $itemDistributivos,
+        ]);
     }
 
     /**
@@ -58,12 +53,10 @@ class ItemDistributivosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(ItemDistributivoCreateRequest $request)
+    public function store(ItemDistributivoCreateRequest $request, $id_distributivo)
     {
 
         try {
-
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
 
             $itemDistributivo = $this->repository->create($request->all());
 
@@ -72,21 +65,14 @@ class ItemDistributivosController extends Controller
                 'data'    => $itemDistributivo->toArray(),
             ];
 
-            if ($request->wantsJson()) {
+            return response()->json($response);
 
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
         } catch (ValidatorException $e) {
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
-            }
+            return response()->json([
+                'error'   => true,
+                'message' => $e->getMessageBag()
+            ]);
 
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
         }
     }
 
@@ -98,18 +84,13 @@ class ItemDistributivosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($idDistributivo, $id)
     {
         $itemDistributivo = $this->repository->find($id);
 
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'data' => $itemDistributivo,
-            ]);
-        }
-
-        return view('itemDistributivos.show', compact('itemDistributivo'));
+        return response()->json([
+            'data' => $itemDistributivo,
+        ]);
     }
 
 
@@ -137,37 +118,27 @@ class ItemDistributivosController extends Controller
      *
      * @return Response
      */
-    public function update(ItemDistributivoUpdateRequest $request, $id)
+    public function update(ItemDistributivoUpdateRequest $request, $id_distributivo, $id)
     {
 
         try {
 
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
-
-            $itemDistributivo = $this->repository->update($id, $request->all());
+            $itemDistributivo = $this->repository->update($request->only('nombre', 'activo', 'modificable', 'orden'), $id);
 
             $response = [
                 'message' => 'ItemDistributivo updated.',
                 'data'    => $itemDistributivo->toArray(),
             ];
 
-            if ($request->wantsJson()) {
+            return response()->json($response);
 
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
         } catch (ValidatorException $e) {
 
-            if ($request->wantsJson()) {
+            return response()->json([
+                'error'   => true,
+                'message' => $e->getMessageBag()
+            ]);
 
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
-            }
-
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
         }
     }
 
@@ -179,18 +150,14 @@ class ItemDistributivosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id_distributivo, $id)
     {
         $deleted = $this->repository->delete($id);
 
-        if (request()->wantsJson()) {
+        return response()->json([
+            'message' => 'ItemDistributivo deleted.',
+            'deleted' => $deleted,
+        ]);
 
-            return response()->json([
-                'message' => 'ItemDistributivo deleted.',
-                'deleted' => $deleted,
-            ]);
-        }
-
-        return redirect()->back()->with('message', 'ItemDistributivo deleted.');
     }
 }
