@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Entities\ItemDistributivo;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -136,32 +137,21 @@ class DistributivosController extends Controller
 
         try {
 
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
-
-            $distributivo = $this->repository->update($id, $request->all());
+            $distributivo = $this->repository->update($request->only('nombre', 'orden', 'activo'), $id);
 
             $response = [
                 'message' => 'Distributivos updated.',
                 'data'    => $distributivo->toArray(),
             ];
 
-            if ($request->wantsJson()) {
+            return response()->json($response);
 
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
         } catch (ValidatorException $e) {
 
-            if ($request->wantsJson()) {
-
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
-            }
-
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+            return response()->json([
+                'error'   => true,
+                'message' => $e->getMessageBag()
+            ]);
         }
     }
 
@@ -175,16 +165,14 @@ class DistributivosController extends Controller
      */
     public function destroy($id)
     {
+        ItemDistributivo::where('id_distributivo', $id)->delete();
+
         $deleted = $this->repository->delete($id);
 
-        if (request()->wantsJson()) {
+        return response()->json([
+            'message' => 'Distributivos deleted.',
+            'deleted' => $deleted,
+        ]);
 
-            return response()->json([
-                'message' => 'Distributivos deleted.',
-                'deleted' => $deleted,
-            ]);
-        }
-
-        return redirect()->back()->with('message', 'Distributivos deleted.');
     }
 }

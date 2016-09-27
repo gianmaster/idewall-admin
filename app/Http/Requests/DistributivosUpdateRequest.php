@@ -13,7 +13,7 @@ class DistributivosUpdateRequest extends Request
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,9 @@ class DistributivosUpdateRequest extends Request
     public function rules()
     {
         return [
-            //
+            'nombre'        => 'required|min:6',
+            'orden'         => '',
+            'activo'        => 'boolean'
         ];
     }
 }

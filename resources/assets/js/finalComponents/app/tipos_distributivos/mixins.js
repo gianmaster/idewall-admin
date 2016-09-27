@@ -27,18 +27,6 @@
 		toggleLoadButton: function(){
 			this.load_button = !this.load_button;
 		},
-		//for send files silabos
-		uploadFiles: function(){
-			this.load_button = true;
-			let idMateriaMalla = this.currentModel.id;
-			let formData = new FormData(document.querySelector("#frm-silabos"));
-			this.$http.post(this.url+'/' + idMateriaMalla + '/silabos', formData).then(function(resp){
-				fnc.niceAlert('success', 'Se Subieron los archivos correctamente!');
-				this.toggleLoadButton();
-				this.load();//load table
-				this.toggleModal();
-			}, fnc.tryError);
-		},
 		submitForm: function(){
 			if(this.createMode){
 				this.create();
@@ -56,9 +44,9 @@
  			}, fnc.tryError);
  		},
  		update: function(){
-			console.log('entra a modificar', this.currentModel);
 			this.$http.put(this.url + '/' + this.currentModel.id, this.currentModel).then(function(resp){
  				fnc.niceAlert('success', 'Se modificó correctamente la materia!');
+				this.showModal = false;
 				this.load();
  				//this.$router.go('/malla_academica');
  			}, fnc.tryError);

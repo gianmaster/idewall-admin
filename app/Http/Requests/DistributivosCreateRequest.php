@@ -26,8 +26,7 @@ class DistributivosCreateRequest extends Request
         return [
             'nombre'        => 'required|min:6',
             'orden'         => '',
-            'activo'        => 'boolean',
-            'modificable'   => 'boolean'
+            'activo'        => 'boolean'
         ];
     }
 }
