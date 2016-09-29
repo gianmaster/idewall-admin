@@ -28,7 +28,7 @@
 
 
 		<!-- Modal para la creacion y/o edicion del tipo de distributivo -->
-		<app-modal title="Tipo Distributivo - Items" :show.sync="showModalItems" @ok="showModalItems=false" @cancel="showModalItems=false" emit-when-ok="dispatch-ok-modal" :large="true">
+		<app-modal :title="'Tipo Distributivo - '+currentModel.nombre+' - Items'" :show.sync="showModalItems" @ok="showModalItems=false" @cancel="showModalItems=false" emit-when-ok="dispatch-ok-modal" :large="true">
 
 			<div class="row">
 
@@ -76,6 +76,13 @@
 		computed: {
 			getModalTitle: function(){
 				return this.createMode ? 'Crear Tipo Distributivo' : 'Modificar Tipo Distributivo'
+			},
+			getTitleDistributivo: function(){
+				if(this.currentModel.nombre){
+					return '';
+				}else{
+					return `Tipo Distributivo ${this.currentModel.nombre} - Items`;
+				}
 			}
 		},
 		name: 'TiposAtributosGrid',

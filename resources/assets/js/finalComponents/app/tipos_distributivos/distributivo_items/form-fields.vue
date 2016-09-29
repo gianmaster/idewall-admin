@@ -29,9 +29,14 @@
 
 			<hr>
 
-			<button v-if="mode=='create'" class="btn btn-success btn-flat" type="submit"><i class="fa fa-save"></i> GUARDAR</button>
-			<button v-else class="btn btn-warning btn-flat" type="submit"><i class="fa fa-save"></i> GUARDAR CAMBIOS</button>
-			<button class="btn btn-default btn-flat" @click="mode='list'">CANCELAR</button>
+			<template v-if="formLoading">
+				<button class="btn btn-info btn-flat btn-block" type="button" disabled><i class="fa fa-cog fa-spin"></i> Espere por favor...</button>
+			</template>
+			<template v-else>
+				<button v-if="mode=='create'" class="btn btn-success btn-flat" type="submit"><i class="fa fa-save"></i> GUARDAR</button>
+				<button v-else class="btn btn-warning btn-flat" type="submit"><i class="fa fa-save"></i> GUARDAR CAMBIOS</button>
+				<button class="btn btn-default btn-flat" @click="mode='list'">CANCELAR</button>
+			</template>
 
 		</div>
 
@@ -64,7 +69,8 @@
 					}
 				}
 			},
-			currentDistributivo: {}
+			currentDistributivo: {},
+			formLoading: false
 		},
 		mixins: [mixins]
 	}
