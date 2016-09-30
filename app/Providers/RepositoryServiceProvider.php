@@ -39,6 +39,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(\App\Repositories\DistributivosRepository::class, \App\Repositories\DistributivosRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\ItemDistributivoRepository::class, \App\Repositories\ItemDistributivoRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\CicloLayoutReporteRepository::class, \App\Repositories\CicloLayoutReporteRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\HorariosDocentesRepository::class, \App\Repositories\HorariosDocentesRepositoryEloquent::class);
         //:end-bindings:
     }
 }
