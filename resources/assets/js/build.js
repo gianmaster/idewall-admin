@@ -81,6 +81,8 @@ router.map({
 
   '/jornadasemestres': require('./finalComponents/app/jornadas_semestres/index.js'),
 
+  '/horariosdocentes': require('./finalComponents/app/ciclo_horario_docente/index.js'),
+
   '/lockscreen': {
     component: require('./finalComponents/new-layout/lockscreen.vue')
   }

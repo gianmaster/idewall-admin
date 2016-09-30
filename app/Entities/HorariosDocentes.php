@@ -12,6 +12,16 @@ class HorariosDocentes extends Model implements Transformable
 
     protected $table = 'horarios_docentes';
 
-    protected $fillable = ['id','id_distributivo','ciclo_docente','dia','hora_inicio','hora_fin','num_horas'];
+    protected $fillable = ['id','id_item_distributivo','ciclo_docente','dia','hora_inicio','hora_fin','num_horas'];
+
+    public function docente(){
+        return $this->hasOne(CicloDocentes::class, 'id', 'ciclo_docente')
+            ->with('docenteDetail');
+    }
+    
+    public function distributivo(){
+        return $this->hasOne(ItemDistributivo::class, 'id', 'id_item_distributivo')
+            ->with('tipoDistributivo');
+    }
 
 }

@@ -14,6 +14,8 @@ class ItemDistributivo extends Model implements Transformable
 
     protected $table = 'item_distributivos';
 
-
+    public function tipoDistributivo(){
+        return $this->belongsTo(Distributivo::class, 'id', 'id_distributivo');
+    }
 
 }

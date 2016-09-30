@@ -1062,6 +1062,21 @@ class ConfigurationSeeder extends Seeder
             'menu' => $menuJornadaSemestre->id,
         ]);
 
+        //menu horario docentes
+        $menuHorariosDocentes = App\Menu::create([
+            'nombre' => 'horarios_docentes',
+            'titulo' => 'Horarios Docentes',
+            'url' => '/horariosdocentes',
+            'iconclass' => 'fa fa-link',
+            'orden' => 3,
+            'cod_padre' => $menuCargaH->id
+        ]);
+
+        App\RolMenu::create([
+            'rol' => $rolAdmin->id,
+            'menu' => $menuHorariosDocentes->id,
+        ]);
+
 
         /**
          * CONFIGURACION DE LOS TIPOS DE DISTRIBUTIVOS

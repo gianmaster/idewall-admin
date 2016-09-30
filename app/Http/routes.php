@@ -88,6 +88,8 @@ Route::group(['middleware' => 'auth'], function(){
 		Route::get('jornadasemestre/{jornadasemestre}/horario', 'JornadasSemestresController@horarioJornadaSemestre');
 		Route::post('jornadasemestre/{jornadasemestre}/horario', 'JornadasSemestresController@saveHorarioJornadaSemestre');
 
+		Route::resource('ciclohorariodocente', 'HorariosDocentesController');
+
 		//Route::resource('ciclo.docentes.materias', 'MateriasDocentesController');
 
 	});
