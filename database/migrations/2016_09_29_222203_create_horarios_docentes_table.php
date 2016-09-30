@@ -16,8 +16,8 @@ class CreateHorariosDocentesTable extends Migration
 		Schema::create('horarios_docentes', function(Blueprint $table) {
             $table->increments('id');
 
-			$table->integer('id_distributivo')->unsigned();
-			$table->foreign('id_distributivo')->references('id')->on('item_distributivos')->onDelete('cascade');
+			$table->integer('id_item_distributivo')->unsigned();
+			$table->foreign('id_item_distributivo')->references('id')->on('item_distributivos')->onDelete('cascade');
 			
 			$table->integer('ciclo_docente')->unsigned();
 			$table->foreign('ciclo_docente')->references('id')->on('ciclo_docentes')->onDelete('cascade');

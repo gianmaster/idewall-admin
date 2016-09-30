@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use App\Http\Requests;
+use Illuminate\Support\Facades\DB;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Http\Requests\HorariosDocentesCreateRequest;
 use App\Http\Requests\HorariosDocentesUpdateRequest;
 use App\Repositories\HorariosDocentesRepository;
-use App\Validators\HorariosDocentesValidator;
 
 
 class HorariosDocentesController extends Controller
@@ -26,10 +28,20 @@ class HorariosDocentesController extends Controller
      */
     protected $validator;
 
-    public function __construct(HorariosDocentesRepository $repository, HorariosDocentesValidator $validator)
+    public function __construct(HorariosDocentesRepository $repository)
     {
         $this->repository = $repository;
-        $this->validator  = $validator;
+    }
+
+    public function paginateArray($data, $perPage = 15)
+    {
+        $page = Paginator::resolveCurrentPage();
+        $total = count($data);
+        $results = array_slice($data, ($page - 1) * $perPage, $perPage);
+
+        return new LengthAwarePaginator($results, $total, $perPage, $page, [
+            'path' => Paginator::resolveCurrentPath(),
+        ]);
     }
 
 
@@ -40,17 +52,40 @@ class HorariosDocentesController extends Controller
      */
     public function index()
     {
-        $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
-        $horariosDocentes = $this->repository->all();
+        $data = DB::select("select
+                                  c.id,
+                                  c.anio,
+                                  c.ciclo,
+                                  cd.id ciclo_docente,
+                                  d.abreviatura,
+                                  d.nombres,
+                                  d.apellidos,
+                                  d.identificacion,
+                                  sum(hc.num_horas) horas_academicas_asignadas
+                                from docentes d,
+                                  ciclo_docentes cd,
+                                  ciclos c,
+                                  horarios_cursos hc,
+                                  ciclo_materias_docente cmd,
+                                  jornadas_semestres js
+                                where c.id = 1
+                                and cd.ciclo = c.id
+                                and d.id = cd.docente
+                                and cmd.ciclo_docente = cd.id
+                                and hc.ciclo_materia_docente = cmd.id
+                                and hc.ciclo_jornada_semestre = js.id
+                                and js.ciclo = c.id
+                                group by
+                                  c.id,
+                                  c.anio,
+                                  c.ciclo,
+                                  cd.id,
+                                  d.abreviatura,
+                                  d.nombres,
+                                  d.apellidos,
+                                  d.identificacion");
 
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'data' => $horariosDocentes,
-            ]);
-        }
-
-        return view('horariosDocentes.index', compact('horariosDocentes'));
+        return response()->json($this->paginateArray($data));
     }
 
     /**
