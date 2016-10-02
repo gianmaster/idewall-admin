@@ -84,6 +84,8 @@ Route::group(['middleware' => 'auth'], function(){
 		Route::get('ciclo/{ciclo}/docentes', 'CiclosController@docentesCiclo');
 		Route::put('docentes/materias/{id}', ['uses' => 'CiclosController@updateMateriasDocenteCiclo', 'as' => 'api.docentes.materias']);
 
+		Route::resource('ciclodocente', 'CicloDocentesController');
+
 		Route::resource('jornadasemestre', 'JornadasSemestresController');
 
 		Route::get('jornadasemestre/{jornadasemestre}/horario', 'JornadasSemestresController@horarioJornadaSemestre');
