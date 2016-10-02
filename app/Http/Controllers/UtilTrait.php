@@ -7,6 +7,9 @@ use Mockery\Exception;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
 
+use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+
 trait UtilTrait{
 
 	public function validationMessages($messages){
@@ -104,6 +107,23 @@ trait UtilTrait{
  
         $text = preg_replace(array_keys($patron),array_values($patron),$text);
         return $text;
+    }
+
+
+    /**
+     * @param $data
+     * @param int $perPage
+     * @return LengthAwarePaginator
+     */
+    public function paginateArray($data, $perPage = 15)
+    {
+        $page = Paginator::resolveCurrentPage();
+        $total = count($data);
+        $results = array_slice($data, ($page - 1) * $perPage, $perPage);
+
+        return new LengthAwarePaginator($results, $total, $perPage, $page, [
+            'path' => Paginator::resolveCurrentPath(),
+        ]);
     }
 
 

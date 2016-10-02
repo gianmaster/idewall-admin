@@ -15,7 +15,7 @@ class Distributivo extends Model implements Transformable
     protected $fillable = ['nombre', 'activo', 'orden', 'id'];
 
     public function items(){
-        return $this->hasMany(ItemDistributivo::class, 'id_distributivo', 'id');
+        return $this->hasMany(ItemDistributivo::class, 'id_distributivo', 'id')->orderBy('orden', 'asc');
     }
 
 }

@@ -41,8 +41,14 @@
 
 	import myMixins from './mixins';
 
-	const tagL = "<span class='color-palette label bg-primary'>";
-	const tagR = "</span>";
+	function formateaHora(hora){
+		const time = hora.split('.');
+		if(time[1] == 50){
+			return `${time[0]}:30H`;
+		}else{
+			return `${time[0]}:00H`;
+		}
+	}
 
 	export default {
 		mixins: [myMixins],
@@ -65,6 +71,8 @@
 					title: 'Período',
 					field: 'anio',
 					hidden: false,
+					titleClass: 'text-center',
+					fieldClass: 'text-center',
 					sortable: true,
 					template: '${col.anio} - ${col.anio+1} (${col.ciclo})'
 				},
@@ -78,15 +86,19 @@
 				{
 					title: 'Identificación',
 					field: 'identificacion',
+					titleClass: 'text-center',
+					fieldClass: 'text-center',
 					hidden: false,
 					sortable: true
 				},
 				{
 					title: 'Horas Clases',
 					field: 'horas_academicas_asignadas',
+					titleClass: 'text-center',
+					fieldClass: 'text-center',
 					hidden: false,
 					sortable: false,
-					template: '<span class="text-green"><i class="fa fa-clock"></i> ${col.horas_academicas_asignadas}</span>'
+					template: '<span class="text-green"><i class="fa fa-clock-o"></i> ${col.horas_academicas_asignadas.replace(".",":").replace("5","3")}H</span>'
 				},//color-palette label bg-navy
 				{
 					title: 'Opciones',
@@ -114,8 +126,7 @@
 		},
 		events: {
 			'horario-docente-event' : function(model){
-				this.toggleDataModel(model.docente_detail, model.materias_docente_ciclo);
-				this.toggleModal();
+				this.$router.go(`/horariosdocentes/edit/${model.ciclo_docente}`);
 			},
 			//when modal emit ok
 			'event-end-edit': function(){
@@ -125,3 +136,4 @@
 	}
 
 </script>
+
