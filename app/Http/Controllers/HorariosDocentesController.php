@@ -18,6 +18,8 @@ use App\Repositories\HorariosDocentesRepository;
 class HorariosDocentesController extends Controller
 {
 
+    use UtilTrait;
+
     /**
      * @var HorariosDocentesRepository
      */
@@ -31,17 +33,6 @@ class HorariosDocentesController extends Controller
     public function __construct(HorariosDocentesRepository $repository)
     {
         $this->repository = $repository;
-    }
-
-    public function paginateArray($data, $perPage = 15)
-    {
-        $page = Paginator::resolveCurrentPage();
-        $total = count($data);
-        $results = array_slice($data, ($page - 1) * $perPage, $perPage);
-
-        return new LengthAwarePaginator($results, $total, $perPage, $page, [
-            'path' => Paginator::resolveCurrentPath(),
-        ]);
     }
 
 

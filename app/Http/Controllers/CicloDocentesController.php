@@ -74,21 +74,13 @@ class CicloDocentesController extends Controller
                 'data'    => $cicloDocente->toArray(),
             ];
 
-            if ($request->wantsJson()) {
+            return response()->json($response);
 
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
         } catch (ValidatorException $e) {
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
-            }
-
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+            return response()->json([
+                'error'   => true,
+                'message' => $e->getMessageBag()
+            ]);
         }
     }
 
@@ -102,16 +94,16 @@ class CicloDocentesController extends Controller
      */
     public function show($id)
     {
-        $cicloDocente = $this->repository->find($id);
+        $cicloDocente = $this->repository
+            ->with('cicloDetail')
+            ->with('docenteDetail')
+            ->with('materiasDocenteCiclo')
+            ->find($id);
 
-        if (request()->wantsJson()) {
+        return response()->json([
+            'data' => $cicloDocente,
+        ]);
 
-            return response()->json([
-                'data' => $cicloDocente,
-            ]);
-        }
-
-        return view('cicloDocentes.show', compact('cicloDocente'));
     }
 
 

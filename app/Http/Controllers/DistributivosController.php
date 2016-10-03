@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Entities\Distributivo;
 use App\Entities\ItemDistributivo;
 use Illuminate\Http\Request;
 
@@ -29,6 +30,11 @@ class DistributivosController extends Controller
     public function __construct(DistributivosRepository $repository)
     {
         $this->repository = $repository;
+    }
+
+    public function getAll(){
+        $data = Distributivo::where('activo', true)->with('items')->get();
+        return response()->json(array('data' => $data));
     }
 
 

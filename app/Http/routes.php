@@ -69,6 +69,7 @@ Route::group(['middleware' => 'auth'], function(){
 		Route::resource('catalogos.items', 'CatalogoItemsController');
 
 		Route::resource('tiposdistributivo', 'DistributivosController');
+		Route::get('tipodistributivo/all', 'DistributivosController@getAll');
 		Route::resource('tiposdistributivo.item', 'ItemDistributivosController');
 
 		Route::get('malla_academica/all', 'MallaAcademicaController@indexAll');
@@ -82,6 +83,8 @@ Route::group(['middleware' => 'auth'], function(){
 		Route::get('ciclo', 'CiclosController@index');
 		Route::get('ciclo/{ciclo}/docentes', 'CiclosController@docentesCiclo');
 		Route::put('docentes/materias/{id}', ['uses' => 'CiclosController@updateMateriasDocenteCiclo', 'as' => 'api.docentes.materias']);
+
+		Route::resource('ciclodocente', 'CicloDocentesController');
 
 		Route::resource('jornadasemestre', 'JornadasSemestresController');
 
