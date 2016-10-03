@@ -130,14 +130,10 @@ class HorariosDocentesController extends Controller
     {
         $horariosDocente = $this->repository->find($id);
 
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'data' => $horariosDocente,
-            ]);
-        }
-
-        return view('horariosDocentes.show', compact('horariosDocente'));
+        return response()->json([
+            'data' => $horariosDocente,
+        ]);
+        
     }
 
 

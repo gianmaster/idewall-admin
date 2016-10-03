@@ -70,7 +70,15 @@
                             </tr>
                             <tr v-if="elem.tipo=='hora'">
                                 <td class="td-formato"><strong>{{elem.hora}}</strong></td>
-                                <td class="td-formato" v-for="item in elem.filas">{{item.texto}}</td>
+                                <template v-for="item in elem.filas">
+                                    <td v-if="!item.bloq" class="td-formato" @dragover.prevent @drop="onDropDistributivo($event, item)" @dragleave="onDistributivoLeave" @dragenter="onDistributivoEnter">
+                                        <small>{{item.label}}</small>
+                                    </td>
+                                    <td v-else class="my_disabled td-formato">
+                                        <small>Bloqueado!</small>
+                                    </td>
+                                </template>
+                                <td class="td-formato" v-for="item in elem.filas"></td>
                             </tr>
                         </template>
                         </tbody>
@@ -104,8 +112,13 @@
     }
 
     .table-container{
-        height: 600px;
+        height: 520px;
         overflow: auto;
+    }
+
+    .my_disabled{
+        cursor: no-drop;
+        background-color: #d6d6d6;
     }
 
     .td-hora{
@@ -121,7 +134,35 @@
         color: #7797aa;
     }
     .enter-item{
-        border: 2px dashed #279664;
+        background-color: #9df1cb;
+    }
+
+    .grupo__materias{
+        background-color: rgba(73, 108, 254, 0.66) !important;
+    }
+
+    .grupo__1{
+        background-color: rgba(142, 118, 254, 0.66) !important;
+    }
+
+    .grupo__2{
+        background-color: rgba(254, 203, 78, 0.66) !important;
+    }
+
+    .grupo__3{
+        background-color: rgba(254, 139, 72, 0.66) !important;
+    }
+
+    .grupo__4{
+        background-color: rgba(254, 51, 54, 0.66) !important;
+    }
+
+    .grupo__5{
+        background-color: rgba(182, 93, 254, 0.66) !important;
+    }
+
+    .grupo__6{
+        background-color: rgba(180, 254, 76, 0.66) !important;
     }
 
 </style>
@@ -131,6 +172,7 @@
 
     import Loading from '../../../reusable/loading.vue';
     import fnc from '../../../../util/reusable_functions';
+    import _ from 'lodash';
 
     export default{
         name: 'horarioDocente',
@@ -150,270 +192,271 @@
                 urlCicloDocente: 'api/ciclodocente',
                 distributivos: [],
                 docente: {},
+                horario_materias: [],
                 horario: [
                     {tipo: 'jornada', filas: 'MATUTINA'},
                     {tipo: 'head', filas: CABECERA},
                     {tipo: 'hora', hora: '07:30 - 08:00', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '08:00 - 08:30', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '08:30 - 09:00', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '09:00 - 09:30', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: true},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '09:30 - 10:00', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '10:00 - 10:30', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '10:30 - 11:00', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '11:00 - 11:30', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '11:30 - 11:30', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '12:00 - 12:30', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
 
                     {tipo: 'jornada', filas: 'VESPERTINA'},
                     {tipo: 'head', filas: CABECERA},
                     {tipo: 'hora', hora: '12:30 - 13:00', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '13:00 - 13:30', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '13:30 - 14:00', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '14:00 - 14:30', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '14:30 - 15:00', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '15:00 - 15:30', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '15:30 - 16:00', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '16:00 - 16:30', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '16:30 - 17:00', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '17:00 - 17:30', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '17:30 - 18:00', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '18:00 - 18:40', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '17:30 - 18:00', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
 
                     {tipo: 'jornada', filas: 'NOCTURNA'},
                     {tipo: 'head', filas: CABECERA},
                     {tipo: 'hora', hora: '18:00 - 18:40', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '18:40 - 19:10', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '19:10 - 19:40', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '19:40 - 20:10', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '20:10 - 20:40', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '20:40 - 21:10', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '21:10 - 21:40', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '21:40 - 22:10', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]},
                     {tipo: 'hora', hora: '22:10 - 22:40', filas: [
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
-                        {dia: 'LUNES', cod: 1, texto: 'Algo'},
+                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
+                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
                     ]}
                 ]
             }
@@ -438,8 +481,15 @@
             this.load();
         },
         methods: {
-            onDropDistributivo: function(e){
-                console.log(e);
+            onDropDistributivo: function(e, item){
+                console.log(e, item);
+                e.target.classList.remove('enter-item');
+            },
+            onDistributivoLeave: function(e){
+                e.target.classList.remove('enter-item');
+            },
+            onDistributivoEnter: function (e) {
+                e.target.classList.add('enter-item');
             },
             loadDistributivos: function(){
                 this.loadingDistributivos = true;
@@ -454,6 +504,7 @@
                 let _this = this;
                 this.$http.get(`${this.urlCicloDocente}/${this.$route.params.model_id}`).then(function(resp){
                     _this.docente = resp.data.data;
+                    _this.loadMaterias();
                     _this.loadingDocente = false;
                 }, fnc.tryError);
             },
@@ -463,6 +514,35 @@
             load: function(){
                 this.loadDistributivos();
                 this.loadDocente();
+            },
+            materiasHorarioDocente: function () {
+                let hr = this.horario;
+                for(let hItem of hr){
+                    if(hItem.tipo == 'hora'){
+                        const umbral = hItem.split(' - ');
+                        const hIni = fnc.horaCharToNum(umbral[0]);
+                        const hFin = fnc.horaCharToNum(umbral[1]);
+                    }
+                }
+            },
+            loadMaterias: function(){
+                let matList = [];
+                for(let item of this.docente.materias_docente_ciclo){
+                    const materia = item.materia_detail.nombre_materia;
+                    const sem = item.materia_detail.semestre;
+                    for(let subItem of item.horarios_materia_docente){
+                        matList.push({
+                            id: subItem.id,
+                            dia: subItem.dia,
+                            hora_inicio: subItem.hora_inicio,
+                            hora_fin: subItem.hora_fin,
+                            num_horas: subItem.num_horas,
+                            nombre_materia: materia,
+                            semestre: sem
+                        });
+                    }
+                }
+                this.horario_materias = matList;
             }
         }
 

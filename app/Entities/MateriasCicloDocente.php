@@ -27,9 +27,13 @@ class MateriasCicloDocente extends Model implements Transformable
     public function docenteDetail(){
         return $this->belongsTo(CicloDocentes::class, 'ciclo_docente');
     }
-    
+
     public function horarioMateriaDocente(){
         return $this->hasOne(HorariosCursos::class, 'ciclo_materia_docente', 'id');
+    }
+
+    public function horariosMateriaDocente(){
+        return $this->hasMany(HorariosCursos::class, 'ciclo_materia_docente', 'id');
     }
 
     public function horarioDetalleMateriasDocente()
