@@ -21,7 +21,7 @@
                                 <table v-if="dist.items.length > 0">
                                     <tr v-for="item in dist.items">
                                         <td colspan="2">
-                                            <span class="__is_draggable" draggable="true">{{item.nombre}}</span>
+                                            <span class="__is_draggable" draggable="true" @drag="onDragDistributivo($event, item)">{{item.nombre}}</span>
                                         </td>
                                     </tr>
                                 </table>
@@ -29,7 +29,7 @@
                         </tr>
                     </table>
                 </div><!-- /.box-body -->
-                <div class="box-footer" @dragover.prevent @drop="onDropDistributivo">
+                <div class="box-footer">
                     <p class="text-green">Arrastre <code><i class="fa fa-arrows"></i></code> el tipo de distributivo</p>
                     <hr>
                     <div class="form-group">
@@ -64,12 +64,12 @@
                                 </td>
                             </tr>
                             <tr v-if="elem.tipo=='head'">
-                                <td v-for="cab in elem.filas" class="td-formato">
-                                    <strong>{{cab}}</strong>
+                                <td v-for="cabecera in elem.filas" class="td-formato">
+                                    <strong>{{cabecera}}</strong>
                                 </td>
                             </tr>
                             <tr v-if="elem.tipo=='hora'">
-                                <td class="td-formato"><strong>{{elem.hora}}</strong></td>
+                                <td class="td-formato"><small><strong>{{elem.hora}}</strong></small></td>
                                 <template v-for="item in elem.filas">
                                     <td v-if="!item.bloq" class="td-formato" @dragover.prevent @drop="onDropDistributivo($event, item)" @dragleave="onDistributivoLeave" @dragenter="onDistributivoEnter">
                                         <small>{{item.label}}</small>
@@ -78,7 +78,6 @@
                                         <small>Bloqueado!</small>
                                     </td>
                                 </template>
-                                <td class="td-formato" v-for="item in elem.filas"></td>
                             </tr>
                         </template>
                         </tbody>
@@ -133,7 +132,7 @@
         height: 2.15em;
         color: #7797aa;
     }
-    .enter-item{
+    .enter-item-h{
         background-color: #9df1cb;
     }
 
@@ -168,8 +167,7 @@
 </style>
 <script>
 
-    const CABECERA = ['HORA', 'LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO'];
-
+    import store from './data_horario';
     import Loading from '../../../reusable/loading.vue';
     import fnc from '../../../../util/reusable_functions';
     import _ from 'lodash';
@@ -181,289 +179,15 @@
                 otros:'',
                 loadingDocente: true,
                 loadingDistributivos: true,
-                tipoDistributivos: [
-                    'item 1',
-                    'item 2',
-                    'item 3',
-                    'item 4',
-                    'item 5'
-                ],
                 urlDistributivos: 'api/tipodistributivo/all',
                 urlCicloDocente: 'api/ciclodocente',
                 distributivos: [],
                 docente: {},
                 horario_materias: [],
-                horario: [
-                    {tipo: 'jornada', filas: 'MATUTINA'},
-                    {tipo: 'head', filas: CABECERA},
-                    {tipo: 'hora', hora: '07:30 - 08:00', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '08:00 - 08:30', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '08:30 - 09:00', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '09:00 - 09:30', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: true},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '09:30 - 10:00', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '10:00 - 10:30', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '10:30 - 11:00', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '11:00 - 11:30', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '11:30 - 11:30', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '12:00 - 12:30', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-
-                    {tipo: 'jornada', filas: 'VESPERTINA'},
-                    {tipo: 'head', filas: CABECERA},
-                    {tipo: 'hora', hora: '12:30 - 13:00', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '13:00 - 13:30', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '13:30 - 14:00', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '14:00 - 14:30', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '14:30 - 15:00', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '15:00 - 15:30', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '15:30 - 16:00', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '16:00 - 16:30', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '16:30 - 17:00', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '17:00 - 17:30', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '17:30 - 18:00', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '18:00 - 18:40', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '17:30 - 18:00', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-
-                    {tipo: 'jornada', filas: 'NOCTURNA'},
-                    {tipo: 'head', filas: CABECERA},
-                    {tipo: 'hora', hora: '18:00 - 18:40', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '18:40 - 19:10', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '19:10 - 19:40', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '19:40 - 20:10', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '20:10 - 20:40', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '20:40 - 21:10', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '21:10 - 21:40', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '21:40 - 22:10', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]},
-                    {tipo: 'hora', hora: '22:10 - 22:40', filas: [
-                        {dia: 'LUNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 1, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 1, label: 'Vacío', bloq: false},
-                    ]}
-                ]
+                horario: store.formatoHorario,
+                tmpDistributivo: {}
             }
         },
-        /*
-         ['07:30','08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','18:40','19:10','19:40','20:10','20:40','21:10','21:40','22:10','22:40']
-        * */
         components: {
             appLoading: Loading
         },
@@ -481,15 +205,17 @@
             this.load();
         },
         methods: {
+            onDragDistributivo: function(e, item){
+                this.tmpDistributivo = item;
+            },
             onDropDistributivo: function(e, item){
-                console.log(e, item);
-                e.target.classList.remove('enter-item');
+                e.target.classList.remove('enter-item-h');
             },
             onDistributivoLeave: function(e){
-                e.target.classList.remove('enter-item');
+                e.target.classList.remove('enter-item-h');
             },
             onDistributivoEnter: function (e) {
-                e.target.classList.add('enter-item');
+                e.target.classList.add('enter-item-h');
             },
             loadDistributivos: function(){
                 this.loadingDistributivos = true;
