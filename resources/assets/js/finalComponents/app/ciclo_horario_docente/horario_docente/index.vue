@@ -14,17 +14,25 @@
                     </div><!-- /.box-tools -->
                 </div><!-- /.box-header -->
                 <div class="box-body">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered" id="tabla_distributivos">
                         <tr v-for="dist in distributivos">
                             <td class="td-valign text-center">{{dist.nombre}}</td>
                             <td colspan="2">
-                                <table v-if="dist.items.length > 0">
+                                <table v-if="dist.items.length > 0" width="100%">
                                     <tr v-for="item in dist.items">
                                         <td colspan="2">
                                             <span class="__is_draggable" draggable="true" @drag="onDragDistributivo($event, item)">{{item.nombre}}</span>
                                         </td>
+                                        <td width="5%">
+                                            <span class="text-green"> 0</span>
+                                        </td>
                                     </tr>
                                 </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-center" colspan="3">
+                                <strong>TOTAL HORAS</strong> <span class="text-green pull-right"> 40</span>
                             </td>
                         </tr>
                     </table>
@@ -34,7 +42,7 @@
                     <hr>
                     <div class="form-group">
                         <label for="otro"><span class="text-primary">Descripción </span><span class="text-red">"OTRO"</span></label>
-                        <input class="form-control" type="text" name="otro" id="otro" placeholder="Ingrese la definición de el item modificable" v-model="otros">
+                        <input class="form-control" type="text" name="otro" id="otro" placeholder="Ingrese la definición de el item modificable" v-model="descripcionOtro">
                     </div>
                 </div>
             </div><!-- /.box -->
@@ -55,7 +63,7 @@
                 </div><!-- /.box-header -->
                 <div class="box-body table-container">
 
-                    <table class="table table-bordered">
+                    <table class="table table-bordered" id="tabla_horario">
                         <tbody>
                         <template v-for="elem in horario">
                             <tr v-if="elem.tipo=='jornada'">
@@ -64,18 +72,23 @@
                                 </td>
                             </tr>
                             <tr v-if="elem.tipo=='head'">
-                                <td v-for="cabecera in elem.filas" class="td-formato">
-                                    <strong>{{cabecera}}</strong>
+                                <td v-for="cabecera in elem.filas" class="td-formato {{$index==0?'__hora':''}}">
+                                    <strong>{{cabecera}}</strong><!-- para la cabecera hora se agrega porcentaje -->
                                 </td>
                             </tr>
                             <tr v-if="elem.tipo=='hora'">
-                                <td class="td-formato"><small><strong>{{elem.hora}}</strong></small></td>
+                                <td class="td-formato"><strong>{{elem.hora}}</strong></td>
                                 <template v-for="item in elem.filas">
-                                    <td v-if="!item.bloq" class="td-formato" @dragover.prevent @drop="onDropDistributivo($event, item)" @dragleave="onDistributivoLeave" @dragenter="onDistributivoEnter">
-                                        <small>{{item.label}}</small>
+                                    <td v-if="!item.bloq" class="td-formato" draggable="true" @drag="onDragCellDistributivo($event, item)" @dragover.prevent @drop="onDropDistributivo($event, item)" @dragleave="onDistributivoLeave" @dragenter="onDistributivoEnter">
+                                        <template v-if="item.label == 'OTRO' && descripcionOtro != ''">
+                                            {{descripcionOtro}}
+                                        </template>
+                                        <template v-else>
+                                            {{item.label}}
+                                        </template>
                                     </td>
                                     <td v-else class="my_disabled td-formato">
-                                        <small>Bloqueado!</small>
+                                        {{item.label}}
                                     </td>
                                 </template>
                             </tr>
@@ -92,6 +105,10 @@
 </template>
 <style>
 
+    .__hora{
+        width: 15%;
+    }
+
     .td-valign{
         vertical-align: middle !important;
     }
@@ -103,6 +120,13 @@
         background: #f4f8f6;
         padding: 0 1%;
         border: dashed 1px #74ce74;
+    }
+
+    #tabla_horario tbody tr td{
+        font-size: 80% !important;
+    }
+    #tabla_distributivos{
+        font-size: 85%;
     }
 
     .td-formato{
@@ -133,7 +157,7 @@
         color: #7797aa;
     }
     .enter-item-h{
-        background-color: #9df1cb;
+        background-color: #9df1cb !important;
     }
 
     .grupo__materias{
@@ -141,27 +165,27 @@
     }
 
     .grupo__1{
-        background-color: rgba(142, 118, 254, 0.66) !important;
+        background-color: rgba(142, 118, 254, 0.66);
     }
 
     .grupo__2{
-        background-color: rgba(254, 203, 78, 0.66) !important;
+        background-color: rgba(254, 203, 78, 0.66);
     }
 
     .grupo__3{
-        background-color: rgba(254, 139, 72, 0.66) !important;
+        background-color: rgba(254, 139, 72, 0.66);
     }
 
     .grupo__4{
-        background-color: rgba(254, 51, 54, 0.66) !important;
+        background-color: rgba(254, 51, 54, 0.66);
     }
 
     .grupo__5{
-        background-color: rgba(182, 93, 254, 0.66) !important;
+        background-color: rgba(182, 93, 254, 0.66);
     }
 
     .grupo__6{
-        background-color: rgba(180, 254, 76, 0.66) !important;
+        background-color: rgba(180, 254, 76, 0.66);
     }
 
 </style>
@@ -176,7 +200,7 @@
         name: 'horarioDocente',
         data(){
             return{
-                otros:'',
+                descripcionOtro:'',
                 loadingDocente: true,
                 loadingDistributivos: true,
                 urlDistributivos: 'api/tipodistributivo/all',
@@ -208,8 +232,22 @@
             onDragDistributivo: function(e, item){
                 this.tmpDistributivo = item;
             },
+            onDragCellDistributivo: function(e, item){
+                this.tmpDistributivo.id = item.cod;
+                this.tmpDistributivo.nombre = item.label;
+                this.tmpDistributivo.id_distributivo = item.cod_padre;
+            },
             onDropDistributivo: function(e, item){
-                e.target.classList.remove('enter-item-h');
+                if(!item.bloq){
+                    item.cod = this.tmpDistributivo.id;
+                    item.label = this.tmpDistributivo.nombre;
+                    item.cod_padre = this.tmpDistributivo.id_distributivo;
+                    e.target.classList.remove('enter-item-h');
+                    for(let i=0; i<=6; i++){
+                        e.target.classList.remove('grupo__' + i);
+                    }
+                    e.target.classList.add('grupo__' + this.tmpDistributivo.id_distributivo);
+                }
             },
             onDistributivoLeave: function(e){
                 e.target.classList.remove('enter-item-h');
