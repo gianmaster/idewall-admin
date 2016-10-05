@@ -81,15 +81,20 @@
                                 <template v-for="item in elem.filas">
                                     <td v-if="!item.bloq" class="td-formato" draggable="true" @drag="onDragCellDistributivo($event, item)" @dragover.prevent @drop="onDropDistributivo($event, item)" @dragleave="onDistributivoLeave" @dragenter="onDistributivoEnter">
                                         <template v-if="item.label == 'OTRO' && descripcionOtro != ''">
-                                            {{descripcionOtro}}
+                                            {{descripcionOtro | uppercase}}
                                         </template>
                                         <template v-else>
                                             {{item.label}}
                                         </template>
                                     </td>
-                                    <td v-else class="my_disabled td-formato">
-                                        {{item.label}}
-                                    </td>
+                                    <template v-else>
+                                        <td v-if="item.cod < 0" class="my_disabled td-formato grupo__materias">
+                                            {{item.label}}
+                                        </td>
+                                        <td v-else class="my_disabled td-formato">
+                                            {{item.label}}
+                                        </td>
+                                    </template>
                                 </template>
                             </tr>
                         </template>
@@ -247,6 +252,7 @@
                         e.target.classList.remove('grupo__' + i);
                     }
                     e.target.classList.add('grupo__' + this.tmpDistributivo.id_distributivo);
+                    this.tmpDistributivo = {id: 0, id_distributivo: 0, nombre: ''};
                 }
             },
             onDistributivoLeave: function(e){
@@ -269,6 +275,7 @@
                 this.$http.get(`${this.urlCicloDocente}/${this.$route.params.model_id}`).then(function(resp){
                     _this.docente = resp.data.data;
                     _this.loadMaterias();
+                    _this.horarioMaterias();
                     _this.loadingDocente = false;
                 }, fnc.tryError);
             },
@@ -307,6 +314,29 @@
                     }
                 }
                 this.horario_materias = matList;
+            },
+            horarioMaterias: function(){
+                for(let materia of this.horario_materias){
+                    const ini = fnc.horaCharToNum(materia.hora_inicio);
+                    const fin = fnc.horaCharToNum(materia.hora_fin);
+                    for(let item of this.horario){
+                        if (item.tipo == 'hora') {
+                            const hIni = fnc.horaCharToNum(item.hora.split(' - ')[0]);
+                            const hFin = fnc.horaCharToNum(item.hora.split(' - ')[1]);
+                            for(let fila of item.filas){
+                                if(fila.dia == materia.dia) {
+                                    if ((hIni >= ini && ini <= hFin) || (hIni >= fin && fin <= hFin)) {
+                                        fila.bloq = true;
+                                        fila.cod = -1;
+                                        fila.cod_padre = -1;
+                                        fila.label = materia.nombre_materia + ' - ' + materia.semestre;
+                                        //console.log('entra', materia.nombre_materia);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
