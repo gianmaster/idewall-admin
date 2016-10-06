@@ -217,4 +217,35 @@ class HorariosDocentesController extends Controller
 
         return redirect()->back()->with('message', 'HorariosDocentes deleted.');
     }
+
+
+    /**
+     * @param $cicloDocente
+     * @return mixed
+     */
+    public function horarioCicloDocente($cicloDocente){
+
+        $horarioDocente = DB::select("select cd.id ciclo_docente,
+                      cmd.id ciclo_materia_docente,
+                      ma.nombre_materia,
+                      ma.codigo_materia,
+                      hc.dia,
+                      hc.hora_inicio,
+                      hc.hora_fin,
+                      hc.num_horas
+                    from malla_academica ma,
+                      ciclo_docentes cd,
+                      ciclo_materias_docente cmd,
+                      horarios_cursos hc
+                    where cd.id = $cicloDocente
+                    and cmd.ciclo_docente = cd.id
+                    and hc.ciclo_materia_docente = cmd.id
+                    and cmd.materia = ma.id");
+
+        return response()->json(array(
+            'horario_materias'  => $horarioDocente
+        ));
+
+    }
+
 }
