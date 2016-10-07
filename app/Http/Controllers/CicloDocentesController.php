@@ -187,4 +187,7 @@ class CicloDocentesController extends Controller
 
         return redirect()->back()->with('message', 'CicloDocentes deleted.');
     }
+
+
+
 }
