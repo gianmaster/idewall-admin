@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Entities\CicloDocentes;
+use App\Entities\Distributivo;
+use App\Repositories\CicloDocentesRepository;
+use App\Validators\CicloDocentesValidator;
 use Illuminate\Http\Request;
 
 use Illuminate\Pagination\Paginator;
@@ -217,4 +221,45 @@ class HorariosDocentesController extends Controller
 
         return redirect()->back()->with('message', 'HorariosDocentes deleted.');
     }
+
+
+    /**
+     * @param $cicloDocente
+     * @return mixed
+     */
+    public function horarioCicloDocente($cicloDocente){
+
+        $dataCicloDocente = CicloDocentes::with('cicloDetail')
+            ->with('docenteDetail')
+            ->with('materiasDocenteCiclo')
+            ->find($cicloDocente);
+
+        $distributivos = Distributivo::where('activo', true)->with('items')->get();
+        
+        $horarioDocente = DB::select("select cd.id ciclo_docente,
+                                  cmd.id ciclo_materia_docente,
+                                  ma.nombre_materia,
+                                  ma.codigo_materia,
+                                  hc.dia,
+                                  ma.semestre,
+                                  hc.hora_inicio,
+                                  hc.hora_fin,
+                                  hc.num_horas
+                                from malla_academica ma,
+                                  ciclo_docentes cd,
+                                  ciclo_materias_docente cmd,
+                                  horarios_cursos hc
+                                where cd.id = $cicloDocente
+                                and cmd.ciclo_docente = cd.id
+                                and hc.ciclo_materia_docente = cmd.id
+                                and cmd.materia = ma.id");
+
+        return response()->json(array(
+            'horario_materias'  => $horarioDocente,
+            'ciclo_docente'     => $dataCicloDocente,
+            'distributivos'     => $distributivos
+        ));
+
+    }
+
 }
