@@ -21,10 +21,11 @@
                                 <table v-if="dist.items.length > 0" width="100%">
                                     <tr v-for="item in dist.items">
                                         <td colspan="2">
-                                            <span class="__is_draggable" draggable="true" @drag="onDragDistributivo($event, item)">{{item.nombre}}</span>
+                                            <span v-if="item.id==1" class="my_disabled">{{item.nombre}}</span><!-- No dejar arrastrar materias -->
+                                            <span v-else class="__is_draggable" draggable="true" @drag="onDragDistributivo($event, item)">{{item.nombre}}</span>
                                         </td>
                                         <td width="5%">
-                                            <span class="text-green"> 0</span>
+                                            <span class="text-green"> {{item.total_horas}}</span>
                                         </td>
                                     </tr>
                                 </table>
@@ -32,7 +33,7 @@
                         </tr>
                         <tr>
                             <td class="text-center" colspan="3">
-                                <strong>TOTAL HORAS</strong> <span class="text-green pull-right"> 40</span>
+                                <strong>TOTAL HORAS</strong> <span class="text-green pull-right"> {{global_horas}}</span>
                             </td>
                         </tr>
                     </table>
@@ -208,10 +209,7 @@
         data(){
             return{
                 descripcionOtro:'',
-                loadingDocente: true,
-                loadingDistributivos: true,
-                urlDistributivos: 'api/tipodistributivo/all',
-                urlCicloDocente: 'api/ciclodocente',
+                loading: true,
                 url: 'api/horariomateriasdocente',
                 distributivos: [],
                 docente: {},
@@ -482,16 +480,12 @@
                         {dia: 'SABADO', cod: 0, cod_padre: 0, label: 'Vacío', bloq: true},
                     ]}
                 ],
-                tmpDistributivo: {}
+                tmpDistributivo: {},
+                global_horas: 0
             }
         },
         components: {
             appLoading: Loading
-        },
-        computed: {
-            loading: function(){
-                return this.loadingDistributivos || this.loadingDocente;
-            }
         },
         route: {
             data: function(transition){
@@ -521,6 +515,7 @@
                     }
                     e.target.classList.add('grupo__' + this.tmpDistributivo.id_distributivo);
                     this.tmpDistributivo = {id: 0, id_distributivo: 0, nombre: ''};
+                    this.calculaHorasDistributivos();
                 }
             },
             onDistributivoLeave: function(e){
@@ -529,41 +524,61 @@
             onDistributivoEnter: function (e) {
                 e.target.classList.add('enter-item-h');
             },
-            loadDistributivos: function(){
-                this.loadingDistributivos = true;
-                let _this = this;
-                this.$http.get(this.urlDistributivos).then(function(resp){
-                    _this.distributivos = resp.data.data;
-                    _this.loadingDistributivos = false;
-                }, fnc.tryError);
-            },
-            loadDocente: function(){
-                this.loadingDocente = false;
-                let _this = this;
-                this.$http.get(`${this.urlCicloDocente}/${this.$route.params.model_id}`).then(function(resp){
-                    _this.docente = resp.data.data;
-                    _this.loadMaterias();
-                    _this.horarioMaterias();
-                    _this.loadingDocente = false;
-                }, fnc.tryError);
-            },
             loadHorarioDocente: function(){
                 console.log('load data');
             },
             load: function(){
-                //this.loadDistributivos();
-                //this.loadDocente();
-                this.loadingDocente = true;
-                this.loadingDistributivos = true;
+                this.loading = true;
                 let _this = this;
                 this.$http.get(`${this.url}/${this.$route.params.model_id}`).then(function(resp){
                     _this.docente = resp.data.ciclo_docente;
                     _this.horario_materias = resp.data.horario_materias;
                     _this.distributivos = resp.data.distributivos;
                     _this.horarioMaterias();
-                    _this.loadingDocente = false;
-                    _this.loadingDistributivos = false;
+                    _this.inicializaTotalHoras();
+                    _this.calculaTotalGlobalHoras();
+                    _this.loading = false;
                 }, fnc.tryError);
+            },
+            inicializaTotalHoras: function(){
+                for(let dist of this.distributivos){
+                    for(let item of dist.items){
+                        item.total_horas = 0;
+                        if(item.id == 1){//solo entra para materias, OJO ID 1 es materias
+                            for(let mat of this.horario_materias){
+                                item.total_horas += parseFloat(mat.num_horas);
+                            }
+                        }
+                    }
+                }
+            },
+            calculaHorasDistributivos: function(){
+                for(let dist of this.distributivos){
+                    for(let item of dist.items){
+                        if(item.id != 1){ //se omite el id 1, ya que es el de materias, y ya debe estar calculado
+                            item.total_horas = 0;
+                            for(let hor of this.horario){
+                                if(hor.tipo == 'hora'){
+                                    for(var row of hor.filas){ //si el id corresponde
+                                        if(row.cod == item.id){
+                                            item.total_horas += 0.5;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                this.calculaTotalGlobalHoras();
+            },
+            calculaTotalGlobalHoras: function(){
+                this.global_horas = 0;
+                for(let dist of this.distributivos){
+                    for(let item of dist.items){
+                        this.global_horas += item.total_horas; 
+                    }
+                }
             },
             materiasHorarioDocente: function () {
                 let hr = this.horario;
