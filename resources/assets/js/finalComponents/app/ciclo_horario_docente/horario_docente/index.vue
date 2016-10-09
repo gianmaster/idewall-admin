@@ -2,7 +2,19 @@
     <div v-if="loading">
         <app-loading></app-loading>
     </div>
+
     <div v-else>
+
+        <div class="col-xs-12" v-if="global_horas > horasContrato">
+            <div class="alert alert-danger">
+                <p>
+                    <strong>Advertencia:</strong> Há excedido el total de horas según el tipo de contrato del docente. <code>{{docente.docente_detail.tipo_contrato}} - {{docente.docente_detail.tipo_contrato == 'TIEMPO_COMPLETO' ? 40 : 20}}h</code>
+                </p>
+            </div>
+        </div>
+
+
+
         <div class="col-xs-12 col-sm-4">
             <!-- Cuadro de asignacion de distributivos -->
             <div class="box box-primary">
@@ -20,12 +32,12 @@
                             <td colspan="2">
                                 <table v-if="dist.items.length > 0" width="100%">
                                     <tr v-for="item in dist.items">
-                                        <td colspan="2">
+                                        <td colspan="2" width="95%">
                                             <span v-if="item.id==1" class="my_disabled">{{item.nombre}}</span><!-- No dejar arrastrar materias -->
                                             <span v-else class="__is_draggable" draggable="true" @drag="onDragDistributivo($event, item)">{{item.nombre}}</span>
                                         </td>
                                         <td width="5%">
-                                            <span class="text-green"> {{item.total_horas}}</span>
+                                            <span class="text-green"> {{item.horas}}</span>
                                         </td>
                                     </tr>
                                 </table>
@@ -53,12 +65,13 @@
             <!-- Cuadro de asignacion del horarion -->
             <div class="box box-primary">
                 <div class="box-header with-border" v-if="docente.docente_detail">
-                    <h3 class="box-title"><i class="fa fa-user"></i> {{docente.docente_detail.abreviatura}} {{docente.docente_detail.nombres}} {{docente.docente_detail.apellidos}} <span class="label labe-success">{{docente.docente_detail.identificacion}}</span></h3>
+                    <h4 class="box-title"><i class="fa fa-user"></i> {{docente.docente_detail.abreviatura}} {{docente.docente_detail.nombres}} {{docente.docente_detail.apellidos}}</h4>
+
 
                     <div class="box-tools pull-right">
+                        <small><strong>ID:</strong>{{docente.docente_detail.identificacion}} <strong>Contrato:</strong>{{docente.docente_detail.tipo_contrato}} <strong>Período: </strong> <span class="text-green">{{docente.ciclo_detail.anio}}-{{docente.ciclo_detail.anio +1}} C{{docente.ciclo_detail.ciclo}}</span></small>
                         <!-- Buttons, labels, and many other things can be placed here! -->
                         <!-- Here is a label for example -->
-                        <span class="text-primary"><i class="fa fa-hourglass-start" style="font-size: .8em"></i> {{docente.ciclo_detail.anio}}-{{docente.ciclo_detail.anio +1}} C{{docente.ciclo_detail.ciclo}}</span>
                         <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     </div><!-- /.box-tools -->
                 </div><!-- /.box-header -->
@@ -484,6 +497,11 @@
                 global_horas: 0
             }
         },
+        computed: {
+            horasContrato: function(){
+                return this.docente.docente_detail.tipo_contrato == 'TIEMPO_COMPLETO' ? 40 : 20;
+            }
+        },
         components: {
             appLoading: Loading
         },
@@ -533,20 +551,33 @@
                 this.$http.get(`${this.url}/${this.$route.params.model_id}`).then(function(resp){
                     _this.docente = resp.data.ciclo_docente;
                     _this.horario_materias = resp.data.horario_materias;
-                    _this.distributivos = resp.data.distributivos;
+                    //_this.distributivos = this.formatoDistributivos(resp.data.distributivos);
+                    _this.formatoDistributivos(resp.data.distributivos);
                     _this.horarioMaterias();
                     _this.inicializaTotalHoras();
                     _this.calculaTotalGlobalHoras();
                     _this.loading = false;
                 }, fnc.tryError);
             },
+            formatoDistributivos: function(data){
+                let distributivos = [];
+                for(let dist of data){
+                    for(let item of dist.items){
+                        item['horas'] = 0;
+                    }
+                    distributivos.push(dist);
+                }
+                this.$set('distributivos', distributivos);// distributivos;
+            },
             inicializaTotalHoras: function(){
                 for(let dist of this.distributivos){
                     for(let item of dist.items){
-                        item.total_horas = 0;
+                        //console.log(item);
+                        //item.$set('horas', 0);
                         if(item.id == 1){//solo entra para materias, OJO ID 1 es materias
                             for(let mat of this.horario_materias){
-                                item.total_horas += parseFloat(mat.num_horas);
+                                item.horas = item.horas + parseFloat(mat.num_horas);
+                                //item.$set('horas', item.$get('horas') + mat.num_horas);
                             }
                         }
                     }
@@ -556,12 +587,12 @@
                 for(let dist of this.distributivos){
                     for(let item of dist.items){
                         if(item.id != 1){ //se omite el id 1, ya que es el de materias, y ya debe estar calculado
-                            item.total_horas = 0;
+                            item.horas = 0;
                             for(let hor of this.horario){
                                 if(hor.tipo == 'hora'){
                                     for(var row of hor.filas){ //si el id corresponde
                                         if(row.cod == item.id){
-                                            item.total_horas += 0.5;
+                                            item.horas += 0.5;
                                         }
                                     }
                                 }
@@ -576,7 +607,7 @@
                 this.global_horas = 0;
                 for(let dist of this.distributivos){
                     for(let item of dist.items){
-                        this.global_horas += item.total_horas; 
+                        this.global_horas += item.horas;
                     }
                 }
             },
