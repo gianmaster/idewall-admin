@@ -118,6 +118,12 @@
 
                 </div><!-- /.box-body -->
 
+                <div class="box-footer">
+                    <div class="col-xs-12">
+                        <button class="btn btn-success pull-right" @click="saveHorarioDocente"><i class="fa fa-save"></i> GUARDAR CAMBIOS</button>
+                    </div>
+                </div>
+
             </div><!-- /.box -->
         </div>
     </div>
@@ -224,6 +230,7 @@
                 descripcionOtro:'',
                 loading: true,
                 url: 'api/horariomateriasdocente',
+                urlSubmit: '',
                 distributivos: [],
                 docente: {},
                 horario_materias: [],
@@ -611,35 +618,6 @@
                     }
                 }
             },
-            materiasHorarioDocente: function () {
-                let hr = this.horario;
-                for(let hItem of hr){
-                    if(hItem.tipo == 'hora'){
-                        const umbral = hItem.split(' - ');
-                        const hIni = fnc.horaCharToNum(umbral[0]);
-                        const hFin = fnc.horaCharToNum(umbral[1]);
-                    }
-                }
-            },
-            loadMaterias: function(){
-                let matList = [];
-                for(let item of this.docente.materias_docente_ciclo){
-                    const materia = item.materia_detail.nombre_materia;
-                    const sem = item.materia_detail.semestre;
-                    for(let subItem of item.horarios_materia_docente){
-                        matList.push({
-                            id: subItem.id,
-                            dia: subItem.dia,
-                            hora_inicio: subItem.hora_inicio,
-                            hora_fin: subItem.hora_fin,
-                            num_horas: subItem.num_horas,
-                            nombre_materia: materia,
-                            semestre: sem
-                        });
-                    }
-                }
-                this.horario_materias = matList;
-            },
             horarioMaterias: function(){
                 for(let materia of this.horario_materias){
                     const ini = fnc.horaCharToNum(materia.hora_inicio);
@@ -663,6 +641,55 @@
                         }
                     }
                 }
+            },
+            saveHorarioDocente : function(){
+                let flagSubmit = true;
+                let listaHorario = [];
+                if(this.global_horas > this.horasContrato){
+                    if(confirm('Las horas asignadas pasan el número de horas según el contrato del docente, ¿Quieres continuar de todos modos?')){
+                        flagSubmit = true;
+                        console.log(this.generateDataHorario());
+                    }else{
+                        flagSubmit = false;
+                    }
+                }
+
+                console.log('entra loco', this.global_horas, this.horasContrato);
+
+
+                if(flagSubmit){
+                    console.log(this.generateDataHorario());
+                    /*
+                    this.$http.post(this.urlSubmit, {}).then(function(){
+                        console.log('todo ok');
+                    }, fnc.tryError);
+                    */
+                }
+
+            },
+            generateDataHorario: function(){
+                let dataHorario = [];
+                for(let item of this.horario){
+                    if(item.tipo == 'hora'){
+                        for(let row of item.filas){
+                            if(row.cod > 0){
+                                let flagFound = false;
+                                for(let horario of dataHorario){
+                                    if(horario.dia == row.dia && horario.cod == row.cod){
+                                        horario.hora_fin = fnc.sumarHoras(horario.hora_fin, '00:30');
+                                        flagFound = true;
+                                    }
+                                }
+                                if(!flagFound){
+                                    let hora = item.hora.split(' - ');
+                                    dataHorario.push({dia: row.dia, cod: row.cod, hora_inicio: hora[0], hora_fin: hora[1]});
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return dataHorario;
             }
         }
 

@@ -261,5 +261,10 @@ class HorariosDocentesController extends Controller
         ));
 
     }
+    
+    
+    public function saveHorarioDistributivosDocente(){
+        
+    }
 
 }
