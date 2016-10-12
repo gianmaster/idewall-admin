@@ -17,7 +17,7 @@ class HorariosCursos extends Model implements Transformable
     public function materiaDocente(){
         return $this->hasOne(MateriasCicloDocente::class,'id', 'ciclo_materia_docente')
             ->with('horarioMateriaDocente')
-            ->with('docenteDetail')
+            ->with('docenteDetail')  
             ->with('materiaDetail');
     }
 

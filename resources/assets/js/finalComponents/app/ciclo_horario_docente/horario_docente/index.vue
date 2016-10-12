@@ -122,7 +122,7 @@
         </div>
     </div>
 </template>
-<style>
+<style scoped>
 
     .__hora{
         width: 15%;
