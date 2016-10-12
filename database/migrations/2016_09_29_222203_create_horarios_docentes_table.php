@@ -23,6 +23,7 @@ class CreateHorariosDocentesTable extends Migration
 			$table->foreign('ciclo_docente')->references('id')->on('ciclo_docentes')->onDelete('cascade');
 
 			$table->enum('dia', ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO']);
+			$table->string('etiqueta', 255)->nullable(true);
 			$table->char('hora_inicio', 5)->nullable(false);
 			$table->char('hora_fin', 5)->nullable(false);
 			$table->decimal('num_horas');

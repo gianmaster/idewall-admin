@@ -120,6 +120,7 @@
 
                 <div class="box-footer">
                     <div class="col-xs-12">
+                        <hr>
                         <button class="btn btn-success pull-right" @click="saveHorarioDocente"><i class="fa fa-save"></i> GUARDAR CAMBIOS</button>
                     </div>
                 </div>
@@ -408,22 +409,6 @@
                         {dia: 'VIERNES', cod: 0, cod_padre: 0, label: 'Vacío', bloq: false},
                         {dia: 'SABADO', cod: 0, cod_padre: 0, label: 'Vacío', bloq: true},
                     ]},
-                    {tipo: 'hora', hora: '18:00 - 18:40', filas: [
-                        {dia: 'LUNES', cod: 0, cod_padre: 0, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 0, cod_padre: 0, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 0, cod_padre: 0, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 0, cod_padre: 0, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 0, cod_padre: 0, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 0, cod_padre: 0, label: 'Vacío', bloq: true},
-                    ]},
-                    {tipo: 'hora', hora: '17:30 - 18:00', filas: [
-                        {dia: 'LUNES', cod: 0, cod_padre: 0, label: 'Vacío', bloq: false},
-                        {dia: 'MARTES', cod: 0, cod_padre: 0, label: 'Vacío', bloq: false},
-                        {dia: 'MIERCOLES', cod: 0, cod_padre: 0, label: 'Vacío', bloq: false},
-                        {dia: 'JUEVES', cod: 0, cod_padre: 0, label: 'Vacío', bloq: false},
-                        {dia: 'VIERNES', cod: 0, cod_padre: 0, label: 'Vacío', bloq: false},
-                        {dia: 'SABADO', cod: 0, cod_padre: 0, label: 'Vacío', bloq: true},
-                    ]},
 
                     {tipo: 'jornada', filas: 'NOCTURNA'},
                     {tipo: 'head', filas: CABECERA},
@@ -644,26 +629,32 @@
             },
             saveHorarioDocente : function(){
                 let flagSubmit = true;
-                let listaHorario = [];
                 if(this.global_horas > this.horasContrato){
                     if(confirm('Las horas asignadas pasan el número de horas según el contrato del docente, ¿Quieres continuar de todos modos?')){
                         flagSubmit = true;
-                        console.log(this.generateDataHorario());
                     }else{
                         flagSubmit = false;
                     }
                 }
 
-                console.log('entra loco', this.global_horas, this.horasContrato);
-
-
                 if(flagSubmit){
-                    console.log(this.generateDataHorario());
-                    /*
-                    this.$http.post(this.urlSubmit, {}).then(function(){
-                        console.log('todo ok');
-                    }, fnc.tryError);
-                    */
+                    let listaHorario = this.generateDataHorario();
+                    console.log(listaHorario);
+
+                    if(listaHorario.length > 0){
+                        /*
+                        this.$http.post(this.urlSubmit, {
+                            horario: listaHorario,
+                            texto_otro: this.descripcionOtro
+                        }).then(function(){
+                            console.log('todo ok');
+                        }, fnc.tryError);
+                        */
+                        console.log(listaHorario);
+                    }else{
+                        alert('No se han asignado cargas al horario');
+                    }
+                    
                 }
 
             },
@@ -671,18 +662,32 @@
                 let dataHorario = [];
                 for(let item of this.horario){
                     if(item.tipo == 'hora'){
+                    let hora = item.hora.split(' - ');                        
                         for(let row of item.filas){
                             if(row.cod > 0){
                                 let flagFound = false;
                                 for(let horario of dataHorario){
-                                    if(horario.dia == row.dia && horario.cod == row.cod){
+                                    if(horario.dia == row.dia && horario.cod == row.cod && horario.hora_fin == hora[0]){//si hora incio de la lista es igual a la hora fin del dia evaluado
+                                    console.log(horario.hora_fin, hora[0], 'entra');
                                         horario.hora_fin = fnc.sumarHoras(horario.hora_fin, '00:30');
+                                        horario.num_horas = horario.num_horas + 0.5;
                                         flagFound = true;
+                                        if(horario.hora_fin == '18:30'){
+                                            horario.hora_fin = '18:40'; //se hace esto xq brinca 10 el horario en jornada nocturna
+                                        }
                                     }
                                 }
                                 if(!flagFound){
-                                    let hora = item.hora.split(' - ');
-                                    dataHorario.push({dia: row.dia, cod: row.cod, hora_inicio: hora[0], hora_fin: hora[1]});
+                                    let etiqueta = row.label == 'OTRO' ? this.descripcionOtro == '' ? 'OTRO' : row.label : row.label;
+                                    dataHorario.push({
+                                        ciclo_docente: this.docente.id,
+                                        dia: row.dia, 
+                                        cod: row.cod, 
+                                        hora_inicio: hora[0], 
+                                        hora_fin: hora[1], 
+                                        label: etiqueta,
+                                        num_horas: 0.5
+                                    });
                                 }
                             }
                         }
