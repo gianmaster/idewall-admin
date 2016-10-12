@@ -20,8 +20,7 @@ class HorariosDocentes extends Model implements Transformable
     }
     
     public function distributivo(){
-        return $this->hasOne(ItemDistributivo::class, 'id', 'id_item_distributivo')
-            ->with('tipoDistributivo');
+        return $this->hasOne(ItemDistributivo::class, 'id', 'id_item_distributivo');
     }
 
 }

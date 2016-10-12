@@ -233,6 +233,7 @@ class HorariosDocentesController extends Controller
         $dataCicloDocente = CicloDocentes::with('cicloDetail')
             ->with('docenteDetail')
             ->with('materiasDocenteCiclo')
+            ->with('cargaDistributiva')
             ->find($cicloDocente);
 
         $distributivos = Distributivo::where('activo', true)->with('items')->get();
@@ -265,22 +266,16 @@ class HorariosDocentesController extends Controller
     
     
 
-    public function saveHorarioDistributivosDocente(Request $reques, $idCicloDocente){
-        $data = $request->only('horario', 'texto_otro');
+    public function saveHorarioDistributivosDocente(Request $request, $idCicloDocente){
+        $data = $request->only('horario');
         //si ya existe esta asignacion de horario se elimina
         HorariosDocentes::where('ciclo_docente', $idCicloDocente)->delete();
         //realizar los inserts
-        foreach($data['horario'] as $key => $val){
-            HorariosDocente::create([
-                'id_item_distributivo'  => $val['cod'],
-                'ciclo_docente'         => $idCicloDocente,
-                'dia'                   => $val['dia'],
-                'hora_inicio'           => $val['hora_inicio'],
-                'hora_fin'              => $val['hora_fin'],
-                'num_horas'             => 0,
-                'etiqueta'              => $val['label']
-            ]);
+        foreach($data['horario'] as $key => $values){
+            HorariosDocentes::create($values);
         }
+        //retornar el estado de la transaccion
+        return response()->json(array('data' => 'OK'), 201);
     }
 
 }

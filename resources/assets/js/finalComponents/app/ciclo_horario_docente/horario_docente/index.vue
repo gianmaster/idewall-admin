@@ -93,7 +93,7 @@
                             <tr v-if="elem.tipo=='hora'">
                                 <td class="td-formato"><strong>{{elem.hora}}</strong></td>
                                 <template v-for="item in elem.filas">
-                                    <td v-if="!item.bloq" class="td-formato" draggable="true" @drag="onDragCellDistributivo($event, item)" @dragover.prevent @drop="onDropDistributivo($event, item)" @dragleave="onDistributivoLeave" @dragenter="onDistributivoEnter">
+                                    <td v-if="!item.bloq" class="td-formato grupo__{{item.cod_padre}}" draggable="true" @drag="onDragCellDistributivo($event, item)" @dragover.prevent @drop="onDropDistributivo($event, item)" @dragleave="onDistributivoLeave" @dragenter="onDistributivoEnter">
                                         <template v-if="item.label == 'OTRO' && descripcionOtro != ''">
                                             {{descripcionOtro | uppercase}}
                                         </template>
@@ -121,7 +121,8 @@
                 <div class="box-footer">
                     <div class="col-xs-12">
                         <hr>
-                        <button class="btn btn-success pull-right" @click="saveHorarioDocente"><i class="fa fa-save"></i> GUARDAR CAMBIOS</button>
+                        <button v-if="!saving" class="btn btn-success pull-right" @click="saveHorarioDocente"><i class="fa fa-save"></i> GUARDAR CAMBIOS</button>
+                        <button v-else class="btn btn-success pull-right" disabled><i class="fa fa-refresh fa-spin"></i> ESPERE POR FAVOR..</button>
                     </div>
                 </div>
 
@@ -230,8 +231,9 @@
             return{
                 descripcionOtro:'',
                 loading: true,
+                saving: false,
                 url: 'api/horariomateriasdocente',
-                urlSubmit: '',
+                urlSubmit: 'api/ciclohorariodocente',
                 distributivos: [],
                 docente: {},
                 horario_materias: [],
@@ -545,7 +547,7 @@
                     _this.horario_materias = resp.data.horario_materias;
                     //_this.distributivos = this.formatoDistributivos(resp.data.distributivos);
                     _this.formatoDistributivos(resp.data.distributivos);
-                    _this.horarioMaterias();
+                    _this.mostrarHorario();
                     _this.inicializaTotalHoras();
                     _this.calculaTotalGlobalHoras();
                     _this.loading = false;
@@ -603,7 +605,8 @@
                     }
                 }
             },
-            horarioMaterias: function(){
+            mostrarHorario: function(){
+                //solo los horarios de las materias
                 for(let materia of this.horario_materias){
                     const ini = fnc.horaCharToNum(materia.hora_inicio);
                     const fin = fnc.horaCharToNum(materia.hora_fin);
@@ -619,12 +622,39 @@
                                         fila.cod = -1;
                                         fila.cod_padre = -1;
                                         fila.label = materia.nombre_materia + ' - ' + materia.semestre;
-                                        //console.log('entra', materia.nombre_materia);
                                     }
                                 }
                             }
                         }
                     }
+                }
+
+                //solo el horario de distributivos asignados
+                let flagExistenHoras = false;
+                for(let distri of this.docente.carga_distributiva){
+                    flagExistenHoras = true;
+                    const ini = fnc.horaCharToNum(distri.hora_inicio);
+                    const fin = fnc.horaCharToNum(distri.hora_fin);
+                    for(let item of this.horario){
+                        if (item.tipo == 'hora') {
+                            const hIni = fnc.horaCharToNum(item.hora.split(' - ')[0]);
+                            const hFin = fnc.horaCharToNum(item.hora.split(' - ')[1]);
+                            for(let fila of item.filas){
+                                if(fila.dia == distri.dia) {
+                                    if (ini <= hIni && fin >= hIni) {
+                                        fila.bloq = false;
+                                        fila.cod = distri.id_item_distributivo;
+                                        fila.cod_padre = distri.distributivo.id_distributivo;
+                                        fila.label = distri.distributivo.nombre;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if(flagExistenHoras){
+                    this.calculaHorasDistributivos();
                 }
             },
             saveHorarioDocente : function(){
@@ -638,19 +668,20 @@
                 }
 
                 if(flagSubmit){
+
+                    this.saving = true;
                     let listaHorario = this.generateDataHorario();
                     console.log(listaHorario);
 
                     if(listaHorario.length > 0){
-                        /*
-                        this.$http.post(this.urlSubmit, {
-                            horario: listaHorario,
-                            texto_otro: this.descripcionOtro
+                        
+                        this.$http.post(`${this.urlSubmit}/${this.docente.id}/save`, {
+                            horario: listaHorario
                         }).then(function(){
-                            console.log('todo ok');
+                            this.saving = false;
+                            fnc.niceAlert('Se guardaron los cambios correctamente', 'success');
                         }, fnc.tryError);
-                        */
-                        console.log(listaHorario);
+                        
                     }else{
                         alert('No se han asignado cargas al horario');
                     }
@@ -667,7 +698,7 @@
                             if(row.cod > 0){
                                 let flagFound = false;
                                 for(let horario of dataHorario){
-                                    if(horario.dia == row.dia && horario.cod == row.cod && horario.hora_fin == hora[0]){//si hora incio de la lista es igual a la hora fin del dia evaluado
+                                    if(horario.dia == row.dia && horario.id_item_distributivo == row.cod && horario.hora_fin == hora[0]){//si hora incio de la lista es igual a la hora fin del dia evaluado
                                     console.log(horario.hora_fin, hora[0], 'entra');
                                         horario.hora_fin = fnc.sumarHoras(horario.hora_fin, '00:30');
                                         horario.num_horas = horario.num_horas + 0.5;
@@ -678,14 +709,14 @@
                                     }
                                 }
                                 if(!flagFound){
-                                    let etiqueta = row.label == 'OTRO' ? this.descripcionOtro == '' ? 'OTRO' : row.label : row.label;
+                                    let etiqueta = row.label == 'OTRO' ? this.descripcionOtro == '' ? 'OTRO' : this.descripcionOtro : row.label;
                                     dataHorario.push({
                                         ciclo_docente: this.docente.id,
                                         dia: row.dia, 
-                                        cod: row.cod, 
+                                        id_item_distributivo: row.cod, 
                                         hora_inicio: hora[0], 
                                         hora_fin: hora[1], 
-                                        label: etiqueta,
+                                        etiqueta: etiqueta.toUpperCase(),
                                         num_horas: 0.5
                                     });
                                 }
