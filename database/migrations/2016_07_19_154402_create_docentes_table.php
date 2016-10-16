@@ -35,6 +35,7 @@ class CreateDocentesTable extends Migration
             $table->string("nacionalidad");
             $table->string("residencia");
             $table->string("direccion")->nullable();
+            $table->string("funcion")->nullable();
             $table->enum('tipo_contrato', ['TIEMPO_COMPLETO', 'MEDIO_TIEMPO'])->default('TIEMPO_COMPLETO')->nullable(false);
             $table->enum('estado', ['CONTRATADO', 'CULMINADO', 'RENOVADO'])->default('CONTRATADO')->nullable(false);
 

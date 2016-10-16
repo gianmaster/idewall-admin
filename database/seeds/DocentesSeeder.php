@@ -274,7 +274,8 @@ class DocentesSeeder extends Seeder
             'nacionalidad'        => 'Ecuatoriano',
             'residencia'          => 'Ecuador',
             'direccion'           => 'MANABI 115 Y CUENCA',
-            'tipo_contrato'       => 'TIEMPO_COMPLETO'
+            'tipo_contrato'       => 'TIEMPO_COMPLETO',
+            'funcion'             => 'Coordinador de Plan Fortalecimiento'
         ]);
 
         $cicloDocente = App\Entities\CicloDocentes::create([
@@ -365,7 +366,8 @@ class DocentesSeeder extends Seeder
             'nacionalidad'        => 'Ecuatoriano',
             'residencia'          => 'Ecuador',
             'direccion'           => 'LA JOYA PLATINO MZ 6 VILLA 4',
-            'tipo_contrato'       => 'TIEMPO_COMPLETO'
+            'tipo_contrato'       => 'TIEMPO_COMPLETO',
+            'funcion'             => 'Gestor de Comisión Académica'
         ]);
 
         $cicloDocente = App\Entities\CicloDocentes::create([
@@ -405,7 +407,8 @@ class DocentesSeeder extends Seeder
             'nacionalidad'        => 'Ecuatoriano',
             'residencia'          => 'Ecuador',
             'direccion'           => 'CDLA. RIO GUAYAS,  MZ E ,CALLE 3, VILLA 15 -2',
-            'tipo_contrato'       => 'TIEMPO_COMPLETO'
+            'tipo_contrato'       => 'TIEMPO_COMPLETO',
+            'funcion'             => 'Director de la Carrera'
         ]);
 
 

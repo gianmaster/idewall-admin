@@ -108,8 +108,13 @@
 		<select-list class-name="form-control col-xs-6" :select-value.sync="dataModel.tipo_contrato" :data="['MEDIO_TIEMPO', 'TIEMPO_COMPLETO']" :is-required="true"></select-list>
 	</div>
 
+	<div class="col-xs-12 col-sm-6">
+		<label>Función</label>
+		<input type="text" class="form-control" v-model="dataModel.funcion">
+	</div>
+
 	<div class="col-sm-6 col-xs-12" v-if="!createMode">
-		<label>Tipo Contrato</label>
+		<label>Estado</label>
 		<select-list class-name="form-control col-xs-6" :select-value.sync="dataModel.estado" :data="['CONTRATADO', 'CULMINADO', 'RENOVADO']" :is-required="true"></select-list>
 	</div>
 
@@ -162,8 +167,9 @@
 					direccion: null,
 					tipo_contrato: null,
 					estado: 'CONTRATADO',
+					funcion: 'Gestión Pedagógica'
 				}
-			},
+			}
 		},
 		props: {
 			createMode: {

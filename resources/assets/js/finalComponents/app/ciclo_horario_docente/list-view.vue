@@ -99,7 +99,25 @@
 					hidden: false,
 					sortable: false,
 					template: '<span class="text-green"><i class="fa fa-clock-o"></i> ${col.horas_academicas_asignadas.replace(".",":").replace("5","3")}H</span>'
-				},//color-palette label bg-navy
+				},
+				{
+					title: 'Horas Complementarias',
+					field: 'horas_complementarias',
+					titleClass: 'text-center',
+					fieldClass: 'text-center',
+					hidden: false,
+					sortable: false,
+					template: '<span class="text-green"><i class="fa fa-clock-o"></i> ${col.horas_complementarias.replace(".",":").replace("5","3")}H</span>'
+				},
+				{
+					title: 'Total Horas',
+					field: 'total',
+					titleClass: 'text-center',
+					fieldClass: 'text-center',
+					hidden: false,
+					sortable: false,
+					template: '<span class="text-green"><i class="fa fa-clock-o"></i> ${col.total.replace(".",":").replace("5","3")}H</span>'
+				},
 				{
 					title: 'Opciones',
 					titleClass: 'text-center',

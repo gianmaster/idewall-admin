@@ -133,6 +133,14 @@ export default {
 		return parseInt(hora.substr(0, 2)) + (parseInt(hora.substr(3, 2)) == 0 ? 0 :  0.5);
 	},
 	/**
+	 * Retorna en decimal el equivalente a una hora en formato 00:30
+	 * @param hora
+	 * @returns {number}
+	 */
+	horaCharToNumReal(hora){
+		return parseInt(hora.substr(0, 2)) + parseInt(hora.substr(3, 2));
+	},
+	/**
 	 * 
 	 * @param val
 	 * @returns {string}
