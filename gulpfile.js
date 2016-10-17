@@ -14,11 +14,14 @@ require('laravel-elixir-vue');
  */
 
 elixir(mix => {
+    mix.webpack('build.js');
+    /*
     mix.sass('app.scss')
         .webpack('build.js');
     mix.browserSync({
         proxy: 'http://ug_laravel_vue.dev/'
     });
+    */
 });
 /*
 

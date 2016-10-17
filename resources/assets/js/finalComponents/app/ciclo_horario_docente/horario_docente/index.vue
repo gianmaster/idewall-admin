@@ -679,7 +679,7 @@
                             horario: listaHorario
                         }).then(function(){
                             this.saving = false;
-                            fnc.niceAlert('Se guardaron los cambios correctamente', 'success');
+                            fnc.niceAlert('success', 'Se guardaron los cambios correctamente');
                         }, fnc.tryError);
                         
                     }else{
