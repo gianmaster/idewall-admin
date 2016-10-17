@@ -1078,6 +1078,53 @@ class ConfigurationSeeder extends Seeder
         ]);
 
 
+        //menu principal de REPORTES
+        $menuReportes = App\Menu::create([
+            'nombre' => 'reporteria',
+            'titulo' => 'Reportes',
+            'url' => '/reportes',
+            'iconclass' => 'fa fa-file-pdf-o',
+            'orden' => 5,
+            'cod_padre' => null
+        ]);
+
+        App\RolMenu::create([
+            'rol' => $rolAdmin->id,
+            'menu' => $menuReportes->id,
+        ]);
+
+
+        //menu reporte horarios por curso
+        $menuReporteHorario = App\Menu::create([
+            'nombre' => 'reporte_horarios',
+            'titulo' => 'Horarios Cursos',
+            'url' => '/reporte_horarios_cursos',
+            'iconclass' => 'fa fa-link',
+            'orden' => 1,
+            'cod_padre' => $menuReportes->id
+        ]);
+
+        App\RolMenu::create([
+            'rol' => $rolAdmin->id,
+            'menu' => $menuReporteHorario->id,
+        ]);
+
+        //menu reporte horarios por docente
+        $menuReporteHorarioDocente = App\Menu::create([
+            'nombre' => 'reporte_docente',
+            'titulo' => 'Distributivos Docentes',
+            'url' => '/reporte_distributivos_docentes',
+            'iconclass' => 'fa fa-link',
+            'orden' => 2,
+            'cod_padre' => $menuReportes->id
+        ]);
+
+        App\RolMenu::create([
+            'rol' => $rolAdmin->id,
+            'menu' => $menuReporteHorarioDocente->id,
+        ]);
+
+
         /**
          * CONFIGURACION DE LOS TIPOS DE DISTRIBUTIVOS
          */

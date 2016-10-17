@@ -48,38 +48,40 @@ class HorariosDocentesController extends Controller
      */
     public function index()
     {
-        $data = DB::select("select
-                                  c.id,
-                                  c.anio,
-                                  c.ciclo,
-                                  cd.id ciclo_docente,
-                                  d.abreviatura,
-                                  d.nombres,
-                                  d.apellidos,
-                                  d.identificacion,
-                                  sum(hc.num_horas) horas_academicas_asignadas
-                                from docentes d,
-                                  ciclo_docentes cd,
-                                  ciclos c,
-                                  horarios_cursos hc,
-                                  ciclo_materias_docente cmd,
-                                  jornadas_semestres js
-                                where c.id = 1
-                                and cd.ciclo = c.id
-                                and d.id = cd.docente
-                                and cmd.ciclo_docente = cd.id
-                                and hc.ciclo_materia_docente = cmd.id
-                                and hc.ciclo_jornada_semestre = js.id
-                                and js.ciclo = c.id
-                                group by
-                                  c.id,
-                                  c.anio,
-                                  c.ciclo,
-                                  cd.id,
-                                  d.abreviatura,
-                                  d.nombres,
-                                  d.apellidos,
-                                  d.identificacion");
+        $data = DB::select("select *, xx.horas_academicas_asignadas + xx.horas_complementarias total from (
+            select
+              c.id,
+              c.anio,
+              c.ciclo,
+              cd.id ciclo_docente,
+              d.abreviatura,
+              d.nombres,
+              d.apellidos,
+              d.identificacion,
+              sum(hc.num_horas) horas_academicas_asignadas,
+              (select ifnull(sum(num_horas), 0) from horarios_docentes where ciclo_docente = cd.id) horas_complementarias
+            from docentes d,
+              ciclo_docentes cd,
+              ciclos c,
+              horarios_cursos hc,
+              ciclo_materias_docente cmd,
+              jornadas_semestres js
+            where c.id = 1
+                  and cd.ciclo = c.id
+                  and d.id = cd.docente
+                  and cmd.ciclo_docente = cd.id
+                  and hc.ciclo_materia_docente = cmd.id
+                  and hc.ciclo_jornada_semestre = js.id
+                  and js.ciclo = c.id
+            group by
+              c.id,
+              c.anio,
+              c.ciclo,
+              cd.id,
+              d.abreviatura,
+              d.nombres,
+              d.apellidos,
+              d.identificacion ) xx");
 
         return response()->json($this->paginateArray($data));
     }
@@ -236,6 +238,16 @@ class HorariosDocentesController extends Controller
             ->with('cargaDistributiva')
             ->find($cicloDocente);
 
+        $descripcionOtro = HorariosDocentes::where('ciclo_docente',$cicloDocente)
+            ->where('id_item_distributivo', 12)
+            ->first();//OTRO
+
+        if(empty($descripcionOtro)){
+            $descripcionOtro = '';
+        }else{
+            $descripcionOtro = $descripcionOtro->etiqueta;
+        }
+
         $distributivos = Distributivo::where('activo', true)->with('items')->get();
         
         $horarioDocente = DB::select("select cd.id ciclo_docente,
@@ -259,7 +271,8 @@ class HorariosDocentesController extends Controller
         return response()->json(array(
             'horario_materias'  => $horarioDocente,
             'ciclo_docente'     => $dataCicloDocente,
-            'distributivos'     => $distributivos
+            'distributivos'     => $distributivos,
+            'descripcionOtro'   => $descripcionOtro
         ));
 
     }

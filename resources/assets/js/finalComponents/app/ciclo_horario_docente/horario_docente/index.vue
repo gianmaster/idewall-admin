@@ -225,6 +225,10 @@
 
     const CABECERA = ['HORA', 'LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO'];
 
+    let convertir = function(strHora){
+        return parseInt(strHora.replace(':', ''));
+    };
+
     export default{
         name: 'horarioDocente',
         data(){
@@ -545,6 +549,7 @@
                 this.$http.get(`${this.url}/${this.$route.params.model_id}`).then(function(resp){
                     _this.docente = resp.data.ciclo_docente;
                     _this.horario_materias = resp.data.horario_materias;
+                    _this.descripcionOtro = resp.data.descripcionOtro;
                     //_this.distributivos = this.formatoDistributivos(resp.data.distributivos);
                     _this.formatoDistributivos(resp.data.distributivos);
                     _this.mostrarHorario();
@@ -608,16 +613,19 @@
             mostrarHorario: function(){
                 //solo los horarios de las materias
                 for(let materia of this.horario_materias){
-                    const ini = fnc.horaCharToNum(materia.hora_inicio);
-                    const fin = fnc.horaCharToNum(materia.hora_fin);
+                    const ini = convertir(materia.hora_inicio);
+                    const fin = convertir(materia.hora_fin);
                     for(let item of this.horario){
                         if (item.tipo == 'hora') {
-                            const hIni = fnc.horaCharToNum(item.hora.split(' - ')[0]);
-                            const hFin = fnc.horaCharToNum(item.hora.split(' - ')[1]);
+                            const hIniFila = convertir(item.hora.split(' - ')[0]);
+                            const hFinFila = convertir(item.hora.split(' - ')[1]);
                             for(let fila of item.filas){
                                 if(fila.dia == materia.dia) {
+                                    //if(fila.dia == 'VIERNES')
+                                        //console.log('entra', materia.nombre_materia, item.hora, `Hora ${hIniFila} >= ${ini} && ${hIniFila} < ${ini} OR ${hFinFila} > ${ini} && ${hFinFila} <= ${fin}`);
                                     //if ((hIni >= ini && ini <= hFin) || (hIni >= fin && fin <= hFin)) {
-                                    if (ini <= hIni && fin >= hIni) {
+                                    //if ((hIniFila >= ini && hIniFila < ini) || (hFinFila > ini && hFinFila <= fin)) {
+                                    if(ini <= hIniFila && fin > hIniFila){
                                         fila.bloq = true;
                                         fila.cod = -1;
                                         fila.cod_padre = -1;
@@ -633,15 +641,15 @@
                 let flagExistenHoras = false;
                 for(let distri of this.docente.carga_distributiva){
                     flagExistenHoras = true;
-                    const ini = fnc.horaCharToNum(distri.hora_inicio);
-                    const fin = fnc.horaCharToNum(distri.hora_fin);
+                    const ini = convertir(distri.hora_inicio);
+                    const fin = convertir(distri.hora_fin);
                     for(let item of this.horario){
                         if (item.tipo == 'hora') {
-                            const hIni = fnc.horaCharToNum(item.hora.split(' - ')[0]);
-                            const hFin = fnc.horaCharToNum(item.hora.split(' - ')[1]);
+                            const hIni = convertir(item.hora.split(' - ')[0]);
+                            const hFin = convertir(item.hora.split(' - ')[1]);
                             for(let fila of item.filas){
                                 if(fila.dia == distri.dia) {
-                                    if (ini <= hIni && fin >= hIni) {
+                                    if (ini <= hIni && fin > hIni) {
                                         fila.bloq = false;
                                         fila.cod = distri.id_item_distributivo;
                                         fila.cod_padre = distri.distributivo.id_distributivo;
@@ -671,7 +679,6 @@
 
                     this.saving = true;
                     let listaHorario = this.generateDataHorario();
-                    console.log(listaHorario);
 
                     if(listaHorario.length > 0){
                         
@@ -699,7 +706,6 @@
                                 let flagFound = false;
                                 for(let horario of dataHorario){
                                     if(horario.dia == row.dia && horario.id_item_distributivo == row.cod && horario.hora_fin == hora[0]){//si hora incio de la lista es igual a la hora fin del dia evaluado
-                                    console.log(horario.hora_fin, hora[0], 'entra');
                                         horario.hora_fin = fnc.sumarHoras(horario.hora_fin, '00:30');
                                         horario.num_horas = horario.num_horas + 0.5;
                                         flagFound = true;

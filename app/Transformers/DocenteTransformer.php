@@ -55,7 +55,8 @@ class DocenteTransformer extends TransformerAbstract
             'nacionalidad' => $model->nacionalidad, 
             'residencia' => $model->residencia, 
             'direccion' => $model->direccion, 
-            'tipo_contrato' => $model->tipo_contrato, 
+            'tipo_contrato' => $model->tipo_contrato,
+            'funcion'   => $model->funcion,
             'estado' => $model->estado, 
 
             'created_at' => $model->created_at,

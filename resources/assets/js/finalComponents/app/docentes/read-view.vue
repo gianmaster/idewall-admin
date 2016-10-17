@@ -70,11 +70,11 @@
 					<strong><i class="fa fa-briefcase margin-r-5"></i> Tipo de Contrato</strong>
 
 					<p class="text-muted">
-						<span class="label label-success" v-if="newModel.tipo_contrato=='TIEMPO_COMPLETO'">
-							Tiempo Completo <i class="fa fa-clock-o"></i>
+						<span class="label label-info" v-if="newModel.tipo_contrato=='TIEMPO_COMPLETO'">
+							<i class="fa fa-clock-o"></i> Tiempo Completo
 						</span>
 						<span class="label label-warning" v-else>
-							Medio Tiempo <i class="fa fa-clock-o"></i>
+							<i class="fa fa-clock-o"></i> Medio Tiempo
 						</span>
 					</p>
 
@@ -130,6 +130,13 @@
 
 					<p class="text-muted">
 						Dirección: {{newModel.direccion}}
+					</p>
+
+					<hr>
+
+					<strong><i class="fa fa-cogs"></i> Función</strong>
+					<p class="text-green">
+						{{newModel.funcion == '' ? 'Gestión Pedagógica' : newModel.funcion == null ? 'Gestión Pedagógica'  :newModel.funcion | uppercase}}
 					</p>
 
 				</div>
