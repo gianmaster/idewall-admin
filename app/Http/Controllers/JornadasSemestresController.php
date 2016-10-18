@@ -58,6 +58,7 @@ class JornadasSemestresController extends Controller
                 ->with('aula')
                 ->with('jornada')
                 ->with('descripcionCiclo')
+                ->with('horario')
                 ->orderBy('catalogo_semestre', $sortDir)
                 ->paginate($perPage);
         } else {
@@ -66,6 +67,7 @@ class JornadasSemestresController extends Controller
                 ->with('aula')
                 ->with('jornada')
                 ->with('descripcionCiclo')
+                ->with('horario')
                 ->orderBy('catalogo_semestre', 'asc')
                 ->paginate($perPage);
         }

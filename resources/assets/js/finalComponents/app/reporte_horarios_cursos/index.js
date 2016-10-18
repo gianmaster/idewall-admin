@@ -1,5 +1,5 @@
 import Index from './index.vue';
-import List from './list-view.vue';
+import List from './test-plugin.vue';
 import EdicionHorario from './horario_docente/index.vue';
 
 

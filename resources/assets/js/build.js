@@ -83,6 +83,8 @@ router.map({
 
   '/horariosdocentes': require('./finalComponents/app/ciclo_horario_docente/index.js'),
 
+  'reporte_horarios_cursos': require('./finalComponents/app/reporte_horarios_cursos/index.js'),
+
   '/lockscreen': {
     component: require('./finalComponents/new-layout/lockscreen.vue')
   }

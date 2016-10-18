@@ -70,8 +70,4 @@ class JornadasSemestre extends Model implements Transformable
     
 
 
-    public function scopeHorarioDia($qry){
-        return $qry->where('dia', 'LUNES');
-    }
-
 }
