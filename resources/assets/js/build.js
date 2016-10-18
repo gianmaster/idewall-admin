@@ -88,6 +88,7 @@ router.map({
   '/lockscreen': {
     component: require('./finalComponents/new-layout/lockscreen.vue')
   }
+  
 });
 
 
