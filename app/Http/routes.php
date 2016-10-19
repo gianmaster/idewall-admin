@@ -17,6 +17,7 @@ Route::get('/', function () {
 });
 */
 
+
 Route::get('/horas', 'JornadasSemestresController@dataHorarioValidator');
 
 Route::get('query/{ciclojornadasemestre}', function($ciclojornadasemestre){
@@ -39,7 +40,20 @@ Route::group(['domain' => '{user}.ug_laravel_vue.dev'], function ($user) {
 });
 
 Route::get('test', function(){
-	return 'Esto es un test de funcionalidad';
+
+	$palabras = 'Johny&JohnMary';
+	$nombre1 = explode("John", $palabras);
+	$nombre2 = explode("Mary", $palabras);
+
+	if(count($nombre1) == count($nombre2)){
+		return 'true';
+	}
+	return 'false';
+});
+
+
+Route::get('/vista', function(){
+	return view('test');
 });
 
 Route::resource('/', 'HomeController');
