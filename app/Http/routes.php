@@ -22,7 +22,7 @@ Route::get('/horas', 'JornadasSemestresController@dataHorarioValidator');
 
 Route::get('api/v2/data', function(){
 	$data = App\Entities\Docente::paginate(10);
-	return $data;
+	return response()->json($data);
 });
 
 Route::get('query/{ciclojornadasemestre}', function($ciclojornadasemestre){

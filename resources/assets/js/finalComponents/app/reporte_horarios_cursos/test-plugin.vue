@@ -3,20 +3,30 @@
     <div class="row">
         <div class="col-xs-12">
             <h2>Esperando por los plugins</h2>
-            <div id="app" class="ui vertical stripe segment">
-                <div class="ui container">
-                    <div id="content" class="ui basic segment">
-                        <h3 class="ui header">List of Users</h3>
-                        <vuetable
-                            api-url="api/v2/data"
-                            table-wrapper="#content"
-                            data-path="data"
-                            pagination-path=""
-                            :fields="columns"
-                            :item-actions="itemActions"
-                        ></vuetable>
-                    </div>
-                </div>
+            <div class="">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Campo 1</th>
+                        <th>Campo 1</th>
+                        <th>Campo 1</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Item 1</td>
+                        <td>Item 2</td>
+                        <td>Item 3</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="">
+                <ul>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
             </div>
         </div>
     </div>
@@ -35,19 +45,29 @@
         },
         data: function(){
             return {
-                columns: [
-                    'nombres',
-                    'apellidos',
-                    'email',
-                    'identificacion',
-                    'genero',
-                    '__actions'
-                ],
-                itemActions: [
-                    { name: 'view-item', label: '', icon: 'zoom icon', class: 'ui teal button' },
-                    { name: 'edit-item', label: '', icon: 'edit icon', class: 'ui orange button'},
-                    { name: 'delete-item', label: '', icon: 'delete icon', class: 'ui red button' }
-                ]
+                classDom: {
+                    container: 'pagination-container',
+                    ul: 'pagination',
+                    li: '',
+                    disabled: 'disabled',
+                    active: 'active'
+                },
+                templateDom: {
+                    next: '<span>Next</span>',
+                    prev: '<span>Prev</span>',
+                    item: '<span>$1</span>'
+                },
+                config: {
+                    serverSide: false,
+                    data: [],
+                    url: '',
+                    total: 50,
+                    per_page: 15,
+                    current_page: 1,
+                    last_page: 4,
+                    from: 1,
+                    to: 15
+                }
             }
         },
         methods: {
