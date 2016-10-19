@@ -21,13 +21,38 @@
                     </tbody>
                 </table>
             </div>
-            <div class="">
-                <ul>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                </ul>
+            <div :class="classDom.container">
+                <template v-if="data.length>0">
+                    <ul :class="classDom.ul">
+                        <li :class="classDom.li" v-on:click="clickPaginator('first', false)">{{{templateDom.first}}}</li>
+                        <li :class="classDom.li" v-on:click="clickPaginator('prev', false)">{{{templateDom.prev}}}</li>
+                        
+                        <li :class="classDom.li" v-on:click="clickPaginator('item', false, num)" v-for="num in config.data">
+                            {{{renderNum(num)}}}
+                        </li>
+
+                        <li :class="classDom.li" v-on:click="clickPaginator('next', false)">{{{templateDom.next}}}</li>
+                        <li :class="classDom.li" v-on:click="clickPaginator('first', false)">{{{templateDom.last}}}</li>
+                    </ul>
+                    <div :class="classDom.message">
+                        {{{renderMessage()}}}
+                    </div>
+                </template>
+                <template v-else>
+                    {{{templateDom.noData}}}
+                </template>
             </div>
+        </div>
+        <div class="col-xs-12">
+            <pre>
+                {{config | json}}
+            </pre>
+            <pre>
+                {{templateDom | json}}
+            </pre>
+            <pre>
+                {{classDom | json}}
+            </pre>
         </div>
     </div>
 
@@ -35,44 +60,137 @@
 
 <script>
 
-    import Vuetable from 'vuetable/src/components/Vuetable.vue';
-    import VuetablePagination from 'vuetable/src/components/VuetablePagination.vue';
-    import VuetablePaginationDropdown from 'vuetable/src/components/VuetablePaginationDropdown.vue';
-
     export default{
-        components: {
-            Vuetable, VuetablePagination, VuetablePaginationDropdown
+        name: 'vue-paginator',
+        ready: function(){
+            if(this.serverSide){
+                null;
+            }else{
+                this.config.data = this.data;
+            }
+
         },
+        props: {
+            classDom:{
+                type: Object,
+                required: false,
+                coerce: function(prop){
+                    return Object.assign({
+                        container: 'Page navigation',
+                        ul: 'pagination',
+                        li: 'paginate_button',
+                        disabled: 'disabled',
+                        active: 'active',
+                        message: 'pagination-message'
+                    }, prop);
+                }
+            },
+            templateDom:{
+                type: Object,
+                required: false,
+                coerce: function(prop){
+                    return Object.assign({
+                        first:'<a href="javascript:;"><span>First</span></a>',
+                        last: '<a href="javascript:;"><span>Last</span></a>', 
+                        next: '<a href="javascript:;"><span>Next</span></a>',
+                        prev: '<a href="javascript:;"><span>Prev</span></a>',
+                        item: '<a href="javascript:;"><span>{num}</span></a>',
+                        message: 'Displaying {from} - {to} of {total} registers',
+                        noData: 'No Data'
+                    }, prop);
+                }
+            },
+            config:{ //for serverSide
+                type: Object,
+                required: false,
+                coerce: function(prop){
+                    return Object.assign({
+                        data: [],
+                        total: 50,
+                        per_page: 15,
+                        current_page: 1,
+                        last_page: 4,
+                        from: 1,
+                        to: 15
+                    }, prop);
+                }
+            },
+            serverSide: {
+                type: Boolean,
+                required: false,
+                default: false
+            },
+            url: {
+                type: String,
+                required: false,
+                default: 'api/users'
+            },
+            data: {
+                type: Array,
+                required: false,
+                default: function(){
+                    return [1,2,3,4,5,6,7,8,9,11,22,33,44,55,66,77];
+                }
+            },
+            loadingState: {
+                type:Boolean,
+                required: false,
+                default: false
+            },
+            numbersToShow: {
+                type: Number,
+                required: false,
+                default: 10
+            }
+        },
+
         data: function(){
             return {
-                classDom: {
-                    container: 'pagination-container',
-                    ul: 'pagination',
-                    li: '',
-                    disabled: 'disabled',
-                    active: 'active'
-                },
-                templateDom: {
-                    next: '<span>Next</span>',
-                    prev: '<span>Prev</span>',
-                    item: '<span>$1</span>'
-                },
-                config: {
-                    serverSide: false,
-                    data: [],
-                    url: '',
-                    total: 50,
-                    per_page: 15,
-                    current_page: 1,
-                    last_page: 4,
-                    from: 1,
-                    to: 15
-                }
+                originalData: []
             }
         },
         methods: {
-            viewProfile: function(id) {
-                console.log('view profile with id:', id)
+            renderNum: function(num){
+                return this.templateDom.item.replace('{num}', num);
+            },
+            renderMessage: function(){
+                const {from, to, total} = this.config;
+                return this.templateDom.message.replace('{from}', from).replace('{to}', to).replace('{total}', total);
+            },
+            getPagination: function(num){
+                const {per_page, data, current_page} = this.config;
+                if(num == current_page){
+                    null;
+                }else{
+                    this.$set('originalData', []);
+                    for(let idx=num-1; idx < (num * per_page)-1; idx++){
+                        this.originalData.push(data[idx]);
+                    }
+                }
+            },
+            clickPaginator: function(op, isDisabled, num=null){
+                console.log('entra pero no se que pasa', op, isDisabled, num);
+                if(!isDisabled){
+                    switch(op){
+                        case 'next':
+                            this.config.current_page = this.config.current_page + 1;
+                            break;
+                        case 'prev':
+                            this.config.current_page = this.config.current_page - 1;
+                            break;
+                        case 'last':
+                            this.config.current_page = this.config.last_page;
+                            break;
+                        case 'first':
+                            this.config.current_page = 1;
+                            break;
+                        case 'item':
+                            this.config.current_page = num;
+                            break;
+                        default: console.error('This option do not exists, method:clickPaginator');
+                    }
+                }
+                
             }
         },
         events: {
