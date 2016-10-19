@@ -87,6 +87,13 @@
 					template: '${col.aula.codigo} - ${col.aula.descripcion}'
 				},
 				{
+					title: 'Horas Asignadas',
+					field: 'horario',
+					hidden: false,
+					sortable: false,
+					template: '<span class="text-green"><i class="fa fa-clock-o"></i> ${col.horario.length > 0 ? _.sumBy(col.horario, function(o) { return parseFloat(o.num_horas); }) : 0}H</span>'
+				},
+				{
 					title: 'Opciones',
 					titleClass: 'text-center',
 					hidden: false,

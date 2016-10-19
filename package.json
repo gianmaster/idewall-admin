@@ -28,6 +28,7 @@
     "vuedragablefor": "^1.0.9"
   },
   "dependencies": {
-    "moment": "^2.15.0"
+    "moment": "^2.15.0",
+    "vuetable": "^1.5.6"
   }
 }

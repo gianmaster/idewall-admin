@@ -20,6 +20,11 @@ Route::get('/', function () {
 
 Route::get('/horas', 'JornadasSemestresController@dataHorarioValidator');
 
+Route::get('api/v2/data', function(){
+	$data = App\Entities\Docente::paginate(10);
+	return $data;
+});
+
 Route::get('query/{ciclojornadasemestre}', function($ciclojornadasemestre){
 	$result = DB::select("select d.abreviatura, d.nombres, d.apellidos, ma.semestre, cmd.id ciclo_materia_docente, ma.nombre_materia, ma.codigo_materia, ma.id id_materia
       from docentes d, ciclo_docentes cd, malla_academica ma, ciclo_materias_docente cmd, jornadas_semestres js
