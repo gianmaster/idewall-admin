@@ -20,8 +20,8 @@ Route::get('/', function () {
 
 Route::get('/horas', 'JornadasSemestresController@dataHorarioValidator');
 
-Route::get('api/v2/data', function(){
-	$data = App\Entities\Docente::paginate(10);
+Route::get('api/v2/data/{type}', function($type){
+	$data = $type == 'normal' ? App\Entities\Docente::all() : App\Entities\Docente::paginate(10);
 	return response()->json($data);
 });
 

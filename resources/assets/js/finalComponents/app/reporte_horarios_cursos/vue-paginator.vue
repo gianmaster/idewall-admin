@@ -2,18 +2,18 @@
     <div :class="classDom.container">
         <template v-if="config.data.length>0">
             <ul :class="classDom.ul">
-                <li :class="classDom.li" @click="clickPaginator('first', false)">{{{templateDom.first}}}</li>
-                <li :class="classDom.li" @click="clickPaginator('prev', false)">{{{templateDom.prev}}}</li>
+                <li :class.sync="firtPrevClass" @click="clickPaginator('first', config.current_page==1)">{{{templateDom.first}}}</li>
+                <li :class.sync="firtPrevClass" @click="clickPaginator('prev', config.current_page==1)">{{{templateDom.prev}}}</li>
 
                 <li class="{{config.current_page == num+1 ? classDom.li+' '+classDom.active : classDom.li}}" @click="clickPaginator('item', false, num+1)" v-for="num in config.last_page">
                     {{{renderNum(num+1)}}}
                 </li>
 
-                <li :class="classDom.li" @click="clickPaginator('next', false)">{{{templateDom.next}}}</li>
-                <li :class="classDom.li" @click="clickPaginator('first', false)">{{{templateDom.last}}}</li>
+                <li :class="nextLastClass" @click="clickPaginator('next', config.current_page==config.last_page)">{{{templateDom.next}}}</li>
+                <li :class="nextLastClass" @click="clickPaginator('last', config.current_page==config.last_page)">{{{templateDom.last}}}</li>
             </ul>
             <div :class="classDom.message">
-                {{{renderMessage()}}}
+                {{{renderMessage}}}
             </div>
         </template>
         <template v-else>
@@ -24,10 +24,11 @@
 
 
 <script>
+
     export default{
         name: 'vue-paginator',
         ready: function(){
-            this.getPagination();
+            this.initPaginator();
         },
         props: {
             classDom:{
@@ -74,6 +75,11 @@
                     }, prop);
                 }
             },
+            pages: {
+                type: Number,
+                required: false,
+                default: 5
+            },
             serverSide: {
                 type: Boolean,
                 required: false,
@@ -94,47 +100,94 @@
                 required: false,
                 default: false
             },
-            numbersToShow: {
-                type: Number,
+            dataPath: {
+                type: String,
                 required: false,
-                default: 10
+                default: null
             }
         },
+        computed: {
+            firtPrevClass: function(){
+                const {current_page} = this.config;
+                const { li, disabled} = this.classDom;
 
-        data: function(){
-            return {
-                pag: true
-            }
-        },
-        methods: {
-            renderNum: function(num){
-                console.log(num);
-                return this.templateDom.item.replace('{num}', num);
+                return current_page == 1 ? `${li} ${disabled}` : li;
             },
+            nextLastClass: function(){
+                const {current_page, last_page} = this.config;
+                const { li, disabled} = this.classDom;
+
+                return current_page == last_page ? `${li} ${disabled}` : li;
+            },
+            moreBack: function(){
+
+            },
+            moreNext: function(){
+
+            },
+            /**
+             * Genera el mensaje de los registros
+             * @return {[type]} [description]
+             */
             renderMessage: function(){
                 const {from, to, total} = this.config;
                 return this.templateDom.message.replace('{from}', from).replace('{to}', to).replace('{total}', total);
             },
-            getPagination: function(){
-
-                const {per_page, data, current_page} = this.config;
+        },
+        data: function(){
+            return {
+                segmentData: []
+            }
+        },
+        methods: {
+            initPaginator: function(){
+                this.loadingState = true;
+                this.$http.get(this.url).then(function(resp){
+                    if(this.serverSide){
+                        Object.assign(this.config, resp.data);
+                    }else{
+                        this.config.data = resp.data;
+                        this.getSegmentData();
+                        this.loadingState = false;
+                    }
+                }, function(err){
+                    console.log(err);
+                });
+            },
+            getSegmentData: function(){
+                const {per_page, current_page} = this.config;
+                let tmpData = Object.assign([], this.config.data);
                 let list = [];
-
-                for(let idx=current_page-1; idx < (current_page * per_page)-1; idx++){
-                    list.push(data[idx]);
+                while (tmpData.length>0) {
+                    list.push(tmpData.splice(0, per_page));
                 }
-
-                this.displayData = list;
+                this.segmentData = list;
+                this.displayData = list[current_page - 1];
+                this.config.last_page = list.length;
+            },
+            renderNum: function(num){
+                return this.templateDom.item.replace('{num}', num);
+            },
+            /**
+             * Genera el array de registros correspondientes a la paginacion
+             * @return {[type]} [description]
+             */
+            getPagination: function(){
+                this.displayData = this.segmentData[this.config.current_page -1];
             },
             clickPaginator: function(op, isDisabled, num){
                 num = num || null;
+                let {last_page} = this.config;
                 if(!isDisabled){
+
                     switch(op){
                         case 'next':
-                            this.config.current_page = this.config.current_page + 1;
+                            if(this.config.current_page < this.config.last_page)
+                                this.config.current_page = this.config.current_page + 1;
                             break;
                         case 'prev':
-                            this.config.current_page = this.config.current_page - 1;
+                            if(this.config.current_page > 1)
+                                this.config.current_page = this.config.current_page - 1;
                             break;
                         case 'last':
                             this.config.current_page = this.config.last_page;
