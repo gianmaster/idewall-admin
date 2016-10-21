@@ -9,6 +9,12 @@
 
 </template>
 
+<style>
+  .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
+    border: 1px solid #e8e3e3;
+  }
+</style>
+
 <script>
 
   import fnc from '../util/reusable_functions';

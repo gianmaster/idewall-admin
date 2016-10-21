@@ -50,7 +50,7 @@
 				
 				<thead v-if="requireHeader">
 					<tr>
-						<th v-for="col in columns | filterBy false in 'hidden'" :class="col.titleClass">
+						<th v-for="col in columns | filterBy false in 'hidden'" :class="col.titleClass" :style="col.style">
 							<template v-if="sortable && col.sortable && !col.itemActions">
 								<div class="cool-table-sortable" @click.prevent="orderColumn(col.field)">
 									<span>{{col.title}}</span>
@@ -128,7 +128,9 @@
 								</a><!-- more back -->
 							</li>
 
-							<li v-for="pag in 5, pagination.last_page" class="{{isActive(pag+1)}}" @click.prevent="paginate(pag+1)" v-if="numToShow(pag+1)"><a href="#">{{pag + 1}}</a></li>
+							<template v-for="pag in 5, pagination.last_page">
+								<li  class="{{isActive(pag+1)}}" @click.prevent="paginate(pag+1)" v-if="numToShow(pag+1)"><a href="#">{{pag + 1}}</a></li>
+							</template>
 
 							<li v-if="pagination.moreTemp < (pagination.last_page/pagination.limitPaginate)" @click.prevent="pagScroll('next')">
 								<a href="#" aria-label="Next">
@@ -301,7 +303,8 @@
 					return [
 					{
 						field: 'name',
-						hidden: false
+						hidden: false,
+						style: ''
 					},
 					{
 						field: 'email',
@@ -321,6 +324,7 @@
 						title: 'Acciones',
 						titleClass: 'text-center',
 						hidden: false,
+						style: 'width:10%',
 						fieldClass: 'text-center',
 						itemActions: [
 						{
@@ -503,6 +507,12 @@
 		data(){
 			return {
 				otro: 'hola',
+			}
+		},
+		events: {
+			'refresh-cool-table': function(){
+				this.pagination.current_page = 1;
+				this.loadData(this.endpoint + '?per_page='  + this.pagination.per_page);
 			}
 		}
 	}

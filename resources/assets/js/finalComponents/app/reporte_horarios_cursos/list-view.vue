@@ -64,6 +64,7 @@
 			return {
 				showModal: false,
 				url: 'api/jornadasemestre',
+				urlCiclos: 'api/ciclos',
 				toolbar: null,
 				currentModel: {},
 				materiasSeleccionadas: [],
@@ -74,6 +75,9 @@
 					field: 'semestre',
 					hidden: false,
 					sortable: false,
+					fieldClass: 'text-center',
+					titleClass: 'text-center',
+					style: 'width:10%;',
 					template: '${col.semestre.descripcion}'
 				},
 				{
@@ -81,6 +85,9 @@
 					field: 'jornada',
 					hidden: false,
 					sortable: false,
+					fieldClass: 'text-center',
+					titleClass: 'text-center',
+					style: 'width:10%;',
 					template: '<span class="color-palette label ${col.catalogo_jornada=="MAT"?"bg-primary":col.catalogo_jornada=="VES"?"bg-orange":col.catalogo_jornada=="NOC"?"bg-navy":"bg-purple"}"> <i class="fa fa-clock-o"></i> ${col.jornada.descripcion} </span>'
 
 				},
@@ -88,6 +95,8 @@
 					title: 'Curso / Aula / Paralelo',
 					field: 'aula',
 					hidden: false,
+					fieldClass: 'text-center',
+					titleClass: 'text-center',
 					sortable: false,
 					template: '${col.aula.codigo} - ${col.aula.descripcion}'
 				},
@@ -95,6 +104,9 @@
 					title: 'Horas Asignadas',
 					field: 'horario',
 					hidden: false,
+					fieldClass: 'text-center',
+					titleClass: 'text-center',
+					style: 'width:15%;',
 					sortable: false,
 					template: '<span class="text-green"><i class="fa fa-clock-o"></i> ${col.horario.length > 0 ? _.sumBy(col.horario, function(o) { return parseFloat(o.num_horas); }) : 0}H</span>'
 				},
@@ -103,6 +115,7 @@
 					titleClass: 'text-center',
 					hidden: false,
 					fieldClass: 'text-center',
+					style: 'width:10%;',
 					itemActions: [
 							/*
 						{

@@ -238,4 +238,13 @@ class CiclosController extends Controller
     
 
 
+    /**
+     * Retorna todos los ciclos 
+     * @return [type] [description]
+     */
+    public function getAllCiclos(){
+        $ciclos = Ciclo::all();
+        return response()->json(['data' => $ciclos]);
+    }
+
 }

@@ -100,6 +100,7 @@ Route::group(['middleware' => 'auth'], function(){
 		//Route::post('docentes/materias', ['uses' => 'DocentesController@storeMaterias', 'as' => 'api.docentes.materias']);
 
 		Route::get('ciclo', 'CiclosController@index');
+		Route::get('ciclos', 'CiclosController@getAllCiclos');
 		Route::get('ciclo/{ciclo}/docentes', 'CiclosController@docentesCiclo');
 		Route::put('docentes/materias/{id}', ['uses' => 'CiclosController@updateMateriasDocenteCiclo', 'as' => 'api.docentes.materias']);
 

@@ -49,11 +49,13 @@ class JornadasSemestresController extends Controller
     {
         $this->repository->skipPresenter();
 
+        $ciclo = Ciclo::where('estado', 'VIGENTE')->first();
+
         $perPage = request()->has('per_page') ? (int) request()->per_page :10 ;
 
         if (request()->has('sort')) {
             list($sortCol, $sortDir) = explode('|', request()->sort);
-            $jornadasemestre = $this->repository
+            $jornadasemestre = JornadasSemestre::where('ciclo', $ciclo->id)
                 ->with('semestre')
                 ->with('aula')
                 ->with('jornada')
@@ -62,7 +64,7 @@ class JornadasSemestresController extends Controller
                 ->orderBy('catalogo_semestre', $sortDir)
                 ->paginate($perPage);
         } else {
-            $jornadasemestre = $this->repository
+            $jornadasemestre = JornadasSemestre::where('ciclo', $ciclo->id)
                 ->with('semestre')
                 ->with('aula')
                 ->with('jornada')
