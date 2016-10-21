@@ -1,18 +1,13 @@
 import Index from './index.vue';
-import List from './test-plugin.vue';
-import EdicionHorario from './horario_docente/index.vue';
-
+import List from './list-view.vue';
 
 module.exports = {
 	component: Index,
-    subRoutes: {
-    	'/': {
-    		component: List,
-    		name: 'Listar'
-    	},
-		'/edit/:model_id': {
-			component: EdicionHorario,
-			name: 'EdicionHorarioDocente'
+	subRoutes: {
+		'/': {
+			component: List,
+			name: 'Listar'
 		}
-    }
-}
+	}
+};
+

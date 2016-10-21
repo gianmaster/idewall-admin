@@ -1,54 +1,56 @@
 <template>
-	
-	<div v-if="loading">
-		<app-loading></app-loading>
+
+	<div class="row">
+
+		<div class="input-group input-group-sm col-xs-3 space-toolbar">
+			<span class="input-group-addon" id="sizing-addon3">Período</span>
+			<select name="anio" id="anio" class="form-control" aria-describedby="sizing-addon3">
+				<option value="1">2016-2017 (C1)</option>
+				<option value="2">2016-2017 (C2)</option>
+			</select>
+		</div>
+
+		<div v-if="loading">
+			<app-loading></app-loading>
+		</div>
+
+		<div v-else>
+
+			<cool-table 
+			:option-toolbar="toolbar"
+			:url="url" 
+			:data.sync="datos" 
+			:columns="columnas" 
+			filter-key-word="search">
+		</cool-table>
+
+		<!-- Modal logic -->
+
 	</div>
 
-	<div v-else>
-		<cool-table 
-		:option-toolbar="toolbar"
-		:url="url" 
-		:data.sync="datos" 
-		:columns="columnas" 
-		filter-key-word="search">
-	</cool-table>
-
-	<!-- Modal logic -->
-
-	<app-modal title="Asignación de Materias" :show.sync="showModal" @ok="toggleModal" @cancel="toggleModal" emit-when-ok="event-end-edit">
-		<div class="row">
-			<form action="" @submit.prevent="update">
-
-				<formulario :data-model.sync="currentModel" :selected.sync="materiasSeleccionadas"></formulario>
-
-			</form>
-		</div>
-	</app-modal>
-
-</div>
-
 </template>
+
+<style scoped>
+	.show-div{
+		z-index: 999;
+	}
+	.btn-spacing{
+		margin: .5em;
+	}
+	.space-toolbar{
+		margin-bottom: 10px;
+		margin-left: 5px;
+	}
+</style>
+
 
 <script>
 
 	import Loading from '../../reusable/loading.vue';
 
-	import Modal from '../../reusable/modal.vue';
-
 	import coolTable from '../../reusable/cool-table.vue';
 
-	import formulario from './form-fields.vue';
-
 	import myMixins from './mixins';
-
-	function formateaHora(hora){
-		const time = hora.split('.');
-		if(time[1] == 50){
-			return `${time[0]}:30H`;
-		}else{
-			return `${time[0]}:00H`;
-		}
-	}
 
 	export default {
 		mixins: [myMixins],
@@ -61,62 +63,40 @@
 		data(){
 			return {
 				showModal: false,
-				url: 'api/ciclohorariodocente',
+				url: 'api/jornadasemestre',
 				toolbar: null,
 				currentModel: {},
 				materiasSeleccionadas: [],
 				datos: [],
 				columnas: [
 				{
-					title: 'Período',
-					field: 'anio',
-					hidden: false,
-					titleClass: 'text-center',
-					fieldClass: 'text-center',
-					sortable: true,
-					template: '${col.anio} - ${col.anio+1} (${col.ciclo})'
-				},
-				{
-					title: 'Docente',
-					field: 'nombres',
-					hidden: false,
-					sortable: true,
-					template: '${col.abreviatura}. ${col.nombres} ${col.apellidos}'
-				},
-				{
-					title: 'Identificación',
-					field: 'identificacion',
-					titleClass: 'text-center',
-					fieldClass: 'text-center',
-					hidden: false,
-					sortable: true
-				},
-				{
-					title: 'Horas Académicas',
-					field: 'horas_academicas_asignadas',
-					titleClass: 'text-center',
-					fieldClass: 'text-center',
+					title: 'Semestre',
+					field: 'semestre',
 					hidden: false,
 					sortable: false,
-					template: '<span class="text-green"><i class="fa fa-clock-o"></i> ${col.horas_academicas_asignadas.replace(".",":").replace("5","3")}H</span>'
+					template: '${col.semestre.descripcion}'
 				},
 				{
-					title: 'Horas Distributivos',
-					field: 'horas_complementarias',
-					titleClass: 'text-center',
-					fieldClass: 'text-center',
+					title: 'Jornada',
+					field: 'jornada',
 					hidden: false,
 					sortable: false,
-					template: '<span class="text-green"><i class="fa fa-clock-o"></i> ${col.horas_complementarias.replace(".",":").replace("5","3")}H</span>'
+					template: '<span class="color-palette label ${col.catalogo_jornada=="MAT"?"bg-primary":col.catalogo_jornada=="VES"?"bg-orange":col.catalogo_jornada=="NOC"?"bg-navy":"bg-purple"}"> <i class="fa fa-clock-o"></i> ${col.jornada.descripcion} </span>'
+
 				},
 				{
-					title: 'Total Horas',
-					field: 'total',
-					titleClass: 'text-center',
-					fieldClass: 'text-center',
+					title: 'Curso / Aula / Paralelo',
+					field: 'aula',
 					hidden: false,
 					sortable: false,
-					template: '<span class="text-green"><i class="fa fa-clock-o"></i> ${col.total.replace(".",":").replace("5","3")}H</span>'
+					template: '${col.aula.codigo} - ${col.aula.descripcion}'
+				},
+				{
+					title: 'Horas Asignadas',
+					field: 'horario',
+					hidden: false,
+					sortable: false,
+					template: '<span class="text-green"><i class="fa fa-clock-o"></i> ${col.horario.length > 0 ? _.sumBy(col.horario, function(o) { return parseFloat(o.num_horas); }) : 0}H</span>'
 				},
 				{
 					title: 'Opciones',
@@ -124,34 +104,37 @@
 					hidden: false,
 					fieldClass: 'text-center',
 					itemActions: [
+							/*
 						{
-							nameEmit: 'pdf-horario-event',
-							btnClass: 'btn btn-success btn-xs',
+							nameEmit: 'jornadasemestre-update-event',
+							btnClass: 'btn btn-primary btn-xs',
+							iconClass: 'fa fa-pencil',
+							label: 'Modificar'
+						},
+						*/
+						{
+							nameEmit: 'download-horario-event',
+							btnClass: 'btn btn-primary btn-xs',
 							iconClass: 'fa fa-file-pdf-o',
-							label: 'Descargar'
-						}
-					]
+							label: 'Descargar',
+							text: 'Descargar'
+						},
+						]
+					}
+					],
+					loading: false
 				}
-				],
-				loading: false
-			}
-		},
-		components: {
-			'cool-table' : coolTable,
-			'app-loading' : Loading,
-			'app-modal' : Modal,
-			'formulario':formulario
-		},
-		events: {
-			'pdf-horario-event' : function(model){
-				this.$router.go(`/horariosdocentes/edit/${model.ciclo_docente}`);
 			},
-			//when modal emit ok
-			'event-end-edit': function(){
-				this.update();
+			components: {
+				'cool-table' : coolTable,
+				'app-loading' : Loading
+			},
+			events: {
+				'download-horario-event' : function(model){
+					//this.$router.go('/jornadasemestres/edit/' + model.id);
+					console.log('se descarga el pdf del horario por curso');
+				}
 			}
 		}
-	}
 
-</script>
-
+	</script>
