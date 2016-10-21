@@ -87,7 +87,7 @@
 								<div v-else class="btn-group">
 
 									<a v-for="act in col.itemActions" :class="act.btnClass" href="" @click.prevent="dispacher(act.nameEmit, item)" >
-										<i :class="act.iconClass" data-toggle="tooltip" :title="act.label"></i>
+										<i :class="act.iconClass" data-toggle="tooltip" :title="act.label"></i> {{act.text}}
 									</a>
 
 								</div>

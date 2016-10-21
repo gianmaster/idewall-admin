@@ -16,7 +16,7 @@
 	import fnc from '../../../util/reusable_functions';
 
 	export default {
-		name: 'content-lista-docentes-horario',
+		name: 'content-materias-docentes',
 		components:{
 			'content-header' : ContentHeader
 		},
@@ -27,9 +27,9 @@
 		},
 		data: function(){
 			return {
-				path: ['Cargas Horarias', 'Distribución Horario Docente'],
+				path: ['Reportes', 'Horarios Cursos'],
 				loading: true,
-				titulo: 'Distribución Horario Docente',
+				titulo: 'Horarios Cursos',
 				url: ''
 			}
 		}
