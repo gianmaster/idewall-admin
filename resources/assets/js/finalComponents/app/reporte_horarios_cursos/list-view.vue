@@ -4,9 +4,10 @@
 
 		<div class="input-group input-group-sm col-xs-3 space-toolbar">
 			<span class="input-group-addon" id="sizing-addon3">Período</span>
-			<select name="anio" id="anio" class="form-control" aria-describedby="sizing-addon3">
-				<option value="1">2016-2017 (C1)</option>
-				<option value="2">2016-2017 (C2)</option>
+			<select name="ciclo" id="ciclo" class="form-control" v-model="ciclo" aria-describedby="sizing-addon3" @change="chageCiclo(ciclo)">
+				<template v-for="item in listaCiclos">
+					<option :value="item">{{item.anio}}-{{item.anio+1}} (C{{item.ciclo}})</option>					
+				</template>
 			</select>
 		</div>
 
@@ -18,7 +19,7 @@
 
 			<cool-table 
 			:option-toolbar="toolbar"
-			:url="url" 
+			:url.sync="url" 
 			:data.sync="datos" 
 			:columns="columnas" 
 			filter-key-word="search">
@@ -53,6 +54,7 @@
 	import myMixins from './mixins';
 
 	export default {
+		name: 'reporte-horarios-cursos',
 		mixins: [myMixins],
 		route: {
 			data: function(transition){
@@ -65,6 +67,8 @@
 				showModal: false,
 				url: 'api/jornadasemestre',
 				urlCiclos: 'api/ciclos',
+				listaCiclos: [],
+				ciclo: {},
 				toolbar: null,
 				currentModel: {},
 				materiasSeleccionadas: [],

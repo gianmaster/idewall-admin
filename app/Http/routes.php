@@ -107,6 +107,7 @@ Route::group(['middleware' => 'auth'], function(){
 		Route::resource('ciclodocente', 'CicloDocentesController');
 
 		Route::resource('jornadasemestre', 'JornadasSemestresController');
+		Route::get('jornadasemestre/{ciclo}/ciclo', 'JornadasSemestresController@getListaJornadasSemestresCiclo');
 
 		Route::get('jornadasemestre/{jornadasemestre}/horario', 'JornadasSemestresController@horarioJornadaSemestre');
 		Route::post('jornadasemestre/{jornadasemestre}/horario', 'JornadasSemestresController@saveHorarioJornadaSemestre');

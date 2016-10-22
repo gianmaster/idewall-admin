@@ -393,6 +393,10 @@
 			}      
 		},
 		methods: {
+			refresh: function(){
+				this.pagination.current_page = 1;
+				this.loadData();
+			},
 			renderTemplate: function(col, template){
 				return eval('`'+template+'`');
 			},
@@ -499,7 +503,7 @@
 		},
 		
 		ready(){
-			this.loadData(this.endpoint + '?per_page='  + this.pagination.per_page);
+			this.loadData();
 		},
 		created(){
 			arrayToScema(this.columns);
@@ -507,12 +511,6 @@
 		data(){
 			return {
 				otro: 'hola',
-			}
-		},
-		events: {
-			'refresh-cool-table': function(){
-				this.pagination.current_page = 1;
-				this.loadData(this.endpoint + '?per_page='  + this.pagination.per_page);
 			}
 		}
 	}

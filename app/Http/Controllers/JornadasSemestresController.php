@@ -313,4 +313,42 @@ class JornadasSemestresController extends Controller
         return $data;
     }
 
+
+    /**
+     * Metodo que retorna un JSON de los datos de las jornadas de los semestres por Ciclo
+     * @param type $ciclo 
+     * @return Response
+     */
+    public function getListaJornadasSemestresCiclo($ciclo){
+
+        $ciclo = Ciclo::find($ciclo);
+
+        $perPage = request()->has('per_page') ? (int) request()->per_page :10 ;
+
+        if (request()->has('sort')) {
+            list($sortCol, $sortDir) = explode('|', request()->sort);
+            $jornadasemestre = JornadasSemestre::where('ciclo', $ciclo->id)
+                ->with('semestre')
+                ->with('aula')
+                ->with('jornada')
+                ->with('descripcionCiclo')
+                ->with('horario')
+                ->orderBy('catalogo_semestre', $sortDir)
+                ->paginate($perPage);
+        } else {
+            $jornadasemestre = JornadasSemestre::where('ciclo', $ciclo->id)
+                ->with('semestre')
+                ->with('aula')
+                ->with('jornada')
+                ->with('descripcionCiclo')
+                ->with('horario')
+                ->orderBy('catalogo_semestre', 'asc')
+                ->paginate($perPage);
+        }
+
+        return response()->json($jornadasemestre);
+
+    }
+
+
 }
