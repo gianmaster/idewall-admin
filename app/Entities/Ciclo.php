@@ -16,13 +16,14 @@ class Ciclo extends Model implements Transformable
 
 
     public function cursos(){
-        return $this->hasMany(JornadasSemestre::class, 'ciclo', 'id');
+        return $this->hasMany(JornadasSemestre::class, 'ciclo', 'id')->with('horario');
     }
 
     public function docentes(){
         return $this->hasMany(CicloDocentes::class, 'ciclo', 'id')
             ->with('cicloDetail')
             ->with('materiasDocenteCiclo')
+            ->with('cargaDistributiva')
             ->with('docenteDetail');
     }
 

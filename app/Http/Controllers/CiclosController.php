@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Entities\Ciclo;
 use App\Entities\CicloDocentes;
+use App\Entities\JornadasSemestre;
 use App\Entities\MateriasCicloDocente;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\DB;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Http\Requests\CicloCreateRequest;
@@ -245,6 +247,40 @@ class CiclosController extends Controller
     public function getAllCiclos(){
         $ciclos = Ciclo::all();
         return response()->json(['data' => $ciclos]);
+    }
+
+
+    public function dataDashboardByCiclo($ciclo){
+        $dataCiclo = Ciclo::with('docentes')
+            ->with('cursos')
+            ->find($ciclo);
+        $docentesCiclo = $dataCiclo->docentes->count();
+        $cursosCiclo = $dataCiclo->cursos->count();
+
+        //obtener los horarios asignados
+        $horariosCursosAsignados = 0;
+        foreach ($dataCiclo->cursos as $curso) {
+            if(count($curso->horario)>0)
+                $horariosCursosAsignados++;
+        }
+
+        //obtener los horarios distributivos asignados a docentes del ciclo
+        $horariosDistributivosDocentesCiclo = 0;
+        foreach ($dataCiclo->docentes as $docente) {
+            if(count($docente->cargaDistributiva) > 0)
+                $horariosDistributivosDocentesCiclo++;
+        }
+        
+        return array(
+            'docentes_ciclo' => $docentesCiclo,
+            'cursos_ciclo' => $cursosCiclo,
+            'cursos_ciclo_asignado' => $horariosCursosAsignados,
+            'horarios_distributivos_asignados' => $horariosDistributivosDocentesCiclo
+        );
+    }
+    
+    public function totalHorariosCursoCiclo($ciclo){
+        $totalHorarios = DB::select("");
     }
 
 }

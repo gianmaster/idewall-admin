@@ -70,6 +70,8 @@ Route::group(['middleware' => 'auth'], function(){
 
 	Route::group(['prefix' => 'api'], function(){
 
+		Route::get('dashborad/{ciclo}', 'CiclosController@dataDashboardByCiclo');
+
 		Route::get('me', 'UserController@getProfile');
 
 		Route::resource('users', 'UserController');
