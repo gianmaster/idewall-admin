@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Entities\Ciclo;
 use App\Entities\CicloDocentes;
+use App\Entities\Docente;
 use App\Entities\JornadasSemestre;
 use App\Entities\MateriasCicloDocente;
 use Illuminate\Http\Request;
@@ -251,6 +252,8 @@ class CiclosController extends Controller
 
 
     public function dataDashboardByCiclo($ciclo){
+        $totalDocentes = count(Docente::all());
+
         $dataCiclo = Ciclo::with('docentes')
             ->with('cursos')
             ->find($ciclo);
@@ -272,6 +275,7 @@ class CiclosController extends Controller
         }
         
         return array(
+            'total_docentes' => $totalDocentes,
             'docentes_ciclo' => $docentesCiclo,
             'cursos_ciclo' => $cursosCiclo,
             'cursos_ciclo_asignado' => $horariosCursosAsignados,

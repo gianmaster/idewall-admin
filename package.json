@@ -28,6 +28,7 @@
     "vuedragablefor": "^1.0.9"
   },
   "dependencies": {
+    "chart.js": "^2.3.0",
     "moment": "^2.15.0",
     "vue-chartjs": "^2.1.1",
     "vuetable": "^1.5.6"
