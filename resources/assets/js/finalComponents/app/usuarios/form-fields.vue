@@ -10,9 +10,20 @@
 		<input type="hidden" class="form-control" :value="dataModel.id">
 	</div>
 
+	<div class="col-sm-6 col-xs-12" v-if="createMode">
+		<label>Contraseña</label>
+		<input type="text" class="form-control" v-model="dataModel.password" minlength="3">
+		<span class="text-primary"><small>Solo llenarlo en necesita reestablecer la contraseña</small></span>
+	</div>
+
 	<div class="col-sm-6 col-xs-12">
 		<label>Correo Electrónico</label>
 		<input type="email" class="form-control" v-model="dataModel.email" required>
+	</div>
+
+	<div class="col-sm-6 col-xs-12">
+		<label>URL Avatar</label>
+		<input type="url" class="form-control" placeholder="http://igmbur.com/user/profile.png" v-model="dataModel.avatar">
 	</div>
 
 	<div class="col-sm-6 col-xs-12">
@@ -58,6 +69,8 @@
 		beforeCompile(){
 			if (this.createMode){
 				this.dataModel = this.initModel();
+			}else{
+				this.dataModel.password = '';
 			}
 		},
 		components: {
@@ -74,9 +87,11 @@
 				return {
 					name: null,
 					email: null,
+					password: null,
 					id: null,
 					state: null,
-					rol: null
+					rol: null,
+					avatar: null
 				}
 			},
 		},
@@ -93,9 +108,11 @@
 					return {
 						name: null,
 						email: null,
+						password: null,
 						id: null,
 						state: null,
-						rol: null
+						rol: null,
+						avatar: null
 					}
 				}
 			}

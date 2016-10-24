@@ -117,6 +117,7 @@ Route::group(['middleware' => 'auth'], function(){
 		Route::get('horariomateriasdocente/{ciclodocente}', 'HorariosDocentesController@horarioCicloDocente');
 
 		Route::resource('ciclohorariodocente', 'HorariosDocentesController');
+		Route::get('ciclohorariodocente/{ciclo}/ciclo', 'HorariosDocentesController@getHorarioDocenteByCiclo');
 		Route::post('ciclohorariodocente/{idciclodocente}/save', 'HorariosDocentesController@saveHorarioDistributivosDocente');
 
 		//reporteria

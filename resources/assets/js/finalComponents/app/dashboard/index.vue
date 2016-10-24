@@ -69,7 +69,14 @@
 		</div>
 
 		<div class="row">
-			<div class="col-xs-12">
+			<div class="col-xs-12 col-sm-3" style="margin-top: 10%">
+				<button class="btn btn-primary btn-block">ENVIAR SÍLABOS <i class="fa fa-envelope-o"></i></button>
+				<p class="text-center text-red">Use la opción de envío de sílabos solo cuando terminte la asignación de las horas distributivas de los docentes.</p>
+
+				<p class="text-center text-blue">Recuerde que usted puede agregar y/o actualizar los sílabos en la opción
+					<a v-link="{path:'malla_academica'}">Malla Académica</a>.</p>
+			</div>
+			<div class="col-xs-12 col-sm-9" style="max-height: 300px;">
 				<template v-if="loading">
 					<p class="text-center">Cargando Gráfico...</p>
 				</template>
@@ -192,3 +199,5 @@
 	}
 
 </script>
+
+

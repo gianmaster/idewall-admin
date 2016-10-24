@@ -82,10 +82,10 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $input = $request->only(['name', 'email', 'rol', 'state']);
+        $input = $request->only(['name', 'email', 'rol', 'state', 'avatar']);
         $input['password'] = bcrypt($input['email']);
         isset($input['state']) ? null : $input['state'] = true;
-        $input['avatar'] = 'img/user-profile.png';
+        $input['avatar'] = $input['avatar'] == '' ? 'img/user-profile.png' : $input['avatar'];
         $user = User::create($input);
         return response()->json(array('data' => $user));
     }
@@ -123,7 +123,12 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::find($id);
-        $user->update($request->only(['name', 'email', 'rol', 'state']));
+        $pass = $request->get('password');
+
+        if(trim($pass) == '')
+            $user->update(['password' => bcrypt($pass)]);
+
+        $user->update($request->only(['name', 'email', 'rol', 'state', 'avatar']));
         return response()->json(array('data' => $user));
     }
 

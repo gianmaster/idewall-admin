@@ -2,31 +2,34 @@
 
 	<div class="row">
 
-		<div class="input-group input-group-sm col-xs-3 space-toolbar">
-			<span class="input-group-addon" id="sizing-addon3">Período</span>
-			<select name="ciclo" id="ciclo" class="form-control" v-model="ciclo" aria-describedby="sizing-addon3" @change="chageCiclo(ciclo)">
-				<template v-for="item in listaCiclos">
-					<option :value="item">{{item.anio}}-{{item.anio+1}} (C{{item.ciclo}})</option>					
-				</template>
-			</select>
+		<div class="col-xs-12">
+			<div class="input-group input-group-sm col-xs-3 space-toolbar">
+				<span class="input-group-addon" id="sizing-addon3">Período</span>
+				<select name="ciclo" id="ciclo" class="form-control" v-model="ciclo" aria-describedby="sizing-addon3" @change="chageCiclo(ciclo)">
+					<template v-for="item in listaCiclos">
+						<option :value="item">{{item.anio}}-{{item.anio+1}} (C{{item.ciclo}})</option>
+					</template>
+				</select>
+			</div>
 		</div>
 
 		<div v-if="loading">
 			<app-loading></app-loading>
 		</div>
 
-		<div v-else>
+		<div v-else class="col-xs-12">
 
 			<cool-table 
-			:option-toolbar="toolbar"
-			:url.sync="url" 
-			:data.sync="datos" 
-			:columns="columnas" 
-			filter-key-word="search">
-		</cool-table>
+				:option-toolbar="toolbar"
+				:url.sync="url"
+				:data.sync="datos"
+				:columns="columnas"
+				filter-key-word="search">
+			</cool-table>
 
 		<!-- Modal logic -->
 
+		</div>
 	</div>
 
 </template>
@@ -64,7 +67,6 @@
 		},
 		data(){
 			return {
-				showModal: false,
 				url: 'api/jornadasemestre',
 				urlCiclos: 'api/ciclos',
 				listaCiclos: [],
