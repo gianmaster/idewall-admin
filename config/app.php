@@ -167,6 +167,11 @@ return [
          * */
         Prettus\Repository\Providers\RepositoryServiceProvider::class,
 
+        /**
+         * DomPDF
+         */
+        Barryvdh\DomPDF\ServiceProvider::class,
+
     ],
 
     /*
@@ -217,6 +222,8 @@ return [
         * Acacha AdminLTE template alias
         */
         'AdminLTE' => Acacha\AdminLTETemplateLaravel\Facades\AdminLTE::class,
+
+        'PDF' => Barryvdh\DomPDF\Facade::class,
 
     ],
 
