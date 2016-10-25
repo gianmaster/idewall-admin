@@ -7,6 +7,7 @@
   "devDependencies": {
     "babel-preset-stage-2": "^6.13.0",
     "bootstrap-sass": "^3.3.7",
+    "chart.js": "^2.3.0",
     "gulp": "^3.9.1",
     "jquery": "^3.1.0",
     "jscs": "^3.0.7",
