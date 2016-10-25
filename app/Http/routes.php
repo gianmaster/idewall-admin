@@ -64,6 +64,9 @@ Route::get('/vista', function(){
 Route::resource('/', 'HomeController');
 
 //Route::resource('menu2', 'MenusController');
+Route::get('/reportes/cursos/{ciclojornadasemestre}/jornadasemestre', 'ReportesPdfController@downloadHorarioCurso');
+
+Route::get('/reportes/cursos/{ciclodocente}/distributivo', 'ReportesPdfController@donwloadDistributivoDocente');
 
 
 Route::group(['middleware' => 'auth'], function(){
