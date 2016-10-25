@@ -50,7 +50,7 @@ class JornadasSemestre extends Model implements Transformable
     }
 
     public function horario(){
-        return $this->hasMany(HorariosCursos::class, 'ciclo_jornada_semestre', 'id');
+        return $this->hasMany(HorariosCursos::class, 'ciclo_jornada_semestre', 'id')->with('materiaDocente');
     }
 
     public function materiasDocentesQry(){

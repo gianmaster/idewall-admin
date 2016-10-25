@@ -24,6 +24,7 @@ class HorariosCursos extends Model implements Transformable
     public function jornadaSemestre(){
         return $this->hasMany(JornadasSemestre::class,'id', 'ciclo_jornada_semestre');
     }
+
     
 
 }

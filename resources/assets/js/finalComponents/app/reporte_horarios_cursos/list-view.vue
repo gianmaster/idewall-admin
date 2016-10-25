@@ -123,15 +123,8 @@
 					fieldClass: 'text-center',
 					style: 'width:10%;',
 					itemActions: [
-							/*
 						{
-							nameEmit: 'jornadasemestre-update-event',
-							btnClass: 'btn btn-primary btn-xs',
-							iconClass: 'fa fa-pencil',
-							label: 'Modificar'
-						},
-						*/
-						{
+							//link: 'reportes/cursos/${id}/jornadasemestre',
 							nameEmit: 'download-horario-event',
 							btnClass: 'btn btn-primary btn-xs',
 							iconClass: 'fa fa-file-pdf-o',
@@ -151,7 +144,8 @@
 			events: {
 				'download-horario-event' : function(model){
 					//this.$router.go('/jornadasemestres/edit/' + model.id);
-					console.log('se descarga el pdf del horario por curso');
+					console.log('Se descarga el archivo');
+					window.open('reportes/cursos/' + model.id +'/jornadasemestre', '_blank');
 				}
 			}
 		}

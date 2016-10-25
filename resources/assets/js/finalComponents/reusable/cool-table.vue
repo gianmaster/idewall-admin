@@ -86,7 +86,7 @@
 
 								<div v-else class="btn-group">
 
-									<a v-for="act in col.itemActions" :class="act.btnClass" href="" @click.prevent="dispacher(act.nameEmit, item)" >
+									<a v-for="act in col.itemActions" :class="act.btnClass" :href="act.link?formatedLink(act.link, item):'javascript:;'" @click.prevent="dispacher(act.nameEmit, item)" >
 										<i :class="act.iconClass" data-toggle="tooltip" :title="act.label"></i> {{act.text}}
 									</a>
 
@@ -498,6 +498,10 @@
 			},
 			dispacher: function(event, model){
 				this.$dispatch(event, model);
+			},
+			formatedLink: function(str, model){
+				let key = str.split("${")[1].split("}")[0];
+				return str.replace('${'+ key +'}', model[key]);
 			}
 
 		},
