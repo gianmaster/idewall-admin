@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Entities\HorariosCursos;
 use App\Entities\JornadasSemestre;
+use App\Entities\Docente;
+use App\Entities\CicloDocentes;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
 
@@ -16,11 +18,12 @@ use App\Http\Requests;
 class ReportesPdfController extends Controller
 {
     public function downloadHorarioCurso($idCicloJornadaSemestre){
-    	$flag = true;
+    	$flag = true; //activa el modo pdf, false para modo vista html
 
         $data_horario = $this->dataHorarios($idCicloJornadaSemestre);
 
         if($flag){
+
         	$data = $data_horario['data'];
         	$fileName = 'Horario de Clases - C:' . $data['ciclo'] . ' P:' . $data['descripcion_ciclo']['anio'] .'/' .($data['descripcion_ciclo']['anio']+1) . '-' . $data['catalogo_semestre'] .'-'. $data['catalogo_jornada'] .'- Aula:' . $data['aula']['codigo'] . '.pdf';
         	$pdf = PDF::loadView('reportes.horario_curso', $data_horario);
@@ -28,16 +31,132 @@ class ReportesPdfController extends Controller
         	return $pdf->stream($fileName);
         	//return $pdf->download('archivo_prueba.pdf');	
         }else{
-        	return view('reportes.horario_curso', $fileName);	
+        	return view('reportes.horario_curso', $data_horario);	
         }
 
-        
     }
     
     
-    public function donwloadDistributivoDocente(){
-        return 'hora';
+    public function donwloadDistributivoDocente($idCicloDocente){
+    	$flag = true; //activa el modo pdf, false para modo vista html
+
+    	$cicloDocente = CicloDocentes::find($idCicloDocente);
+    	if($cicloDocente){
+    		$docente = $cicloDocente->docenteDetail;
+    		if($flag){
+    			$cabecera = array(
+    				'docente' => strtoupper($docente->nombres . ' ' . $docente->apellidos),
+    				'ciclo'	=> $cicloDocente->cicloDetail->ciclo,
+    				'periodo'	=> $cicloDocente->cicloDetail->anio . '-' .($cicloDocente->cicloDetail->anio + 1),
+    				'contrato'	=> $docente->tipo_contrato,
+    				'funcion'	=> $docente->funcion,
+    				'identificacion'	=> $docente->identificacion,
+    				);
+    			$aceptadoPor = $docente->abreviatura . '. ' . $docente->nombres . ' ' . $docente->apellidos;
+    			$elaboradoPor = $this->getDocentePorFuncion('Gestor de Comisión Académica');
+    			$aprobadoPor = $this->getDocentePorFuncion('Director de la Carrera');
+
+
+    			$horario = $this->dataHorarioDistributivo($idCicloDocente);
+    			$pdf = PDF::loadView('reportes.distributivo_docente', compact('horario', 'aprobadoPor', 'elaboradoPor', 'aceptadoPor', 'cicloDocente', 'cabecera'));
+    			return $pdf->stream('descarga_distributivo.pdf');
+    		}else{
+    			return view('reportes.distributivo_docente');
+    		}
+    	}
+
+    	return response(['No hay registros asociados']);;
+    	
     }
+
+    public function getDocentePorFuncion($qry){
+    	$docente = Docente::whereIn('estado', ['CONTRATADO', 'RENOVADO'])
+    				->where('funcion', $qry)
+    				->first();
+
+    	if($docente){
+    		return  $docente->abreviatura . '. ' . $docente->nombres . ' ' . $docente->apellidos;
+    	}
+
+    	return null;
+    }
+
+
+	/**
+	 * Description: Metodo que procesa los datos previo al envio del horario
+	 * @param type $id - id ciclo docente 
+	 * @return type
+	 */
+	public function dataHorarioDistributivo($id){
+
+		$listaHoras = $this->listaHorasDistributivoDocente($id);
+
+		$dataHorario = DB::select("select * from (
+			select 
+			ma.codigo_materia codigo,
+			ma.nombre_materia etiqueta,
+			hc.dia, 
+			hc.hora_inicio, 
+			hc.hora_fin, 
+			hc.num_horas,
+			'materias' tipo
+			from horarios_cursos hc, ciclo_docentes cd, docentes d, ciclo_materias_docente cmd, malla_academica ma
+			where hc.ciclo_materia_docente in (select id from ciclo_materias_docente where ciclo_docente = $id)
+			and cmd.id = hc.ciclo_materia_docente
+			and cmd.ciclo_docente = cd.id
+			and cd.docente = d.id
+			and ma.id = cmd.materia
+
+			union      
+
+			select id_item_distributivo codigo, 
+			etiqueta, 
+			dia, 
+			hora_inicio, 
+			hora_fin, 
+			num_horas,
+			'distributivos' tipo
+			from horarios_docentes
+			where ciclo_docente = $id
+			) xx");
+
+		$horario = array();
+		$dias = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO'];
+
+		for($i=1; $i<count($listaHoras); $i++){
+			//set de la hora
+			$prev = (array)$listaHoras[$i-1];
+			$pos = (array)$listaHoras[$i];
+			
+			$horario[$i-1]['hora'] = "{$prev['hora']} - {$pos['hora']}";
+			
+			foreach ($dias as $dia) {
+				//$horario[$i-1][$dia] = null;
+				foreach ($dataHorario as $itemHorario) {
+					$itemHorario = (array)($itemHorario);
+					if($dia == $itemHorario['dia']){
+						$fhorarioInicio = Carbon::createFromFormat('Y-m-d H:i', '2020-01-01 ' . $prev['hora']);
+						$fhorarioFin = Carbon::createFromFormat('Y-m-d H:i', '2020-01-01 ' . $pos['hora']);
+						$fhoraMatIni = Carbon::createFromFormat('Y-m-d H:i', '2020-01-01 ' . $itemHorario['hora_inicio']);
+						$fhoraMatFin = Carbon::createFromFormat('Y-m-d H:i', '2020-01-01 ' . $itemHorario['hora_fin']);
+						//if($fhoraMatIni->between($fhorarioInicio, $fhorarioFin) || $fhoraMatFin->between($fhorarioInicio, $fhorarioFin)){
+						if($fhorarioInicio->between($fhoraMatIni, $fhoraMatFin) || $fhorarioFin->gte($fhoraMatFin)){
+							dd($itemHorario);
+							$horario[$i-1][$dia] = array(
+								'etiqueta' => $itemHorario['etiqueta'],
+								'codigo' => $itemHorario['codigo'],
+								'tipo' => $itemHorario['tipo']
+								);
+						}
+					}
+				}
+			}
+
+		}
+
+		return $horario;
+
+	}
 
 
 
@@ -83,7 +202,7 @@ class ReportesPdfController extends Controller
 						$fhoraMatIni = Carbon::createFromFormat('Y-m-d H:i', '2020-01-01 ' . $itemHorario['hora_inicio']);
 						$fhoraMatFin = Carbon::createFromFormat('Y-m-d H:i', '2020-01-01 ' . $itemHorario['hora_fin']);
 						//if($fhoraMatIni->between($fhorarioInicio, $fhorarioFin) || $fhoraMatFin->between($fhorarioInicio, $fhorarioFin)){
-						if($fhorarioInicio->between($fhoraMatIni, $fhoraMatFin) || $fhorarioFin->between($fhoraMatIni, $fhoraMatFin)){
+						if($fhorarioInicio->between($fhoraMatIni, $fhoraMatFin) || $fhorarioFin->gte($fhoraMatFin)){
 							$docente = $itemHorario['materia_docente']['docente_detail']['docente_detail'];
 							$materia = $itemHorario['materia_docente']['materia_detail'];
 							$horario[$i-1][$dia] = array(
@@ -106,12 +225,32 @@ class ReportesPdfController extends Controller
 	 * @return type
 	 */
     public function listaHorahorario($idJornadaSemestre){
-        $data = DB::select("select distinct x.hora from (
-    SELECT DISTINCT hora_inicio as hora FROM horarios_cursos WHERE ciclo_jornada_semestre  = $idJornadaSemestre
-           UNION
-           SELECT DISTINCT hora_fin as hora FROM horarios_cursos WHERE ciclo_jornada_semestre  = $idJornadaSemestre
-) x ORDER BY x.hora");
-        return $data;
+    	$data = DB::select("select distinct x.hora from (
+    		SELECT DISTINCT hora_inicio as hora FROM horarios_cursos WHERE ciclo_jornada_semestre  = $idJornadaSemestre
+    		UNION
+    		SELECT DISTINCT hora_fin as hora FROM horarios_cursos WHERE ciclo_jornada_semestre  = $idJornadaSemestre
+    		) x ORDER BY x.hora");
+    	return $data;
+    }
+
+
+    /**
+     * Metodo que saca las horas a mostrar en el horario
+     * @param type $idCicloDocente 
+     * @return type
+     */
+    public function listaHorasDistributivoDocente($idCicloDocente){
+    	$data = DB::select("select distinct x.hora from (
+    		SELECT DISTINCT hora_inicio as hora FROM horarios_docentes WHERE ciclo_docente  = $idCicloDocente
+    		UNION
+    		SELECT DISTINCT hora_fin as hora FROM horarios_docentes WHERE ciclo_docente  = $idCicloDocente
+    		UNION 
+    		SELECT DISTINCT hora_inicio as hora FROM horarios_cursos where ciclo_materia_docente in (SELECT id from ciclo_materias_docente where ciclo_docente = $idCicloDocente)
+    		UNION 
+    		SELECT DISTINCT hora_fin as hora FROM horarios_cursos where ciclo_materia_docente in (SELECT id from ciclo_materias_docente where ciclo_docente = $idCicloDocente)
+    		) x ORDER BY x.hora");
+    	return $data;
+//select * from horarios_cursos where ciclo_materias_docente in (SELECT id from ciclo_materias_docente where ciclo_docente = 1)
     }
 
 }
