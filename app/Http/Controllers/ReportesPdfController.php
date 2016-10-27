@@ -43,24 +43,29 @@ class ReportesPdfController extends Controller
     	$cicloDocente = CicloDocentes::find($idCicloDocente);
     	if($cicloDocente){
     		$docente = $cicloDocente->docenteDetail;
-    		if($flag){
-    			$cabecera = array(
-    				'docente' => strtoupper($docente->nombres . ' ' . $docente->apellidos),
-    				'ciclo'	=> $cicloDocente->cicloDetail->ciclo,
-    				'periodo'	=> $cicloDocente->cicloDetail->anio . '-' .($cicloDocente->cicloDetail->anio + 1),
-    				'contrato'	=> $docente->tipo_contrato,
-    				'funcion'	=> $docente->funcion,
-    				'identificacion'	=> $docente->identificacion,
-    				);
-    			$aceptadoPor = $docente->abreviatura . '. ' . $docente->nombres . ' ' . $docente->apellidos;
-    			$elaboradoPor = $this->getDocentePorFuncion('Gestor de Comisión Académica');
-    			$aprobadoPor = $this->getDocentePorFuncion('Director de la Carrera');
+    		if($flag) {
+				$fini = Carbon::createFromFormat('Y-m-d', $cicloDocente->cicloDetail->fecha_inicio);
+				$ffin = Carbon::createFromFormat('Y-m-d', $cicloDocente->cicloDetail->fecha_fin);
+				$cabecera = array(
+					'docente' => strtoupper($docente->nombres . ' ' . $docente->apellidos),
+					'ciclo' => $cicloDocente->cicloDetail->ciclo,
+					'inicio' => $fini->format('d/m/Y'),
+					'fin' => $ffin->format('d/m/Y'),
+					'periodo' => $cicloDocente->cicloDetail->anio . '-' . ($cicloDocente->cicloDetail->anio + 1),
+					'contrato' => $docente->tipo_contrato,
+					'funcion' => $docente->funcion,
+					'identificacion' => $docente->identificacion,
+				);
+
+				$aceptadoPor = $docente->abreviatura . '. ' . $docente->nombres . ' ' . $docente->apellidos;
+				$elaboradoPor = $this->getDocentePorFuncion('Gestor de Comisión Académica');
+				$aprobadoPor = $this->getDocentePorFuncion('Director de la Carrera');
 
 
-    			$horario = $this->dataHorarioDistributivo($idCicloDocente);
-    			$pdf = PDF::loadView('reportes.distributivo_docente', compact('horario', 'aprobadoPor', 'elaboradoPor', 'aceptadoPor', 'cicloDocente', 'cabecera'));
-    			return $pdf->stream('descarga_distributivo.pdf');
-    		}else{
+				$horario = $this->dataHorarioDistributivo($idCicloDocente);
+				$pdf = PDF::loadView('reportes.distributivo_docente', compact('horario', 'aprobadoPor', 'elaboradoPor', 'aceptadoPor', 'cicloDocente', 'cabecera'));
+				return $pdf->stream('descarga_distributivo.pdf');
+			}else{
     			return view('reportes.distributivo_docente');
     		}
     	}
@@ -75,7 +80,7 @@ class ReportesPdfController extends Controller
     				->first();
 
     	if($docente){
-    		return  $docente->abreviatura . '. ' . $docente->nombres . ' ' . $docente->apellidos;
+    		return  $docente->abreviatura . '. ' . explode(' ', $docente->nombres)[0] . ' ' . $docente->apellidos;
     	}
 
     	return null;
@@ -118,7 +123,7 @@ class ReportesPdfController extends Controller
 			'distributivos' tipo
 			from horarios_docentes
 			where ciclo_docente = $id
-			) xx");
+			) xx order by xx.hora_inicio");
 
 		$horario = array();
 		$dias = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO'];
@@ -139,14 +144,21 @@ class ReportesPdfController extends Controller
 						$fhorarioFin = Carbon::createFromFormat('Y-m-d H:i', '2020-01-01 ' . $pos['hora']);
 						$fhoraMatIni = Carbon::createFromFormat('Y-m-d H:i', '2020-01-01 ' . $itemHorario['hora_inicio']);
 						$fhoraMatFin = Carbon::createFromFormat('Y-m-d H:i', '2020-01-01 ' . $itemHorario['hora_fin']);
-						//if($fhoraMatIni->between($fhorarioInicio, $fhorarioFin) || $fhoraMatFin->between($fhorarioInicio, $fhorarioFin)){
-						if($fhorarioInicio->between($fhoraMatIni, $fhoraMatFin) || $fhorarioFin->gte($fhoraMatFin)){
-							dd($itemHorario);
+
+						if($itemHorario['tipo'] == 'materias' && $fhorarioInicio->between($fhoraMatIni, $fhoraMatFin) || $fhorarioFin->gte($fhoraMatFin)){
 							$horario[$i-1][$dia] = array(
-								'etiqueta' => $itemHorario['etiqueta'],
+								'etiqueta' => strtoupper($itemHorario['etiqueta']),
 								'codigo' => $itemHorario['codigo'],
 								'tipo' => $itemHorario['tipo']
 								);
+						}
+
+						if($itemHorario['tipo'] == 'distributivos' && $fhoraMatIni->between($fhorarioInicio, $fhorarioFin)){
+							$horario[$i-1][$dia] = array(
+								'etiqueta' => strtoupper($itemHorario['etiqueta']),
+								'codigo' => $itemHorario['codigo'],
+								'tipo' => $itemHorario['tipo']
+							);
 						}
 					}
 				}

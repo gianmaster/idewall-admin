@@ -157,12 +157,9 @@
 			'app-loading' : Loading
 		},
 		events: {
-			'qqhorario-docente-event' : function(model){
-				this.$router.go(`/horariosdocentes/edit/${model.ciclo_docente}`);
-			},
-			//when modal emit ok
-			'download-horario-distributivo-event': function(){
-				console.log('se descarga el reporte');
+			'download-horario-distributivo-event': function(model){
+				console.log('Se descarga el archivo distributivo');
+				window.open('reportes/cursos/' + model.id +'/distributivo', '_blank');
 			}
 		}
 	}

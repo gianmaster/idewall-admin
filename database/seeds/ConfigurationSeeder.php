@@ -147,7 +147,9 @@ class ConfigurationSeeder extends Seeder
          * */
         App\Entities\Ciclo::create([
             'anio' => 2016,
-            'ciclo' => 2
+            'ciclo' => 2,
+            'fecha_inicio'  => '2016-05-09',
+            'fecha_fin'  => '2016-09-30'
         ]);
 
 

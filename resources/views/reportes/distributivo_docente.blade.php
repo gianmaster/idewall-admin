@@ -100,9 +100,9 @@
 				<td>CONTRATADO</td>
 				<td colspan="2"></td>
 				<td>F. INICIO:</td>
-				<td>09/05/2016</td>
+				<td>{{ $cabecera['inicio']}}</td>
 				<td>F. FINAL:</td>
-				<td>30/09/2016</td>
+				<td>{{ $cabecera['fin']}}</td>
 			</tr>
 			<tr>
 				<td colspan="7">
@@ -146,54 +146,60 @@
 						<td class="t-center">
 							@if(isset($item['LUNES']))
 								@if($item['LUNES']['tipo'] == 'materias')
-								<span class="text-materia">({{$item['LUNES']['codigo']}}) {{$item['LUNES']['etiqueta']}}</span><br>
-								@else
 								<span class="text-materia">{{$item['LUNES']['etiqueta']}}</span><br>
+								<span>({{$item['LUNES']['codigo']}})</span>
+								@else
+								<span class="text-materia">{{$item['LUNES']['etiqueta']}}</span>
 								@endif
 							@endif
 						</td>
 						<td class="t-center">
 							@if(isset($item['MARTES']))
 							@if($item['MARTES']['tipo'] == 'materias')
-								<span class="text-materia">({{$item['MARTES']['codigo']}}) {{$item['MARTES']['etiqueta']}}</span><br>
+									<span class="text-materia">{{$item['MARTES']['etiqueta']}}</span><br>
+									<span>({{$item['MARTES']['codigo']}})</span>
 								@else
-								<span class="text-materia">{{$item['MARTES']['etiqueta']}}</span><br>
+									<span class="text-materia">{{$item['MARTES']['etiqueta']}}</span>
 								@endif
 							@endif
 						</td>
 						<td class="t-center">
 							@if(isset($item['MIERCOLES']))
 							@if($item['MIERCOLES']['tipo'] == 'materias')
-								<span class="text-materia">({{$item['MIERCOLES']['codigo']}}) {{$item['MIERCOLES']['etiqueta']}}</span><br>
+									<span class="text-materia">{{$item['MIERCOLES']['etiqueta']}}</span><br>
+									<span>({{$item['MIERCOLES']['codigo']}})</span>
 								@else
-								<span class="text-materia">{{$item['MIERCOLES']['etiqueta']}}</span><br>
+									<span class="text-materia">{{$item['MIERCOLES']['etiqueta']}}</span>
 								@endif
 							@endif
 						</td>
 						<td class="t-center">
 							@if(isset($item['JUEVES']))
 							@if($item['JUEVES']['tipo'] == 'materias')
-								<span class="text-materia">({{$item['JUEVES']['codigo']}}) {{$item['JUEVES']['etiqueta']}}</span><br>
+									<span class="text-materia">{{$item['JUEVES']['etiqueta']}}</span><br>
+									<span>({{$item['JUEVES']['codigo']}})</span>
 								@else
-								<span class="text-materia">{{$item['JUEVES']['etiqueta']}}</span><br>
+									<span class="text-materia">{{$item['JUEVES']['etiqueta']}}</span>
 								@endif
 							@endif
 						</td>
 						<td class="t-center">
 							@if(isset($item['VIERNES']))
 							@if($item['VIERNES']['tipo'] == 'materias')
-								<span class="text-materia">({{$item['VIERNES']['codigo']}}) {{$item['VIERNES']['etiqueta']}}</span><br>
+									<span class="text-materia">{{$item['VIERNES']['etiqueta']}}</span><br>
+									<span>({{$item['VIERNES']['codigo']}})</span>
 								@else
-								<span class="text-materia">{{$item['VIERNES']['etiqueta']}}</span><br>
+									<span class="text-materia">{{$item['VIERNES']['etiqueta']}}</span>
 								@endif
 							@endif
 						</td>
 						<td class="t-center">
 							@if(isset($item['SABADO']))
 							@if($item['SABADO']['tipo'] == 'materias')
-								<span class="text-materia">({{$item['SABADO']['codigo']}}) {{$item['SABADO']['etiqueta']}}</span><br>
+									<span class="text-materia">{{$item['SABADO']['etiqueta']}}</span><br>
+									<span>({{$item['SABADO']['codigo']}})</span>
 								@else
-								<span class="text-materia">{{$item['SABADO']['etiqueta']}}</span><br>
+									<span class="text-materia">{{$item['SABADO']['etiqueta']}}</span>
 								@endif
 							@endif
 						</td>

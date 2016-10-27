@@ -19,6 +19,8 @@ class CreateCiclosTable extends Migration
             $table->integer('anio')->nullable(false);
             $table->integer('ciclo')->nullable(false);
             $table->enum('estado', ['CERRADO', 'VIGENTE'])->default('VIGENTE');
+			$table->date('fecha_inicio')->nullable(false);
+			$table->date('fecha_fin')->nullable(false);
 
             $table->timestamps();
 		});
