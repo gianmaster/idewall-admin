@@ -42,6 +42,10 @@
     		position: absolute;
     		bottom: 70;
     	}
+
+    	.materias{
+    		background-color: #BCAD31
+    	}
     </style>
 </head>
 <body>
@@ -221,9 +225,9 @@
 
 	<table class="table" style="position: absolute; bottom: 150">
 		<tr>
-			<td colspan="2"></td>
-			<td colspan="2" class="t-center"><strong>__________________________________</strong></td>
-			<td colspan="2" class="t-center"><strong>__________________________________</strong></td>
+			<td colspan="2" class="t-center" width="33.33%"><strong>__________________________________</strong></td>
+			<td colspan="2" class="t-center" width="33.33%"><strong>__________________________________</strong></td>
+			<td colspan="2" class="t-center" width="33.33%"><strong>__________________________________</strong></td>
 		</tr>
 		<tr>
 			<td colspan="2" class="t-center">

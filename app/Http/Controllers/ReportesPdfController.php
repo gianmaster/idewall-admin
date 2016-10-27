@@ -140,19 +140,22 @@ class ReportesPdfController extends Controller
 				foreach ($dataHorario as $itemHorario) {
 					$itemHorario = (array)($itemHorario);
 					if($dia == $itemHorario['dia']){
-						$fhorarioInicio = Carbon::createFromFormat('Y-m-d H:i', '2020-01-01 ' . $prev['hora']);
-						$fhorarioFin = Carbon::createFromFormat('Y-m-d H:i', '2020-01-01 ' . $pos['hora']);
-						$fhoraMatIni = Carbon::createFromFormat('Y-m-d H:i', '2020-01-01 ' . $itemHorario['hora_inicio']);
-						$fhoraMatFin = Carbon::createFromFormat('Y-m-d H:i', '2020-01-01 ' . $itemHorario['hora_fin']);
+						//$fecha = Carbon::createFromFormat('Y-m-d H:i:s', '2010-10-10 23:59:59');
+						$fhorarioInicio = Carbon::createFromFormat('Y-m-d H:i:s', '2020-01-01 ' . $prev['hora'] . ':59');
+						$fhorarioFin = Carbon::createFromFormat('Y-m-d H:i:s', '2020-01-01 ' . $pos['hora'] . ':59');
+						$fhoraMatIni = Carbon::createFromFormat('Y-m-d H:i:s', '2020-01-01 ' . $itemHorario['hora_inicio'] . ':00');
+						$fhoraMatFin = Carbon::createFromFormat('Y-m-d H:i:s', '2020-01-01 ' . $itemHorario['hora_fin'] . ':00');
 
-						if($itemHorario['tipo'] == 'materias' && $fhorarioInicio->between($fhoraMatIni, $fhoraMatFin) || $fhorarioFin->gte($fhoraMatFin)){
+						if($fhorarioInicio->between($fhoraMatIni, $fhoraMatFin)){
 							$horario[$i-1][$dia] = array(
 								'etiqueta' => strtoupper($itemHorario['etiqueta']),
 								'codigo' => $itemHorario['codigo'],
-								'tipo' => $itemHorario['tipo']
+								'tipo' => $itemHorario['tipo'],
+								'ini'	=> $itemHorario['hora_inicio'],
+								'fin'	=> $itemHorario['hora_fin']
 								);
 						}
-
+						/*
 						if($itemHorario['tipo'] == 'distributivos' && $fhoraMatIni->between($fhorarioInicio, $fhorarioFin)){
 							$horario[$i-1][$dia] = array(
 								'etiqueta' => strtoupper($itemHorario['etiqueta']),
@@ -160,6 +163,7 @@ class ReportesPdfController extends Controller
 								'tipo' => $itemHorario['tipo']
 							);
 						}
+						*/
 					}
 				}
 			}
