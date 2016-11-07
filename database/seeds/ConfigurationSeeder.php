@@ -141,7 +141,7 @@ class ConfigurationSeeder extends Seeder
         ]);
 
         App\RolMenu::create([
-            'rol' => $rolAdmin->id,
+            'rol' => $rolAdministrativo->id,
             'menu' => $menuDashboard->id,
         ]);
 
@@ -230,7 +230,7 @@ class ConfigurationSeeder extends Seeder
         ]);
 
         App\RolMenu::create([
-            'rol' => $rolAdmin->id,
+            'rol' => $rolAdministrativo->id,
             'menu' => $menuAdmin->id,
         ]);
 
@@ -245,7 +245,7 @@ class ConfigurationSeeder extends Seeder
         ]);
 
         App\RolMenu::create([
-            'rol' => $rolAdmin->id,
+            'rol' => $rolAdministrativo->id,
             'menu' => $menuTipoDistributivo->id,
         ]);
 
@@ -260,7 +260,7 @@ class ConfigurationSeeder extends Seeder
         ]);
 
         App\RolMenu::create([
-            'rol' => $rolAdmin->id,
+            'rol' => $rolAdministrativo->id,
             'menu' => $menuMalla->id,
         ]);
 
@@ -275,7 +275,7 @@ class ConfigurationSeeder extends Seeder
         ]);
 
         App\RolMenu::create([
-            'rol' => $rolAdmin->id,
+            'rol' => $rolAdministrativo->id,
             'menu' => $menuDocentes->id,
         ]);
 
@@ -1052,7 +1052,7 @@ class ConfigurationSeeder extends Seeder
         ]);
 
         App\RolMenu::create([
-            'rol' => $rolAdmin->id,
+            'rol' => $rolAdministrativo->id,
             'menu' => $menuCargaH->id,
         ]);
 
@@ -1068,7 +1068,7 @@ class ConfigurationSeeder extends Seeder
         ]);
 
         App\RolMenu::create([
-            'rol' => $rolAdmin->id,
+            'rol' => $rolAdministrativo->id,
             'menu' => $menuMateriasDocentes->id,
         ]);
 
@@ -1084,7 +1084,7 @@ class ConfigurationSeeder extends Seeder
         ]);
 
         App\RolMenu::create([
-            'rol' => $rolAdmin->id,
+            'rol' => $rolAdministrativo->id,
             'menu' => $menuJornadaSemestre->id,
         ]);
 
@@ -1099,7 +1099,7 @@ class ConfigurationSeeder extends Seeder
         ]);
 
         App\RolMenu::create([
-            'rol' => $rolAdmin->id,
+            'rol' => $rolAdministrativo->id,
             'menu' => $menuHorariosDocentes->id,
         ]);
 
@@ -1115,7 +1115,7 @@ class ConfigurationSeeder extends Seeder
         ]);
 
         App\RolMenu::create([
-            'rol' => $rolAdmin->id,
+            'rol' => $rolAdministrativo->id,
             'menu' => $menuReportes->id,
         ]);
 
@@ -1131,7 +1131,7 @@ class ConfigurationSeeder extends Seeder
         ]);
 
         App\RolMenu::create([
-            'rol' => $rolAdmin->id,
+            'rol' => $rolAdministrativo->id,
             'menu' => $menuReporteHorario->id,
         ]);
 
@@ -1146,7 +1146,7 @@ class ConfigurationSeeder extends Seeder
         ]);
 
         App\RolMenu::create([
-            'rol' => $rolAdmin->id,
+            'rol' => $rolAdministrativo->id,
             'menu' => $menuReporteHorarioDocente->id,
         ]);
 
