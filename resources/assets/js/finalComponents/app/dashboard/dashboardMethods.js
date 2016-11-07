@@ -21,12 +21,9 @@ export default {
         }, fnc.tryError);
     },
     loadDataChart: function(){
-        const data = [
-            this.data.docentes_ciclo,
-            this.data.horarios_distributivos_asignados,
-            this.data.cursos_ciclo,
-            this.data.cursos_ciclo_asignado
-        ];
-        this.graphs.primero.data.datasets[0].data = data;
+        const data1 = [this.data.docentes_ciclo, this.data.horarios_distributivos_asignados];
+        const data2 = [this.data.cursos_ciclo, this.data.cursos_ciclo_asignado];
+        this.graphs.primero.data.datasets[0].data = data1;
+        this.graphs.segundo.data.datasets[0].data = data2;
     }
 }

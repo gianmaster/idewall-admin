@@ -13,7 +13,7 @@
 	<div class="col-sm-6 col-xs-12" v-if="createMode">
 		<label>Contraseña</label>
 		<input type="text" class="form-control" v-model="dataModel.password" minlength="3">
-		<span class="text-primary"><small>Solo llenarlo en necesita reestablecer la contraseña</small></span>
+		<span class="text-primary"><small>Dejar vacío este campo sí, está creando un usuario. </small></span>
 	</div>
 
 	<div class="col-sm-6 col-xs-12">

@@ -1,8 +1,7 @@
 <template>
 	<!-- Main content -->
 
-	<content-header title="Dahsboard" :list-path="path"></content-header>
-
+	<content-header title="Dashboard" :list-path="path"></content-header>
 
 	<section class="content">
 		<!--<router-view class="animated" transition="fade" transition-mode="out-in" keep-alive></router-view>-->
@@ -69,14 +68,7 @@
 		</div>
 
 		<div class="row">
-			<div class="col-xs-12 col-sm-3" style="margin-top: 10%">
-				<button class="btn btn-primary btn-block">ENVIAR SÍLABOS <i class="fa fa-envelope-o"></i></button>
-				<p class="text-center text-red">Use la opción de envío de sílabos solo cuando terminte la asignación de las horas distributivas de los docentes.</p>
-
-				<p class="text-center text-blue">Recuerde que usted puede agregar y/o actualizar los sílabos en la opción
-					<a v-link="{path:'malla_academica'}">Malla Académica</a>.</p>
-			</div>
-			<div class="col-xs-12 col-sm-9" style="max-height: 300px;">
+			<div class="col-xs-12 col-sm-6" style="max-height: 300px;">
 				<template v-if="loading">
 					<p class="text-center">Cargando Gráfico...</p>
 				</template>
@@ -84,12 +76,36 @@
 					<grafico
 							:data="graphs.primero.data"
 							:options="graphs.primero.options"
-							type="bar"
-							id="myChart"
+							type="doughnut"
+							id="myChart1"
 					></grafico>
 				</template>
 
 			</div>
+
+			<div class="col-xs-12 col-sm-6" style="max-height: 300px;">
+				<template v-if="loading">
+					<p class="text-center">Cargando Gráfico...</p>
+				</template>
+				<template v-else>
+					<grafico
+							:data="graphs.segundo.data"
+							:options="graphs.segundo.options"
+							type="doughnut"
+							id="myChart2"
+					></grafico>
+				</template>
+
+			</div>
+
+			<div class="col-xs-12 col-sm-4" style="margin-top: 20px">
+				<button class="btn btn-primary btn-block">ENVIAR SÍLABOS <i class="fa fa-envelope-o"></i></button>
+				<p class="text-center text-red">Use la opción de envío de sílabos solo cuando terminte la asignación de las horas distributivas de los docentes.</p>
+
+				<p class="text-center text-blue">Recuerde que usted puede agregar y/o actualizar los sílabos en la opción
+					<a v-link="{path:'malla_academica'}">Malla Académica</a>.</p>
+			</div>
+
 		</div>
 
 
@@ -136,24 +152,20 @@
 					primero: {
 						type: 'bar',
 						data: {
-							labels: ["Docentes Contrato Vigente", "Docentes Con Horario Distributivo", "Cursos Abiertos", "Horarios Asignados Cursos"],
+							labels: ["Docentes Contrato Vigente", "Docentes Con Horario Distributivo"],
 							datasets: [{
 								//label: 'Datos del Ciclo Vigente',
 								label: 'Resultados',
-								data: [0, 0, 0, 0],
+								data: [0, 0],
 								backgroundColor: [
-									'rgba(255, 99, 132, 0.2)',
-									'rgba(54, 162, 235, 0.2)',
-									'rgba(255, 206, 86, 0.2)',
-									'rgba(75, 192, 192, 0.2)',
+									"#2ea3a3",
+									"#00a65a"
 									//'rgba(153, 102, 255, 0.2)',
 									//'rgba(255, 159, 64, 0.2)'
 								],
 								borderColor: [
-									'rgba(255,99,132,1)',
-									'rgba(54, 162, 235, 1)',
-									'rgba(255, 206, 86, 1)',
-									'rgba(75, 192, 192, 1)',
+									'#fff',
+									'#fff',
 									//'rgba(153, 102, 255, 1)',
 									//'rgba(255, 159, 64, 1)'
 								],
@@ -172,26 +184,39 @@
 						}
 					},
 					segundo: {
-						labels: [
-							"Red",
-							"Blue",
-							"Yellow"
-						],
-						datasets: [
-							{
-								data: [300, 50, 100],
+						type: 'bar',
+						data: {
+							labels: ["Cursos Abiertos", "Horarios Asignados Cursos"],
+							datasets: [{
+								//label: 'Datos del Ciclo Vigente',
+								label: 'Resultados',
+								data: [0, 0],
 								backgroundColor: [
-									"#FF6384",
-									"#36A2EB",
-									"#FFCE56"
+									"#e84848",
+									"#00a65a",
+									//'rgba(153, 102, 255, 0.2)',
+									//'rgba(255, 159, 64, 0.2)'
 								],
-								hoverBackgroundColor: [
-									"#FF6384",
-									"#36A2EB",
-									"#FFCE56"
-								]
+								borderColor: [
+									'#fff',
+									'#fff',
+									//'rgba(153, 102, 255, 1)',
+									//'rgba(255, 159, 64, 1)'
+								],
+								borderWidth: 1
 							}]
-					}
+						},
+						options: {
+							scales: {
+								yAxes: [{
+									ticks: {
+										beginAtZero:true
+									}
+								}]
+							},
+							responsive: true
+						}
+					},
 				}
 			}
 		},

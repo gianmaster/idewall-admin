@@ -308,7 +308,7 @@
 
     import Multiselect from 'vue-multiselect';
 
-    import VueTimepicker from 'vue-time-picker';
+    import VueTimepicker from '../../../reusable/externals/vue-timepicker.vue';
 
     import _ from 'lodash';
 

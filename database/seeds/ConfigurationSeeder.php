@@ -17,15 +17,16 @@ class ConfigurationSeeder extends Seeder
          * Creacion de los roles de usuario y acceso
          * */
         $rolAdmin = App\Rol::create([
-            'nombre' => 'SUPEROOT',
+            'nombre' => 'ADMINISTRADOR',
             'descripcion' => 'Es el administrador y ve todo!'
         ]);
 
         $rolAdministrativo = App\Rol::create([
-            'nombre' => 'ADMINISTRATIVO',
+            'nombre' => 'OPERATIVO',
             'descripcion' => 'Es quien se encarga de asignar horas administrativa!'
         ]);
 
+        /*
         $rolGestor = App\Rol::create([
             'nombre' => 'GESTOR',
             'descripcion' => 'Es el que se engarga de la asignacion de los horarios de clases!'
@@ -35,18 +36,41 @@ class ConfigurationSeeder extends Seeder
             'nombre' => 'VISITANTE',
             'descripcion' => 'Es quien unicamente tiene acceso para verificar su información!'
         ]);
+        */
 
         /**
          * Creacion de los usuarios por defecto el administrador
          * */
         $admin = App\User::create([
             'name' => 'Super Admin',
-            'email' => 'admin@admin.com',
+            'email' => 'giancarloscercado@gmail.com',
             'password' => bcrypt('admin'),
             'rol' => $rolAdmin->id,
             'remember_token' => str_random(10),
             'state' => 'ACTIVO',
             'avatar' => 'http://giancarloscercado.com/images/dist/profile.png'
+        ]);
+
+        $hurel = App\User::create([
+            'name' => 'Raul Hurel',
+            'email' => 'raul.hurelgu@ug.edu.ec',
+            'password' => bcrypt('admin'),
+            'rol' => $rolAdministrativo->id,
+            'remember_token' => str_random(10),
+            'state' => 'ACTIVO',
+            //'avatar' => 'http://giancarloscercado.com/images/dist/profile.png'
+            'avatar' => 'https://cdn3.iconfinder.com/data/icons/users-6/100/men-computer-1-512.png'
+        ]);
+
+        $susana = App\User::create([
+            'name' => 'Susana Carrillo',
+            'email' => 'susana.carrillov@ug.edu.ec',
+            'password' => bcrypt('admin'),
+            'rol' => $rolAdministrativo->id,
+            'remember_token' => str_random(10),
+            'state' => 'ACTIVO',
+            //'avatar' => 'http://giancarloscercado.com/images/dist/profile.png'
+            'avatar' => 'https://cdn3.iconfinder.com/data/icons/users-6/100/men-computer-1-512.png'
         ]);
 
         /**

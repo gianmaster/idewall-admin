@@ -53,9 +53,6 @@ class MenusController extends Controller
         
         //funcionalidad actual para mostrar el menu completo a cualquier usuario
         $menus = $this->repository->findByField('cod_padre', null);
-        
-        
-
 
         return response()->json($menus);
     }
