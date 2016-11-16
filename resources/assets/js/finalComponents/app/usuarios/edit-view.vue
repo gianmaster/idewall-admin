@@ -12,6 +12,7 @@
 <script>
 	
 	import inputs from './form-fields.vue';
+	import {urlUsuarios} from '../config';
 
 	import myMixins from './mixins';
 
@@ -25,7 +26,7 @@
 				createMode: false,
 				newModel: {},
 				loading: true,
-				url: 'api/users'
+				url: urlUsuarios
 			}
 		},
 		components: {

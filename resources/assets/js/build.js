@@ -8,7 +8,7 @@ import ExternalComponents from './config/externalComponents';
 import VueDragableFor from 'vuedragablefor';
 Vue.use(VueDragableFor);
 
-Vue.config.debug = true;
+Vue.config.debug = false;
 
 //global filters
 //Vue.use(VueFilter);
@@ -37,7 +37,11 @@ const router = new VueRouter({
 })
 */
 
-const router = new VueRouter();
+const router = new VueRouter({
+  hasbang: true,
+  history: true
+});
+
 
 router.map({
   '*' : {
@@ -59,7 +63,6 @@ router.map({
   '/paginate': {
     component: require('./finalComponents/app/testPagination.vue')
   },*/
-
 
   '/usuarios': require('./finalComponents/app/usuarios/index.js'),
 
