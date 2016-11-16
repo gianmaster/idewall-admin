@@ -11,7 +11,7 @@
 <script>
 	
 	import inputs from './form-fields.vue';
-
+	import {urlCatalogo} from '../config';
 	import myMixins from './mixins';
 
 	export default {
@@ -26,7 +26,7 @@
 			return {
 				createMode: true,
 				newModel: {},
-				url: 'api/catalogos' //no hace nada por que se autogenera para este caso
+				url: urlCatalogo //no hace nada por que se autogenera para este caso
 			}
 		},
 		components: {

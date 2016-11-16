@@ -40,6 +40,8 @@
 
 	import myMixins from './mixins';
 
+	import {urlJornadaSemestre} from '../config';
+
 	export default {
 		mixins: [myMixins],
 		route: {
@@ -51,7 +53,7 @@
 		data(){
 			return {
 				showModal: false,
-				url: 'api/jornadasemestre',
+				url: urlJornadaSemestre,
 				toolbar: null,
 				currentModel: {},
 				materiasSeleccionadas: [],

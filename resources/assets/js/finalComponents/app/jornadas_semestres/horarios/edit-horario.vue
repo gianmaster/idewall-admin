@@ -318,6 +318,8 @@
 
     import Loading from '../../../reusable/loading.vue';
 
+    import {urlJornadaSemestre} from '../../config';
+
     export default{
         name: 'jornadaSemestreHorario',
         data(){
@@ -484,7 +486,7 @@
             loadData(){
                 this.id_jornada_semestre = this.$route.params.model_id;
                 this.loading = true;
-                this.$http.get('api/jornadasemestre/' + this.$route.params.model_id + '/horario').then(function(resp){
+                this.$http.get(urlJornadaSemestre + '/' + this.$route.params.model_id + '/horario').then(function(resp){
                     const materias = resp.data.data.catalogo_jornada == 'ESP' ? resp.data.data.materias_especiales_semestre : resp.data.data.materias_normales_semestre;
                     this.materias = [];
                     for(let ma of materias){
@@ -683,7 +685,7 @@
                     }
                 }
 
-                this.$http.post('api/jornadasemestre/' + this.$route.params.model_id + '/horario', {horario: dataToSend}).then(function(resp){
+                this.$http.post(urlJornadaSemestre + '/' + this.$route.params.model_id + '/horario', {horario: dataToSend}).then(function(resp){
                     fnc.niceAlert('info', 'Se envia a guardar los datos');
                     //this.loadData();
                 }, fnc.tryError);
@@ -723,5 +725,3 @@
     }
 
 </script>
-
-

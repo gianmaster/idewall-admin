@@ -137,6 +137,7 @@
 <script>
 	
 	import myMixins from './mixins';
+	import {urlJornadaSemestre} from '../config';
 
 	export default {
 		mixins: [myMixins],
@@ -147,7 +148,7 @@
 			return {
 				newModel: {},
 				loading: true,
-				url: 'api/jornadasemestre'
+				url: urlJornadaSemestre
 			}
 		},
 

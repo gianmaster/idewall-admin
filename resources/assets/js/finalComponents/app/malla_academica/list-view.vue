@@ -74,6 +74,8 @@
 
 	import myMixins from './mixins';
 
+	import {urlMalla} from '../config';
+
 	export default {
 		mixins: [myMixins],
 		route: {
@@ -84,7 +86,7 @@
 		},
 		data(){
 			return {
-				url: 'api/malla_academica',
+				url: urlMalla,
 				toolbar: {
 					iconClass: 'fa fa-plus',
 					iconClassOptions: 'fa fa-cogs',
@@ -199,8 +201,7 @@
 				this.toggleDataModel(model);
 				this.toggleModal();
 			}
-		},
-
+		}
 		
 	}
 

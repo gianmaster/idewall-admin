@@ -25,6 +25,8 @@
 
 	import myMixins from './mixins';
 
+	import {urlCatalogoItem} from '../config';
+
 	export default {
 		mixins: [myMixins],
 		route: {
@@ -36,7 +38,7 @@
 		},
 		data(){
 			return {
-				url: 'api/catalogos/REPLACEME/items',
+				url: urlCatalogoItem,
 				toolbar: {
 					iconClass: 'fa fa-plus',
 					iconClassOptions: 'fa fa-cogs',
@@ -109,9 +111,8 @@
 			},
 			'catalogo-item-delete-event': function (model) {
 				this.destroy(model);
-			},
-		},
-
+			}
+		}
 
 	}
 

@@ -18,6 +18,7 @@
 <script>
 	
 import myMixins from './mixins';
+import {urlCatalogos} from '../config';
 
 	export default {
 		mixins: [myMixins],
@@ -28,7 +29,7 @@ import myMixins from './mixins';
 			return {
 				newModel: {},
 				loading: true,
-				url: 'api/catalogos'
+				url: urlCatalogos
 			}
 		},
 

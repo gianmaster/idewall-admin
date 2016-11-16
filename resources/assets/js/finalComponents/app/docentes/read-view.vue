@@ -153,6 +153,7 @@
 <script>
 	
 	import myMixins from './mixins';
+	import {urlDocentes} from '../config';
 
 	export default {
 		mixins: [myMixins],
@@ -163,7 +164,7 @@
 			return {
 				newModel: {},
 				loading: true,
-				url: 'api/docentes'
+				url: urlDocentes
 			}
 		},
 

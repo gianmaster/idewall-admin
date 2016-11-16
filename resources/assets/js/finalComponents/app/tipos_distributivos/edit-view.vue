@@ -12,7 +12,7 @@
 <script>
 	
 	import inputs from './form-fields.vue';
-
+	import {urlMalla} from '../config';
 	import myMixins from './mixins';
 
 	export default {
@@ -30,7 +30,7 @@
 				createMode: false,
 				newModel: {},
 				loading: true,
-				url: 'api/malla_academica'
+				url: urlMalla
 			}
 		},
 		components: {

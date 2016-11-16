@@ -12,7 +12,7 @@
 <script>
 	
 	import inputs from './form-fields.vue';
-
+	import {urlCatalogo} from '../config';
 	import myMixins from './mixins';
 
 	export default {
@@ -31,7 +31,7 @@
 				createMode: false,
 				newModel: {},
 				loading: true,
-				url: 'api/catalogos'
+				url: urlCatalogo
 			}
 		},
 		components: {

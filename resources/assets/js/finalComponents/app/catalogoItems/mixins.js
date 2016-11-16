@@ -4,6 +4,7 @@
  */
 
  import fnc from '../../../util/reusable_functions';
+import {urlCatalogos} from '../config';
 
  export default {
  	methods: {
@@ -41,7 +42,7 @@
  			}, fnc.tryError)
  		},
  		generateUrl: function(){
- 			this.url = 'api/catalogos/'+this.$route.params.catalogo_id+'/items';
+ 			this.url = urlCatalogos + '/'+this.$route.params.catalogo_id+'/items';
  		}
  	}
  }
