@@ -41,6 +41,8 @@
 
 	import myMixins from './mixins';
 
+	import {urlcicloHorarioDocente} from '../config';
+
 	function formateaHora(hora){
 		const time = hora.split('.');
 		if(time[1] == 50){
@@ -61,7 +63,7 @@
 		data(){
 			return {
 				showModal: false,
-				url: 'api/ciclohorariodocente',
+				url: urlcicloHorarioDocente,
 				toolbar: null,
 				currentModel: {},
 				materiasSeleccionadas: [],

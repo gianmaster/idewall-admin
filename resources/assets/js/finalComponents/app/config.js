@@ -27,3 +27,7 @@ export const urlListaMaterias = `${endpoint}/malla_academica/all`;
 
 //jornada semestre
 export const urlJornadaSemestre = `${endpoint}/jornadasemestre`;
+//ciclo horario docente
+export const urlcicloHorarioDocente = `${endpoint}/ciclohorariodocente`;
+//horario docente
+export const urlHorarioDocente = `${endpoint}/horariomateriasdocente`;

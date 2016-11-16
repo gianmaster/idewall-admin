@@ -5,11 +5,9 @@
 
  import fnc from '../../../util/reusable_functions';
 
+import {urlMateriasDocente, urlListaMaterias} from '../config';
+
  const API_URL = 'api/docentes/materias';
-
-const URL_CICLO = 'api/ciclo';
-
-const URL_CICLO_DOCENTES = 'api/ciclo/param/docentes';
 
  const API_URL_LIST_MATERIAS = 'api/malla_academica/all';
 
@@ -42,7 +40,7 @@ const URL_CICLO_DOCENTES = 'api/ciclo/param/docentes';
  		update: function(){ 
  			const materias = this.materiasSeleccionadas;
  			const self = this;
- 			self.$http.put(API_URL + '/' + this.currentModel.id, {materias: materias}).then(function(resp){
+ 			self.$http.put(urlMateriasDocente + '/' + this.currentModel.id, {materias: materias}).then(function(resp){
  					fnc.niceAlert('success', 'Esta información ha sido modificada correctamente!');
  					//setTimeout(function(){self.$router.go('/materias_docentes');}, 10);
  					self.$router.go('/materias_docentes?' + (+new Date())); //random token
@@ -51,7 +49,7 @@ const URL_CICLO_DOCENTES = 'api/ciclo/param/docentes';
  		},
  		loadList: function(){
  			const self = this;
- 			self.$http.get(API_URL_LIST_MATERIAS).then(function(resp){
+ 			self.$http.get(urlListaMaterias).then(function(resp){
  					self.formatedList(resp.data.data);
  				}, fnc.tryError);
  		},
