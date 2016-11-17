@@ -56,6 +56,8 @@
 
 	import myMixins from './mixins';
 
+	import {urlCiclos, urlJornadaSemestre} from '../config';
+
 	export default {
 		name: 'reporte-horarios-cursos',
 		mixins: [myMixins],
@@ -67,8 +69,8 @@
 		},
 		data(){
 			return {
-				url: 'api/jornadasemestre',
-				urlCiclos: 'api/ciclos',
+				url: urlJornadaSemestre,
+				urlCiclos: urlCiclos,
 				listaCiclos: [],
 				ciclo: {},
 				toolbar: null,
@@ -143,7 +145,7 @@
 			},
 			events: {
 				'download-horario-event' : function(model){
-					//this.$router.go('/jornadasemestres/edit/' + model.id);
+					console.log(model);
 					console.log('Se descarga el archivo');
 					window.open('reportes/cursos/' + model.id +'/jornadasemestre', '_blank');
 				}
@@ -151,3 +153,4 @@
 		}
 
 	</script>
+

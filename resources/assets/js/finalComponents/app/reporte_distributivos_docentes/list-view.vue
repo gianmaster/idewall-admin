@@ -52,6 +52,8 @@
 
 	import myMixins from './mixins';
 
+	import {urlCiclos} from '../config';
+
 	function formateaHora(hora){
 		const time = hora.split('.');
 		if(time[1] == 50){
@@ -72,7 +74,7 @@
 		},
 		data(){
 			return {
-				urlCiclos: 'api/ciclos',
+				urlCiclos: urlCiclos,
 				ciclo: {},
 				listaCiclos: [],
 				url: 'api/ciclohorariodocente/1/ciclo',
@@ -159,7 +161,8 @@
 		events: {
 			'download-horario-distributivo-event': function(model){
 				console.log('Se descarga el archivo distributivo');
-				window.open('reportes/cursos/' + model.id +'/distributivo', '_blank');
+				console.log(model.ciclo_docente);
+				window.open('reportes/cursos/' + model.ciclo_docente +'/distributivo', '_blank');
 			}
 		}
 	}

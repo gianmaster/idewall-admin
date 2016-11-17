@@ -238,7 +238,7 @@
                 descripcionOtro:'',
                 loading: true,
                 saving: false,
-                url: urlcicloHorarioDocente,
+                url: urlHorarioDocente,
                 urlSubmit: urlcicloHorarioDocente,
                 distributivos: [],
                 docente: {},

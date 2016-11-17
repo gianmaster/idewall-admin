@@ -7,10 +7,6 @@
 
 import {urlMateriasDocente, urlListaMaterias} from '../config';
 
- const API_URL = 'api/docentes/materias';
-
- const API_URL_LIST_MATERIAS = 'api/malla_academica/all';
-
  export default {
  	methods: {
  		//For list-view.vue

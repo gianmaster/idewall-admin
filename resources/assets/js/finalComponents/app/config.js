@@ -1,7 +1,9 @@
 export const endpoint = 'http://ug_laravel_vue.dev/api';
 
 //dashboard
+export const urlMe = `${endpoint}/me`;
 export const urlCiclo = `${endpoint}/ciclo`;
+export const urlCiclos = `${endpoint}/ciclos`;
 export const urlDashboard = `${endpoint}/dashborad/{ciclo}`;
 //modulo usuarios
 export const urlUsuarios = `${endpoint}/users`;
@@ -31,3 +33,6 @@ export const urlJornadaSemestre = `${endpoint}/jornadasemestre`;
 export const urlcicloHorarioDocente = `${endpoint}/ciclohorariodocente`;
 //horario docente
 export const urlHorarioDocente = `${endpoint}/horariomateriasdocente`;
+//reportes
+export const urlCicloHorarioDocenteRpt = `${endpoint}/ciclohorariodocente/{ciclo}/ciclo`;
+export const urlCicloJornadaSemestreRpt = `${endpoint}/jornadasemestre/{ciclo}/ciclo`;

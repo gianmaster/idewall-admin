@@ -4,8 +4,7 @@
  */
 
 import fnc from '../../../util/reusable_functions';
-
-const URL_BASE = 'api/jornadasemestre/{ciclo}/ciclo';
+import {urlCicloJornadaSemestreRpt} from '../config';
 
 export default {
 	methods: {
@@ -19,13 +18,13 @@ export default {
 				_this.listaCiclos = resp.data.data;
 				_this.loading = false;
 				_this.ciclo = resp.data.data[0];
-				_this.url = URL_BASE.replace('{ciclo}', _this.ciclo.id);
+				_this.url = urlCicloJornadaSemestreRpt.replace('{ciclo}', _this.ciclo.id);
 			}, fnc.tryError);
 			
 		},
 		chageCiclo: function(ciclo){
 			let _this = this;
-			this.url = URL_BASE.replace('{ciclo}', ciclo.id);
+			this.url = urlCicloJornadaSemestreRpt.replace('{ciclo}', ciclo.id);
 			setTimeout(function(){
 				_this.$children[0].refresh();
 			}, 100);
