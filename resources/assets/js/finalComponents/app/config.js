@@ -1,4 +1,4 @@
-export const endpoint = 'http://ug_laravel_vue.dev/api';
+export const endpoint = 'http://ug_laravel_vue.dev/api';//'http://idewall.com/api';
 
 //dashboard
 export const urlMe = `${endpoint}/me`;

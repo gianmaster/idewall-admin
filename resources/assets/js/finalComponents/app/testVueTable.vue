@@ -1,11 +1,9 @@
 <template>
 	
-	<div v-if="loading">
-		<app-loading></app-loading>
-	</div>
-
-	<div v-else>
-		<cool-table :data="datos"></cool-table>
+	<div class="content">
+		<div class="row">
+			<view-data-table title="Malla Academica" :url="url"></view-data-table>
+		</div>
 	</div>
 
 </template>
@@ -13,20 +11,18 @@
 
 <script>
 
-	import Loading from '../reusable/loading.vue';
-	
-	import coolTable from '../reusable/cool-table.vue';
+	import viewDataTable from '../reusable/viewDataTable.vue';
+	import {endpoint} from './config';
+	const url = `${endpoint}/malla_academica/all`;
 
 	export default {
 		data(){
 			return {
-				datos: [],
-				loading: false,
+				url: url
 			}
 		},
 		components: {
-			'cool-table' : coolTable,
-			'app-loading' : Loading,
+			viewDataTable
 		}
 	}
 
