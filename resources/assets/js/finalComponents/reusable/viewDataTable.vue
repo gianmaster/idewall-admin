@@ -343,10 +343,10 @@
         width: 20%;
     }
     .operator{
-        width: 10%;
+        width: 20%;
     }
     .search{
-        width: 30%;
+        width: 20%;
     }
     .dv-btn{
         width: 5%;
