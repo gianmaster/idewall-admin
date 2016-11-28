@@ -19,25 +19,46 @@
                     </template>
                 </select>
                 <select class="heading-item operator" name="operator" id="operator" v-model="query.search_operator">
-                    <option :value="opt.value" v-for="opt in operators">{{opt.label}}</option>
+                    <option :value="opt.value" v-for="opt in filterOperators">{{opt.label}}</option>
                 </select>
                 <input type="text" id="search" class="heading-item search" v-model="query.search_input" />
                 <button type="button" id="search_btn" class="heading-item dv-btn"><i class="fa fa-search"></i></button>
             </div>
             <!-- body widget -->
             <div class="l-container table-responsive">
-                <table class="table table-striped table-hover">
+                <table class="table table-striped table-hover table-bordered">
                     <thead>
                     <tr>
                         <template v-if="receiveCols">
                             <template v-for="col in columns">
                                 <template v-if="col.searchable">
-                                    <th>{{col.title}}</th>
+                                    <th :width="col.width" @click="sortbyColumn(col.name)">
+                                        <span v-if="query.sort_by === col.name">
+                                            <template v-if="query.direction === 'desc' ">
+                                                {{col.title}} &darr;
+                                            </template>
+                                            <template v-else>
+                                                {{col.title}} &uarr;
+                                            </template>
+                                        </span>
+                                        <span v-else>
+                                            {{col.title}}
+                                        </span>
+                                    </th>
                                 </template>
                             </template>
                         </template>
                         <template v-else>
-                            <th v-for="col in columns">{{col}}</th>
+                            <th v-for="col in columns" @click="sortbyColumn(col)">
+                                <span v-if="query.sort_by === col">
+                                    <template v-if="query.direction === 'desc' ">
+                                        {{col}} &darr;
+                                    </template>
+                                    <template v-else>
+                                        {{col}} &uarr;
+                                    </template>
+                                </span>
+                            </th>
                         </template>
                     </tr>
                     </thead>
@@ -47,7 +68,12 @@
                             <template v-if="receiveCols">
                                 <template v-for="col in columns">
                                     <template v-if="col.searchable">
-                                        <td>{{item[col.name]}}</td>
+                                        <template v-if="col.template !== null">
+                                            <td>{{{ col.template(item[col.name]) }}}</td>
+                                        </template>
+                                        <template v-else>
+                                            <td>{{item[col.name]}}</td>
+                                        </template>
                                     </template>
                                 </template>
                             </template>
@@ -63,9 +89,9 @@
             </div>
             <!-- footer widget -->
             <div class="l-container footer">
-                <span class="footer-item dv-registers">Displaying 1 - 3 of {{query.total}} rows</span>
+                <span class="footer-item dv-registers">{{refreshInfo}}</span>
                 <div class="footer-item dv-per-page">
-                    <span>Per page:</span>
+                    <span>{{message.per_page}}: </span>
                     <select name="per-page" id="per-page" v-model="query.per_page" @change="changePerPage">
                         <option value="5">5</option>
                         <option value="10">10</option>
@@ -79,7 +105,7 @@
                         <span class="input-group-btn">
                             <button class="btn btn-default btn-sm" type="button" @click="prev">&laquo;</button>
                         </span>
-                        <input type="text" pattern="[0-9]{0,3}" class="form-control input-sm" v-model="query.page">
+                        <input type="text" pattern="[0-9]{0,3}" @keypress="keypressInputPage" class="form-control input-sm" v-model="query.page">
                         <span class="input-group-addon" id="sizing-addon1">/</span>
                         <span class="input-group-addon" id="sizing-addon2">{{query.last_page}}</span>
                         <span class="input-group-btn">
@@ -111,6 +137,51 @@
                 default: function(){
                     return [];
                 }
+            },
+            message: {
+                type: Object,
+                required: false,
+                default: function(){
+                    return {
+                        info: 'Displaying $1 - $2 of $3 rows',
+                        per_page: 'Per Page'
+                    }
+                }
+            },
+            operators: {
+                type: Array,
+                required: false,
+                default: function(){
+                    return [
+                        {label: 'like', value: 'LIKE', types: ['*']},
+                        {label: 'equal', value: '=', types: ['*']},
+                        {label: 'not_equal', value: '<>', types: ['*']},
+                        {label: 'less_than', value: '<', types: ['number', 'date']},
+                        {label: 'greater_than', value: '>', types: ['number', 'date']},
+                        {label: 'less_than_or_equal_to', value: '<=', types: ['number', 'date']},
+                        {label: 'greater_than_or_equal_to', value: '>=', types: ['number', 'date']},
+                        {label: 'between', value: 'BETWEEN', types: ['number', 'date']},
+                        {label: 'in', value: 'IN', types: ['*']}
+                    ]
+                }
+            }
+        },
+        computed: {
+            refreshInfo(){
+                const {page, total, last_page, per_page} = this.query;
+                const from = ((page - 1) *  per_page) + 1;
+                const to = page == last_page ? total : (page * per_page);
+                return this.message.info.replace('$1', from).replace('$2', to).replace('$3', total);
+            },
+            filterOperators(){
+                let vm = this;
+                let typeCol = _.filter(vm.columns, {name: vm.query.column})[0];
+                let operators = _.filter(vm.operators, function(d){
+                    if(_.includes(d.types, '*') || _.includes(d.types, typeCol.type)){
+                        return d;
+                    }
+                });
+                return operators;
             }
         },
         data() {
@@ -126,24 +197,15 @@
                 query: {
                     page: 1,
                     column: 'id',
+                    sort_by: 'id',
                     direction: 'desc',
                     per_page: 5,
                     total: 1,
                     last_page: 1,
                     search_column: 'id',
                     search_operator: '=',
-                    search_input: 'Giancarlos'
-                },
-                operators: [
-                    {label: 'equal', value: '='},
-                    {label: 'not_equal', value: '<>'},
-                    {label: 'less_than', value: '<'},
-                    {label: 'greater_than', value: '>'},
-                    {label: 'less_than_or_equal_to', value: '<='},
-                    {label: 'greater_than_or_equal_to', value: '>='},
-                    {label: 'in', value: 'IN'},
-                    {label: 'like', value: 'LIKE'}
-                ]
+                    search_input: ''//some text
+                }
             }
         },
         ready(){
@@ -163,7 +225,6 @@
                 }
             },
             columnsOfData(){
-                console.log(this.columns.length);
                 if (this.columns.length === 0) {
                     this.columns = _.keys(this.data[0]);
                 }else{
@@ -174,7 +235,7 @@
                             type: 'string',
                             title: title,
                             hidden: false,
-                            template: '',
+                            template: null,
                             width: '',
                             searchable: true
                         }, item);
@@ -193,6 +254,17 @@
                 let end = ((this.query.page) * this.query.per_page) + 1;
                 this.segments = _.chunk(this.data, this.query.per_page);
             },
+            sortbyColumn(column){
+                if(column == this.query.sort_by){
+                    this.query.direction = this.query.direction == 'asc' ? 'desc' : 'asc';
+                }else{
+                    this.query.direction = this.query.direction == 'asc' ? 'desc' : 'asc';
+                    this.query.sort_by = column;
+                }
+                const sorterData = _.sortBy(this.data, this.query.sort_by);
+                this.data = this.query.direction == 'desc' ? sorterData : sorterData.reverse();
+                this.filterData();
+            },
             next(){
                 if(this.query.page < this.query.last_page){
                     this.query.page++;
@@ -208,6 +280,11 @@
             changePerPage(){
                 this.query.page = 1;
                 this.filterData();
+            },
+            keypressInputPage(e){
+                if(/[0-9]{1,4}/.exec(e.key) === null){
+                    e.preventDefault();
+                }
             }
         }
     }
@@ -243,7 +320,7 @@
     .heading{
         margin: .2em .5em;
         align-items: center;
-        border-bottom: 1px solid #afd9ee;
+        border-bottom: 1px solid #eee;
     }
 
     .heading-item, .footer-item{
@@ -281,6 +358,7 @@
     .l-container.footer{
         height: 3em;
         align-items: flex-end;
+        border-top: 1px solid #eee;
     }
 
     .dv-pagination{
@@ -290,6 +368,10 @@
     .dv-pagination .input-sm, .dv-pagination .btn-sm, .dv-pagination .input-group-addon{
         height: 23px;
         padding: 2px 10px;
+    }
+    
+    .l-container > table > thead  > tr > th{
+        cursor: pointer;
     }
 
 </style>
