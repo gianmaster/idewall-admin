@@ -21,8 +21,8 @@
                 <select class="heading-item operator" name="operator" id="operator" v-model="query.search_operator">
                     <option :value="opt.value" v-for="opt in filterOperators">{{opt.label}}</option>
                 </select>
-                <input type="text" id="search" class="heading-item search" v-model="query.search_input" />
-                <button type="button" id="search_btn" class="heading-item dv-btn"><i class="fa fa-search"></i></button>
+                <input type="text" id="search" class="heading-item search" v-model="query.search_input" @keyup.enter="searchData" />
+                <button type="button" id="search_btn" class="heading-item dv-btn" @click="searchData"><i class="fa fa-search"></i></button>
             </div>
             <!-- body widget -->
             <div class="l-container table-responsive">
@@ -88,7 +88,7 @@
                 </table>
             </div>
             <!-- footer widget -->
-            <div class="l-container footer">
+            <div class="l-container footer" v-if="segments.length > 0">
                 <span class="footer-item dv-registers">{{refreshInfo}}</span>
                 <div class="footer-item dv-per-page">
                     <span>{{message.per_page}}: </span>
@@ -113,6 +113,9 @@
                         </span>
                     </div>
                 </div>
+            </div>
+            <div v-else class="l-container footer" >
+                <p class="text-center" style="width: 100%;">{{message.no_data}}</p>
             </div>
         </div>
     </div>
@@ -144,7 +147,8 @@
                 default: function(){
                     return {
                         info: 'Displaying $1 - $2 of $3 rows',
-                        per_page: 'Per Page'
+                        per_page: 'Per Page',
+                        no_data: 'No data'
                     }
                 }
             },
@@ -187,6 +191,7 @@
         data() {
             return {
                 data: [],
+                originalData: [],
                 segments: [],
                 model: {},
                 receiveCols: false,
@@ -203,7 +208,7 @@
                     total: 1,
                     last_page: 1,
                     search_column: 'id',
-                    search_operator: '=',
+                    search_operator: 'LIKE',
                     search_input: ''//some text
                 }
             }
@@ -216,6 +221,7 @@
                 if(this.data.length === 0){
                     this.$http.get(this.url).then(function(resp){
                         this.data = resp.data.data;
+                        this.originalData = resp.data.data;
                         this.columnsOfData();//call method that get columns
                         this.filterData();//calculate props
                     }, function(err){
@@ -263,6 +269,52 @@
                 }
                 const sorterData = _.sortBy(this.data, this.query.sort_by);
                 this.data = this.query.direction == 'desc' ? sorterData : sorterData.reverse();
+                this.filterData();
+            },
+            searchData(){
+                const data = this.originalData;
+                const {search_input, search_operator, column} = this.query;
+                const values = search_input.toUpperCase().split(',');
+
+                switch (search_operator){
+                    case 'LIKE':
+                        this.data = _.filter(data, function(d){
+                            if(d[column].toString().toUpperCase().includes(search_input.toUpperCase())){
+                                return d;
+                            }
+                        });
+                        break;
+
+                    case '=':
+                        this.data = _.filter(data, function(d){
+                            if(d[column].toString().toUpperCase() == search_input.toUpperCase()){
+                                return d;
+                            }
+                        });
+                        break;
+
+                    case '<>':
+                        this.data = _.filter(data, function(d){
+                            if(!d[column].toString().toUpperCase().includes(search_input.toUpperCase())){
+                                return d;
+                            }
+                        });
+                        break;
+
+                    case '<':
+                    case '>':
+                    case '<=':
+                    case '>=':
+                    case 'BETWEEN':
+                    case 'IN':
+                        this.data = _.filter(data, function(d){
+                            if(values.indexOf(d[column].toString().toUpperCase()) >= 0){
+                                return d;
+                            }
+                        });
+                        break;
+                }
+
                 this.filterData();
             },
             next(){

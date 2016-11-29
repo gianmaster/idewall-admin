@@ -38,7 +38,8 @@
 				],
 				messageConf: {
 					info: 'Mostrando $1 - $2 de $3 registros',
-					per_page: 'Items por Pagina'
+					per_page: 'Items por Pagina',
+					no_data: 'No hay registros'
 				},
 				columnsConf: [
 					{
