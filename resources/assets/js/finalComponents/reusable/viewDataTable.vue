@@ -275,6 +275,7 @@
                 const data = this.originalData;
                 const {search_input, search_operator, column} = this.query;
                 const values = search_input.toUpperCase().split(',');
+                let configColumn = '';
 
                 switch (search_operator){
                     case 'LIKE':
@@ -302,10 +303,90 @@
                         break;
 
                     case '<':
+                        configColumn = _.find(this.columns, {name: column});
+                        this.data = _.filter(data, function(d){
+                            if(configColumn.type == 'number'){
+                                if (parseFloat(d[column]) < parseFloat(search_input)) {
+                                    return d;
+                                }
+                            }
+
+                            if(configColumn.type == 'date'){
+                                if (new Date(d[column]) < new Date(search_input)) {
+                                    return d;
+                                }
+                            }
+
+                        });
+                        break;
                     case '>':
+                        configColumn = _.find(this.columns, {name: column});
+                        this.data = _.filter(data, function(d){
+                            if(configColumn.type == 'number'){
+                                if (parseFloat(d[column]) > parseFloat(search_input)) {
+                                    return d;
+                                }
+                            }
+
+                            if(configColumn.type == 'date'){
+                                if (new Date(d[column]) > new Date(search_input)) {
+                                    return d;
+                                }
+                            }
+
+                        });
+                        break;
                     case '<=':
+                        configColumn = _.find(this.columns, {name: column});
+                        this.data = _.filter(data, function(d){
+                            if(configColumn.type == 'number'){
+                                if (parseFloat(d[column]) <= parseFloat(search_input)) {
+                                    return d;
+                                }
+                            }
+
+                            if(configColumn.type == 'date'){
+                                if (new Date(d[column]) <= new Date(search_input)) {
+                                    return d;
+                                }
+                            }
+
+                        });
+                        break;
                     case '>=':
+                        configColumn = _.find(this.columns, {name: column});
+                        this.data = _.filter(data, function(d){
+                            if(configColumn.type == 'number'){
+                                if (parseFloat(d[column]) >= parseFloat(search_input)) {
+                                    return d;
+                                }
+                            }
+
+                            if(configColumn.type == 'date'){
+                                if (new Date(d[column]) >= new Date(search_input)) {
+                                    return d;
+                                }
+                            }
+
+                        });
+                        break;
                     case 'BETWEEN':
+                        configColumn = _.find(this.columns, {name: column});
+                        this.data = _.filter(data, function(d){
+                            if(configColumn.type == 'number'){
+                                if (parseFloat(values[0]) <= parseFloat(d[column]) && parseFloat(values[1]) >= parseFloat(d[column])) {
+                                    return d;
+                                }
+                            }
+
+                            if(configColumn.type == 'date'){
+                                if (new Date(values[0]) <= new Date(d[column]) && new Date(values[1]) >= new Date(d[column])) {
+                                    return d;
+                                }
+                            }
+
+                        });
+                        break;
                     case 'IN':
                         this.data = _.filter(data, function(d){
                             if(values.indexOf(d[column].toString().toUpperCase()) >= 0){
