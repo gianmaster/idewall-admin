@@ -4,7 +4,7 @@
         <div class="dv-container">
             <!-- head widget -->
             <div class="l-container heading">
-                <button type="button" id="add" class="heading-item dv-btn"><i class="fa fa-plus"></i></button>
+                <slot name="top-widget"></slot>
                 <span class="heading-item title">{{title}}</span>
                 <select class="heading-item column" name="column" id="column" v-model="query.column">
                     <template v-if="receiveCols">
@@ -60,6 +60,9 @@
                                 </span>
                             </th>
                         </template>
+                        <th width="100%">
+                            <slot name="options"></slot>
+                        </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -69,19 +72,22 @@
                                 <template v-for="col in columns">
                                     <template v-if="col.searchable">
                                         <template v-if="col.template !== null">
-                                            <td>{{{ col.template(item[col.name]) }}}</td>
+                                            <td :class="col.class" :style="col.style">{{{ col.template(item[col.name]) }}}</td>
                                         </template>
                                         <template v-else>
-                                            <td>{{item[col.name]}}</td>
+                                            <td :class="col.class" :style="col.style">{{item[col.name]}}</td>
                                         </template>
                                     </template>
                                 </template>
                             </template>
                             <template v-else>
                                 <template v-for="col in columns">
-                                    <td>{{item[col]}}</td>
+                                    <td :class="col.class" :style="col.style">{{item[col]}}</td>
                                 </template>
                             </template>
+                            <td width="100%">
+                                <slot name="row-option"></slot>
+                            </td>
                         </tr>
                     </template>
                     </tbody>
@@ -91,7 +97,7 @@
             <div class="l-container footer" v-if="segments.length > 0">
                 <span class="footer-item dv-registers">{{refreshInfo}}</span>
                 <div class="footer-item dv-per-page">
-                    <span>{{message.per_page}}: </span>
+                    <span>{{message.per_page}} : &nbsp;</span>
                     <select name="per-page" id="per-page" v-model="query.per_page" @change="changePerPage">
                         <option value="5">5</option>
                         <option value="10">10</option>
@@ -179,7 +185,9 @@
             },
             filterOperators(){
                 let vm = this;
-                let typeCol = _.filter(vm.columns, {name: vm.query.column})[0];
+                //let typeCol = _.filter(vm.columns, {name: vm.query.column})[0];
+                let typeCol = vm.columns[0];
+                vm.query.column = typeCol.name;
                 let operators = _.filter(vm.operators, function(d){
                     if(_.includes(d.types, '*') || _.includes(d.types, typeCol.type)){
                         return d;
@@ -242,8 +250,11 @@
                             title: title,
                             hidden: false,
                             template: null,
+                            style: '',
+                            class: '',
                             width: '',
-                            searchable: true
+                            searchable: true,
+                            action: false
                         }, item);
 
                         return data;
@@ -418,18 +429,13 @@
                 if(/[0-9]{1,4}/.exec(e.key) === null){
                     e.preventDefault();
                 }
+            },
+            toEmitEvent(nameEve, model){
+                this.$dispatch(nameEve, model);
             }
         }
     }
-    /*
-     "id": 1,
-     "codigo_materia": "101",
-     "nombre_materia": "Contabilidad Básica",
-     "semestre": "SEM1",
-     "horas": 8,
-     "estado": "ACTIVO",
-     "docentes"
-    */
+
 </script>
 
 <style>

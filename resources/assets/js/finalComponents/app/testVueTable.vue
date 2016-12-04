@@ -8,7 +8,21 @@
 					:columns="columnsConf"
 					:message="messageConf"
 					:operators="operatorsConf"
-			></view-data-table>
+			>
+				<button type="button" @click="$emit('addRow')" id="add" class="heading-item dv-btn" slot="top-widget"><i class="fa fa-plus"></i></button>
+				<div slot="options" class="text-center">Opciones</div>
+				<div slot="row-option" class="text-center">
+					<div class="btn-group">
+						<a class="btn btn-default btn-xs" href="javascript:;" @click="$emit('editRow', col)">
+							<i data-toggle="tooltip" class="fa fa-eye" title="" data-original-title="Visualizar"></i>
+						</a><a class="btn btn-default btn-xs" href="javascript:;">
+							<i data-toggle="tooltip" class="fa fa-edit" title="Editar"></i>
+						</a><a class="btn btn-danger btn-xs" href="javascript:;">
+							<i data-toggle="tooltip" class="fa fa-trash" title="Eliminar"></i>
+						</a>
+					</div>
+				</div>
+			</view-data-table>
 		</div>
 	</div>
 
@@ -42,27 +56,20 @@
 					no_data: 'No hay registros'
 				},
 				columnsConf: [
-					{
-						name: 'id',
-						type: 'number',
-						title: 'ID',
-						hidden: false,
-						width: '5%',
-						searchable: true
-					},
+
 					{
 						name: 'codigo_materia',
 						type: 'string',
-						title: 'Cod. Materia',
+						title: 'Código',
 						hidden: false,
-						width: '12%',
+						width: '10%',
 						searchable: true
 					},
 					{
 						name: 'nombre_materia',
 						type: 'string',
-						title: 'Nombre Materia',
-						width: '30%'
+						title: 'Nombre Matéria',
+						width: '20%'
 					},
 					{
 						name: 'semestre',
@@ -108,19 +115,28 @@
 						name: 'silabos',
 						type: 'string',
 						title: 'Silabos',
+						width: '10%',
 						hidden: false,
 						template: function(item){
 							return `<i class="${item.length > 0 ? 'fa fa-check text-green' : 'fa fa-close text-red'}"><i>`;
 						},
-						searchable: true
+						searchable: true,
+						class: 'text-center'
 					}
 				]
 			}
 		},
 		components: {
 			viewDataTable
+		},
+		events: {
+			addRow(model){
+				console.log('entro al agregar');
+			},
+			editRow(model){
+				console.log('editar', model);
+			}
 		}
 	}
 
 </script>
-
