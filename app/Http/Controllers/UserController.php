@@ -26,6 +26,12 @@ class UserController extends Controller
         $user = Auth::user();
         return response()->json($user);
     }
+    
+    
+    public function uploadAvatar(Requests $request, $idUser){
+        $dir = '/img/users';
+        $request->file('avatar')->move($dir);
+    }
 
     /**
      * Display a listing of the resource.
@@ -34,20 +40,25 @@ class UserController extends Controller
      */
     public function index()
     {
+        $userId = Auth::user()->id;
+
         $request = request();
 
         if (request()->has('sort')) {
             list($sortCol, $sortDir) = explode('|', request()->sort);
-            $query = User::orderBy($sortCol, $sortDir);
+            $query = User::where('id','<>', $userId)
+                ->orderBy($sortCol, $sortDir);
         } else {
-            $query = User::orderBy('id', 'asc');
+            $query = User::where('id','<>', $userId)
+                ->orderBy('id', 'asc');
         }
 
         if ($request->exists('filter')) {
-            $query->where(function($q) use($request) {
+            $query->where('id', '<>',$userId)
+                ->where(function($q) use($request) {
                 $value = "%" . $request->filter . "%";
                 $q->where('name', 'like', $value)
-                ->orWhere('email', 'like', $value);
+                    ->orWhere('email', 'like', $value);
             });
         }
 

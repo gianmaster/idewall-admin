@@ -13,7 +13,7 @@
 <script>
 
 	import ContentHeader from '../../new-layout/content-header.vue';
-
+	import {urlCatalogos} from '../config';
 	import fnc from '../../../util/reusable_functions';
 
 	export default {
@@ -23,7 +23,7 @@
 		},
 		route: {
 			data: function(transition){
-				this.url = 'api/catalogos/' + this.$route.params.catalogo_id;
+				this.url = urlCatalogos + '/' + this.$route.params.catalogo_id;
 				this.loadCatalogo();
 				transition.next();
 			}

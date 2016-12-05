@@ -28,7 +28,7 @@
 
 	<div class="col-sm-6 col-xs-12">
 		<label>Rol de acceso</label>
-		<select-list class-name="form-control col-xs-6" :select-value.sync="dataModel.rol" value-key="id" label-key="name" url="api/rol" :is-required="true"></select-list>
+		<select-list class-name="form-control col-xs-6" :select-value.sync="dataModel.rol" value-key="id" label-key="name" :url="urlRoles" :is-required="true"></select-list>
 	</div>
 
 	<div class="col-sm-6 col-xs-12">
@@ -64,6 +64,7 @@
 <script>
 
 	import selectList from '../../reusable/select-list.vue';
+	import {urlRoles} from '../config';
 
 	export default {
 		beforeCompile(){
@@ -79,7 +80,8 @@
 		data(){
 			return {
 				byFalse: 'INACTIVO',
-				byTrue: 'ACTIVO'
+				byTrue: 'ACTIVO',
+				urlRoles: urlRoles
 			}
 		},
 		methods: {

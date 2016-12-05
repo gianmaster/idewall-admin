@@ -18,6 +18,7 @@
 <script>
 
   import fnc from '../util/reusable_functions';
+  import {urlMe} from './app/config';
 
   export default {
     name : 'Layout',
@@ -27,7 +28,7 @@
     methods: {
       loadProfile: function(){
         let self = this;
-        this.$http.get('api/me').then(function(resp){
+        this.$http.get(urlMe).then(function(resp){
           self.profile = resp.data;
         }, fnc.tryError);
       }

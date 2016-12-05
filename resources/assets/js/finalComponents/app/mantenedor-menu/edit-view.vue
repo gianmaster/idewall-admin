@@ -14,8 +14,7 @@
 	import fnc from '../../../util/reusable_functions';
 
 	import inputs from './form-fields.vue';
-
-	const URL = 'api/menu';
+	import {urlMenu} from '../config';
 
 	export default {
 		ready(){
@@ -33,7 +32,7 @@
 		},
 		methods: {
 			update: function(){
-				this.$http.put(URL + '/' + this.newModel.id, this.newModel).then(function(resp){
+				this.$http.put(urlMenu + '/' + this.newModel.id, this.newModel).then(function(resp){
 					fnc.niceAlert('success', 'Se modificó correctamente el menú!');
 					this.$router.go('/menu');
 				}, function(err){
@@ -43,7 +42,7 @@
 			},
 			read: function(){
 				this.loading = true;
-				this.$http.get(URL + '/' + this.$route.params.model_id).then(function(resp){
+				this.$http.get(urlMenu + '/' + this.$route.params.model_id).then(function(resp){
 					this.newModel = resp.data.data;
 					this.loading = false;
 				}, function(err){

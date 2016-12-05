@@ -65,6 +65,8 @@
 
 	import ItemsDistributivo from './distributivo_items/create-edit-item-view.vue';
 
+	import {urlTiposDistri} from '../config';
+
 	export default {
 		mixins: [myMixins],
 		route: {
@@ -88,7 +90,7 @@
 		name: 'TiposAtributosGrid',
 		data(){
 			return {
-				url: 'api/tiposdistributivo',
+				url: urlTiposDistri,
 				toolbar: {
 					iconClass: 'fa fa-plus',
 					iconClassOptions: 'fa fa-cogs',

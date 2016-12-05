@@ -7,6 +7,9 @@
 			<div class="box box-primary">
 				<div class="box-header with-border">
 					<h3 class="box-title">Infomación Personal <i class="fa fa-user" style="color:#3c8dbc;"></i></h3>
+					<div class="box-tools pull-right">
+						<a v-link="{path: '/docentes'}" class="btn btn-default btn-xs"><i class="fa fa-reply"></i> VOLVER</a>
+					</div>
 				</div>
 				<!-- /.box-header -->
 				<div class="box-body">
@@ -153,6 +156,7 @@
 <script>
 	
 	import myMixins from './mixins';
+	import {urlDocentes} from '../config';
 
 	export default {
 		mixins: [myMixins],
@@ -163,7 +167,7 @@
 			return {
 				newModel: {},
 				loading: true,
-				url: 'api/docentes'
+				url: urlDocentes
 			}
 		},
 

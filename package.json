@@ -17,6 +17,7 @@
     "laravel-elixir-webpack-official": "^1.0.2",
     "lodash": "^4.14.0",
     "vue": "^1.0.26",
+    "vue-core-image-upload": "^1.0.0",
     "vue-html-editor": "^0.2.1",
     "vue-html-loader": "^1.2.3",
     "vue-loader": "^8.5.2",
@@ -32,6 +33,7 @@
     "chart.js": "^2.3.0",
     "moment": "^2.15.0",
     "vue-chartjs": "^2.1.1",
+    "vue-core-image-upload": "^1.0.0",
     "vuetable": "^1.5.6"
   }
 }

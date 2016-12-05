@@ -1,4 +1,5 @@
 import fnc from '../../../../util/reusable_functions';
+import {urlTiposDistri} from '../../config';
 
 export default {
     methods: {
@@ -37,25 +38,25 @@ export default {
         //CRUD
         updateAction(){
             this.formLoading = true;
-            this.$http.put(`api/tiposdistributivo/${this.currentDistributivo.id}/item/${this.dataModel.id}`, this.dataModel).then(function(resp){
+            this.$http.put(`${urlTiposDistri}/${this.currentDistributivo.id}/item/${this.dataModel.id}`, this.dataModel).then(function(resp){
                 this.loadItems();
             }, fnc.tryError);
         },
         addAction(){
             this.formLoading = true;
-            this.$http.post(`api/tiposdistributivo/${this.currentDistributivo.id}/item`, this.dataModel).then(function(resp){
+            this.$http.post(`${urlTiposDistri}/${this.currentDistributivo.id}/item`, this.dataModel).then(function(resp){
                 this.loadItems();
             }, fnc.tryError);
         },
         deleteAction(model){
             if(confirm('¿Estás seguro de realizar esta acción?')){
-                this.$http.delete(`api/tiposdistributivo/${this.currentDistributivo.id}/item/${model.id}`).then(function(resp){
+                this.$http.delete(`${urlTiposDistri}/${this.currentDistributivo.id}/item/${model.id}`).then(function(resp){
                     this.loadItems();
                 }, fnc.tryError);
             }
         },
         loadItems(){
-            this.$http.get(`api/tiposdistributivo/${this.currentDistributivo.id}/item`).then(function(resp){
+            this.$http.get(`${urlTiposDistri}/${this.currentDistributivo.id}/item`).then(function(resp){
                 this.currentDistributivo.items = resp.data.data;
                 this.mode = 'list';
                 this.formLoading = false;

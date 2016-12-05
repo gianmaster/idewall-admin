@@ -4,6 +4,7 @@
  */
 
  import fnc from '../../../util/reusable_functions';
+ import {urlMateriasDocente, urlCiclo, urlCicloDocente, urlListaMaterias} from '../config';
 
  const API_URL = 'api/docentes/materias';
 
@@ -37,9 +38,9 @@ const URL_CICLO_DOCENTES = 'api/ciclo/param/docentes';
 		load: function(){
 			let self = this;
 			self.loading = true;
-			self.$http.get(URL_CICLO).then(function(resp){
+			self.$http.get(urlCiclo).then(function(resp){
 				const idCiclo = resp.data.data.id ? resp.data.data.id : 0;
-				self.url = URL_CICLO_DOCENTES.replace('param', idCiclo);
+				self.url = urlCicloDocente.replace('param', idCiclo);
 				self.loading = false;
  			}, fnc.tryError)
  		},
@@ -48,7 +49,7 @@ const URL_CICLO_DOCENTES = 'api/ciclo/param/docentes';
  		update: function(){ 
  			const materias = this.materiasSeleccionadas;
  			const self = this;
- 			self.$http.put(API_URL + '/' + this.currentModel.id, {materias: materias}).then(function(resp){
+ 			self.$http.put(urlMateriasDocente + '/' + this.currentModel.id, {materias: materias}).then(function(resp){
  					fnc.niceAlert('success', 'Esta información ha sido modificada correctamente!');
  					//setTimeout(function(){self.$router.go('/materias_docentes');}, 10);
  					self.$router.go('/materias_docentes?' + (+new Date())); //random token
@@ -57,7 +58,7 @@ const URL_CICLO_DOCENTES = 'api/ciclo/param/docentes';
  		},
  		loadList: function(){
  			const self = this;
- 			self.$http.get(API_URL_LIST_MATERIAS).then(function(resp){
+ 			self.$http.get(urlListaMaterias).then(function(resp){
  					self.formatedList(resp.data.data);
  				}, fnc.tryError);
  		},

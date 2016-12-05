@@ -229,6 +229,8 @@
         return parseInt(strHora.replace(':', ''));
     };
 
+    import {urlcicloHorarioDocente, urlHorarioDocente} from '../../config';
+
     export default{
         name: 'horarioDocente',
         data(){
@@ -236,8 +238,8 @@
                 descripcionOtro:'',
                 loading: true,
                 saving: false,
-                url: 'api/horariomateriasdocente',
-                urlSubmit: 'api/ciclohorariodocente',
+                url: urlHorarioDocente,
+                urlSubmit: urlcicloHorarioDocente,
                 distributivos: [],
                 docente: {},
                 horario_materias: [],
@@ -737,5 +739,4 @@
 
     }
 </script>
-
 

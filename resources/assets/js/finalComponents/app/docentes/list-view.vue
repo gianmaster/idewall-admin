@@ -24,6 +24,8 @@
 
 	import myMixins from './mixins';
 
+	import {urlDocentes} from '../config';
+
 	export default {
 		mixins: [myMixins],
 		route: {
@@ -34,7 +36,7 @@
 		},
 		data(){
 			return {
-				url: 'api/docentes',
+				url: urlDocentes,
 				toolbar: {
 					iconClass: 'fa fa-plus',
 					iconClassOptions: 'fa fa-cogs',

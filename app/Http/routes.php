@@ -44,24 +44,11 @@ Route::group(['domain' => '{user}.ug_laravel_vue.dev'], function ($user) {
 	});
 });
 
-Route::get('test', function(){
-
-	$palabras = 'Johny&JohnMary';
-	$nombre1 = explode("John", $palabras);
-	$nombre2 = explode("Mary", $palabras);
-
-	if(count($nombre1) == count($nombre2)){
-		return 'true';
-	}
-	return 'false';
-});
-
 
 Route::get('/vista', function(){
 	return view('test');
 });
 
-Route::resource('/', 'HomeController');
 
 //Route::resource('menu2', 'MenusController');
 Route::get('/reportes/cursos/{ciclojornadasemestre}/jornadasemestre', 'ReportesPdfController@downloadHorarioCurso');
@@ -78,6 +65,8 @@ Route::group(['middleware' => 'auth'], function(){
 		Route::get('me', 'UserController@getProfile');
 
 		Route::resource('users', 'UserController');
+
+		Route::get('avatar', 'UserController@uploadAvatar');
 
 		Route::resource('menu', 'MenusController');
 
@@ -133,6 +122,24 @@ Route::group(['middleware' => 'auth'], function(){
 
 });
 
+Route::group(['middleware' => 'web'], function () {
+	Route::auth();
 
+	Route::get('/', [
+		'uses' => 'HomeController@index',
+		'as' => 'home'
+	]);
 
+	//rutas para redirigir al home
+	Route::get('/{q}', function($q){
+		return redirect()->route('home');
+	});
+	Route::get('/{q}/{q1}', function($q,$q1){
+		return redirect()->route('home');
+	});
+	Route::get('/{q}/{q1}/{q2}', function($q, $q1, $q2){
+		return redirect()->route('home');
+	});
+
+});
 

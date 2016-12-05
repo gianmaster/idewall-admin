@@ -20,7 +20,7 @@
 
 	<div class="col-sm-6 col-xs-12">
 		<label>Semestre</label>
-		<select-list class-name="form-control col-xs-6" :select-value.sync="dataModel.semestre" value-key="codigo" label-key="descripcion" url="api/catalogos-list/2"></select-list>
+		<select-list class-name="form-control col-xs-6" :select-value.sync="dataModel.semestre" value-key="codigo" label-key="descripcion" :url="urlItemsCatalogo"></select-list>
 	</div>
 
 	<div class="col-sm-6 col-xs-12">
@@ -67,11 +67,17 @@
 <script>
 
 	import selectList from '../../reusable/select-list.vue';
+	import {urlListaItems} from '../config';
 
 	export default {
 		beforeCompile(){
 			if (this.createMode){
 				this.dataModel = this.initModel();
+			}
+		},
+		data (){
+			return {
+				urlItemsCatalogo: urlListaItems + '/2'
 			}
 		},
 		components: {
