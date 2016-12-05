@@ -9,19 +9,8 @@
 					:message="messageConf"
 					:operators="operatorsConf"
 			>
-				<button type="button" @click="$emit('addRow')" id="add" class="heading-item dv-btn" slot="top-widget"><i class="fa fa-plus"></i></button>
-				<div slot="options" class="text-center">Opciones</div>
-				<div slot="row-option" class="text-center">
-					<div class="btn-group">
-						<a class="btn btn-default btn-xs" href="javascript:;" @click="$emit('editRow', col)">
-							<i data-toggle="tooltip" class="fa fa-eye" title="" data-original-title="Visualizar"></i>
-						</a><a class="btn btn-default btn-xs" href="javascript:;">
-							<i data-toggle="tooltip" class="fa fa-edit" title="Editar"></i>
-						</a><a class="btn btn-danger btn-xs" href="javascript:;">
-							<i data-toggle="tooltip" class="fa fa-trash" title="Eliminar"></i>
-						</a>
-					</div>
-				</div>
+				<button type="button" @click="action('hola')" id="add" class="heading-item dv-btn" slot="top-widget"><i class="fa fa-plus"></i></button>
+
 			</view-data-table>
 		</div>
 	</div>
@@ -55,6 +44,7 @@
 					per_page: 'Items por Pagina',
 					no_data: 'No hay registros'
 				},
+				actions: true,
 				columnsConf: [
 
 					{
@@ -122,6 +112,28 @@
 						},
 						searchable: true,
 						class: 'text-center'
+					},
+					{
+						title: 'Acciones',
+						name: 'actions',
+						width: '10%',
+						itemActions: [
+							{
+								nameEmit: 'edit-row',
+								btnClass: 'btn btn-primary btn-xs',
+								text: '<i class="fa fa-pencil" data-toggle="tooltip" title="Editar"></i>',
+								tooltip: 'Editar'
+							},
+							{
+								nameEmit: 'delete-row',
+								btnClass: 'btn btn-danger btn-xs',
+								text: '<i class="fa fa-close" data-toggle="tooltip" title="Vizualiar"></i>',
+								tooltip: 'Visualizar'
+							}
+						],
+						action: true,
+						containerClass: 'btn-group',
+						class: 'text-center'
 					}
 				]
 			}
@@ -129,14 +141,23 @@
 		components: {
 			viewDataTable
 		},
+		methods: {
+			action(model){
+				console.log(model);
+			}
+		},
 		events: {
 			addRow(model){
 				console.log('entro al agregar');
 			},
-			editRow(model){
+			'edit-row'(model){
 				console.log('editar', model);
+			},
+			'delete-row'(model){
+				console.log('se elimina', model);
 			}
 		}
 	}
 
 </script>
+

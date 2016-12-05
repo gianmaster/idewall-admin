@@ -24,9 +24,7 @@
 				path: ['Sistema', 'Administración de Usuarios'],
 				loading: true,
 			}
-		},
-		
-
+		}
 	}
 	
 </script>

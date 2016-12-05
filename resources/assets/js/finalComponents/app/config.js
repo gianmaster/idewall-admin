@@ -7,6 +7,7 @@ export const urlCiclos = `${endpoint}/ciclos`;
 export const urlDashboard = `${endpoint}/dashborad/{ciclo}`;
 //modulo usuarios
 export const urlUsuarios = `${endpoint}/users`;
+export const urlAvatar = `${endpoint}/avatar`;
 //rol
 export const urlRoles = `${endpoint}/rol`;
 //menu

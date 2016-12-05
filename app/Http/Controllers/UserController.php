@@ -26,6 +26,12 @@ class UserController extends Controller
         $user = Auth::user();
         return response()->json($user);
     }
+    
+    
+    public function uploadAvatar(Requests $request, $idUser){
+        $dir = '/img/users';
+        $request->file('avatar')->move($dir);
+    }
 
     /**
      * Display a listing of the resource.

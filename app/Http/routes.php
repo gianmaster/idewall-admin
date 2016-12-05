@@ -66,6 +66,8 @@ Route::group(['middleware' => 'auth'], function(){
 
 		Route::resource('users', 'UserController');
 
+		Route::get('avatar', 'UserController@uploadAvatar');
+
 		Route::resource('menu', 'MenusController');
 
 		Route::get('/menu-list', ['uses' => 'MenusController@allMenu', 'as' => 'api.menu.list']);

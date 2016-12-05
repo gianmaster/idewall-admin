@@ -65,6 +65,8 @@ router.map({
     component: require('./finalComponents/app/testPagination.vue')
   },*/
 
+  '/profile': require('./finalComponents/app/profile/index.js'),
+
   '/usuarios': require('./finalComponents/app/usuarios/index.js'),
 
   '/materias': require('./finalComponents/app/materias/index.js'),
@@ -87,9 +89,9 @@ router.map({
 
   '/horariosdocentes': require('./finalComponents/app/ciclo_horario_docente/index.js'),
 
-  'reporte_horarios_cursos': require('./finalComponents/app/reporte_horarios_cursos/index.js'),
+  '/reporte_horarios_cursos': require('./finalComponents/app/reporte_horarios_cursos/index.js'),
 
-  'reporte_distributivos_docentes': require('./finalComponents/app/reporte_distributivos_docentes/index.js'),
+  '/reporte_distributivos_docentes': require('./finalComponents/app/reporte_distributivos_docentes/index.js'),
 
   '/lockscreen': {
     component: require('./finalComponents/new-layout/lockscreen.vue')

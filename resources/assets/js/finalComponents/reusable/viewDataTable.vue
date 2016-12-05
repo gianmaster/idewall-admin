@@ -31,8 +31,14 @@
                     <tr>
                         <template v-if="receiveCols">
                             <template v-for="col in columns">
-                                <template v-if="col.searchable">
-                                    <th :width="col.width" @click="sortbyColumn(col.name)">
+                                <template v-if="col.action">
+                                    <th :width="col.width">
+                                        {{{ col.title }}}
+                                    </th>
+                                </template>
+                                <template v-else>
+                                    <template v-if="col.searchable">
+                                        <th :width="col.width" @click="sortbyColumn(col.name)">
                                         <span v-if="query.sort_by === col.name">
                                             <template v-if="query.direction === 'desc' ">
                                                 {{col.title}} &darr;
@@ -44,7 +50,8 @@
                                         <span v-else>
                                             {{col.title}}
                                         </span>
-                                    </th>
+                                        </th>
+                                    </template>
                                 </template>
                             </template>
                         </template>
@@ -60,9 +67,6 @@
                                 </span>
                             </th>
                         </template>
-                        <th width="100%">
-                            <slot name="options"></slot>
-                        </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -70,12 +74,23 @@
                         <tr v-for="item in segments[query.page - 1]">
                             <template v-if="receiveCols">
                                 <template v-for="col in columns">
-                                    <template v-if="col.searchable">
-                                        <template v-if="col.template !== null">
-                                            <td :class="col.class" :style="col.style">{{{ col.template(item[col.name]) }}}</td>
-                                        </template>
-                                        <template v-else>
-                                            <td :class="col.class" :style="col.style">{{item[col.name]}}</td>
+                                    <template v-if="col.action">
+                                        <th :width="col.width">
+                                            <div :class="col.containerClass">
+                                                <a v-for="act in col.itemActions" :class="act.btnClass" href="javascript:;" @click.prevent="toEmitEvent(act.nameEmit, item)" >
+                                                    {{{ act.text }}}
+                                                </a>
+                                            </div>
+                                        </th>
+                                    </template>
+                                    <template v-else>
+                                        <template v-if="col.searchable">
+                                            <template v-if="col.template !== null">
+                                                <td :class="col.class" :style="col.style">{{{ col.template(item[col.name]) }}}</td>
+                                            </template>
+                                            <template v-else>
+                                                <td :class="col.class" :style="col.style">{{item[col.name]}}</td>
+                                            </template>
                                         </template>
                                     </template>
                                 </template>
@@ -85,9 +100,6 @@
                                     <td :class="col.class" :style="col.style">{{item[col]}}</td>
                                 </template>
                             </template>
-                            <td width="100%">
-                                <slot name="row-option"></slot>
-                            </td>
                         </tr>
                     </template>
                     </tbody>
@@ -146,6 +158,11 @@
                 default: function(){
                     return [];
                 }
+            },
+            actions: {
+                type: Boolean,
+                required: false,
+                default: false
             },
             message: {
                 type: Object,
