@@ -1,6 +1,8 @@
-export const endpoint = 'http://ug_laravel_vue.dev/api';//'http://idewall.com/api';
+//job
+export const endpoint = 'http://localhost:8000/api';//'http://idewall.com/api'
+//laptop
+//export const endpoint = 'http://ug_laravel_vue.dev/api';//'http://idewall.com/api'
 
-//dashboard
 export const urlMe = `${endpoint}/me`;
 export const urlCiclo = `${endpoint}/ciclo`;
 export const urlCiclos = `${endpoint}/ciclos`;
