@@ -1,11 +1,11 @@
 <template>
 
     <div class="col-xs-12 col-sm-4 col-md-3">
-        <image-upload
-            :class="['pure-button','pure-button-primary','js-btn-crop']"
-            :crop="false" :url="url + '/' + dataModel.id"
-            extensions="png,gif,jpeg,jpg">
-        </image-upload>
+        <label for="avatar">Avatar / Imagen de perfil</label>
+        <template v-if="dataModel.avatar !== ''">
+            <img :src="dataModel.avatar" alt="Avatar" class="profile-ima-edit">
+        </template>
+        <input class="form-control" type="file" id="avatar" @change="onFileChange">
     </div>
 
     <div class="col-sm-6 col-xs-12">
@@ -17,11 +17,6 @@
     <div class="col-sm-6 col-xs-12">
         <label>Correo Electrónico</label>
         <input type="email" class="form-control" v-model="dataModel.email" required>
-    </div>
-
-    <div class="col-sm-6 col-xs-12">
-        <label>Avatar</label>
-        <input type="url" class="form-control" placeholder="http://igmbur.com/user/profile.png" v-model="dataModel.avatar">
     </div>
 
     <div class="col-xs-12">
@@ -45,12 +40,10 @@
 <script>
 
     import selectList from '../../reusable/select-list.vue';
-    import ImageUpload from 'vue-core-image-upload';
 
     export default {
         components: {
-            'select-list': selectList,
-            'image-upload': ImageUpload
+            'select-list': selectList
         },
         created(){
             const { profile } = this.$parent.$parent.$parent.$parent;
@@ -62,7 +55,7 @@
             }
         },
         methods: {
-            initModel: function(){
+            initModel (){
                 return {
                     name: null,
                     email: null,
@@ -72,6 +65,26 @@
                     rol: null,
                     avatar: null
                 }
+            },
+            onFileChange(e) {
+                var files = e.target.files || e.dataTransfer.files;
+                if (!files.length)
+                    return;
+                this.createImage(files[0]);
+            },
+            createImage(file) {
+                var image = new Image();
+                var reader = new FileReader();
+                var vm = this;
+
+                reader.onload = (e) => {
+                    vm.dataModel.avatar = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            },
+            removeImage (e) {
+                console.log('entra a eliminar el avatar');
+                this.dataModel.avatar = '';
             }
         },
         props: {

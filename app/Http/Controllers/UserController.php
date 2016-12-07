@@ -139,7 +139,15 @@ class UserController extends Controller
         if(trim($pass) == '')
             $user->update(['password' => bcrypt($pass)]);
 
-        $user->update($request->only(['name', 'email', 'rol', 'state', 'avatar']));
+        $dir = 'img/users';
+        $fileName = $dir . '/' . 'photo-' . time();
+        $data = $request->only(['name', 'email', 'rol', 'state', 'avatar']);
+
+        if(strlen($data['avatar']) > 500){
+            $data['avatar'] = $this->base64_to_jpeg($data['avatar'], $fileName);
+        }
+
+        $user->update($data);
         return response()->json(array('data' => $user));
     }
 
@@ -152,5 +160,26 @@ class UserController extends Controller
     public function destroy($id)
     {
         return response()->json(array('data' => User::destroy($id)));
+    }
+
+
+
+    function base64_to_jpeg($base64_string, $output_file) {
+        $data = explode(',', $base64_string);
+        
+        $types = array(
+            'data:image/jpeg;base64' => 'jpeg',
+            'data:image/jpg;base64' => 'jpg',
+            'data:image/png;base64' => 'png',
+        );
+        
+        $output_file = $output_file . '.' . $types[$data[0]];        
+
+        $ifp = fopen($output_file, "wb"); 
+
+        fwrite($ifp, base64_decode($data[1])); 
+        fclose($ifp); 
+
+        return $output_file; 
     }
 }
