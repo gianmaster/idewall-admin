@@ -136,8 +136,10 @@ class UserController extends Controller
         $user = User::find($id);
         $pass = $request->get('password');
 
-        if(trim($pass) == '')
-            $user->update(['password' => bcrypt($pass)]);
+        if($pass){
+            if(trim($pass) != '')
+                $user->update(['password' => bcrypt($pass)]);
+        }
 
         $dir = 'img/users';
         $fileName = $dir . '/' . 'photo-' . time();

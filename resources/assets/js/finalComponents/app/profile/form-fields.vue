@@ -19,6 +19,11 @@
         <input type="email" class="form-control" v-model="dataModel.email" required>
     </div>
 
+    <div class="col-sm-6 col-xs-12">
+        <label>Nueva Contraseña</label><small>(No obligtorio)</small>
+        <input type="password" class="form-control" v-model="dataModel.password">
+    </div>
+
     <div class="col-xs-12">
         <div class="content">
             <button class="btn btn-warning btn-flat" type="submit"><i class="fa fa-save"></i> GUARDAR CAMBIOS</button>
