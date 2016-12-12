@@ -93,6 +93,7 @@ Route::group(['middleware' => 'auth'], function(){
 		Route::resource('docentes', 'DocentesController');
 		//Route::post('docentes/materias', ['uses' => 'DocentesController@storeMaterias', 'as' => 'api.docentes.materias']);
 
+		Route::post('ciclo/cierre/{ciclo}', 'CiclosController@cierreCiclo');
 		Route::get('ciclo', 'CiclosController@index');
 		Route::get('ciclos', 'CiclosController@getAllCiclos');
 		Route::get('ciclo/{ciclo}/docentes', 'CiclosController@docentesCiclo');

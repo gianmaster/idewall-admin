@@ -13,10 +13,10 @@
 					<!-- Apply any bg-* class to to the icon to color it -->
 					<span class="info-box-icon"><i class="fa fa-bell-o"></i></span>
 					<div class="info-box-content">
-						<template v-if="ciclo.id">
+						<template v-if="ciclo != null">
 							<span class="info-box-text">Ciclo {{ciclo.ciclo}} Período {{ciclo.anio}}-{{ciclo.anio+1}}</span>
 							<div style="margin-top:10px;">
-								<button class="btn bg-red-active"><i class="fa fa-bell-slash"></i> CERRAR CICLO</button>
+								<button class="btn bg-red-active" @click.prevent="cerrarCiclo"><i class="fa fa-bell-slash"></i> CERRAR CICLO</button>
 							</div>
 						</template>
 						<template v-else>
@@ -69,33 +69,42 @@
 
 		<div class="row">
 			<div class="col-xs-12 col-sm-6" style="max-height: 300px;">
-				<template v-if="loading">
-					<p class="text-center">Cargando Gráfico...</p>
+				<template v-if="loading == true">
+					<p class="text-center"><i class="fa fa-refresh fa-spin"></i> Cargando Gráfico...</p>
 				</template>
 				<template v-else>
-					<grafico
-							:data="graphs.primero.data"
-							:options="graphs.primero.options"
-							type="doughnut"
-							id="myChart1"
-					></grafico>
+					<template v-if="ciclo != null">
+						<grafico
+								:data="graphs.primero.data"
+								:options="graphs.primero.options"
+								type="doughnut"
+								id="myChart1"
+						></grafico>
+					</template>
+					<template v-else>
+						<p class="text-center text-red">No hay registros de un ciclo activo <i class="fa fa-pie-chart" aria-hidden="true"></i></p>
+					</template>
 				</template>
 
 			</div>
 
 			<div class="col-xs-12 col-sm-6" style="max-height: 300px;">
-				<template v-if="loading">
-					<p class="text-center">Cargando Gráfico...</p>
+				<template v-if="loading == true">
+					<p class="text-center"><i class="fa fa-refresh fa-spin"></i> Cargando Gráfico...</p>
 				</template>
 				<template v-else>
-					<grafico
-							:data="graphs.segundo.data"
-							:options="graphs.segundo.options"
-							type="doughnut"
-							id="myChart2"
-					></grafico>
+					<template v-if="ciclo != null">
+						<grafico
+								:data="graphs.segundo.data"
+								:options="graphs.segundo.options"
+								type="doughnut"
+								id="myChart2"
+						></grafico>
+					</template>
+					<template v-else>
+						<p class="text-center text-red">No hay registros de un ciclo activo <i class="fa fa-pie-chart" aria-hidden="true"></i></p>
+					</template>
 				</template>
-
 			</div>
 
 			<div class="col-xs-12 col-sm-4" style="margin-top: 20px">
@@ -107,7 +116,6 @@
 			</div>
 
 		</div>
-
 
 	</section>
 </template>
@@ -131,7 +139,7 @@
 		name: 'content-dashboard',
 		components:{
 			'content-header' : ContentHeader,
-			Grafico
+			Grafico: Grafico
 		},
 		ready(){
 			this.load();
@@ -224,5 +232,4 @@
 	}
 
 </script>
-
 

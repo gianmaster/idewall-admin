@@ -1,34 +1,35 @@
 import fnc from '../../../util/reusable_functions';
 
-import {urlCiclo, urlDashboard} from '../config';
+import {urlCicloCierre, urlCiclo, urlDashboard} from '../config';
 
 export default {
     load: function(){
-        let _this = this;
-        _this.loading = true;
-        _this.$http.get(urlCiclo).then(function(resp){
-            _this.ciclo = resp.data.data;
-
-            if(_this.ciclo.id){
-                _this.$http.get(urlDashboard.replace('{ciclo}', _this.ciclo.id)).then(function(res){
-                    _this.data = res.data;
-                    _this.loading = false;
-                    _this.loadDataChart();
+        let vm = this;
+        vm.loading = true;
+        vm.$http.get(urlCiclo).then(function(resp){
+            vm.ciclo = resp.data.data;
+            if(vm.ciclo != null){
+                vm.$http.get(urlDashboard.replace('{ciclo}', vm.ciclo.id)).then(function(res){
+                    vm.data = res.data;
+                    vm.loading = false;
+                    vm.loadDataChart();
                 }, fnc.tryError)
             }
+            vm.loading = false;
             
         }, function(err){
             console.log(err, 'no cargo a la primera');
-            _this.$http.get(urlCiclo).then(function(resp){
-                _this.ciclo = resp.data.data;
+            vm.$http.get(urlCiclo).then(function(resp){
+                vm.ciclo = resp.data.data;
 
-                if(_this.ciclo.id){
-                    _this.$http.get(urlDashboard.replace('{ciclo}', _this.ciclo.id)).then(function(res){
-                        _this.data = res.data;
-                        _this.loading = false;
-                        _this.loadDataChart();
+                if(vm.ciclo != null){
+                    vm.$http.get(urlDashboard.replace('{ciclo}', vm.ciclo.id)).then(function(res){
+                        vm.data = res.data;
+                        vm.loading = false;
+                        vm.loadDataChart();
                     }, fnc.tryError)
                 }
+                vm.loading = false;
 
             }, fnc.tryError);
         });
@@ -38,5 +39,16 @@ export default {
         const data2 = [this.data.cursos_ciclo, this.data.cursos_ciclo_asignado];
         this.graphs.primero.data.datasets[0].data = data1;
         this.graphs.segundo.data.datasets[0].data = data2;
+    },
+    cerrarCiclo(){
+        if(confirm('Advertencia! Al cerrar el ciclo se bloquean todos los modulos operativo "Proceso Distributivo". Estas seguro?')){
+            const {id} = this.ciclo;
+            const vm = this;
+            vm.$http.post(`${urlCicloCierre}/${id}`).then(function(resp){
+                vm.ciclo = resp.data.data;
+                fnc.niceAlert('success', 'Se cerroel ciclo correctamente');
+            }, fnc.tryError);
+        }
+
     }
 }

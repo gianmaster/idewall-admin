@@ -32,7 +32,7 @@
             },
             data: {
                 type: Object,
-                required: true
+                required: false
             },
             options: {
                 type: Object,

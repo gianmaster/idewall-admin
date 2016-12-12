@@ -6,6 +6,7 @@ export const endpoint = 'http://ug_laravel_vue.dev/api';//'http://idewall.com/ap
 
 export const urlMe = `${endpoint}/me`;
 export const urlCiclo = `${endpoint}/ciclo`;
+export const urlCicloCierre = `${endpoint}/ciclo/cierre`;
 export const urlCiclos = `${endpoint}/ciclos`;
 export const urlDashboard = `${endpoint}/dashborad/{ciclo}`;
 //modulo usuarios

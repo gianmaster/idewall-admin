@@ -48,8 +48,8 @@ router.map({
     component: require('./finalComponents/reusable/notFound.vue'),
   },
   '/': {
-    //component: require('./finalComponents/app/dashboard/index.vue'),
-    component: require('./finalComponents/app/testVueTable.vue')
+    component: require('./finalComponents/app/dashboard/index.vue'),
+    //component: require('./finalComponents/app/testVueTable.vue')
   },
   /*
   '/usuarios': {

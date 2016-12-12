@@ -283,8 +283,10 @@ class CiclosController extends Controller
         );
     }
     
-    public function totalHorariosCursoCiclo($ciclo){
-        $totalHorarios = DB::select("");
+    public function cierreCiclo($idCiclo){
+        $ciclo = Ciclo::find($idCiclo);
+        $ciclo->update(['estado' => 'CERRADO']);
+        return response()->json(['data' => $ciclo]);
     }
 
 }

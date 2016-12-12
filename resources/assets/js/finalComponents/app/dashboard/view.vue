@@ -53,21 +53,15 @@
 </template>
 
 
-<style>
-	
-</style>	
-
 <script>
 	export default {
 
 		name: 'dashboard',
 		data(){
 			return {
-				msg: 'hola mundo'
+				msg: 'Esta prueba'
 			}
 		}
 	}
 </script>
-
-
 
