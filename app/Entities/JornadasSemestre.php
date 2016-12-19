@@ -13,7 +13,7 @@ class JornadasSemestre extends Model implements Transformable
 
     protected $table = 'jornadas_semestres';
 
-    protected $fillable = ['id', 'ciclo','catalogo_semestre','catalogo_aula','catalogo_jornada', 'num_horas'];
+    protected $fillable = ['id', 'ciclo','catalogo_semestre','catalogo_aula','catalogo_jornada', 'catalogo_paralelo', 'num_horas'];
 
     public function descripcionCiclo(){
     	return $this->hasOne(Ciclo::class, 'id', 'ciclo');
@@ -35,6 +35,12 @@ class JornadasSemestre extends Model implements Transformable
     	return $this->hasOne(CatalogoItem::class, 'codigo', 'catalogo_jornada')
     				->where('catalogo', 5)
                     ->where('activo', true);
+    }
+
+    public function paralelo(){
+        return $this->hasOne(CatalogoItem::class, 'codigo', 'catalogo_paralelo')
+            ->where('catalogo', 6)
+            ->where('activo', true);
     }
 
     public function materiasNormalesSemestre(){

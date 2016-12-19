@@ -2,6 +2,10 @@ import fnc from '../../../util/reusable_functions';
 
 import {urlCicloCierre, urlCiclo, urlDashboard} from '../config';
 
+let auxrenderGraph = function(){
+    $(".sidebar-toggle").trigger('click');
+};
+
 export default {
     load: function(){
         let vm = this;
@@ -11,9 +15,10 @@ export default {
             if(vm.ciclo != null){
                 vm.$http.get(urlDashboard.replace('{ciclo}', vm.ciclo.id)).then(function(res){
                     vm.data = res.data;
-                    vm.loading = false;
                     vm.loadDataChart();
-                }, fnc.tryError)
+                    vm.loading = false;
+                    auxrenderGraph();
+                }, fnc.tryError);
             }
             vm.loading = false;
             
@@ -25,8 +30,9 @@ export default {
                 if(vm.ciclo != null){
                     vm.$http.get(urlDashboard.replace('{ciclo}', vm.ciclo.id)).then(function(res){
                         vm.data = res.data;
-                        vm.loading = false;
                         vm.loadDataChart();
+                        vm.loading = false;
+                        auxrenderGraph();
                     }, fnc.tryError)
                 }
                 vm.loading = false;

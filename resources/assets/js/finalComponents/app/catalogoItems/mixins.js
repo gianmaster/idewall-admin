@@ -9,6 +9,7 @@ import {urlCatalogos} from '../config';
  export default {
  	methods: {
  		create: function(){
+			console.log(this.newModel);
  			this.$http.post(this.url, this.newModel).then(function(resp){
  				fnc.niceAlert('success', 'Se creó el menú correctamente!');
  				this.$router.go('/catalogos/'+this.$route.params.catalogo_id);

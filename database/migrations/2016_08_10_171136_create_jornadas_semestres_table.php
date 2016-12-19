@@ -20,7 +20,8 @@ class CreateJornadasSemestresTable extends Migration
             $table->foreign('ciclo')->references('id')->on('ciclos')->onDelete('cascade');
 
             $table->string('catalogo_semestre')->nullable(false);
-            $table->string('catalogo_aula')->nullable(true);
+			$table->string('catalogo_aula')->nullable(true);
+			$table->string('catalogo_paralelo')->nullable(true);
             $table->string('catalogo_jornada')->nullable(true)->default('NOC');//MAT, VES y NOC
 
             $table->timestamps();

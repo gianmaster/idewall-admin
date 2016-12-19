@@ -404,10 +404,10 @@ class ConfigurationSeeder extends Seeder
         ]);
 
 
-        //Aulas - paralelos
+        //Aulas - Cursos
         $aulas = App\Entities\Catalogo::create([
             'nombre' => 'Aulas',
-            'descripcion' => 'Aulas o paralelos asignados a la carrera I.S.A.C'
+            'descripcion' => 'Aulas o Cursos asignados a la carrera I.S.A.C'
         ]);
 
         App\Entities\CatalogoItem::create([
@@ -445,7 +445,7 @@ class ConfigurationSeeder extends Seeder
 
         $menuAulas = App\Menu::create([
             'nombre' => 'aulas_paralelos',
-            'titulo' => 'Aulas o Paralelos',
+            'titulo' => 'Aulas o Cursos',
             'url' => '/catalogos/4',
             'iconclass' => 'fa fa-link',
             'orden' => 2,
@@ -517,6 +517,231 @@ class ConfigurationSeeder extends Seeder
             'rol' => $rolAdmin->id,
             'menu' => $menuTipoJornada->id,
         ]);
+
+
+
+        //Paralelos
+        $paralelo = App\Entities\Catalogo::create([
+            'nombre' => 'Paralelos',
+            'descripcion' => 'Paralelos de los cursos I.S.A.C'
+        ]);
+
+        App\Entities\CatalogoItem::create([
+            'catalogo' => $paralelo->id,
+            'codigo' => '151',
+            'descripcion' => '1-51',
+            'orden' => 1,
+            'activo' => true
+        ]);
+
+        App\Entities\CatalogoItem::create([
+            'catalogo' => $paralelo->id,
+            'codigo' => '152',
+            'descripcion' => '1-52',
+            'orden' => 2,
+            'activo' => true
+        ]);
+
+        App\Entities\CatalogoItem::create([
+            'catalogo' => $paralelo->id,
+            'codigo' => '153',
+            'descripcion' => '1-53',
+            'orden' => 3,
+            'activo' => true
+        ]);
+
+
+        App\Entities\CatalogoItem::create([
+            'catalogo' => $paralelo->id,
+            'codigo' => '251',
+            'descripcion' => '2-51',
+            'orden' => 1,
+            'activo' => true
+        ]);
+
+        App\Entities\CatalogoItem::create([
+            'catalogo' => $paralelo->id,
+            'codigo' => '252',
+            'descripcion' => '2-52',
+            'orden' => 2,
+            'activo' => true
+        ]);
+
+        App\Entities\CatalogoItem::create([
+            'catalogo' => $paralelo->id,
+            'codigo' => '253',
+            'descripcion' => '2-53',
+            'orden' => 3,
+            'activo' => true
+        ]);
+
+
+        App\Entities\CatalogoItem::create([
+            'catalogo' => $paralelo->id,
+            'codigo' => '351',
+            'descripcion' => '3-51',
+            'orden' => 1,
+            'activo' => true
+        ]);
+
+        App\Entities\CatalogoItem::create([
+            'catalogo' => $paralelo->id,
+            'codigo' => '352',
+            'descripcion' => '3-52',
+            'orden' => 2,
+            'activo' => true
+        ]);
+
+        App\Entities\CatalogoItem::create([
+            'catalogo' => $paralelo->id,
+            'codigo' => '353',
+            'descripcion' => '3-53',
+            'orden' => 3,
+            'activo' => true
+        ]);
+
+
+        App\Entities\CatalogoItem::create([
+            'catalogo' => $paralelo->id,
+            'codigo' => '451',
+            'descripcion' => '4-51',
+            'orden' => 1,
+            'activo' => true
+        ]);
+
+        App\Entities\CatalogoItem::create([
+            'catalogo' => $paralelo->id,
+            'codigo' => '452',
+            'descripcion' => '4-52',
+            'orden' => 2,
+            'activo' => true
+        ]);
+
+        App\Entities\CatalogoItem::create([
+            'catalogo' => $paralelo->id,
+            'codigo' => '453',
+            'descripcion' => '4-53',
+            'orden' => 3,
+            'activo' => true
+        ]);
+
+
+        App\Entities\CatalogoItem::create([
+            'catalogo' => $paralelo->id,
+            'codigo' => '551',
+            'descripcion' => '5-51',
+            'orden' => 1,
+            'activo' => true
+        ]);
+
+        App\Entities\CatalogoItem::create([
+            'catalogo' => $paralelo->id,
+            'codigo' => '552',
+            'descripcion' => '5-52',
+            'orden' => 2,
+            'activo' => true
+        ]);
+
+        App\Entities\CatalogoItem::create([
+            'catalogo' => $paralelo->id,
+            'codigo' => '553',
+            'descripcion' => '5-53',
+            'orden' => 3,
+            'activo' => true
+        ]);
+
+
+
+        App\Entities\CatalogoItem::create([
+            'catalogo' => $paralelo->id,
+            'codigo' => '651',
+            'descripcion' => '6-51',
+            'orden' => 1,
+            'activo' => true
+        ]);
+
+        App\Entities\CatalogoItem::create([
+            'catalogo' => $paralelo->id,
+            'codigo' => '652',
+            'descripcion' => '6-52',
+            'orden' => 2,
+            'activo' => true
+        ]);
+
+        App\Entities\CatalogoItem::create([
+            'catalogo' => $paralelo->id,
+            'codigo' => '653',
+            'descripcion' => '6-53',
+            'orden' => 3,
+            'activo' => true
+        ]);
+
+
+        App\Entities\CatalogoItem::create([
+            'catalogo' => $paralelo->id,
+            'codigo' => '751',
+            'descripcion' => '7-51',
+            'orden' => 1,
+            'activo' => true
+        ]);
+
+        App\Entities\CatalogoItem::create([
+            'catalogo' => $paralelo->id,
+            'codigo' => '752',
+            'descripcion' => '7-52',
+            'orden' => 2,
+            'activo' => true
+        ]);
+
+        App\Entities\CatalogoItem::create([
+            'catalogo' => $paralelo->id,
+            'codigo' => '753',
+            'descripcion' => '7-53',
+            'orden' => 3,
+            'activo' => true
+        ]);
+
+
+
+        App\Entities\CatalogoItem::create([
+            'catalogo' => $paralelo->id,
+            'codigo' => '851',
+            'descripcion' => '8-51',
+            'orden' => 1,
+            'activo' => true
+        ]);
+
+        App\Entities\CatalogoItem::create([
+            'catalogo' => $paralelo->id,
+            'codigo' => '852',
+            'descripcion' => '8-52',
+            'orden' => 2,
+            'activo' => true
+        ]);
+
+        App\Entities\CatalogoItem::create([
+            'catalogo' => $paralelo->id,
+            'codigo' => '853',
+            'descripcion' => '8-53',
+            'orden' => 3,
+            'activo' => true
+        ]);
+
+
+        $menuParalelos = App\Menu::create([
+            'nombre' => 'paralelos_carrera',
+            'titulo' => 'Paralelos',
+            'url' => '/catalogos/6',
+            'iconclass' => 'fa fa-link',
+            'orden' => 2,
+            'cod_padre' => $menuUsuariosV4->id
+        ]);
+
+        App\RolMenu::create([
+            'rol' => $rolAdmin->id,
+            'menu' => $menuParalelos->id,
+        ]);
+
 
         //agregar materias a la malla academica
         //Del primer semestre
@@ -1073,7 +1298,7 @@ class ConfigurationSeeder extends Seeder
         ]);
 
 
-        //menu jornadas por semestres
+        //MENU jornadas por semestres
         $menuJornadaSemestre = App\Menu::create([
             'nombre' => 'jornadas_semestre',
             'titulo' => 'Jornadas Semestre',
@@ -1245,6 +1470,5 @@ class ConfigurationSeeder extends Seeder
                 ]);
             }
         }
-
     }
 }

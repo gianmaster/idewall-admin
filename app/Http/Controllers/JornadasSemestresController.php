@@ -59,6 +59,7 @@ class JornadasSemestresController extends Controller
                 ->with('semestre')
                 ->with('aula')
                 ->with('jornada')
+                ->with('paralelo')
                 ->with('descripcionCiclo')
                 ->with('horario')
                 ->orderBy('catalogo_semestre', $sortDir)
@@ -68,6 +69,7 @@ class JornadasSemestresController extends Controller
                 ->with('semestre')
                 ->with('aula')
                 ->with('jornada')
+                ->with('paralelo')
                 ->with('descripcionCiclo')
                 ->with('horario')
                 ->orderBy('catalogo_semestre', 'asc')
@@ -91,7 +93,7 @@ class JornadasSemestresController extends Controller
 
             $cicloVigente = CiclosController::currentCiclo();
 
-            $data = $request->only(['catalogo_semestre', 'catalogo_jornada', 'catalogo_aula']);
+            $data = $request->only(['catalogo_semestre', 'catalogo_jornada', 'catalogo_aula', 'catalogo_paralelo']);
 
             $this->validator->with($data)->passesOrFail(ValidatorInterface::RULE_CREATE);
 
@@ -102,7 +104,7 @@ class JornadasSemestresController extends Controller
             if(array_has($existe, 0)){
                 return response()->json([
                     'error'   => true,
-                    'message' => 'Ya se ha registrado esta jornada a este semestre con el mismo curso!'
+                    'message' => 'Ya se ha registrado esta jornada a este semestre con el mismo curso y paralelo!'
                 ], 403);
             }
 
@@ -213,6 +215,7 @@ class JornadasSemestresController extends Controller
         $data = JornadasSemestre::with('descripcionCiclo')
             ->with('aula')
             ->with('jornada')
+            ->with('paralelo')
             ->with('semestre')
             ->with('materiasNormalesSemestre')
             ->with('materiasEspecialesSemestre')
@@ -331,6 +334,7 @@ class JornadasSemestresController extends Controller
                 ->with('semestre')
                 ->with('aula')
                 ->with('jornada')
+                ->with('paralelo')
                 ->with('descripcionCiclo')
                 ->with('horario')
                 ->orderBy('catalogo_semestre', $sortDir)
@@ -340,6 +344,7 @@ class JornadasSemestresController extends Controller
                 ->with('semestre')
                 ->with('aula')
                 ->with('jornada')
+                ->with('paralelo')
                 ->with('descripcionCiclo')
                 ->with('horario')
                 ->orderBy('catalogo_semestre', 'asc')

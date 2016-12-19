@@ -29,7 +29,6 @@
 					console.warn(err);
 				});	
 			}
-			
 		},
 		props:{
 			className: {
@@ -88,8 +87,6 @@
 			}
 
 		},
-		methods: {
 
-		}
 	}
 </script>

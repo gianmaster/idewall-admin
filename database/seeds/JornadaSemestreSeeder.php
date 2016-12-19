@@ -15,6 +15,8 @@ class JornadaSemestreSeeder extends Seeder
     public function run()
     {
         //Por defecto asigno 8 semestres con la jornada nocturna
+
+        /*
         $ciclo = Ciclo::where('estado', 'VIGENTE')->first();
 
         JornadasSemestre::create([
@@ -130,7 +132,7 @@ class JornadaSemestreSeeder extends Seeder
             'catalogo_semestre' => 'SEM8',
             'catalogo_aula'     => 'A56',
             'catalogo_jornada'  => 'ESP',
-        ]);
+        ]);*/
 
     }
 }
