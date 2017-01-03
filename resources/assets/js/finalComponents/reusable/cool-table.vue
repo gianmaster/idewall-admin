@@ -6,7 +6,15 @@
 			<div class="col-sm-2 col-xs-12" v-if="optionToolbar">
 				<button :class="optionToolbar.btnClass" @click.prevent="dispacher(optionToolbar.nameEmit)"><i :class="optionToolbar.iconClass"></i> {{optionToolbar.label}}</button>
 			</div>
-			<div class="col-xs-6 col-sm-6">
+			<div class="col-sm-2 col-xs-12" v-if="optionToolbar">
+				<button :class="optionToolbar.btnClass" @click.prevent="dispacher(optionToolbar.nameEmit)"><i :class="optionToolbar.iconClass"></i> {{optionToolbar.label}}</button>
+			</div>
+			<!--
+			<div class="col-sm-2 col-xs-12" v-if="exportToolbar">
+				<button :class="exportToolbar.btnClass" @click.prevent="dispacher(exportToolbar.nameEmit)"><i :class="exportToolbar.iconClass"></i> {{exportToolbar.label}}</button>
+			</div>
+			-->
+			<div class="col-xs-4 col-sm-4">
 				<form action="#" method="get" @submit.prevent="search">
 					<div class="input-group">
 						<input type="text" name="filter" v-model="search_filter" class="form-control" placeholder="Buscar...">
@@ -277,6 +285,17 @@
 						labelOptions: 'Campos visibles',
 						nameEmit: 'create-event',
 						btnClass: 'btn btn-primary btn-flat'
+					}
+				}
+			},
+			exportToolbar: {
+				type: Object,
+				default: function(){
+					return {
+						iconClass: 'fa fa-excel',
+						label: '',
+						nameEmit: 'export-event',
+						btnClass: 'btn btn-success btn-flat'
 					}
 				}
 			},

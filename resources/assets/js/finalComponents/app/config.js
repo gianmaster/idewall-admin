@@ -3,7 +3,6 @@
 //laptop
 export const endpoint = 'http://ug_laravel_vue.dev/api';//'http://idewall.com/api'
 
-
 export const urlMe = `${endpoint}/me`;
 export const urlCiclo = `${endpoint}/ciclo`;
 export const urlCicloCierre = `${endpoint}/ciclo/cierre`;

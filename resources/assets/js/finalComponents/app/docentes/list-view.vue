@@ -6,13 +6,13 @@
 
 	<div v-else>
 		<cool-table 
-		:option-toolbar="toolbar"
-		:url="url" 
-		:data.sync="datos" 
-		:columns="columnas" 
-		filter-key-word="search">
-	</cool-table>
-</div>
+			:option-toolbar="toolbar"
+			:url="url"
+			:data.sync="datos"
+			:columns="columnas"
+			filter-key-word="search">
+		</cool-table>
+	</div>
 
 </template>
 
