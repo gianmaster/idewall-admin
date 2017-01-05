@@ -74,12 +74,15 @@
 				</template>
 				<template v-else>
 					<template v-if="ciclo != null">
+
 						<grafico
 								:data="graphs.primero.data"
 								:options="graphs.primero.options"
 								type="doughnut"
 								id="myChart1"
 						></grafico>
+
+						<!--<vue-chart :data="testdata" type="doughnut"></vue-chart>-->
 					</template>
 					<template v-else>
 						<p class="text-center text-red">No hay registros de un ciclo activo <i class="fa fa-pie-chart" aria-hidden="true"></i></p>
@@ -100,6 +103,7 @@
 								type="doughnut"
 								id="myChart2"
 						></grafico>
+						<!--<vue-chart :data="testdata" type="doughnut"></vue-chart>-->
 					</template>
 					<template v-else>
 						<p class="text-center text-red">No hay registros de un ciclo activo <i class="fa fa-pie-chart" aria-hidden="true"></i></p>
@@ -147,6 +151,12 @@
 		data: function(){
 			return {
 				loading: false,
+				testdata: {
+          			labels: ["REMAIN", "LEAVE"],
+					datasets: [{
+					backgroundColor: ["#36A2EB", "#FF6384"],
+					data: [1, 1]
+				  }]},
 				data: {
 					cursos_ciclo: 0,
 					cursos_ciclo_asignado: 0,

@@ -5,11 +5,12 @@
 	</div>
 
 	<div v-else>
-		<cool-table 
+		<cool-table
 			:option-toolbar="toolbar"
 			:url="url"
 			:data.sync="datos"
 			:columns="columnas"
+			:export-toolbar="configExport"
 			filter-key-word="search">
 		</cool-table>
 	</div>
@@ -44,6 +45,12 @@
 					labelOptions: 'Campos visibles',
 					nameEmit: 'docente-create-event',
 					btnClass: 'btn btn-primary btn-flat'
+				},
+				configExport: {
+					iconClass: 'fa fa-file-excel-o',
+						label: 'Exportar',
+						nameEmit: 'export-event',
+						btnClass: 'btn btn-success'
 				},
 				datos: [],
 				columnas: [

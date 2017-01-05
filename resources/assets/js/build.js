@@ -16,6 +16,7 @@ Vue.config.debug = true;
 import moment from 'moment';
 window.moment = moment;
 
+
 // install router
 Vue.use(VueResource);
 Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#csrf_token').getAttribute('value');
@@ -39,7 +40,7 @@ const router = new VueRouter({
 
 const router = new VueRouter({
   hasbang: true,
-  history: true
+  history: false
 });
 
 

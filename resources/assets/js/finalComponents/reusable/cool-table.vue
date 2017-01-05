@@ -6,14 +6,6 @@
 			<div class="col-sm-2 col-xs-12" v-if="optionToolbar">
 				<button :class="optionToolbar.btnClass" @click.prevent="dispacher(optionToolbar.nameEmit)"><i :class="optionToolbar.iconClass"></i> {{optionToolbar.label}}</button>
 			</div>
-			<div class="col-sm-2 col-xs-12" v-if="optionToolbar">
-				<button :class="optionToolbar.btnClass" @click.prevent="dispacher(optionToolbar.nameEmit)"><i :class="optionToolbar.iconClass"></i> {{optionToolbar.label}}</button>
-			</div>
-			<!--
-			<div class="col-sm-2 col-xs-12" v-if="exportToolbar">
-				<button :class="exportToolbar.btnClass" @click.prevent="dispacher(exportToolbar.nameEmit)"><i :class="exportToolbar.iconClass"></i> {{exportToolbar.label}}</button>
-			</div>
-			-->
 			<div class="col-xs-4 col-sm-4">
 				<form action="#" method="get" @submit.prevent="search">
 					<div class="input-group">
@@ -32,7 +24,10 @@
 					</select>
 				</div>
 			</div>
-			<div class="col-xs-2 col-sm-1">
+			<div class="col-sm-2 col-xs-12" v-if="exportToolbar">
+				<button :class="exportToolbar.btnClass" @click.prevent="dispacher(exportToolbar.nameEmit)"><i :class="exportToolbar.iconClass"></i> {{exportToolbar.label}}</button>
+			</div>
+			<div class="col-xs-2 col-sm-1 pull-right">
 				<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true" :title="optionToolbar.labelOptions">
 					<i :class="optionToolbar.iconClassOptions"></i>
 				</button>
@@ -290,14 +285,14 @@
 			},
 			exportToolbar: {
 				type: Object,
-				default: function(){
+				default: null /* function(){
 					return {
-						iconClass: 'fa fa-excel',
-						label: '',
+						iconClass: 'fa fa-file-excel-o',
+						label: 'Exportar',
 						nameEmit: 'export-event',
-						btnClass: 'btn btn-success btn-flat'
+						btnClass: 'btn btn-success'
 					}
-				}
+				}*/
 			},
 			tableClass: { type: String, default: 'table table-bordered table-striped table-hover'},
 			requireHeader: {type: Boolean, default: true},

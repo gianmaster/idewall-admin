@@ -18,6 +18,7 @@ export default {
                     vm.loadDataChart();
                     vm.loading = false;
                     auxrenderGraph();
+                    setTimeout(function(){auxrenderGraph();}, 500);
                 }, fnc.tryError);
             }
             vm.loading = false;
