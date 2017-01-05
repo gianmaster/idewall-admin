@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 use App\Entities\MateriasCicloDocente;
 use App\Entities\Docente;
 
 use App\Http\Requests;
+use Maatwebsite\Excel\Facades\Excel;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Repositories\DocenteRepository;
@@ -274,6 +276,41 @@ class DocentesController extends Controller
                 'message' => 'Se presento un error al tratar de hacer esta acción',
                 'dev_message' => $e->getMessage()), 405);
         }
+    }
+
+
+    public function exportarExcelDocentes(){
+        $fecha = Carbon::now('America/Guayaquil');
+        $archivo = 'Reporte Docentes I.S.A.C - ' . $fecha->toDateString('Y-m-d');
+        Excel::create($archivo, function($excel){
+
+            // Set the title
+            $excel->setTitle('Reporte de Docentes');
+
+            // Chain the setters
+            $excel->setCreator('Giancarlos Cercado')
+                ->setCompany('idewall.com');
+
+            // Call them separately
+            $excel->setDescription('Reporte de Docentes de la carrera I.S.A.C ');
+
+            $excel->sheet('Base Docentes', function($sheet){
+
+                $sheet->fromArray(Docente::all());
+
+                //manipulacion de las filas
+                $sheet->row(1, function($row) {
+                    // call cell manipulation methods
+                    $row->setBackground('#000000');
+                    $row->setFontColor('#FFFFFF');
+
+                });
+
+                $sheet->setAutoFilter('A1:Y1');
+
+            });
+
+        })->download('xlsx');
     }
 
 

@@ -27,6 +27,7 @@ export const urlTiposDistri = `${endpoint}/tiposdistributivo`;
 export const urlMalla = `${endpoint}/malla_academica`;
 //docentes
 export const urlDocentes = `${endpoint}/docentes`;
+export const urlExportDocentes = `${endpoint}/download/docentes`;
 export const urlMateriasDocente = `${endpoint}/docentes/materias`;
 export const urlCicloDocente = `${endpoint}/ciclo/param/docentes`;
 export const urlListaMaterias = `${endpoint}/malla_academica/all`;

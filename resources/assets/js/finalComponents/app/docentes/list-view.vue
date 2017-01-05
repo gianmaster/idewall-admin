@@ -25,7 +25,7 @@
 
 	import myMixins from './mixins';
 
-	import {urlDocentes} from '../config';
+	import {urlDocentes, urlExportDocentes} from '../config';
 
 	export default {
 		mixins: [myMixins],
@@ -48,9 +48,9 @@
 				},
 				configExport: {
 					iconClass: 'fa fa-file-excel-o',
-						label: 'Exportar',
-						nameEmit: 'export-event',
-						btnClass: 'btn btn-success'
+					label: 'Exportar',
+					nameEmit: 'export-event-docentes',
+					btnClass: 'btn btn-success'
 				},
 				datos: [],
 				columnas: [
@@ -138,6 +138,9 @@
 			'docente-delete-event' : function(model){
 				this.destroy(model);
 			},
+			'export-event-docentes': function(){
+				window.location = urlExportDocentes;
+			}
 		},
 
 		

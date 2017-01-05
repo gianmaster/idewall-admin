@@ -91,6 +91,7 @@ Route::group(['middleware' => 'auth'], function(){
 		Route::post('malla_academica/{id}/silabos', 'MallaAcademicaController@uploadSilabosByMateria');
 
 		Route::resource('docentes', 'DocentesController');
+		Route::get('download/docentes', 'DocentesController@exportarExcelDocentes');
 		//Route::post('docentes/materias', ['uses' => 'DocentesController@storeMaterias', 'as' => 'api.docentes.materias']);
 
 		Route::post('ciclo/cierre/{ciclo}', 'CiclosController@cierreCiclo');

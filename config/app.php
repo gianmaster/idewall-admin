@@ -171,6 +171,12 @@ return [
          * DomPDF
          */
         Barryvdh\DomPDF\ServiceProvider::class,
+        
+        /*
+         * Excel export
+         */
+        Maatwebsite\Excel\ExcelServiceProvider::class,
+
 
     ],
 
@@ -224,6 +230,8 @@ return [
         'AdminLTE' => Acacha\AdminLTETemplateLaravel\Facades\AdminLTE::class,
 
         'PDF' => Barryvdh\DomPDF\Facade::class,
+
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 
     ],
 
