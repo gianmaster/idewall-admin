@@ -75,46 +75,99 @@
                         <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     </div><!-- /.box-tools -->
                 </div><!-- /.box-header -->
-                <div class="box-body table-container">
-
-                    <table class="table table-bordered" id="tabla_horario">
-                        <tbody>
-                        <template v-for="elem in horario">
-                            <tr v-if="elem.tipo=='jornada'">
-                                <td colspan="7" class="td-formato">
-                                    <strong>{{elem.filas}}</strong>
-                                </td>
-                            </tr>
-                            <tr v-if="elem.tipo=='head'">
-                                <td v-for="cabecera in elem.filas" class="td-formato {{$index==0?'__hora':''}}">
-                                    <strong>{{cabecera}}</strong><!-- para la cabecera hora se agrega porcentaje -->
-                                </td>
-                            </tr>
-                            <tr v-if="elem.tipo=='hora'">
-                                <td class="td-formato"><strong>{{elem.hora}}</strong></td>
-                                <template v-for="item in elem.filas">
-                                    <td v-if="!item.bloq" class="td-formato grupo__{{item.cod_padre}}" draggable="true" @drag="onDragCellDistributivo($event, item)" @dragover.prevent @drop="onDropDistributivo($event, item)" @dragleave="onDistributivoLeave" @dragenter="onDistributivoEnter">
-                                        <template v-if="item.label == 'OTRO' && descripcionOtro != ''">
-                                            {{descripcionOtro | uppercase}}
-                                        </template>
-                                        <template v-else>
-                                            {{item.label}}
-                                        </template>
+                <div class="box-body">
+                    <div class="info-dias-horas">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <td class="td-formato">
+                                        <strong>Total Horas</strong>
                                     </td>
-                                    <template v-else>
-                                        <td v-if="item.cod < 0" class="my_disabled td-formato grupo__materias">
-                                            {{item.label}}
+                                    <td class="td-formato">
+                                        Lunes
+                                    </td>
+                                    <td class="td-formato">
+                                        Martes
+                                    </td>
+                                    <td class="td-formato">
+                                        Miercoles
+                                    </td>
+                                    <td class="td-formato">
+                                        Jueves
+                                    </td>
+                                    <td class="td-formato">
+                                        Viernes
+                                    </td>
+                                    <td class="td-formato">
+                                        Sabado
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="td-formato">
+                                        <strong>{{global_horas}}</strong>
+                                    </td>
+                                    <td class="td-formato">
+                                        {{horas_dias['LUNES']}} h
+                                    </td>
+                                    <td class="td-formato">
+                                        {{horas_dias['MARTES']}} h
+                                    </td>
+                                    <td class="td-formato">
+                                        {{horas_dias['MIERCOLES']}} h
+                                    </td>
+                                    <td class="td-formato">
+                                        {{horas_dias['JUEVES']}} h
+                                    </td>
+                                    <td class="td-formato">
+                                        {{horas_dias['VIERNES']}} h
+                                    </td>
+                                    <td class="td-formato">
+                                        {{horas_dias['SABADO']}} h
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-container">
+                        <table class="table table-bordered table-fix" id="tabla_horario">
+                            <tbody>
+                            <template v-for="elem in horario">
+                                <tr v-if="elem.tipo=='jornada'">
+                                    <td colspan="7" class="td-formato">
+                                        <strong>{{elem.filas}}</strong>
+                                    </td>
+                                </tr>
+                                <tr v-if="elem.tipo=='head'">
+                                    <td v-for="cabecera in elem.filas" class="td-formato {{$index==0?'__hora':''}}">
+                                        <strong>{{cabecera}}</strong><!-- para la cabecera hora se agrega porcentaje -->
+                                    </td>
+                                </tr>
+                                <tr v-if="elem.tipo=='hora'">
+                                    <td class="td-formato"><strong>{{elem.hora}}</strong></td>
+                                    <template v-for="item in elem.filas">
+                                        <td v-if="!item.bloq" class="td-formato grupo__{{item.cod_padre}}" draggable="true" @drag="onDragCellDistributivo($event, item)" @dragover.prevent @drop="onDropDistributivo($event, item)" @dragleave="onDistributivoLeave" @dragenter="onDistributivoEnter">
+                                            <template v-if="item.label == 'OTRO' && descripcionOtro != ''">
+                                                {{descripcionOtro | uppercase}}
+                                            </template>
+                                            <template v-else>
+                                                {{item.label}}
+                                            </template>
                                         </td>
-                                        <td v-else class="my_disabled td-formato">
-                                            {{item.label}}
-                                        </td>
+                                        <template v-else>
+                                            <td v-if="item.cod < 0" class="my_disabled td-formato grupo__materias">
+                                                {{item.label}}
+                                            </td>
+                                            <td v-else class="my_disabled td-formato">
+                                                {{item.label}}
+                                            </td>
+                                        </template>
                                     </template>
-                                </template>
-                            </tr>
-                        </template>
-                        </tbody>
+                                </tr>
+                            </template>
+                            </tbody>
 
-                    </table>
+                        </table>
+                    </div>
 
                 </div><!-- /.box-body -->
 
@@ -162,8 +215,12 @@
     }
 
     .table-container{
-        height: 520px;
+        height: 450px;
         overflow: auto;
+    }
+
+    .info-dias-horas > .table > tbody > tr > td{
+        padding: 1px !important;
     }
 
     .my_disabled{
@@ -177,6 +234,39 @@
     .td-hora-title{
         font-weight: bold;
     }
+
+
+/*
+     .table-fix table {
+            width: 100%;
+    }
+
+    .table-fix thead, .table-fix tbody, .table-fix tr, .table-fix td, .table-fix th { display: block; }
+
+    .table-fix tr:after {
+        content: ' ';
+        display: block;
+        visibility: hidden;
+        clear: both;
+    }
+
+    .table-fix thead th {
+        height: 30px;
+    }
+
+    .table-fix tbody {
+        height: 420px;
+        overflow-y: auto;
+    }
+
+    .table-fix thead {
+    }
+
+    .table-fix tbody td, .table-fix thead th {
+        width: 14%;
+        float: left;
+    }
+*/
 
     .dropzone{
         border: 1px dashed #a7cdbc;
@@ -494,7 +584,15 @@
                     ]}
                 ],
                 tmpDistributivo: {},
-                global_horas: 0
+                global_horas: 0,
+                horas_dias: {
+                    'LUNES': 0,
+                    'MARTES': 0,
+                    'MIERCOLES': 0,
+                    'JUEVES': 0,
+                    'VIERNES': 0,
+                    'SABADO': 0
+                }
             }
         },
         computed: {
@@ -603,6 +701,7 @@
                 }
                 
                 this.calculaTotalGlobalHoras();
+                this.calculaHorasDias();
             },
             calculaTotalGlobalHoras: function(){
                 this.global_horas = 0;
@@ -611,6 +710,20 @@
                         this.global_horas += item.horas;
                     }
                 }
+            },
+            calculaHorasDias: function(){
+                this.horas_dias = {'LUNES':0,'MARTES':0,'MIERCOLES':0,'JUEVES':0,'VIERNES':0,'SABADO':0};
+                console.log(this.horas_dias);
+                for(let horarioItem of this.horario){
+                    if(horarioItem.tipo == 'hora'){
+                        for(let diaHora of horarioItem.filas){
+                            if(diaHora.cod != 0){
+                                this.horas_dias[diaHora.dia] += 0.5;
+                            }
+                        }
+                    }
+                }
+
             },
             mostrarHorario: function(){
                 //solo los horarios de las materias
