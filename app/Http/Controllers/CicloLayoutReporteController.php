@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Entities\CicloLayoutReporte;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -15,7 +16,8 @@ class CicloLayoutReporteController extends Controller
      */
     public function index()
     {
-        //
+        $reporte = CicloLayoutReporte::find(1)->toArray();
+        return response()->json(['data' => $reporte]);
     }
 
     /**
@@ -70,7 +72,14 @@ class CicloLayoutReporteController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $inputs = $request->only(['cabecera', 'pie']);
+
+        $reporte = CicloLayoutReporte::where('id', $id)->update([
+            'cabecera'  => $inputs['cabecera'],
+            'pie'       => $inputs['pie']
+        ]);
+
+        return response()->json(['data' => $reporte]);
     }
 
     /**

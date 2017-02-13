@@ -597,7 +597,12 @@
         },
         computed: {
             horasContrato: function(){
-                return this.docente.docente_detail.tipo_contrato == 'TIEMPO_COMPLETO' ? 40 : 20;
+                console.log('entra al computed');
+                if(this.docente){
+                    console.log('entra', this.docente);
+                    return this.docente.docente_detail.tipo_contrato == 'TIEMPO_COMPLETO' ? 40 : 20;
+                }
+                return 20;
             }
         },
         components: {

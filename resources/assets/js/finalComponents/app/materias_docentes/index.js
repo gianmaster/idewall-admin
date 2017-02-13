@@ -8,6 +8,10 @@ module.exports = {
     	'/': {
     		component: List,
     		name: 'Listar'
-    	}
+    	},
+		'/agregar-docente': {
+			component: List,
+			name: 'agregar-docente'
+		}
     }
 }

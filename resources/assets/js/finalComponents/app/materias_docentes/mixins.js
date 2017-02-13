@@ -4,7 +4,7 @@
  */
 
  import fnc from '../../../util/reusable_functions';
- import {urlMateriasDocente, urlCiclo, urlCicloDocente, urlListaMaterias} from '../config';
+ import {urlMateriasDocente, urlCiclo, urlCicloDocente, urlListaMaterias, urlEnvioSilabosDocente, urlEnvioTodosSilabosDocente} from '../config';
 
  const API_URL = 'api/docentes/materias';
 
@@ -67,7 +67,36 @@ const URL_CICLO_DOCENTES = 'api/ciclo/param/docentes';
  			for(let i in data){
  				this.options.push({materia: data[i].id, desc: data[i].nombre_materia + ' | ' + data[i].semestre});
  			}
- 		}
+ 		},
+		sendSilabos: function(docente, materias){
+			const self = this;
+			const nombre = `${docente.apellidos} ${docente.nombres}`;
+			const email = docente.email;
+
+			if(materias.length > 0){
+				self.$http.post(urlEnvioSilabosDocente, {
+					materias,
+					docente: { nombre, email }
+				}).then(function(resp){
+					fnc.niceAlert('success', 'Silabos enviados correctamente!');
+				}, fnc.tryError);
+			}
+		},
+		sendAllSilabos: function(){
+			const self = this;
+			if(confirm('Recuerde que este proceso puede tardar varios minutos debido al tamaño de los archivos adjunto, ¿Estás seguro de continuar?')){
+				self.$http.post(urlEnvioTodosSilabosDocente, {}).then(function(resp){
+					if(resp.error){
+						fnc.niceAlert('error', resp.message);
+					}else{
+						fnc.niceAlert('success', 'Se enviaron los silabos a todos los docentes');
+					}
+				}, fnc.tryError);
+			}
+		},
+		addDocenteCicloActivo: function(){
+			
+		}
 
  	}
  }

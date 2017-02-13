@@ -41,3 +41,10 @@ export const urlHorarioDocente = `${endpoint}/horariomateriasdocente`;
 //reportes
 export const urlCicloHorarioDocenteRpt = `${endpoint}/ciclohorariodocente/{ciclo}/ciclo`;
 export const urlCicloJornadaSemestreRpt = `${endpoint}/jornadasemestre/{ciclo}/ciclo`;
+
+//envio de silabos
+export const urlEnvioSilabosDocente = `${endpoint}/silabos/envio/docente`;
+export const urlEnvioTodosSilabosDocente = `${endpoint}/silabos/envio/docente/todos`;
+
+//modificacion de configuraciones de reportes
+export const urlConfigReportes = `${endpoint}/config/reportes`;

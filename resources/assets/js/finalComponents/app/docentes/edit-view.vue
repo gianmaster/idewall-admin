@@ -8,7 +8,6 @@
 		</form>
 	</div>
 </template>
-
 <script>
 	
 	import inputs from './form-fields.vue';

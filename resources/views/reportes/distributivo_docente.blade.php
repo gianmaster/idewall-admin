@@ -43,6 +43,12 @@
     		bottom: 70;
     	}
 
+		.date-footer{
+			position: absolute;
+			bottom: -25;
+			left: 75%;
+		}
+
     	.materias{
     		background-color: #BCAD31
     	}
@@ -65,12 +71,12 @@
 			</tr>
 			<tr>
 				<td colspan="5" class="t-center">
-					FACULTAD DE CIENCIAS ADMINISTRATIVAS
+					{{ strtoupper($cabecera['facultad']) }}
 				</td>
 			</tr>
 			<tr>
 				<td colspan="5" class="t-center">
-					CARRERA INGENIERIA EN SISTEMAS ADMINISTRATIVOS COMPUTARIZADOS
+					{{ strtoupper($cabecera['carrera'])}}
 				</td>
 			</tr>
 			<tr>
@@ -273,6 +279,19 @@
 			</td>
 		</tr>
 	</table>
+
+
+	<footer class="date-footer">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12 text-right">
+					<?php $mytime = Carbon\Carbon::now();
+					?>
+					<small>Fecha de impresión: {!! $mytime->toDateTimeString() !!}</small>
+				</div>
+			</div>
+		</div>
+	</footer>
 
 </body>
 </html>

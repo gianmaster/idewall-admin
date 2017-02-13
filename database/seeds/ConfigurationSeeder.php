@@ -132,6 +132,16 @@ class ConfigurationSeeder extends Seeder
         ]);
 
 
+        $menuUsuariosV5 = App\Menu::create([
+            'nombre' => 'mentenimiento_cabecera_reportes',
+            'titulo' => 'Cabecera Reportes',
+            'url' => '/config_reportes',
+            'iconclass' => 'fa fa-file',
+            'orden' => 5,
+            'cod_padre' => $menuSistema->id
+        ]);
+
+
         /**
          * Asignacion de acceso a los menus segun los roles
          * */
@@ -163,6 +173,11 @@ class ConfigurationSeeder extends Seeder
         App\RolMenu::create([
             'rol' => $rolAdmin->id,
             'menu' => $menuUsuariosV4->id,
+        ]);
+
+        App\RolMenu::create([
+            'rol' => $rolAdmin->id,
+            'menu' => $menuUsuariosV5->id,
         ]);
 
 
@@ -1470,5 +1485,11 @@ class ConfigurationSeeder extends Seeder
                 ]);
             }
         }
+
+        \App\Entities\CicloLayoutReporte::create([
+            'ciclo' => 1,
+            'cabecera' => 'Facultad De Ciencias Administrativas',
+            'pie'   => 'Ingeniería en Sistemas Computarizados'
+        ]);
     }
 }

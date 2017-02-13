@@ -5,6 +5,12 @@
 	</div>
 
 	<div v-else>
+
+		<div style="margin-bottom: .4em;">
+			<button type="button" @click.prevent="addDocenteCicloActivo" class="btn btn-primary btn-flat"> <i class="fa fa-plus"></i> Agregar Docente</button>
+			<button type="button" @click.prevent="sendAllSilabos" class="btn btn-success btn-flat"> Enviar todos los sílabos <i class="fa fa-envelope-o"></i></button>
+		</div>
+
 		<cool-table 
 		:option-toolbar="toolbar"
 		:url="url" 
@@ -25,11 +31,21 @@
 		</div>
 	</app-modal>
 
+	<app-modal title="Enviar Sílabos" :show.sync="showModalSilabos" @ok="showModalSilabos=!showModalSilabos" @cancel="showModalSilabos=!showModalSilabos" emit-when-ok="event-end-envia-silabos" emit-when-close="event-close-silabos">
+		<div class="row">
+			<form>
+
+				<form-silabos :to-send.sync="materiasToSend" :data-model.sync="dataDocenteSilabo" :lista-opciones.sync="materiasSeleccionadas"></form-silabos>
+
+			</form>
+		</div>
+	</app-modal>
+
 </div>
 
 </template>
 
-<script>
+<script type="text/babel">
 
 	import Loading from '../../reusable/loading.vue';
 
@@ -38,6 +54,8 @@
 	import coolTable from '../../reusable/cool-table.vue';
 
 	import formulario from './form-fields.vue';
+
+	import formularioSilabos from './form-envia-silabo-docente.vue';
 
 	import myMixins from './mixins';
 
@@ -55,6 +73,9 @@
 		data(){
 			return {
 				showModal: false,
+				showModalSilabos: false,
+                materiasToSend: [],
+				dataDocenteSilabo: {},
 				url: 'api/ciclo/param/docentes',
 				toolbar: null,
 				currentModel: {},
@@ -93,6 +114,12 @@
 							btnClass: 'btn btn-success btn-xs',
 							iconClass: 'fa fa-pencil',
 							label: 'Modificar'
+						},
+						{
+							nameEmit: 'materias-docente-envia-silabos-update-event',
+							btnClass: 'btn btn-info btn-xs',
+							iconClass: 'fa fa-send-o',
+							label: 'Enviar Silabos'
 						}
 					]
 				}
@@ -104,18 +131,34 @@
 			'cool-table' : coolTable,
 			'app-loading' : Loading,
 			'app-modal' : Modal,
-			'formulario':formulario
+			'formulario':formulario,
+			'form-silabos': formularioSilabos
 		},
 		events: {
 			'materias-docente-update-event' : function(model){
 				this.toggleDataModel(model.docente_detail, model.materias_docente_ciclo);
 				this.toggleModal();
 			},
+			'materias-docente-envia-silabos-update-event': function(model){
+				//this.docenteSendSilabo = model;
+				this.showModalSilabos = true;
+				this.dataDocenteSilabo = model.docente_detail;
+				this.toggleMaterias(model.materias_docente_ciclo);
+			},
 			//when modal emit ok
 			'event-end-edit': function(){
 				this.update();
+			},
+			'event-end-envia-silabos': function(){
+                const {materiasToSend, dataDocenteSilabo} = this;
+				this.sendSilabos(dataDocenteSilabo, materiasToSend);
+				this.materiasToSend = [];//se agrego para limpiar las materias al cerra el modal
+			},
+			'event-close-silabos': function(){
+				this.materiasToSend = [];
 			}
 		}
 	}
 
 </script>
+

@@ -52,7 +52,13 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'America/Guayaquil',
+
+    /**
+     * Configuracion de pruebas para envio de silabos por correo
+     * Dejar en false para modo produccion
+     */
+    'email_test' => true,
 
     /*
     |--------------------------------------------------------------------------

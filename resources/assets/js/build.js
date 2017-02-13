@@ -8,7 +8,7 @@ import ExternalComponents from './config/externalComponents';
 import VueDragableFor from 'vuedragablefor';
 Vue.use(VueDragableFor);
 
-Vue.config.debug = true;
+Vue.config.debug = false;
 
 //global filters
 //Vue.use(VueFilter);
@@ -93,6 +93,8 @@ router.map({
   '/reporte_horarios_cursos': require('./finalComponents/app/reporte_horarios_cursos/index.js'),
 
   '/reporte_distributivos_docentes': require('./finalComponents/app/reporte_distributivos_docentes/index.js'),
+
+  '/config_reportes': require('./finalComponents/app/configuracion_reportes/index.js'),
 
   '/lockscreen': {
     component: require('./finalComponents/new-layout/lockscreen.vue')

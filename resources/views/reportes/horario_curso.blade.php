@@ -6286,8 +6286,28 @@
 			</div>
 			<div class="col-xs-7 text-center">
 
-				<h3>Horario - {{$data['semestre']['descripcion']}} - {{$data['jornada']['descripcion']}}</h3>	
-				<h4>Paralelo({{$data['aula']['codigo']}}) - {{$data['aula']['descripcion']}}</h4>
+				<table border="0" width="100%">
+					<tr>
+						<td class="text-center">
+							<strong>{{ strtoupper($cabeceraRpt['cabecera']) }}</strong>
+						</td>
+					</tr>
+					<tr>
+						<td class="text-center">
+							<strong>{{ strtoupper($cabeceraRpt['pie']) }}</strong>
+						</td>
+					</tr>
+					<tr>
+						<td class="text-center">
+							{{  strtoupper('Horario - ' . $data['semestre']['descripcion'] . ' - ' . $data['jornada']['descripcion']) }}
+						</td>
+					</tr>
+					<tr>
+						<td class="text-center">
+							{{  strtoupper('Paralelo(' . $data['aula']['codigo'] . ') - ' . $data['aula']['descripcion']) }}
+						</td>
+					</tr>
+				</table>
 
 			</div>	
 			<div class="col-xs-2 text-left">
@@ -6394,8 +6414,10 @@
 	<footer class="myfooter">
 		<div class="container">
 			<div class="row">
-				<div class="col-xs-12 text-center">
-					<p>Universidad de Guayaquil - Facultad de Ciencias Adminstrativas - Ingenieria en Sistemas Adminstrativos computarizados</p>
+				<div class="col-xs-12 text-right">
+					<?php $mytime = Carbon\Carbon::now();
+					?>
+					<small>Fecha de impresión: {!! $mytime->toDateTimeString() !!}</small>
 				</div>
 			</div>
 		</div>

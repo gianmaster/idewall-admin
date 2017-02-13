@@ -17,6 +17,20 @@ Route::get('/', function () {
 });
 */
 
+Route::get('/correo', function(){
+	$res = \Illuminate\Support\Facades\Config::get('app.email_test');
+	return response()->json(array('message' => $res));
+});
+
+Route::get('/mail', function(){
+
+	Mail::send("emails.test", [], function($message) {
+		$message->to("giancarloscercado@gmail.com", "Giancarlos Cercado")
+			->subject("Bienvenido a Laravel y Gmail!");
+	});
+
+	return response()->json(['data' => 'todo esta ok, y se envio']);
+});
 
 Route::get('/horas', 'JornadasSemestresController@dataHorarioValidator');
 
@@ -120,6 +134,13 @@ Route::group(['middleware' => 'auth'], function(){
 
 		//Route::resource('ciclo.docentes.materias', 'MateriasDocentesController');
 
+		//envio de silabos
+		Route::post('silabos/envio/docente', 'MateriasCicloDocentesController@sendSilabosDocentes');
+
+		Route::post('silabos/envio/docente/todos', 'MateriasCicloDocentesController@sendAllSilabosDocentes');
+
+		//configuraciones de facultad y carrera en reportes
+		Route::resource('config/reportes', 'CicloLayoutReporteController');
 	});
 
 });

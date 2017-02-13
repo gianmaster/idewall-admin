@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Entities\CicloLayoutReporte;
 use App\Entities\HorariosCursos;
 use App\Entities\JornadasSemestre;
 use App\Entities\Docente;
@@ -20,18 +21,20 @@ class ReportesPdfController extends Controller
     public function downloadHorarioCurso($idCicloJornadaSemestre){
     	$flag = true; //activa el modo pdf, false para modo vista html
 
+		$cabeceraRpt = CicloLayoutReporte::find(1)->toArray();
+
         $data_horario = $this->dataHorarios($idCicloJornadaSemestre);
 
         if($flag){
 
         	$data = $data_horario['data'];
         	$fileName = 'Horario de Clases - C:' . $data['ciclo'] . ' P:' . $data['descripcion_ciclo']['anio'] .'/' .($data['descripcion_ciclo']['anio']+1) . '-' . $data['catalogo_semestre'] .'-'. $data['catalogo_jornada'] .'- Aula:' . $data['aula']['codigo'] . '.pdf';
-        	$pdf = PDF::loadView('reportes.horario_curso', $data_horario);
+        	$pdf = PDF::loadView('reportes.horario_curso', $data_horario, [ 'cabeceraRpt' => $cabeceraRpt]);
         	$pdf->setPaper('a4', 'landscape');
         	return $pdf->stream($fileName);
         	//return $pdf->download('archivo_prueba.pdf');	
         }else{
-        	return view('reportes.horario_curso', $data_horario);	
+        	return view('reportes.horario_curso', $data_horario, $cabeceraRpt);
         }
 
     }
@@ -39,6 +42,8 @@ class ReportesPdfController extends Controller
     
     public function donwloadDistributivoDocente($idCicloDocente){
     	$flag = true; //activa el modo pdf, false para modo vista html
+
+		$cabeceraRpt = CicloLayoutReporte::find(1)->toArray();
 
     	$cicloDocente = CicloDocentes::find($idCicloDocente);
     	if($cicloDocente){
@@ -55,6 +60,8 @@ class ReportesPdfController extends Controller
 					'contrato' => $docente->tipo_contrato,
 					'funcion' => $docente->funcion,
 					'identificacion' => $docente->identificacion,
+					'facultad' => $cabeceraRpt['cabecera'],
+					'carrera' => $cabeceraRpt['pie']
 				);
 
 				$aceptadoPor = $docente->abreviatura . '. ' . $docente->nombres . ' ' . $docente->apellidos;

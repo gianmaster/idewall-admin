@@ -112,7 +112,7 @@
 			</div>
 
 			<div class="col-xs-12 col-sm-4" style="margin-top: 20px">
-				<button class="btn btn-primary btn-block">ENVIAR SÍLABOS <i class="fa fa-envelope-o"></i></button>
+				<a v-link="{path:'/materias_docentes'}" class="btn btn-primary btn-block"><i class="fa fa-link"></i> IR A ENVIO DE SÍLABOS </a>
 				<p class="text-center text-red">Use la opción de envío de sílabos solo cuando terminte la asignación de las horas distributivas de los docentes.</p>
 
 				<p class="text-center text-blue">Recuerde que usted puede agregar y/o actualizar los sílabos en la opción
