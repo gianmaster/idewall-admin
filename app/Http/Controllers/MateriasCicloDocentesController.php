@@ -40,6 +40,19 @@ class MateriasCicloDocentesController extends Controller
     }
     
 
+    public function listarDocentesDisponibles(){
+        $data = array();
+        $qryData = \DB::select("select d.id, d.nombres, d.apellidos from docentes d
+                          where d.id not in (
+                          select cd.docente from ciclo_docentes cd
+                          where cd.ciclo = (select id from ciclos where estado = 'VIGENTE'))");
+
+        foreach ($qryData as $key => $item) {
+            array_push($data, ['codigo' => $item->id, 'descripcion' => $item->nombres . ' ' . $item->apellidos]);
+        }
+
+        return response()->json(['data' => $data, 'message' => 'Ok']);
+    }
 
     public function sendAllSilabosDocentes(Request $request){
         

@@ -112,6 +112,7 @@ Route::group(['middleware' => 'auth'], function(){
 		Route::get('ciclo', 'CiclosController@index');
 		Route::get('ciclos', 'CiclosController@getAllCiclos');
 		Route::get('ciclo/{ciclo}/docentes', 'CiclosController@docentesCiclo');
+		Route::post('ciclo/{ciclo}/docentes/{docente}', 'CiclosController@saveDocenteCiclo');
 		Route::put('docentes/materias/{id}', ['uses' => 'CiclosController@updateMateriasDocenteCiclo', 'as' => 'api.docentes.materias']);
 
 		Route::resource('ciclodocente', 'CicloDocentesController');
@@ -134,9 +135,11 @@ Route::group(['middleware' => 'auth'], function(){
 
 		//Route::resource('ciclo.docentes.materias', 'MateriasDocentesController');
 
+		// listado de los docentes que estan disponibles para agregarlos a un ciclo
+		Route::get('docentes-disponibles', 'MateriasCicloDocentesController@listarDocentesDisponibles');
+		
 		//envio de silabos
 		Route::post('silabos/envio/docente', 'MateriasCicloDocentesController@sendSilabosDocentes');
-
 		Route::post('silabos/envio/docente/todos', 'MateriasCicloDocentesController@sendAllSilabosDocentes');
 
 		//configuraciones de facultad y carrera en reportes

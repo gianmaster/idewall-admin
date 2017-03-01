@@ -45,6 +45,7 @@ export const urlCicloJornadaSemestreRpt = `${endpoint}/jornadasemestre/{ciclo}/c
 //envio de silabos
 export const urlEnvioSilabosDocente = `${endpoint}/silabos/envio/docente`;
 export const urlEnvioTodosSilabosDocente = `${endpoint}/silabos/envio/docente/todos`;
+export const urlDocentesDisponibles = `${endpoint}/docentes-disponibles`;
 
 //modificacion de configuraciones de reportes
 export const urlConfigReportes = `${endpoint}/config/reportes`;

@@ -201,6 +201,27 @@ class CiclosController extends Controller
 
     /**
      * @param Request $request
+     * @param $idCiclo
+     * @param $idDocente
+     * @return mixed
+     */
+    public function saveDocenteCiclo(Request $request, $idCiclo, $idDocente){
+        $existe = CicloDocentes::where('docente', $idDocente)->get();
+        if(count($existe) > 0){
+            return response()->json(['message' => 'El docente ya esta registrado en el ciclo', 'error' => true]);
+        }
+        //registro del docente
+        $cicloDocente = CicloDocentes::create([
+            'docente'   => $idDocente,
+            'ciclo'     => $idCiclo
+        ]);
+
+        return response()->json(['data' => $cicloDocente]);
+    }
+
+
+    /**
+     * @param Request $request
      * @param $id
      * @return mixed
      * Actualizar y/o crear materias para un docente durante un ciclo

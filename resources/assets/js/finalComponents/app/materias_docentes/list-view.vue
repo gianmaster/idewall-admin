@@ -33,13 +33,21 @@
 
 	<app-modal title="Enviar Sílabos" :show.sync="showModalSilabos" @ok="showModalSilabos=!showModalSilabos" @cancel="showModalSilabos=!showModalSilabos" emit-when-ok="event-end-envia-silabos" emit-when-close="event-close-silabos">
 		<div class="row">
-			<form>
 
-				<form-silabos :to-send.sync="materiasToSend" :data-model.sync="dataDocenteSilabo" :lista-opciones.sync="materiasSeleccionadas"></form-silabos>
+			<form-silabos :to-send.sync="materiasToSend" :data-model.sync="dataDocenteSilabo" :lista-opciones.sync="materiasSeleccionadas"></form-silabos>
 
-			</form>
 		</div>
 	</app-modal>
+
+
+	<app-modal title="Agregar Docente al Ciclo" :show.sync="showModalDocente" @ok="showModalDocente=!showModalDocente" @cancel="showModalDocente=!showModalDocente" emit-when-ok="event-end-add-docente" emit-when-close="event-close-add-docente">
+		<div class="row">
+
+			<form-docente :docente-seleccionado.sync="docenteSeleccionadoAgregar"></form-docente>
+
+		</div>
+	</app-modal>
+
 
 </div>
 
@@ -57,12 +65,15 @@
 
 	import formularioSilabos from './form-envia-silabo-docente.vue';
 
+	import FormularioAgregarDocente from './agregar-docente.vue';
+
 	import myMixins from './mixins';
 
 	const tagL = "<span class='color-palette label bg-primary'>";
 	const tagR = "</span>";
 
 	export default {
+		name: 'listar-ciclo-materias-docentes',
 		mixins: [myMixins],
 		route: {
 			data: function(transition){
@@ -72,9 +83,12 @@
 		},
 		data(){
 			return {
+				ciclo: null,
 				showModal: false,
 				showModalSilabos: false,
+				showModalDocente: false,
                 materiasToSend: [],
+				docenteSeleccionadoAgregar: '',
 				dataDocenteSilabo: {},
 				url: 'api/ciclo/param/docentes',
 				toolbar: null,
@@ -132,7 +146,8 @@
 			'app-loading' : Loading,
 			'app-modal' : Modal,
 			'formulario':formulario,
-			'form-silabos': formularioSilabos
+			'form-silabos': formularioSilabos,
+			'form-docente': FormularioAgregarDocente
 		},
 		events: {
 			'materias-docente-update-event' : function(model){
@@ -156,6 +171,11 @@
 			},
 			'event-close-silabos': function(){
 				this.materiasToSend = [];
+			},
+			'event-end-add-docente': function() {
+				if (this.docenteSeleccionadoAgregar != "") {
+					this.addDocenteCiclo(this.ciclo,this.docenteSeleccionadoAgregar);
+                }
 			}
 		}
 	}

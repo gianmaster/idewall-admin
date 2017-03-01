@@ -83,6 +83,7 @@
 				materiasSeleccionadas: [],
 				datos: [],
 				columnas: [
+						/*
 				{
 					title: 'Período',
 					field: 'anio',
@@ -92,6 +93,7 @@
 					sortable: true,
 					template: '${col.anio} - ${col.anio+1} (${col.ciclo})'
 				},
+				*/
 				{
 					title: 'Docente',
 					field: 'nombres',

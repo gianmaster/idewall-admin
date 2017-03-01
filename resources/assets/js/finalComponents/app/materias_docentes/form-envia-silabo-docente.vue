@@ -50,14 +50,11 @@
                 return `${abreviatura}. ${nombres} ${apellidos}`;
             }
         },
-
         methods: {
             updateMultiSelect(values){
-                console.log(values);
                 this.toSend = values;
             }
         },
-
         components: {
             'multiselect': Multiselect
         },
