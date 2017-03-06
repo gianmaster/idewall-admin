@@ -72,11 +72,13 @@ class CicloLayoutReporteController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $inputs = $request->only(['cabecera', 'pie']);
+        $inputs = $request->only(['cabecera', 'pie', 'director_carrera', 'elaborador']);
 
         $reporte = CicloLayoutReporte::where('id', $id)->update([
-            'cabecera'  => $inputs['cabecera'],
-            'pie'       => $inputs['pie']
+            'cabecera'          => $inputs['cabecera'],
+            'pie'               => $inputs['pie'],
+            'director_carrera'  => $inputs['director_carrera'],
+            'elaborador'        => $inputs['elaborador']
         ]);
 
         return response()->json(['data' => $reporte]);

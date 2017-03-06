@@ -20,6 +20,8 @@ class CreateCicloLayoutReportesTable extends Migration
 			$table->foreign('ciclo')->references('id')->on('ciclos')->onDelete('cascade');
 
 			$table->enum('tipo', ['HORARIO_CURSO', 'DISTRIBUTIVO_DOCENTE']);
+			$table->string('director_carrera')->nullable(false);
+			$table->string('elaborador')->nullable(false);
 			$table->longText('cabecera')->nullable(true);
 			$table->longText('pie')->nullable(true);
 

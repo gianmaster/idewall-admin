@@ -65,9 +65,10 @@ class ReportesPdfController extends Controller
 				);
 
 				$aceptadoPor = $docente->abreviatura . '. ' . $docente->nombres . ' ' . $docente->apellidos;
-				$elaboradoPor = $this->getDocentePorFuncion('Gestor de Comisión Académica');
-				$aprobadoPor = $this->getDocentePorFuncion('Director de la Carrera');
-
+				//$elaboradoPor = $this->getDocentePorFuncion('Gestor de Comisión Académica');
+				//$aprobadoPor = $this->getDocentePorFuncion('Director de la Carrera');
+				$elaboradoPor = $cabeceraRpt['elaborador'];
+				$aprobadoPor = $cabeceraRpt['director_carrera'];
 
 				$horario = $this->dataHorarioDistributivo($idCicloDocente);
 				$pdf = PDF::loadView('reportes.distributivo_docente', compact('horario', 'aprobadoPor', 'elaboradoPor', 'aceptadoPor', 'cicloDocente', 'cabecera'));

@@ -6246,7 +6246,7 @@
 		 */
 		.tabla-horario{
 			position: relative;
-			margin-top: 90px;
+			margin-top: 110px;
 			border: 1px solid #ADA7A7;
 		}
 
@@ -6306,6 +6306,9 @@
 						<td class="text-center">
 							{{  strtoupper('Paralelo(' . $data['aula']['codigo'] . ') - ' . $data['aula']['descripcion']) }}
 						</td>
+					</tr>
+					<tr>
+						<td class="text-center">PERÍODO: {{ (int)$data['descripcion_ciclo']['anio'] }} - {{ (int)$data['descripcion_ciclo']['anio']+1 }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TÉRMINO: CICLO {{ $data['descripcion_ciclo']['ciclo']}}</td>
 					</tr>
 				</table>
 

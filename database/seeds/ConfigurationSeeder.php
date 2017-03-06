@@ -1488,8 +1488,10 @@ class ConfigurationSeeder extends Seeder
 
         \App\Entities\CicloLayoutReporte::create([
             'ciclo' => 1,
-            'cabecera' => 'Facultad De Ciencias Administrativas',
-            'pie'   => 'Ingeniería en Sistemas Computarizados'
+            'cabecera'          => 'Facultad De Ciencias Administrativas',
+            'pie'               => 'Ingeniería en Sistemas Computarizados',
+            'director_carrera'  => 'Ing. Francisco Cedeño',
+            'elaborador'        => 'Eco. Susana Carrillo'
         ]);
     }
 }

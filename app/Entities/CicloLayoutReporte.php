@@ -12,7 +12,7 @@ class CicloLayoutReporte extends Model implements Transformable
 
     protected $table = 'ciclo_layout_reportes';
 
-    protected $fillable = ['id', 'ciclo', 'tipo', 'cabecera', 'pie'];
+    protected $fillable = ['id', 'ciclo', 'tipo', 'cabecera', 'pie', 'director_carrera', 'elaborador'];
 
 }
 

@@ -157,15 +157,10 @@ Route::group(['middleware' => 'web'], function () {
 	]);
 
 	//rutas para redirigir al home
-	Route::get('/{q}', function($q){
+
+	Route::any('{all}', function(){
 		return redirect()->route('home');
-	});
-	Route::get('/{q}/{q1}', function($q,$q1){
-		return redirect()->route('home');
-	});
-	Route::get('/{q}/{q1}/{q2}', function($q, $q1, $q2){
-		return redirect()->route('home');
-	});
+	})->where(['all' => '.*']);
 
 });
 
