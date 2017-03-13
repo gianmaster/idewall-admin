@@ -4,7 +4,7 @@
  */
 
 import fnc from '../../../util/reusable_functions';
-import {urlCicloJornadaSemestreRpt} from '../config';
+import {urlCicloJornadaSemestreRpt, urlDownloadHorarioCurso} from '../config';
 
 export default {
 	methods: {
@@ -19,12 +19,14 @@ export default {
 				_this.loading = false;
 				_this.ciclo = resp.data.data[0];
 				_this.url = urlCicloJornadaSemestreRpt.replace('{ciclo}', _this.ciclo.id);
+				_this.urlDescargaHorarios = urlDownloadHorarioCurso.replace('{ciclo}', _this.ciclo.id);
 			}, fnc.tryError);
 			
 		},
 		chageCiclo: function(ciclo){
 			let _this = this;
 			this.url = urlCicloJornadaSemestreRpt.replace('{ciclo}', ciclo.id);
+			this.urlDescargaHorarios = urlDownloadHorarioCurso.replace('{ciclo}', ciclo.id);
 			setTimeout(function(){
 				_this.$children[0].refresh();
 			}, 100);

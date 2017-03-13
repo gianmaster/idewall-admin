@@ -39,7 +39,6 @@
  			this.$http.get(this.url).then(function(resp){
  				this.loading = false;
  			}, fnc.tryError)
- 		},
-
+ 		}
  	}
  }

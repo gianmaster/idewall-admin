@@ -10,6 +10,9 @@
 						<option :value="item">{{item.anio}}-{{item.anio+1}} (C{{item.ciclo}})</option>
 					</template>
 				</select>
+				<span class="input-group-btn">
+					<button class="btn btn-success" @click="$emit('download-excel')" type="button"><i class="fa fa-file-excel-o"></i> Exportar</button>
+			  	</span>
 			</div>
 		</div>
 
@@ -73,6 +76,7 @@
 				urlCiclos: urlCiclos,
 				listaCiclos: [],
 				ciclo: {},
+				urlDescargaHorarios: '', //se cambia en el mixin
 				toolbar: null,
 				currentModel: {},
 				materiasSeleccionadas: [],
@@ -148,6 +152,13 @@
 					console.log(model);
 					console.log('Se descarga el archivo');
 					window.open('reportes/cursos/' + model.id +'/jornadasemestre', '_blank');
+				},
+				'download-excel': function(){
+					if(this.$children[0].data.length > 0){
+						window.location = this.urlDescargaHorarios;
+					}else{
+						alert('No hay datos que exportar');
+					}
 				}
 			}
 		}

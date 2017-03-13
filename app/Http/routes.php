@@ -131,7 +131,8 @@ Route::group(['middleware' => 'auth'], function(){
 
 		//reporteria
 		Route::get('reporte/horarios/{ciclo}', 'ReportesController@listarHorariosCursos');
-		
+		Route::get('donwload/horarios/{ciclo}', 'ReportesPdfController@reporteHorariosPorCiclo');
+		Route::get('donwload/distributivos/{ciclo}', 'ReportesPdfController@reporteDistributivosPorCiclo');
 
 		//Route::resource('ciclo.docentes.materias', 'MateriasDocentesController');
 

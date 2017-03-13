@@ -10,6 +10,9 @@
 						<option :value="item">{{item.anio}}-{{item.anio+1}} (C{{item.ciclo}})</option>
 					</template>
 				</select>
+				<span class="input-group-btn">
+					<button class="btn btn-success" @click="$emit('download-excel')" type="button"><i class="fa fa-file-excel-o"></i> Exportar</button>
+			  	</span>
 			</div>
 		</div>
 		<div v-if="loading">
@@ -80,6 +83,7 @@
 				url: 'api/ciclohorariodocente/1/ciclo',
 				toolbar: null,
 				currentModel: {},
+				urlDescargaDistributivos: '',
 				materiasSeleccionadas: [],
 				datos: [],
 				columnas: [
@@ -165,6 +169,13 @@
 				console.log('Se descarga el archivo distributivo');
 				console.log(model.ciclo_docente);
 				window.open('reportes/cursos/' + model.ciclo_docente +'/distributivo', '_blank');
+			},
+			'download-excel': function(){
+				if(this.$children[0].data.length > 0){
+					window.location = this.urlDescargaDistributivos;
+				}else{
+					alert('No hay datos que exportar');
+				}
 			}
 		}
 	}

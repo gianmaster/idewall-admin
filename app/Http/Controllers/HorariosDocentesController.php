@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Entities\Ciclo;
 use App\Entities\CicloDocentes;
 use App\Entities\Distributivo;
+use App\Entities\JornadasSemestre;
 use App\Repositories\CicloDocentesRepository;
 use App\Validators\CicloDocentesValidator;
 use Illuminate\Http\Request;
@@ -299,7 +300,17 @@ class HorariosDocentesController extends Controller
     
 
     public function getHorarioDocenteByCiclo($ciclo){
-        $data = DB::select("select *, xx.horas_academicas_asignadas + xx.horas_complementarias total from (
+        $data = $this->getDataHorarioDocenteDisByCiclo($ciclo);
+        return response()->json($this->paginateArray($data));
+    }
+
+    /**
+     * @param $ciclo
+     * @return mixed
+     * Retorna la consulta de los horarios distributivos de los docentes que estan en el ciclo pasado por parametro
+     */
+    public function getDataHorarioDocenteDisByCiclo($ciclo){
+        return DB::select("select *, xx.horas_academicas_asignadas + xx.horas_complementarias total from (
             select
               c.id,
               c.anio,
@@ -333,7 +344,18 @@ class HorariosDocentesController extends Controller
               d.nombres,
               d.apellidos,
               d.identificacion ) xx");
-
-        return response()->json($this->paginateArray($data));
     }
+
+
+    public function getDataDocenteHorarioSemByCiclo($ciclo){
+        returnJornadasSemestre::where('ciclo', $ciclo->id)
+            ->with('semestre')
+            ->with('aula')
+            ->with('jornada')
+            ->with('paralelo')
+            ->with('descripcionCiclo')
+            ->with('horario')
+            ->get();
+    }
+
 }

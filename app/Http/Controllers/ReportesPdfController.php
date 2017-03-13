@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Entities\Ciclo;
 use App\Entities\CicloLayoutReporte;
 use App\Entities\HorariosCursos;
 use App\Entities\JornadasSemestre;
@@ -15,9 +16,13 @@ use Carbon\Carbon;
 
 
 use App\Http\Requests;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportesPdfController extends Controller
 {
+
+	protected $ciclo_rpt = null;
+
     public function downloadHorarioCurso($idCicloJornadaSemestre){
     	$flag = true; //activa el modo pdf, false para modo vista html
 
@@ -277,4 +282,177 @@ class ReportesPdfController extends Controller
 //select * from horarios_cursos where ciclo_materias_docente in (SELECT id from ciclo_materias_docente where ciclo_docente = 1)
     }
 
+
+	/**
+	 * @param $cicloId
+	 * Reporte en excel de los cursos y docentes por ciclo
+	 */
+	public function reporteHorariosPorCiclo($cicloId)
+	{
+		$ciclo = Ciclo::find($cicloId);
+		$this->ciclo_rpt = $cicloId;
+		if($ciclo){
+			$anio = (int)$ciclo->anio;
+			$fecha = 'Período ' . $anio . '-' . ($anio+1) . ' Ciclo ' . $ciclo->ciclo;
+			$archivo = 'Reporte Horarios I.S.A.C - ' . $fecha;
+			Excel::create($archivo, function ($excel) {
+				// Set the title
+				$excel->setTitle('Reporte de Cursor por ciclo');
+				// Chain the setters
+				$excel->setCreator('I.S.A.C')
+					->setCompany('Factutald de ciencias administrativas');
+				// Call them separately
+				$excel->setDescription('Reporte de horarios por ciclo de la carrera I.S.A.C ');
+
+				$excel->sheet('horarios', function ($sheet) {
+					$data = (array) $this->queryReportesporCiclo(2, $this->ciclo_rpt);
+					$datos = array();
+					foreach ($data as $item => $val) {
+						array_push($datos, (array)$val);
+					}
+					//dd($datos);
+					$sheet->fromArray($datos, null, 'A1', true);
+					//manipulacion de las filas
+					$sheet->row(1, function ($row) {
+						// call cell manipulation methods
+						$row->setBackground('#000000');
+						$row->setFontColor('#FFFFFF');
+					});
+
+					$sheet->setAutoFilter('A1:Y1');
+
+				});
+
+			})->download('xlsx');
+		}
+	}
+
+	/**
+	 * @param $cicloId
+	 * Reporte en excel de los distributivos por ciclo de todos los docentes
+	 */
+	public function reporteDistributivosPorCiclo($cicloId)
+	{
+		$ciclo = Ciclo::find($cicloId);
+		$this->ciclo_rpt = $cicloId;
+		if($ciclo){
+			$anio = (int)$ciclo->anio;
+			$fecha = 'Período ' . $anio . '-' . ($anio+1) . ' Ciclo ' . $ciclo->ciclo;
+			$archivo = 'Reporte Distributivos I.S.A.C - ' . $fecha;
+			Excel::create($archivo, function ($excel) {
+				// Set the title
+				$excel->setTitle('Reporte de Distributivos de Docentes por ciclo');
+				// Chain the setters
+				$excel->setCreator('I.S.A.C')
+					->setCompany('Factutald de ciencias administrativas');
+				// Call them separately
+				$excel->setDescription('Reporte de Distributivos por ciclo de la carrera I.S.A.C ');
+
+				$excel->sheet('Distributivos', function ($sheet) {
+					$data = (array) $this->queryReportesporCiclo(1, $this->ciclo_rpt);
+					$datos = array();
+					foreach ($data as $item => $val) {
+						array_push($datos, (array)$val);
+					}
+					//dd($datos);
+					$sheet->fromArray($datos, null, 'A1', true);
+					//manipulacion de las filas
+					$sheet->row(1, function ($row) {
+						// call cell manipulation methods
+						$row->setBackground('#000000');
+						$row->setFontColor('#FFFFFF');
+					});
+
+					$sheet->setAutoFilter('A1:Y1');
+
+				});
+
+			})->download('xlsx');
+		}
+	}
+
+	/**
+	 * @param $tipo
+	 * @param $cicloId
+	 * @return mixed
+	 */
+	public function queryReportesporCiclo($tipo, $cicloId){
+		if($tipo === 1){
+			// distributivos
+			return DB::select("select * from (
+						select
+						  cd.ciclo,
+						  doc.nombres,
+						  doc.apellidos,
+						  ma.nombre_materia etiqueta,
+						  hc.dia,
+						  hc.hora_inicio,
+						  hc.hora_fin,
+						  hc.num_horas
+						from malla_academica ma,
+						  ciclo_docentes cd,
+						  ciclo_materias_docente cmd,
+						  horarios_cursos hc,
+						  docentes doc
+						where cmd.ciclo_docente = cd.id
+							  and hc.ciclo_materia_docente = cmd.id
+							  and doc.id = cd.docente
+							  and cmd.materia = ma.id
+						union all
+						-- distributivos
+						select
+						  cd.ciclo,
+						  doc.nombres,
+						  doc.apellidos,
+						  hd.etiqueta,
+						  hd.dia,
+						  hd.hora_inicio,
+						  hd.hora_fin,
+						  hd.num_horas
+						from horarios_docentes hd,
+						  ciclo_docentes cd,
+						  docentes doc
+						  where doc.id = cd.docente
+						and hd.ciclo_docente = cd.id) q
+						where q.ciclo = $cicloId
+						order by q.nombres, q.apellidos, q.dia, q.hora_inicio");
+		}
+		else {
+			return DB::select("select
+			  doc.abreviatura,
+			  doc.nombres,
+			  doc.apellidos,
+			  malla.codigo_materia,
+			  malla.nombre_materia,
+			  (select distinct cati.descripcion from horarios_cursos hc, ciclo_materias_docente cmd, jornadas_semestres jm, catalogo_items cati
+			  where hc.ciclo_materia_docente = cmd.id
+					and jm.id = hc.ciclo_jornada_semestre
+					and cati.codigo = jm.catalogo_aula
+					and cati.catalogo = 4
+					and cmd.id = cimado.id) aula,
+			  (select distinct cati.descripcion from horarios_cursos hc, ciclo_materias_docente cmd, jornadas_semestres jm, catalogo_items cati
+			  where hc.ciclo_materia_docente = cmd.id
+					and jm.id = hc.ciclo_jornada_semestre
+					and cati.codigo = jm.catalogo_semestre
+					and cati.catalogo = 2
+					and cmd.id = cimado.id) semestre,
+			  (select distinct cati.descripcion from horarios_cursos hc, ciclo_materias_docente cmd, jornadas_semestres jm, catalogo_items cati
+			  where hc.ciclo_materia_docente = cmd.id
+					and jm.id = hc.ciclo_jornada_semestre
+					and cati.codigo = jm.catalogo_jornada
+					and cati.catalogo = 5
+					and cmd.id = cimado.id) jornada
+			  from
+				ciclos ci,
+				docentes doc,
+				ciclo_docentes cidoc,
+				ciclo_materias_docente cimado,
+				malla_academica malla
+			  where ci.id = $cicloId
+				and doc.id = cidoc.docente
+				and cimado.ciclo_docente = cidoc.id
+				and malla.id = cimado.materia
+				and cidoc.ciclo =  ci.id;");
+		}
+	}
 }

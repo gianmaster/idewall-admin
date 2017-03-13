@@ -41,6 +41,9 @@ export const urlHorarioDocente = `${endpoint}/horariomateriasdocente`;
 //reportes
 export const urlCicloHorarioDocenteRpt = `${endpoint}/ciclohorariodocente/{ciclo}/ciclo`;
 export const urlCicloJornadaSemestreRpt = `${endpoint}/jornadasemestre/{ciclo}/ciclo`;
+// en excel
+export const urlDownloadHorarioCurso = `${endpoint}/donwload/horarios/{ciclo}`;
+export const urlDownloadDistributivos = `${endpoint}/donwload/distributivos/{ciclo}`;
 
 //envio de silabos
 export const urlEnvioSilabosDocente = `${endpoint}/silabos/envio/docente`;
