@@ -166,7 +166,6 @@
 		},
 		events: {
 			'download-horario-distributivo-event': function(model){
-				console.log('Se descarga el archivo distributivo');
 				console.log(model.ciclo_docente);
 				window.open('reportes/cursos/' + model.ciclo_docente +'/distributivo', '_blank');
 			},

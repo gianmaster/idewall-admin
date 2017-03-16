@@ -99,7 +99,7 @@
                                         Viernes
                                     </td>
                                     <td class="td-formato">
-                                        Sabado
+                                        Sábado
                                     </td>
                                 </tr>
                                 <tr>
