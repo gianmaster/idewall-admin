@@ -36,7 +36,7 @@
                                     <a href="#">
                                         <div class="pull-left">
                                             <!-- User Image -->
-                                            <img src="img/user2-160x160.jpg" class="img-circle" alt="User Image"/>
+                                            <img :src="avatar" class="img-circle" alt="User Image"/>
                                         </div>
                                         <!-- Message title and timestamp -->
                                         <h4>
@@ -134,7 +134,7 @@
                         <!-- Menu Footer-->
                         <li class="user-footer">
                             <div class="pull-left">
-                                <a href="account" class="btn btn-default btn-flat"><i class="fa fa-user"></i> Perfil</a>
+                                <a v-link="{path: '/profile'}" class="btn btn-default btn-flat"><i class="fa fa-user"></i> Perfil</a>
                             </div>
                             <div class="pull-right">
                                 <a href="logout" class="btn btn-default btn-flat"><i class="fa fa-sign-out"></i> Salir</a>
@@ -160,68 +160,68 @@
 
 
     export default {
-        name:'app-header',
-        props:{
+        name: 'app-header',
+        props: {
             username: {
-              type: String,
-              required:false,
-              default: "Giancarlos Cercado"
-          },
-          avatar: {
-            type: String,
-            required: false,
-            default: 'img/user2-160x160.jpg'
-        },
-        fromDate: {
-            type: String, 
-            required: false,
-            default: 'Ago. 2016'
-        },
-        notifications: {
-          required: false,
-          type: Object,
-          default: function(){
-            return []
+                type: String,
+                required: false,
+                default: "Giancarlos Cercado"
+            },
+            avatar: {
+                type: String,
+                required: false,
+                default: 'img/user2-160x160.jpg'
+            },
+            fromDate: {
+                type: String,
+                required: false,
+                default: 'Ago. 2016'
+            },
+            notifications: {
+                required: false,
+                type: Object,
+                default: function () {
+                    return []
+                }
+            },
+            messages: {
+                required: false,
+                type: Object,
+                default: function () {
+                    return []
+                }
+            },
+            tasks: {
+                required: false,
+                type: Object,
+                default: function () {
+                    return []
+                }
+            },
+            control: {
+                required: false,
+                type: Boolean,
+                default: false
+            },
+            largeLogo: {
+                type: Array,
+                required: false,
+                default: function () {
+                    return ["SDCH", "UG"]
+                }
+            },
+            shortLogo: {
+                type: Array,
+                required: false,
+                default: function () {
+                    return ["S", "CH"]
+                }
+            },
+            auth: {
+                type: Boolean,
+                default: true
+            }
         }
-    },
-    messages: {
-      required: false,
-      type: Object,
-      default: function(){
-        return []
-    } 
-},
-tasks: {
-  required: false,
-  type: Object,
-  default: function(){
-    return []
-}
-},
-control: {
-  required: false,
-  type: Boolean,
-  default: false
-},
-largeLogo:{
-  type: Array,
-  required: false,
-  default: function(){
-    return ["!De", "WALL"]
-}
-},
-shortLogo:{
-  type: Array,
-  required: false,
-  default: function(){
-    return ["!D", "e"]
-}
-},
-auth: {
-  type: Boolean,
-  default: true
-}
-}
-}
+    }
 
 </script>

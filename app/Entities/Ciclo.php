@@ -12,6 +12,19 @@ class Ciclo extends Model implements Transformable
 
     protected $table = 'ciclos';
 
-    protected $fillable = ['id', 'periodo', 'nombre', 'estado'];
+    protected $fillable = ['id', 'anio', 'ciclo', 'estado', 'fecha_inicio', 'fecha_fin'];
+
+
+    public function cursos(){
+        return $this->hasMany(JornadasSemestre::class, 'ciclo', 'id')->with('horario');
+    }
+
+    public function docentes(){
+        return $this->hasMany(CicloDocentes::class, 'ciclo', 'id')
+            ->with('cicloDetail')
+            ->with('materiasDocenteCiclo')
+            ->with('cargaDistributiva')
+            ->with('docenteDetail');
+    }
 
 }

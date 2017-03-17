@@ -30,13 +30,12 @@ desired effect
 
 <body id="app" class="@{{ body_class }}">
 
-
 @section('scripts')
     @include('layouts.partials.scripts')
+    <!-- Main bundle vue app -->
+    <script src="{{ asset('/js/build.js') }}" type="text/javascript"></script>
 @show
-	
 
-<script src="{{ asset('/js/build.js') }}" type="text/javascript"></script>
 
 </body>
 </html>

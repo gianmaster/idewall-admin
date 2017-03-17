@@ -1,0 +1,9 @@
+// Coloque su configuración en este archivo para sobrescribir la configuración predeterminada y de usuario.
+{
+    // Controla el tamaño de fuente en píxeles.
+    "editor.fontSize": 12,
+    // Controla si las líneas deben ajustarse. Las líneas se ajustarán en min(editor.wrappingColumn, viewportWidthInColumns).
+    "editor.wordWrap": true,
+    // Señala al ejecutable PHP.
+    "php.validate.executablePath": "C:\\laragon\\bin\\php\\php-7.0.0\\php.exe"
+}

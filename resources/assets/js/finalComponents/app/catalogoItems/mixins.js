@@ -4,10 +4,12 @@
  */
 
  import fnc from '../../../util/reusable_functions';
+import {urlCatalogos} from '../config';
 
  export default {
  	methods: {
  		create: function(){
+			console.log(this.newModel);
  			this.$http.post(this.url, this.newModel).then(function(resp){
  				fnc.niceAlert('success', 'Se creó el menú correctamente!');
  				this.$router.go('/catalogos/'+this.$route.params.catalogo_id);
@@ -41,7 +43,7 @@
  			}, fnc.tryError)
  		},
  		generateUrl: function(){
- 			this.url = 'api/catalogos/'+this.$route.params.catalogo_id+'/items';
+ 			this.url = urlCatalogos + '/'+this.$route.params.catalogo_id+'/items';
  		}
  	}
  }

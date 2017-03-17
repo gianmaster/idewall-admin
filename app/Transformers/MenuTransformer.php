@@ -29,7 +29,7 @@ class MenuTransformer extends TransformerAbstract
 
         if(isset($model->rolMenu)){
 
-            if ($model->rolMenu->rol === Auth::user()->rol){
+            if ($model->rolMenu->rol >= Auth::user()->rol){
 
                 $newModel = [
                     'id'         => (int) $model->id,

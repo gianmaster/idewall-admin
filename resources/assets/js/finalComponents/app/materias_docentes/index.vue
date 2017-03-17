@@ -27,7 +27,7 @@
 		},
 		data: function(){
 			return {
-				path: ['Administración', 'Materias Docentes'],
+				path: ['Cargas Horarias', 'Materias Docentes'],
 				loading: true,
 				titulo: 'Materias Docentes',
 				url: ''

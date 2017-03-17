@@ -24,7 +24,13 @@ class UserController extends Controller
      */
     public function getProfile(){
         $user = Auth::user();
-        return response()->json($user->toArray());
+        return response()->json($user);
+    }
+    
+    
+    public function uploadAvatar(Requests $request, $idUser){
+        $dir = '/img/users';
+        $request->file('avatar')->move($dir);
     }
 
     /**
@@ -34,20 +40,25 @@ class UserController extends Controller
      */
     public function index()
     {
+        $userId = Auth::user()->id;
+
         $request = request();
 
         if (request()->has('sort')) {
             list($sortCol, $sortDir) = explode('|', request()->sort);
-            $query = User::orderBy($sortCol, $sortDir);
+            $query = User::where('id','<>', $userId)
+                ->orderBy($sortCol, $sortDir);
         } else {
-            $query = User::orderBy('id', 'asc');
+            $query = User::where('id','<>', $userId)
+                ->orderBy('id', 'asc');
         }
 
         if ($request->exists('filter')) {
-            $query->where(function($q) use($request) {
+            $query->where('id', '<>',$userId)
+                ->where(function($q) use($request) {
                 $value = "%" . $request->filter . "%";
                 $q->where('name', 'like', $value)
-                ->orWhere('email', 'like', $value);
+                    ->orWhere('email', 'like', $value);
             });
         }
 
@@ -82,10 +93,10 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $input = $request->only(['name', 'email', 'rol', 'state']);
+        $input = $request->only(['name', 'email', 'rol', 'state', 'avatar']);
         $input['password'] = bcrypt($input['email']);
         isset($input['state']) ? null : $input['state'] = true;
-        $input['avatar'] = 'img/user-profile.png';
+        $input['avatar'] = $input['avatar'] == '' ? 'img/user-profile.png' : $input['avatar'];
         $user = User::create($input);
         return response()->json(array('data' => $user));
     }
@@ -99,10 +110,7 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::find($id);
-        if($user)
-            return response()->json(array($user->toArray()));
-        else
-            return response()->json(array('data' => []));
+        return $user;
     }
 
     /**
@@ -126,7 +134,22 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::find($id);
-        $user->update($request->only(['name', 'email', 'rol', 'state']));
+        $pass = $request->get('password');
+
+        if($pass){
+            if(trim($pass) != '')
+                $user->update(['password' => bcrypt($pass)]);
+        }
+
+        $dir = 'img/users';
+        $fileName = $dir . '/' . 'photo-' . time();
+        $data = $request->only(['name', 'email', 'rol', 'state', 'avatar']);
+
+        if(strlen($data['avatar']) > 500){
+            $data['avatar'] = $this->base64_to_jpeg($data['avatar'], $fileName);
+        }
+
+        $user->update($data);
         return response()->json(array('data' => $user));
     }
 
@@ -139,5 +162,26 @@ class UserController extends Controller
     public function destroy($id)
     {
         return response()->json(array('data' => User::destroy($id)));
+    }
+
+
+
+    function base64_to_jpeg($base64_string, $output_file) {
+        $data = explode(',', $base64_string);
+        
+        $types = array(
+            'data:image/jpeg;base64' => 'jpeg',
+            'data:image/jpg;base64' => 'jpg',
+            'data:image/png;base64' => 'png',
+        );
+        
+        $output_file = $output_file . '.' . $types[$data[0]];        
+
+        $ifp = fopen($output_file, "wb"); 
+
+        fwrite($ifp, base64_decode($data[1])); 
+        fclose($ifp); 
+
+        return $output_file; 
     }
 }

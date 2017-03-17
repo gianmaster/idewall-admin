@@ -4,11 +4,18 @@ import VueResource from 'vue-resource';
 //import VueFilter from 'vue-filter';
 import ExternalComponents from './config/externalComponents';
 
+//directivas para hacer drag and drop
+import VueDragableFor from 'vuedragablefor';
+Vue.use(VueDragableFor);
 
-Vue.config.debug = true;
+Vue.config.debug = false;
 
 //global filters
 //Vue.use(VueFilter);
+
+import moment from 'moment';
+window.moment = moment;
+
 
 // install router
 Vue.use(VueResource);
@@ -31,7 +38,11 @@ const router = new VueRouter({
 })
 */
 
-const router = new VueRouter();
+const router = new VueRouter({
+  hasbang: true,
+  history: false
+});
+
 
 router.map({
   '*' : {
@@ -39,6 +50,7 @@ router.map({
   },
   '/': {
     component: require('./finalComponents/app/dashboard/index.vue'),
+    //component: require('./finalComponents/app/testVueTable.vue')
   },
   /*
   '/usuarios': {
@@ -54,12 +66,15 @@ router.map({
     component: require('./finalComponents/app/testPagination.vue')
   },*/
 
+  '/profile': require('./finalComponents/app/profile/index.js'),
 
   '/usuarios': require('./finalComponents/app/usuarios/index.js'),
 
   '/materias': require('./finalComponents/app/materias/index.js'),
 
   '/malla_academica': require('./finalComponents/app/malla_academica/index.js'),
+
+  '/tipos_distributivo': require('./finalComponents/app/tipos_distributivos/index.js'),
 
   '/docentes': require('./finalComponents/app/docentes/index.js'),
 
@@ -71,9 +86,19 @@ router.map({
 
   '/catalogos/:catalogo_id': require('./finalComponents/app/catalogoItems/index.js'),
 
+  '/jornadasemestres': require('./finalComponents/app/jornadas_semestres/index.js'),
+
+  '/horariosdocentes': require('./finalComponents/app/ciclo_horario_docente/index.js'),
+
+  '/reporte_horarios_cursos': require('./finalComponents/app/reporte_horarios_cursos/index.js'),
+
+  '/reporte_distributivos_docentes': require('./finalComponents/app/reporte_distributivos_docentes/index.js'),
+
+  '/config_reportes': require('./finalComponents/app/configuracion_reportes/index.js'),
+
   '/lockscreen': {
     component: require('./finalComponents/new-layout/lockscreen.vue')
-  },
+  }
   
 });
 

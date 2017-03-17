@@ -6,7 +6,7 @@
 			<div class="col-sm-2 col-xs-12" v-if="optionToolbar">
 				<button :class="optionToolbar.btnClass" @click.prevent="dispacher(optionToolbar.nameEmit)"><i :class="optionToolbar.iconClass"></i> {{optionToolbar.label}}</button>
 			</div>
-			<div class="col-xs-6 col-sm-6">
+			<div class="col-xs-4 col-sm-4">
 				<form action="#" method="get" @submit.prevent="search">
 					<div class="input-group">
 						<input type="text" name="filter" v-model="search_filter" class="form-control" placeholder="Buscar...">
@@ -24,7 +24,10 @@
 					</select>
 				</div>
 			</div>
-			<div class="col-xs-2 col-sm-1">
+			<div class="col-sm-2 col-xs-12" v-if="exportToolbar">
+				<button :class="exportToolbar.btnClass" @click.prevent="dispacher(exportToolbar.nameEmit)"><i :class="exportToolbar.iconClass"></i> {{exportToolbar.label}}</button>
+			</div>
+			<div class="col-xs-2 col-sm-1 pull-right">
 				<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true" :title="optionToolbar.labelOptions">
 					<i :class="optionToolbar.iconClassOptions"></i>
 				</button>
@@ -50,7 +53,7 @@
 				
 				<thead v-if="requireHeader">
 					<tr>
-						<th v-for="col in columns | filterBy false in 'hidden'" :class="col.titleClass">
+						<th v-for="col in columns | filterBy false in 'hidden'" :class="col.titleClass" :style="col.style">
 							<template v-if="sortable && col.sortable && !col.itemActions">
 								<div class="cool-table-sortable" @click.prevent="orderColumn(col.field)">
 									<span>{{col.title}}</span>
@@ -86,8 +89,8 @@
 
 								<div v-else class="btn-group">
 
-									<a v-for="act in col.itemActions" :class="act.btnClass" href="" @click.prevent="dispacher(act.nameEmit, item)" >
-										<i :class="act.iconClass" data-toggle="tooltip" :title="act.label"></i>
+									<a v-for="act in col.itemActions" :class="act.btnClass" :href="act.link?formatedLink(act.link, item):'javascript:;'" @click.prevent="dispacher(act.nameEmit, item)" >
+										<i :class="act.iconClass" data-toggle="tooltip" :title="act.label"></i> {{act.text}}
 									</a>
 
 								</div>
@@ -128,7 +131,9 @@
 								</a><!-- more back -->
 							</li>
 
-							<li v-for="pag in 5, pagination.last_page" class="{{isActive(pag+1)}}" @click.prevent="paginate(pag+1)" v-if="numToShow(pag+1)"><a href="#">{{pag + 1}}</a></li>
+							<template v-for="pag in 5, pagination.last_page">
+								<li  class="{{isActive(pag+1)}}" @click.prevent="paginate(pag+1)" v-if="numToShow(pag+1)"><a href="#">{{pag + 1}}</a></li>
+							</template>
 
 							<li v-if="pagination.moreTemp < (pagination.last_page/pagination.limitPaginate)" @click.prevent="pagScroll('next')">
 								<a href="#" aria-label="Next">
@@ -278,6 +283,17 @@
 					}
 				}
 			},
+			exportToolbar: {
+				type: Object,
+				default: null /* function(){
+					return {
+						iconClass: 'fa fa-file-excel-o',
+						label: 'Exportar',
+						nameEmit: 'export-event',
+						btnClass: 'btn btn-success'
+					}
+				}*/
+			},
 			tableClass: { type: String, default: 'table table-bordered table-striped table-hover'},
 			requireHeader: {type: Boolean, default: true},
 			divSeparatorClass: {type: String, default: 'col-xs-12'},
@@ -301,7 +317,8 @@
 					return [
 					{
 						field: 'name',
-						hidden: false
+						hidden: false,
+						style: ''
 					},
 					{
 						field: 'email',
@@ -321,6 +338,7 @@
 						title: 'Acciones',
 						titleClass: 'text-center',
 						hidden: false,
+						style: 'width:10%',
 						fieldClass: 'text-center',
 						itemActions: [
 						{
@@ -368,7 +386,7 @@
 						searchable: false,
 						per_page_list: [5,10, 15, 20, 30, 50],
 						total:150,
-						per_page:5,
+						per_page:10,
 						current_page:1,
 						last_page:10,
 						next_page_url:"http:\/\/vuetable.ratiw.net\/api\/users?page=2",
@@ -389,6 +407,10 @@
 			}      
 		},
 		methods: {
+			refresh: function(){
+				this.pagination.current_page = 1;
+				this.loadData();
+			},
 			renderTemplate: function(col, template){
 				return eval('`'+template+'`');
 			},
@@ -490,12 +512,16 @@
 			},
 			dispacher: function(event, model){
 				this.$dispatch(event, model);
+			},
+			formatedLink: function(str, model){
+				let key = str.split("${")[1].split("}")[0];
+				return str.replace('${'+ key +'}', model[key]);
 			}
 
 		},
 		
 		ready(){
-			this.loadData(this.endpoint + '?per_page='  + this.pagination.per_page);
+			this.loadData();
 		},
 		created(){
 			arrayToScema(this.columns);

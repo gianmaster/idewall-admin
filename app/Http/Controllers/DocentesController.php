@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-use App\Entities\MateriasDocente;
+use App\Entities\MateriasCicloDocente;
 use App\Entities\Docente;
 
 use App\Http\Requests;
+use Maatwebsite\Excel\Facades\Excel;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Repositories\DocenteRepository;
 use App\Validators\DocenteValidator;
-use App\Validators\MateriasDocenteValidator;
+use App\Validators\MateriasCicloDocenteValidator;
 
 
 class DocentesController extends Controller
@@ -26,7 +28,7 @@ class DocentesController extends Controller
         'update'    => ['abreviatura','nombres', 'apellidos', 'identificacion', 'tipo_identificacion', 'email',
                             'email_corporativo', 'celular', 'telefono', 'estado_civil', 'genero', 'titulo_pregrado',
                             'titulo_postgrado', 'titulo_mba', 'registro_senescyt', 'fecha_nacimiento', 'nacionalidad',
-                            'residencia', 'direccion', 'tipo_contrato', 'estado']
+                            'residencia', 'direccion', 'tipo_contrato', 'estado','funcion']
     ];
 
     /**
@@ -39,7 +41,7 @@ class DocentesController extends Controller
      */
     protected $validator;
 
-    public function __construct(DocenteRepository $repository, DocenteValidator $validator, MateriasDocenteValidator $validatorMaterias)
+    public function __construct(DocenteRepository $repository, DocenteValidator $validator, MateriasCicloDocenteValidator $validatorMaterias)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
@@ -61,9 +63,9 @@ class DocentesController extends Controller
 
         if (request()->has('sort')) {
             list($sortCol, $sortDir) = explode('|', request()->sort);
-            $docentes = $this->repository->with('materias')->orderBy($sortCol, $sortDir)->paginate($perPage);
+            $docentes = $this->repository->orderBy($sortCol, $sortDir)->paginate($perPage);
         } else {
-            $docentes = $this->repository->with('materias')->orderBy('id', 'asc')->paginate($perPage);
+            $docentes = $this->repository->orderBy('id', 'asc')->paginate($perPage);
         }
 
         return response()->json($docentes);
@@ -217,14 +219,14 @@ class DocentesController extends Controller
         if(!$request->has('materias')){
             return response()->json(array(
                 'message' => 'No existe el atributo materias',
-                'dev_message' => $e->getMessage()), 401);
+                'dev_message' => 'No se recibe el parametro materias'), 401);
         }
 
         //$materiasDocente = Docente::with('materias')->where('id', $id)->toArray();
         $materiasDocente = $this->repository->find($id)['data'];
 
         //desactivar todas las materias previo a validacion y actualizacion
-        MateriasDocente::where('docente', $id)->update(['activo' => false]);
+        MateriasCicloDocente::where('docente', $id)->update(['activo' => false]);
 
         foreach ($request->materias as $rKey => $rValue) {
 
@@ -233,13 +235,13 @@ class DocentesController extends Controller
             foreach ($materiasDocente['materias_all'] as $mKey => $mValue) {
 
                 if ($mValue['materia'] == $rValue['materia']) {
-                    MateriasDocente::where('id', $mValue['id'])->update(['materia' => $rValue['materia'], 'docente' => $id, 'activo' => true]);
+                    MateriasCicloDocente::where('id', $mValue['id'])->update(['materia' => $rValue['materia'], 'docente' => $id, 'activo' => true]);
                     $flagUpdated = true;
                 }
             }
 
             if(!$flagUpdated){
-                MateriasDocente::create(['materia' => $rValue['materia'], 'docente' => $id]);
+                MateriasCicloDocente::create(['materia' => $rValue['materia'], 'docente' => $id]);
             }
 
         }
@@ -255,7 +257,7 @@ class DocentesController extends Controller
 
             $this->validatorMaterias->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
 
-            $materias = MateriasDocente::create($request->only(['materia', 'docente']));
+            $materias = MateriasCicloDocente::create($request->only(['materia', 'docente']));
 
             return response()->json(['data' => $materias]);
 
@@ -274,6 +276,41 @@ class DocentesController extends Controller
                 'message' => 'Se presento un error al tratar de hacer esta acción',
                 'dev_message' => $e->getMessage()), 405);
         }
+    }
+
+
+    public function exportarExcelDocentes(){
+        $fecha = Carbon::now('America/Guayaquil');
+        $archivo = 'Reporte Docentes I.S.A.C - ' . $fecha->toDateString('Y-m-d');
+        Excel::create($archivo, function($excel){
+
+            // Set the title
+            $excel->setTitle('Reporte de Docentes');
+
+            // Chain the setters
+            $excel->setCreator('Giancarlos Cercado')
+                ->setCompany('idewall.com');
+
+            // Call them separately
+            $excel->setDescription('Reporte de Docentes de la carrera I.S.A.C ');
+
+            $excel->sheet('Base Docentes', function($sheet){
+
+                $sheet->fromArray(Docente::all());
+
+                //manipulacion de las filas
+                $sheet->row(1, function($row) {
+                    // call cell manipulation methods
+                    $row->setBackground('#000000');
+                    $row->setFontColor('#FFFFFF');
+
+                });
+
+                $sheet->setAutoFilter('A1:Y1');
+
+            });
+
+        })->download('xlsx');
     }
 
 

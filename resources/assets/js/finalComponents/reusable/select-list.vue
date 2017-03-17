@@ -1,6 +1,6 @@
 <template>
 	<select v-if="data.length<=0" :class="className" disabled>
-		<option>Cargando.....</option>
+		<option>No hay datos...</option>
 	</select>
 	<select v-else v-model="selectValue" :class="className" :required="isRequired">
 
@@ -16,7 +16,6 @@
 
 	</select>
 </template>
-
 <script>
 	export default{
 		name: 'select-list',
@@ -29,7 +28,6 @@
 					console.warn(err);
 				});	
 			}
-			
 		},
 		props:{
 			className: {
@@ -88,8 +86,6 @@
 			}
 
 		},
-		methods: {
 
-		}
 	}
 </script>

@@ -5,19 +5,36 @@
     "dev": "gulp watch"
   },
   "devDependencies": {
+    "babel-preset-stage-2": "^6.13.0",
+    "bootstrap-sass": "^3.3.7",
+    "chart.js": "^2.3.0",
     "gulp": "^3.9.1",
-    "laravel-elixir": "^5.0.0",
-    "bootstrap-sass": "^3.0.0"
+    "jquery": "^3.1.0",
+    "jscs": "^3.0.7",
+    "laravel-elixir": "^6.0.0-9",
+    "laravel-elixir-browsersync-official": "^1.0.0",
+    "laravel-elixir-vue": "^0.1.4",
+    "laravel-elixir-webpack-official": "^1.0.2",
+    "lodash": "^4.14.0",
+    "vue": "^1.0.26",
+    "vue-core-image-upload": "^1.0.0",
+    "vue-html-editor": "^0.2.1",
+    "vue-html-loader": "^1.2.3",
+    "vue-loader": "^8.5.2",
+    "vue-multiselect": "^1.1.2",
+    "vue-resource": "^0.9.3",
+    "vue-router": "^0.7.13",
+    "vue-spinner": "^1.0.2",
+    "vue-strap": "^1.1.7",
+    "vue-time-picker": "^0.2.2",
+    "vuedragablefor": "^1.0.9"
   },
   "dependencies": {
-    "laravel-elixir-vueify": "^1.0.3",
-    "vue": "^1.0.26",
-    "vue-filter": "^0.1.7",
-    "vue-loading-bar": "^1.0.0",
-    "vue-resource": "^0.9.3", 
-    "vue-multiselect": "^1.0.1",
-    "vue-router": "^0.7.13",
-    "vue-validator": "^2.1.5",
-    "vuex": "^1.0.0-rc.2" 
+    "chart.js": "^2.3.0",
+    "moment": "^2.15.0",
+    "vue-chart": "^2.0.0",
+    "vue-chartjs": "^2.1.1",
+    "vue-core-image-upload": "^1.0.0",
+    "vuetable": "^1.5.6"
   }
 }

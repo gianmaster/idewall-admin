@@ -14,7 +14,7 @@
 
 	import inputs from './form-fields.vue';
 
-	const URL = 'api/menu';
+	import {urlMenu} from '../config';
 
 	export default {
 		data(){
@@ -28,7 +28,7 @@
 		},
 		methods: {
 			create: function(){
-				this.$http.post(URL, this.newModel).then(function(resp){
+				this.$http.post(urlMenu, this.newModel).then(function(resp){
 					fnc.niceAlert('success', 'Se creó el menú correctamente!');
 					this.$router.go('/menu');
 				}, fnc.tryError);

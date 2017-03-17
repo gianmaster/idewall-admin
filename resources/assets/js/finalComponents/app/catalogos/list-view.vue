@@ -27,6 +27,8 @@
 
 	import myMixins from './mixins';
 
+	import {urlCatalogos} from '../config';
+
 	export default {
 		route: {
 			data: function(transition){
@@ -37,7 +39,7 @@
 		mixins: [myMixins],
 		data(){
 			return {
-				url: 'api/catalogos',
+				url: urlCatalogos,
 				toolbar: {
 					iconClass: 'fa fa-plus',
 					iconClassOptions: 'fa fa-cogs',

@@ -8,11 +8,10 @@
 		</form>
 	</div>
 </template>
-
 <script>
 	
 	import inputs from './form-fields.vue';
-
+	import {urlDocentes} from '../config';
 	import myMixins from './mixins';
 
 	export default {
@@ -30,7 +29,7 @@
 				createMode: false,
 				newModel: {},
 				loading: true,
-				url: 'api/docentes'
+				url: urlDocentes
 			}
 		},
 		components: {

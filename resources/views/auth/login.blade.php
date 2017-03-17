@@ -7,8 +7,9 @@
 @section('content')
 <body class="hold-transition login-page">
     <div class="login-box">
-        <div class="login-logo">
-            <a href="{{ url('/home') }}"><b>Admin</b>LTE</a>
+        <div class="login-logo custom-login-logo">
+            <a href="{{ url('/home') }}"><b style="color: azure;">UG - FCA - ISAC</b> </a>
+            <p style="font-size: .6em">SISTEMA DE CARGAS HORARIAS</p>
         </div><!-- /.login-logo -->
 
     @if (count($errors) > 0)
@@ -57,6 +58,19 @@
 </div><!-- /.login-box -->
 
     @include('layouts.partials.scripts_auth')
+
+    <style>
+        .custom-login-logo{
+            color: azure;
+            background: #3c8dbc;
+            border-radius: 1%;
+            box-shadow: 1px 5px 10px gray;
+        }
+
+        .login-box-body{
+            box-shadow: 1px 5px 10px gray;
+        }
+    </style>
 
     <script>
         $(function () {

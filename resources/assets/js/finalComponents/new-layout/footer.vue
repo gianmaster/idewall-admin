@@ -23,7 +23,7 @@
 				required: false,
 				default: function (){
 					return{
-						name: 'Giancarlos Cercado Cedeño',
+						name: 'Giancarlos Cercado & Bella Gil',
 						site: 'http://giancarloscercado.com',
 						email: 'giancarloscercado@gmail.com'
 					}
@@ -34,8 +34,8 @@
 				required: false,
 				default: function (){
 					return{
-						name: 'Idewall',
-						site: 'http://idewall.com'
+						name: 'Universidad Estatal de Guayaquil | FCA',
+						site: 'http://www.fca.ug.edu.ec'
 					}
 				}
 			}

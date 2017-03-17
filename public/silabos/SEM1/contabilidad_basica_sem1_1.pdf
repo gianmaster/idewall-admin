@@ -1,0 +1,203 @@
+%PDF-1.3
+3 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/Contents 4 0 R>>
+endobj
+4 0 obj
+<</Length 1605>>
+stream
+0.57 w
+0 G
+q
+q BT 42.52 795.62 Td
+0 -22.50 Td
+/F2 15.00 Tf (About jsPDF) Tj
+ET Q
+q BT 42.52 761.87 Td
+0 -16.88 Td
+/F1 11.25 Tf (Simply include the jsPDF library in your <head>, generate your PDF using the many built-in) Tj
+0 -16.88 Td
+/F1 11.25 Tf (functions, then hook up a button to trigger the download. All the examples here use jQuery.) Tj
+ET Q
+q BT 42.52 709.37 Td
+0 -22.50 Td
+/F2 15.00 Tf (Browser Compatibility) Tj
+ET Q
+q BT 42.52 675.62 Td
+0 -16.88 Td
+/F1 11.25 Tf (jsPDF will work in IE6+*, Firefox 3+, Chrome, Safari 3+, Opera. For IE9 and below, we lazily load) Tj
+0 -16.88 Td
+/F1 11.25 Tf (a Flash shim called Downloadify which enables the files to be downloaded. ) Tj
+/F3 11.25 Tf (\(Current build does) Tj
+0 -16.88 Td
+/F3 11.25 Tf (not have IE6-9 shim enabled\)) Tj
+ET Q
+q BT 42.52 606.25 Td
+0 -22.50 Td
+/F2 15.00 Tf (Credits) Tj
+ET Q
+q BT 42.52 572.50 Td
+0 -16.88 Td
+/F1 11.25 Tf (Big thanks to Daniel Dotsenko from Willow Systems Corporation for making huge contributions to) Tj
+0 -16.88 Td
+/F1 11.25 Tf (the codebase. Thanks to Ajaxian.com for featuring us back in 2009. Everyone else that's) Tj
+0 -16.88 Td
+/F1 11.25 Tf (contributed patches or bug reports, you rock.) Tj
+ET Q
+q BT 42.52 503.12 Td
+0 -22.50 Td
+/F2 15.00 Tf (Need Help?) Tj
+ET Q
+q BT 42.52 469.37 Td
+0 -16.88 Td
+/F1 11.25 Tf (Send us a tweet and we'll see if we can help.) Tj
+ET Q
+q BT 42.52 437.50 Td
+0 -16.88 Td
+/F1 11.25 Tf (@parallax) Tj
+/F1 11.25 Tf ( or ) Tj
+/F1 11.25 Tf (@MrRio) Tj
+ET Q
+q BT 42.52 405.62 Td
+0 -16.88 Td
+/F1 11.25 Tf (Or check out ) Tj
+/F1 11.25 Tf (our documentation) Tj
+/F1 11.25 Tf (.) Tj
+ET Q
+Q
+endstream
+endobj
+1 0 obj
+<</Type /Pages
+/Kids [3 0 R ]
+/Count 1
+/MediaBox [0 0 595.28 841.89]
+>>
+endobj
+5 0 obj
+<</BaseFont/Helvetica/Type/Font
+/Encoding/WinAnsiEncoding
+/Subtype/Type1>>
+endobj
+6 0 obj
+<</BaseFont/Helvetica-Bold/Type/Font
+/Encoding/WinAnsiEncoding
+/Subtype/Type1>>
+endobj
+7 0 obj
+<</BaseFont/Helvetica-Oblique/Type/Font
+/Encoding/WinAnsiEncoding
+/Subtype/Type1>>
+endobj
+8 0 obj
+<</BaseFont/Helvetica-BoldOblique/Type/Font
+/Encoding/WinAnsiEncoding
+/Subtype/Type1>>
+endobj
+9 0 obj
+<</BaseFont/Courier/Type/Font
+/Encoding/WinAnsiEncoding
+/Subtype/Type1>>
+endobj
+10 0 obj
+<</BaseFont/Courier-Bold/Type/Font
+/Encoding/WinAnsiEncoding
+/Subtype/Type1>>
+endobj
+11 0 obj
+<</BaseFont/Courier-Oblique/Type/Font
+/Encoding/WinAnsiEncoding
+/Subtype/Type1>>
+endobj
+12 0 obj
+<</BaseFont/Courier-BoldOblique/Type/Font
+/Encoding/WinAnsiEncoding
+/Subtype/Type1>>
+endobj
+13 0 obj
+<</BaseFont/Times-Roman/Type/Font
+/Encoding/WinAnsiEncoding
+/Subtype/Type1>>
+endobj
+14 0 obj
+<</BaseFont/Times-Bold/Type/Font
+/Encoding/WinAnsiEncoding
+/Subtype/Type1>>
+endobj
+15 0 obj
+<</BaseFont/Times-Italic/Type/Font
+/Encoding/WinAnsiEncoding
+/Subtype/Type1>>
+endobj
+16 0 obj
+<</BaseFont/Times-BoldItalic/Type/Font
+/Encoding/WinAnsiEncoding
+/Subtype/Type1>>
+endobj
+2 0 obj
+<<
+/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]
+/Font <<
+/F1 5 0 R
+/F2 6 0 R
+/F3 7 0 R
+/F4 8 0 R
+/F5 9 0 R
+/F6 10 0 R
+/F7 11 0 R
+/F8 12 0 R
+/F9 13 0 R
+/F10 14 0 R
+/F11 15 0 R
+/F12 16 0 R
+>>
+/XObject <<
+>>
+>>
+endobj
+17 0 obj
+<<
+/Producer (jsPDF 20120619)
+/CreationDate (D:20160223224840)
+>>
+endobj
+18 0 obj
+<<
+/Type /Catalog
+/Pages 1 0 R
+/OpenAction [3 0 R /FitH null]
+/PageLayout /OneColumn
+>>
+endobj
+xref
+0 19
+0000000000 65535 f 
+0000001742 00000 n 
+0000002971 00000 n 
+0000000009 00000 n 
+0000000087 00000 n 
+0000001829 00000 n 
+0000001919 00000 n 
+0000002014 00000 n 
+0000002112 00000 n 
+0000002214 00000 n 
+0000002302 00000 n 
+0000002396 00000 n 
+0000002493 00000 n 
+0000002594 00000 n 
+0000002687 00000 n 
+0000002779 00000 n 
+0000002873 00000 n 
+0000003195 00000 n 
+0000003277 00000 n 
+trailer
+<<
+/Size 19
+/Root 18 0 R
+/Info 17 0 R
+>>
+startxref
+3381
+%%EOF

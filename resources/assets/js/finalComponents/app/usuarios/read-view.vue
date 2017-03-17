@@ -32,6 +32,7 @@
 <script>
 	
 	import myMixins from './mixins';
+	import {urlUsuarios} from '../config';
 
 	export default {
 		mixins: [myMixins],
@@ -42,7 +43,7 @@
 			return {
 				newModel: {},
 				loading: true,
-				url: 'api/users'
+				url: urlUsuarios
 			}
 		},
 

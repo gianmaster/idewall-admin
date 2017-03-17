@@ -39,6 +39,8 @@
 
 	import myMixins from './mixins';
 
+	import {urlUsuarios} from '../config';
+
 	export default {
 		route: {
 			data: function(transition){
@@ -49,7 +51,7 @@
 		mixins: [myMixins],
 		data(){
 			return {
-				url: 'api/users',
+				url: urlUsuarios,
 				toolbar: {
 					iconClass: 'fa fa-plus',
 					iconClassOptions: 'fa fa-cogs',

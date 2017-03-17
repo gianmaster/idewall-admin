@@ -5,14 +5,15 @@
 	</div>
 
 	<div v-else>
-		<cool-table 
-		:option-toolbar="toolbar"
-		:url="url" 
-		:data.sync="datos" 
-		:columns="columnas" 
-		filter-key-word="search">
-	</cool-table>
-</div>
+		<cool-table
+			:option-toolbar="toolbar"
+			:url="url"
+			:data.sync="datos"
+			:columns="columnas"
+			:export-toolbar="configExport"
+			filter-key-word="search">
+		</cool-table>
+	</div>
 
 </template>
 
@@ -24,6 +25,8 @@
 
 	import myMixins from './mixins';
 
+	import {urlDocentes, urlExportDocentes} from '../config';
+
 	export default {
 		mixins: [myMixins],
 		route: {
@@ -34,7 +37,7 @@
 		},
 		data(){
 			return {
-				url: 'api/docentes',
+				url: urlDocentes,
 				toolbar: {
 					iconClass: 'fa fa-plus',
 					iconClassOptions: 'fa fa-cogs',
@@ -42,6 +45,12 @@
 					labelOptions: 'Campos visibles',
 					nameEmit: 'docente-create-event',
 					btnClass: 'btn btn-primary btn-flat'
+				},
+				configExport: {
+					iconClass: 'fa fa-file-excel-o',
+					label: 'Exportar',
+					nameEmit: 'export-event-docentes',
+					btnClass: 'btn btn-success'
 				},
 				datos: [],
 				columnas: [
@@ -129,6 +138,9 @@
 			'docente-delete-event' : function(model){
 				this.destroy(model);
 			},
+			'export-event-docentes': function(){
+				window.location = urlExportDocentes;
+			}
 		},
 
 		

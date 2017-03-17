@@ -11,18 +11,70 @@
 		:data.sync="datos" 
 		:columns="columnas" 
 		filter-key-word="search">
-	</cool-table>
+		</cool-table>
+
+		<app-modal title="Actualización de Sílabos" :show.sync="showModal" @ok="toggleModal" @cancel="toggleModal" emit-when-ok="event-end-edit-silabos" :large="true">
+			
+		<div class="row">
+			<form id="frm-silabos" @submit.prevent="uploadFiles">
+				<div class="col-xs-12 col-sm-7">
+					<div class="form-group">
+						<label for="documentos">Seleccione los Sílabos para: <span class="__materia">{{currentModel.nombre_materia}} - {{currentModel.semestre}}</span> </label>
+						<input type="file" id="documentos" name="documentos[]" accept="application/pdf" class="form-control" multiple required>				
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-5 text-center">
+					<p class="text-light-blue"><i class="fa fa-info-circle"></i> Solo se admiten archivos PDF</p>
+					<p class="text-red"><i class="fa fa-warning"></i> <strong>Nota:</strong> Sí ya existe algún archivo subido, éste o estos serán elmininados para subir los nuevos!</p>
+					<template v-if="load_button">
+						<button type="submit" class="btn btn-primary btn-flat" disabled><i class="fa fa-refresh fa-spin"></i> SUBIENDO ARCHIVOS</button>						
+					</template>
+					<template v-else>
+						<button type="submit" class="btn btn-primary btn-flat"><i class="fa fa-upload"></i> SUBIR ARCHIVOS</button>
+					</template>
+				</div>
+			</form>
+				
+			<div class="col-xs-12" v-if="currentModel.silabos.length<=0">
+				<hr>
+				<div class="text-center">
+					<p>No hay archivos subidos</p>
+				</div>
+			</div>
+
+			<div class="col-xs-12" v-else>
+				<hr>
+				<div class="col-xs-12" v-for="item in currentModel.silabos">
+					<iframe :src="item.ruta" frameborder="0" height="400" width="100%"></iframe>
+					<hr>	
+				</div>
+			</div>
+		</div>
+
+	</app-modal>
 </div>
 
 </template>
 
+<style>
+
+	.__materia{
+		color: #656464;
+	}
+
+</style>
+
 <script>
 
 	import Loading from '../../reusable/loading.vue';
+
+	import Modal from '../../reusable/modal.vue';
 	
 	import coolTable from '../../reusable/cool-table.vue';
 
 	import myMixins from './mixins';
+
+	import {urlMalla} from '../config';
 
 	export default {
 		mixins: [myMixins],
@@ -34,7 +86,7 @@
 		},
 		data(){
 			return {
-				url: 'api/malla_academica',
+				url: urlMalla,
 				toolbar: {
 					iconClass: 'fa fa-plus',
 					iconClassOptions: 'fa fa-cogs',
@@ -71,10 +123,31 @@
 						sortable: true
 					},
 					{
+						title: 'Tipo',
+						field: 'tipo_materia',
+						hidden: false,
+						sortable: true
+					},
+					{
+						title: 'Asignación',
+						field: 'tipo_asignacion',
+						hidden: false,
+						sortable: true
+					},
+					{
 						title: 'Estado',
 						field: 'estado',
 						hidden: false,
 						sortable: true
+					},
+					{
+						titleClass: 'text-center',
+						fieldClass: 'text-center',
+						title: 'Sílabos',
+						field: "silabos",
+						hidden: false,
+						sortable: false,
+						template: '<i class="${col.silabos.length > 0 ? "fa fa-check text-green" : "fa fa-close text-red"}" ><i>'
 					},
 					{
 						title: 'Acciones',
@@ -82,6 +155,12 @@
 						hidden: false,
 						fieldClass: 'text-center',
 						itemActions: [
+							{
+								nameEmit: 'malla-silabos-event',
+								btnClass: 'btn bg-gray btn-xs',
+								iconClass: 'fa fa-file-pdf-o',
+								label: 'Sílabos',
+							},
 							{
 								nameEmit: 'malla-update-event',
 								btnClass: 'btn btn-default btn-xs',
@@ -98,11 +177,15 @@
 					}
 				],
 				loading: false,
+				loading_button: false,
+				currentModel: {silabos:[]},
+				showModal: false,
 			}
 		},
 		components: {
 			'cool-table' : coolTable,
 			'app-loading' : Loading,
+			'app-modal' : Modal
 		},
 		events: {
 			'malla-create-event' : function(model){
@@ -114,8 +197,11 @@
 			'malla-delete-event' : function(model){
 				this.destroy(model);
 			},
-		},
-
+			'malla-silabos-event': function(model){
+				this.toggleDataModel(model);
+				this.toggleModal();
+			}
+		}
 		
 	}
 

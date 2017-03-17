@@ -52,7 +52,13 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'America/Guayaquil',
+
+    /**
+     * Configuracion de pruebas para envio de silabos por correo
+     * Dejar en false para modo produccion
+     */
+    'email_test' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -167,6 +173,17 @@ return [
          * */
         Prettus\Repository\Providers\RepositoryServiceProvider::class,
 
+        /**
+         * DomPDF
+         */
+        Barryvdh\DomPDF\ServiceProvider::class,
+        
+        /*
+         * Excel export
+         */
+        Maatwebsite\Excel\ExcelServiceProvider::class,
+
+
     ],
 
     /*
@@ -217,6 +234,10 @@ return [
         * Acacha AdminLTE template alias
         */
         'AdminLTE' => Acacha\AdminLTETemplateLaravel\Facades\AdminLTE::class,
+
+        'PDF' => Barryvdh\DomPDF\Facade::class,
+
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 
     ],
 

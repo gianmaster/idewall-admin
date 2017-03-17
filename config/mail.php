@@ -55,7 +55,7 @@ return [
     |
     */
 
-    'from' => ['address' => null, 'name' => null],
+    'from' => ['address' => 'noreply@edu.ug.com', 'name' => 'Universidad de Guayaquil - ISAC'],
 
     /*
     |--------------------------------------------------------------------------

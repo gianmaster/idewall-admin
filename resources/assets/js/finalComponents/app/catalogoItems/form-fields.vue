@@ -23,6 +23,16 @@
 		<input type="number" class="form-control" v-model="dataModel.orden" required>
 	</div>
 
+	<div class="col-sm-6 col-xs-12">
+		<label>Valor Adicional 1</label>
+		<input type="text" class="form-control" v-model="dataModel.aux1" minlength="3">
+	</div>
+
+	<div class="col-sm-6 col-xs-12">
+		<label>Valor Adicional 2</label>
+		<input type="text" class="form-control" v-model="dataModel.aux2" minlength="3">
+	</div>
+
 	<div class="col-xs-12">
 		<div class="content">
 			<button v-if="createMode" class="btn btn-success btn-flat" type="submit"><i class="fa fa-save"></i> GUARDAR</button>
@@ -54,7 +64,9 @@
 					id: null,
 					descripcion: null,
 					orden: null,
-					activo: true
+					activo: true,
+					aux1: null,
+					aux2: null
 				}
 			},
 		},

@@ -16,9 +16,11 @@ class CreateCiclosTable extends Migration
 		Schema::create('ciclos', function(Blueprint $table) {
             $table->increments('id');
 
-            $table->string('periodo')->unique()->nullable(false);
-            $table->string('nombre')->nullable(false);
+            $table->integer('anio')->nullable(false);
+            $table->integer('ciclo')->nullable(false);
             $table->enum('estado', ['CERRADO', 'VIGENTE'])->default('VIGENTE');
+			$table->date('fecha_inicio')->nullable(false);
+			$table->date('fecha_fin')->nullable(false);
 
             $table->timestamps();
 		});

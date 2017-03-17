@@ -10,14 +10,25 @@
 		<input type="hidden" class="form-control" :value="dataModel.id">
 	</div>
 
+	<div class="col-sm-6 col-xs-12" v-if="createMode">
+		<label>Contraseña</label>
+		<input type="text" class="form-control" v-model="dataModel.password" minlength="3">
+		<span class="text-primary"><small>Dejar vacío este campo sí, está creando un usuario. </small></span>
+	</div>
+
 	<div class="col-sm-6 col-xs-12">
 		<label>Correo Electrónico</label>
 		<input type="email" class="form-control" v-model="dataModel.email" required>
 	</div>
 
 	<div class="col-sm-6 col-xs-12">
+		<label>URL Avatar</label>
+		<input type="url" class="form-control" placeholder="http://igmbur.com/user/profile.png" v-model="dataModel.avatar">
+	</div>
+
+	<div class="col-sm-6 col-xs-12">
 		<label>Rol de acceso</label>
-		<select-list class-name="form-control col-xs-6" :select-value.sync="dataModel.rol" value-key="id" label-key="name" url="api/rol" :is-required="true"></select-list>
+		<select-list class-name="form-control col-xs-6" :select-value.sync="dataModel.rol" value-key="id" label-key="name" :url="urlRoles" :is-required="true"></select-list>
 	</div>
 
 	<div class="col-sm-6 col-xs-12">
@@ -53,11 +64,14 @@
 <script>
 
 	import selectList from '../../reusable/select-list.vue';
+	import {urlRoles} from '../config';
 
 	export default {
 		beforeCompile(){
 			if (this.createMode){
 				this.dataModel = this.initModel();
+			}else{
+				this.dataModel.password = '';
 			}
 		},
 		components: {
@@ -66,7 +80,8 @@
 		data(){
 			return {
 				byFalse: 'INACTIVO',
-				byTrue: 'ACTIVO'
+				byTrue: 'ACTIVO',
+				urlRoles: urlRoles
 			}
 		},
 		methods: {
@@ -74,9 +89,11 @@
 				return {
 					name: null,
 					email: null,
+					password: null,
 					id: null,
 					state: null,
-					rol: null
+					rol: null,
+					avatar: null
 				}
 			},
 		},
@@ -93,9 +110,11 @@
 					return {
 						name: null,
 						email: null,
+						password: null,
 						id: null,
 						state: null,
-						rol: null
+						rol: null,
+						avatar: null
 					}
 				}
 			}

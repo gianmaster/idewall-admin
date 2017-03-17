@@ -2,9 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Entities\Ciclo;
+use App\Entities\CicloDocentes;
+use App\Entities\Docente;
+use App\Entities\JornadasSemestre;
+use App\Entities\MateriasCicloDocente;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\DB;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Http\Requests\CicloCreateRequest;
@@ -40,17 +46,10 @@ class CiclosController extends Controller
      */
     public function index()
     {
-        $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
-        $ciclos = $this->repository->all();
+        $ciclo = Ciclo::where('estado', 'VIGENTE')->first();
 
-        if (request()->wantsJson()) {
+        return response()->json(array('data' => $ciclo));
 
-            return response()->json([
-                'data' => $ciclos,
-            ]);
-        }
-
-        return view('ciclos.index', compact('ciclos'));
     }
 
     /**
@@ -65,53 +64,45 @@ class CiclosController extends Controller
 
         try {
 
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
+            $ciclos = Ciclo::where('estado', 'VIGENTE')->first();
 
-            $ciclo = $this->repository->create($request->all());
-
-            $response = [
-                'message' => 'Ciclo created.',
-                'data'    => $ciclo->toArray(),
-            ];
-
-            if ($request->wantsJson()) {
-
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
-        } catch (ValidatorException $e) {
-            if ($request->wantsJson()) {
+            if(!$ciclos){
                 return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
+                    'message' => 'Ya hay un ciclo vigente, debe cerrarlos para poder generar uno nuevo'
                 ]);
+            }else{
+                $ciclo = Ciclo::all()->last();
+
+                if($ciclo->ciclo == 2){
+                    Ciclo::create([
+                        'anio'  => ($ciclo->anio + 1),
+                        'ciclo' => 1
+                    ]);
+                }else{
+                    Ciclo::create([
+                        'anio'  => ($ciclo->anio),
+                        'ciclo' => 2
+                    ]);
+                }
             }
 
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+        } catch (\Exception $e) {
+            return response()->json([
+                'error'   => true,
+                'message' => $e->getMessageBag()
+            ]);
         }
     }
 
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return mixed
+     * Muestra el ciclo vigente
      */
     public function show($id)
     {
-        $ciclo = $this->repository->find($id);
-
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'data' => $ciclo,
-            ]);
-        }
-
-        return view('ciclos.show', compact('ciclo'));
+        response()->json(array('data' => 'Nothing to do here'));
     }
 
 
@@ -125,9 +116,7 @@ class CiclosController extends Controller
     public function edit($id)
     {
 
-        $ciclo = $this->repository->find($id);
-
-        return view('ciclos.edit', compact('ciclo'));
+        response()->json(array('data' => 'Nothing to do here'));
     }
 
 
@@ -141,58 +130,184 @@ class CiclosController extends Controller
      */
     public function update(CicloUpdateRequest $request, $id)
     {
-
-        try {
-
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
-
-            $ciclo = $this->repository->update($id, $request->all());
-
-            $response = [
-                'message' => 'Ciclo updated.',
-                'data'    => $ciclo->toArray(),
-            ];
-
-            if ($request->wantsJson()) {
-
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
-        } catch (ValidatorException $e) {
-
-            if ($request->wantsJson()) {
-
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
-            }
-
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
-        }
+        response()->json(array('data' => 'Nothing to do here'));
     }
 
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return mixed
+     * Dar de baja a un ciclo, esto cierra el proceso de asignacion de horarios
      */
     public function destroy($id)
     {
-        $deleted = $this->repository->delete($id);
+        $ciclo = Ciclo::find($id);
+        $ciclo->estado = 'CERRADO';
+        $ciclo->save();
 
-        if (request()->wantsJson()) {
+        return response()->json([
+            'message' => 'Ciclo cerrado.',
+            'deleted' => $ciclo,
+        ]);
+    }
 
+
+    /**
+     * @return mixed
+     */
+    public static function currentCiclo(){
+        return Ciclo::where('estado', 'VIGENTE')->first();
+    }
+
+
+    /**
+     * @param $id_ciclo
+     * @return mixed
+     * Retorna todos los docentes del ciclo enviado por parametro con sus datos aninados o relacionados
+     */
+    public function docentesCiclo($ciclo){
+        try{
+
+            $perPage = request()->has('per_page') ? (int) request()->per_page : 5;
+
+            if (request()->has('sort')) {
+                list($sortCol, $sortDir) = explode('|', request()->sort);
+                $data = CicloDocentes::with('cicloDetail')->with('materiasDocenteCiclo')->with('docenteDetail')
+                    ->where('ciclo', $ciclo)
+                    ->orderBy($sortCol, $sortDir)
+                    ->paginate($perPage);
+            } else {
+                $data = CicloDocentes::with('cicloDetail')->with('materiasDocenteCiclo')->with('docenteDetail')
+                    ->where('ciclo', $ciclo)
+                    ->orderBy('id', 'asc')
+                    ->paginate($perPage);
+            }
+            /*
+            $data = CicloDocentes::with('cicloDetail')->with('materiasDocenteCiclo')->with('docenteDetail')
+                ->where('ciclo', $ciclo)->get();
+            */
+
+            return response()->json($data);
+
+        }catch (\Exception $e) {
             return response()->json([
-                'message' => 'Ciclo deleted.',
-                'deleted' => $deleted,
+                'error'   => true,
+                'message' => $e->getMessage()
             ]);
         }
 
-        return redirect()->back()->with('message', 'Ciclo deleted.');
     }
+
+
+    /**
+     * @param Request $request
+     * @param $idCiclo
+     * @param $idDocente
+     * @return mixed
+     */
+    public function saveDocenteCiclo(Request $request, $idCiclo, $idDocente){
+        $existe = CicloDocentes::where('docente', $idDocente)->get();
+        if(count($existe) > 0){
+            return response()->json(['message' => 'El docente ya esta registrado en el ciclo', 'error' => true]);
+        }
+        //registro del docente
+        $cicloDocente = CicloDocentes::create([
+            'docente'   => $idDocente,
+            'ciclo'     => $idCiclo
+        ]);
+
+        return response()->json(['data' => $cicloDocente]);
+    }
+
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return mixed
+     * Actualizar y/o crear materias para un docente durante un ciclo
+     */
+    public function updateMateriasDocenteCiclo(Request $request, $id){
+        if(!$request->has('materias')){
+            return response()->json(array(
+                'message' => 'No existe el atributo materias',
+                'dev_message' => 'No se recibe el parametro materias'), 401);
+        }
+        
+        //$materiasDocente = Docente::with('materias')->where('id', $id)->toArray();
+        $materiasDocente = MateriasCicloDocente::where('ciclo_docente', $id)->get();
+
+        //desactivar todas las materias previo a validacion y actualizacion
+        MateriasCicloDocente::where('ciclo_docente', $id)->update(['activo' => false]);
+
+        foreach ($request->materias as $rKey => $rValue) {
+
+            $flagUpdated = false;
+
+            foreach ($materiasDocente as $mKey => $mValue) {
+
+                if ($mValue['materia'] == $rValue['materia']) {
+                    MateriasCicloDocente::where('id', $mValue['id'])->update(['materia' => $rValue['materia'], 'ciclo_docente' => $id, 'activo' => true]);
+                    $flagUpdated = true;
+                }
+            }
+
+            if(!$flagUpdated){
+                MateriasCicloDocente::create(['materia' => $rValue['materia'], 'ciclo_docente' => $id]);
+            }
+
+        }
+
+        return response()->json(['data' => $materiasDocente]);
+    }
+    
+
+
+    /**
+     * Retorna todos los ciclos 
+     * @return [type] [description]
+     */
+    public function getAllCiclos(){
+        $ciclos = Ciclo::all();
+        return response()->json(['data' => $ciclos]);
+    }
+
+
+    public function dataDashboardByCiclo($ciclo){
+        $totalDocentes = count(Docente::all());
+
+        $dataCiclo = Ciclo::with('docentes')
+            ->with('cursos')
+            ->find($ciclo);
+        $docentesCiclo = $dataCiclo->docentes->count();
+        $cursosCiclo = $dataCiclo->cursos->count();
+
+        //obtener los horarios asignados
+        $horariosCursosAsignados = 0;
+        foreach ($dataCiclo->cursos as $curso) {
+            if(count($curso->horario)>0)
+                $horariosCursosAsignados++;
+        }
+
+        //obtener los horarios distributivos asignados a docentes del ciclo
+        $horariosDistributivosDocentesCiclo = 0;
+        foreach ($dataCiclo->docentes as $docente) {
+            if(count($docente->cargaDistributiva) > 0)
+                $horariosDistributivosDocentesCiclo++;
+        }
+        
+        return array(
+            'total_docentes' => $totalDocentes,
+            'docentes_ciclo' => $docentesCiclo,
+            'cursos_ciclo' => $cursosCiclo,
+            'cursos_ciclo_asignado' => $horariosCursosAsignados,
+            'horarios_distributivos_asignados' => $horariosDistributivosDocentesCiclo
+        );
+    }
+    
+    public function cierreCiclo($idCiclo){
+        $ciclo = Ciclo::find($idCiclo);
+        $ciclo->update(['estado' => 'CERRADO']);
+        return response()->json(['data' => $ciclo]);
+    }
+
 }

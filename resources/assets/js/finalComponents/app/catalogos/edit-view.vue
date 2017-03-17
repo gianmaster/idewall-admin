@@ -1,5 +1,5 @@
 <template>
-<loading-app v-if="loading===true"></loading-app>
+	<loading-app v-if="loading===true"></loading-app>
 	<div class="row" v-else>
 		<form action="" @submit.prevent="update">
 			
@@ -12,7 +12,7 @@
 <script>
 	
 	import inputs from './form-fields.vue';
-
+	import {urlCatalogos} from '../config';
 	import myMixins from './mixins';
 
 	export default {
@@ -25,7 +25,7 @@
 				createMode: false,
 				newModel: {},
 				loading: true,
-				url: 'api/catalogos'
+				url: urlCatalogos
 			}
 		},
 		components: {
