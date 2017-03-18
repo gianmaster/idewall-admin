@@ -60,12 +60,12 @@
 						hidden: false
 					},
 					{
-						title: 'Parametro adicional',
+						title: 'Parámetro adicional',
 						field: 'aux1',
 						hidden: false
 					},
 					{
-						title: 'Parametro adicional 2',
+						title: 'Parámetro adicional 2',
 						field: 'aux2',
 						hidden: false
 					},
