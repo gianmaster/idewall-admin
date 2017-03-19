@@ -5,7 +5,7 @@
 
  import fnc from '../../../util/reusable_functions';
 
-import {urlMateriasDocente, urlListaMaterias} from '../config';
+import {urlMateriasDocente, urlListaMaterias, urlCiclo} from '../config';
 
  export default {
  	methods: {
@@ -29,7 +29,10 @@ import {urlMateriasDocente, urlListaMaterias} from '../config';
 			this.materiasSeleccionadas = data;
 		},
 		load: function(){
-			//
+			this.$http.get(urlCiclo).then(function(resp){
+				const idCiclo = resp.data.data ? resp.data.data.id : 0;
+				this.ciclo = idCiclo;
+ 			}, fnc.tryError);
  		},
 
  		//for edit-view.vue

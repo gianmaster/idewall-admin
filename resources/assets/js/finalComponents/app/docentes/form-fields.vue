@@ -8,7 +8,7 @@
 	-->
 
 	<div class="col-sm-6 col-xs-12">
-		<label>Abreviatura Título</label>
+		<label>Abreviatura Título <small>(sin punto ".")</small></label>
 		<input type="text" class="form-control" v-model="dataModel.abreviatura" placeholder="Ing" minlength="3" required>
 	</div>
 
@@ -100,7 +100,7 @@
 
 	<div class="col-sm-6 col-xs-12">
 		<label>Código de Registro Senescyt</label>
-		<input type="text" class="form-control" v-model="dataModel.registro_senescyt">
+		<input type="text" class="form-control" v-model="dataModel.registro_senescyt" required>
 	</div>
 
 	<div class="col-sm-6 col-xs-12">
@@ -110,7 +110,7 @@
 
 	<div class="col-xs-12 col-sm-6">
 		<label>Función</label>
-		<input type="text" class="form-control" v-model="dataModel.funcion">
+		<input type="text" class="form-control" placeholder="Gestión Pedagógica" v-model="dataModel.funcion">
 	</div>
 
 	<div class="col-sm-6 col-xs-12" v-if="!createMode">
@@ -167,7 +167,7 @@
 					direccion: null,
 					tipo_contrato: null,
 					estado: 'CONTRATADO',
-					funcion: 'Gestión Pedagógica'
+					funcion: ''
 				}
 			}
 		},

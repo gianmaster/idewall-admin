@@ -4,6 +4,8 @@
  */
 
 import fnc from '../../../util/reusable_functions';
+import {urlCiclo} from '../config';
+
 
 export default {
 	methods: {
@@ -35,10 +37,16 @@ export default {
 			}
 		},
 		load: function(){
+			const self = this;
 			this.loading = true;
 			this.$http.get(this.url).then(function(resp){
 				this.loading = false;
-			}, fnc.tryError)
+			}, fnc.tryError);
+
+			self.$http.get(urlCiclo).then(function(resp){
+				const idCiclo = resp.data.data ? resp.data.data.id : 0;
+				self.ciclo = idCiclo;
+ 			}, fnc.tryError);
 		}
 	}
 }

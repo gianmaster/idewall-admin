@@ -400,7 +400,7 @@
                         {dia: 'VIERNES', cod: 0, cod_padre: 0, label: 'Vacío', bloq: false},
                         {dia: 'SABADO', cod: 0, cod_padre: 0, label: 'Vacío', bloq: true},
                     ]},
-                    {tipo: 'hora', hora: '11:30 - 11:30', filas: [
+                    {tipo: 'hora', hora: '11:30 - 12:00', filas: [
                         {dia: 'LUNES', cod: 0, cod_padre: 0, label: 'Vacío', bloq: false},
                         {dia: 'MARTES', cod: 0, cod_padre: 0, label: 'Vacío', bloq: false},
                         {dia: 'MIERCOLES', cod: 0, cod_padre: 0, label: 'Vacío', bloq: false},

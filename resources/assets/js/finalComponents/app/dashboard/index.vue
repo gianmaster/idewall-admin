@@ -22,7 +22,7 @@
 						<template v-else>
 							<span class="info-box-text">No hay ciclo activo</span>
 							<div style="margin-top:10px;">
-								<button class="btn bg-green-active"><i class="fa fa-bell-o"></i> INICIAR CICLO</button>
+								<button class="btn bg-green-active" @click="showModalCiclo=true"><i class="fa fa-bell-o"></i> INICIAR CICLO</button>
 							</div>
 						</template>
 					</div><!-- /.info-box-content -->
@@ -73,7 +73,7 @@
 					<p class="text-center"><i class="fa fa-refresh fa-spin"></i> Cargando Gráfico...</p>
 				</template>
 				<template v-else>
-					<template v-if="ciclo != null">
+					<template v-if="ciclo.id">
 
 						<grafico
 								:data="graphs.primero.data"
@@ -96,7 +96,7 @@
 					<p class="text-center"><i class="fa fa-refresh fa-spin"></i> Cargando Gráfico...</p>
 				</template>
 				<template v-else>
-					<template v-if="ciclo != null">
+					<template v-if="ciclo.id">
 						<grafico
 								:data="graphs.segundo.data"
 								:options="graphs.segundo.options"
@@ -118,6 +118,25 @@
 					<a v-link="{path:'malla_academica'}">Malla Académica</a>.</p>
 			</div>
 
+			<app-modal title="Iniciar Nuevo Ciclo" :show.sync="showModalCiclo" @ok="addNewCiclo" @cancel="showModalCiclo=!showModalCiclo" emit-when-ok="event-add-new-ciclo" emit-when-close="event-close-new-ciclo">
+				<div class="row">
+
+					<div class="col-xs-12">
+
+						<div class="col-sm-9 col-xs-12">
+							<label>Período <small>(Desde - Hasta)</small></label>
+							<div class="input-group">
+								<input type="date" v-model="newCiclo.fecha_inicio" class="form-control" placeholder="Fecha Iniccio" aria-describedby="basic-addon1">
+								<span class="input-group-addon">A</span>
+								<input type="date" v-model="newCiclo.fecha_fin" class="form-control" placeholder="Fecha Fin" aria-describedby="basic-addon2">
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+			</app-modal>
+
 		</div>
 
 	</section>
@@ -136,19 +155,36 @@
 
 	import ContentHeader from '../../new-layout/content-header.vue';
 	import Grafico from './charts/chart.vue';
-	import Methods from './dashboardMethods';
+	import Mixins from './dashboardMethods';
+	import Modal from '../../reusable/modal.vue';
+	import { urlCiclo } from '../config';
+	import fnc from '../../../util/reusable_functions';
 
 	export default {
 		name: 'content-dashboard',
 		components:{
 			'content-header' : ContentHeader,
-			Grafico: Grafico
+			Grafico: Grafico,
+			'app-modal': Modal
 		},
-		ready(){
-			this.load();
+		mixins: [Mixins],
+		created(){
+			setTimeout(() => {
+				this.load();
+			}, 1000)
+		},
+		watch: {
+			'event-close-new-ciclo': function(){
+				this.showModalCiclo = false;
+			},
+			'event-add-new-ciclo': function(){
+				this.showModalCiclo = false;
+			}
 		},
 		data: function(){
 			return {
+				showModalCiclo: false,
+				newCiclo: { anio: null, fecha_inicio: null, fecha_fin: null },
 				loading: false,
 				testdata: {
           			labels: ["REMAIN", "LEAVE"],
@@ -163,7 +199,7 @@
 					horarios_distributivos_asignados: 0,
 					total_docentes: 0
 				},
-				ciclo: {},
+				ciclo: null,
 				path: [],
 				graphs:{
 					primero: {
@@ -236,8 +272,7 @@
 					},
 				}
 			}
-		},
-		methods: Methods
+		}
 	}
 
 </script>

@@ -147,7 +147,7 @@
 						field: "silabos",
 						hidden: false,
 						sortable: false,
-						template: '<i class="${col.silabos.length > 0 ? "fa fa-check text-green" : "fa fa-close text-red"}" ><i>'
+						template: '<i data-toggle="tooltip"  class="${col.silabos.length > 0 ? "fa fa-check text-green" : "fa fa-upload text-red"}" title="${col.silabos.length > 0 ? "Archivos subidos" : "No subido"}"><i>'
 					},
 					{
 						title: 'Acciones',

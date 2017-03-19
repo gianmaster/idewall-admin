@@ -110,6 +110,7 @@ Route::group(['middleware' => 'auth'], function(){
 
 		Route::post('ciclo/cierre/{ciclo}', 'CiclosController@cierreCiclo');
 		Route::get('ciclo', 'CiclosController@index');
+		Route::post('ciclo', 'CiclosController@store');
 		Route::get('ciclos', 'CiclosController@getAllCiclos');
 		Route::get('ciclo/{ciclo}/docentes', 'CiclosController@docentesCiclo');
 		Route::post('ciclo/{ciclo}/docentes/{docente}', 'CiclosController@saveDocenteCiclo');

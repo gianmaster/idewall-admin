@@ -52,7 +52,7 @@ class HorariosDocentesController extends Controller
     {
 
         $ciclo = Ciclo::where('estado','VIGENTE')->first();
-        $ciclo = $ciclo->id ? $ciclo->id : 0;
+        $ciclo = $ciclo ? $ciclo->id : 0;
 
         $data = DB::select("select *, xx.horas_academicas_asignadas + xx.horas_complementarias total from (
             select

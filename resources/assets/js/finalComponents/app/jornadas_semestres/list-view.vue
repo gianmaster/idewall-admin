@@ -5,20 +5,29 @@
 	</div>
 
 	<div v-else>
+
+		<template v-if="ciclo">
+
 		<div class="col-xs-12 show-div">
 			<a v-link="{path: '/jornadasemestres/create'}" class="btn btn-primary btn-flat btn-spacing"> <i class="fa fa-plus"></i> AGREGAR JORNADA</a>
 		</div>
 		<cool-table 
-		:option-toolbar="toolbar"
-		:url="url" 
-		:data.sync="datos" 
-		:columns="columnas" 
-		filter-key-word="search">
-	</cool-table>
+			:option-toolbar="toolbar"
+			:url="url" 
+			:data.sync="datos" 
+			:columns="columnas" 
+			filter-key-word="search">
+		</cool-table>
 
-	<!-- Modal logic -->
+		<!-- Modal logic -->
+		</template>
+		<template v-else>
+			<div class="alert alert-danger">
+				<p>No hay ciclo activo</p>
+			</div>
+		</template>
 
-</div>
+	</div>
 
 </template>
 
@@ -43,6 +52,7 @@
 	import {urlJornadaSemestre} from '../config';
 
 	export default {
+		name: 'jornada-semestre-ciclo',
 		mixins: [myMixins],
 		route: {
 			data: function(transition){
@@ -52,6 +62,7 @@
 		},
 		data(){
 			return {
+				ciclo: null,
 				showModal: false,
 				url: urlJornadaSemestre,
 				toolbar: null,

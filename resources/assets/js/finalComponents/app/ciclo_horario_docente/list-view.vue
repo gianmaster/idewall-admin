@@ -5,25 +5,35 @@
 	</div>
 
 	<div v-else>
+
+		<template v-if="ciclo">
+
 		<cool-table 
-		:option-toolbar="toolbar"
-		:url="url" 
-		:data.sync="datos" 
-		:columns="columnas" 
-		filter-key-word="search">
-	</cool-table>
+			:option-toolbar="toolbar"
+			:url="url" 
+			:data.sync="datos" 
+			:columns="columnas" 
+			filter-key-word="search">
+		</cool-table>
 
-	<!-- Modal logic -->
+		<!-- Modal logic -->
 
-	<app-modal title="Asignación de Materias" :show.sync="showModal" @ok="toggleModal" @cancel="toggleModal" emit-when-ok="event-end-edit">
-		<div class="row">
-			<form action="" @submit.prevent="update">
+		<app-modal title="Asignación de Materias" :show.sync="showModal" @ok="toggleModal" @cancel="toggleModal" emit-when-ok="event-end-edit">
+			<div class="row">
+				<form action="" @submit.prevent="update">
 
-				<formulario :data-model.sync="currentModel" :selected.sync="materiasSeleccionadas"></formulario>
+					<formulario :data-model.sync="currentModel" :selected.sync="materiasSeleccionadas"></formulario>
 
-			</form>
-		</div>
-	</app-modal>
+				</form>
+			</div>
+		</app-modal>
+
+		</template>
+		<template v-else>
+			<div class="alert alert-danger">
+				<p>No hay ciclo activo</p>
+			</div>
+		</template>
 
 </div>
 
@@ -54,6 +64,7 @@
 
 	export default {
 		mixins: [myMixins],
+		name: 'ciclo-horario-docente',
 		route: {
 			data: function(transition){
 				this.load();
@@ -62,6 +73,7 @@
 		},
 		data(){
 			return {
+				ciclo: null,
 				showModal: false,
 				url: urlcicloHorarioDocente,
 				toolbar: null,
@@ -100,7 +112,7 @@
 					fieldClass: 'text-center',
 					hidden: false,
 					sortable: false,
-					template: '<span class="text-green"><i class="fa fa-clock-o"></i> ${col.horas_academicas_asignadas.replace(".",":").replace("5","3")}H</span>'
+					template: '<span class="text-green"><i class="fa fa-clock-o"></i> ${col.horas_academicas_asignadas.replace(".5",":3").replace(".",":")}H</span>'
 				},
 				{
 					title: 'Horas Complementarias',

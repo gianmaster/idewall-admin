@@ -17,6 +17,7 @@ use App\Http\Requests\CicloCreateRequest;
 use App\Http\Requests\CicloUpdateRequest;
 use App\Repositories\CicloRepository;
 use App\Validators\CicloValidator;
+use Carbon\Carbon;
 
 
 class CiclosController extends Controller
@@ -59,29 +60,36 @@ class CiclosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(CicloCreateRequest $request)
+    public function store(Request $request)
     {
+
+        $inputs = $request->only(['fecha_inicio', 'fecha_fin']);
 
         try {
 
             $ciclos = Ciclo::where('estado', 'VIGENTE')->first();
 
-            if(!$ciclos){
+            if($ciclos){
                 return response()->json([
                     'message' => 'Ya hay un ciclo vigente, debe cerrarlos para poder generar uno nuevo'
                 ]);
             }else{
+
                 $ciclo = Ciclo::all()->last();
 
                 if($ciclo->ciclo == 2){
                     Ciclo::create([
                         'anio'  => ($ciclo->anio + 1),
-                        'ciclo' => 1
+                        'ciclo' => 1,
+                        'fecha_inicio' => Carbon::createFromFormat('Y-m-d', $inputs['fecha_inicio']),
+                        'fecha_fin' => Carbon::createFromFormat('Y-m-d', $inputs['fecha_fin'])
                     ]);
                 }else{
                     Ciclo::create([
                         'anio'  => ($ciclo->anio),
-                        'ciclo' => 2
+                        'ciclo' => 2,
+                        'fecha_inicio' => Carbon::createFromFormat('Y-m-d', $inputs['fecha_inicio']),
+                        'fecha_fin' => Carbon::createFromFormat('Y-m-d', $inputs['fecha_fin'])
                     ]);
                 }
             }
@@ -89,7 +97,7 @@ class CiclosController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'error'   => true,
-                'message' => $e->getMessageBag()
+                'message' => $e->getMessage()
             ]);
         }
     }

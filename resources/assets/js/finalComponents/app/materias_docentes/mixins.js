@@ -39,11 +39,11 @@ const URL_CICLO_DOCENTES = 'api/ciclo/param/docentes';
 			let self = this;
 			self.loading = true;
 			self.$http.get(urlCiclo).then(function(resp){
-				const idCiclo = resp.data.data.id ? resp.data.data.id : 0;
+				const idCiclo = resp.data.data ? resp.data.data.id : 0;
 				self.ciclo = idCiclo;
 				self.url = urlCicloDocente.replace('param', idCiclo);
 				self.loading = false;
- 			}, fnc.tryError)
+ 			}, fnc.tryError);
  		},
 
  		//for edit-view.vue

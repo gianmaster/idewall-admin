@@ -6,50 +6,58 @@
 
 	<div v-else>
 
+		<template v-if="ciclo">
+
 		<div style="margin-bottom: .4em;">
 			<button type="button" @click.prevent="addDocenteCicloActivo" class="btn btn-primary btn-flat"> <i class="fa fa-plus"></i> Agregar Docente</button>
 			<button type="button" @click.prevent="sendAllSilabos" class="btn btn-success btn-flat"> Enviar todos los sílabos <i class="fa fa-envelope-o"></i></button>
 		</div>
 
 		<cool-table 
-		:option-toolbar="toolbar"
-		:url="url" 
-		:data.sync="datos" 
-		:columns="columnas" 
-		filter-key-word="search">
-	</cool-table>
+			:option-toolbar="toolbar"
+			:url="url" 
+			:data.sync="datos" 
+			:columns="columnas" 
+			filter-key-word="search">
+		</cool-table>
 
-	<!-- Modal logic -->
+		<!-- Modal logic -->
 
-	<app-modal title="Asignación de Materias" :show.sync="showModal" @ok="toggleModal" @cancel="toggleModal" emit-when-ok="event-end-edit">
-		<div class="row">
-			<form action="" @submit.prevent="update">
+		<app-modal title="Asignación de Materias" :show.sync="showModal" @ok="toggleModal" @cancel="toggleModal" emit-when-ok="event-end-edit">
+			<div class="row">
+				<form action="" @submit.prevent="update">
 
-				<formulario :data-model.sync="currentModel" :selected.sync="materiasSeleccionadas"></formulario>
+					<formulario :data-model.sync="currentModel" :selected.sync="materiasSeleccionadas"></formulario>
 
-			</form>
-		</div>
-	</app-modal>
+				</form>
+			</div>
+		</app-modal>
 
-	<app-modal title="Enviar Sílabos" :show.sync="showModalSilabos" @ok="showModalSilabos=!showModalSilabos" @cancel="showModalSilabos=!showModalSilabos" emit-when-ok="event-end-envia-silabos" emit-when-close="event-close-silabos">
-		<div class="row">
+		<app-modal title="Enviar Sílabos" :show.sync="showModalSilabos" @ok="showModalSilabos=!showModalSilabos" @cancel="showModalSilabos=!showModalSilabos" emit-when-ok="event-end-envia-silabos" emit-when-close="event-close-silabos">
+			<div class="row">
 
-			<form-silabos :to-send.sync="materiasToSend" :data-model.sync="dataDocenteSilabo" :lista-opciones.sync="materiasSeleccionadas"></form-silabos>
+				<form-silabos :to-send.sync="materiasToSend" :data-model.sync="dataDocenteSilabo" :lista-opciones.sync="materiasSeleccionadas"></form-silabos>
 
-		</div>
-	</app-modal>
-
-
-	<app-modal title="Agregar Docente al Ciclo" :show.sync="showModalDocente" @ok="showModalDocente=!showModalDocente" @cancel="showModalDocente=!showModalDocente" emit-when-ok="event-end-add-docente" emit-when-close="event-close-add-docente">
-		<div class="row">
-
-			<form-docente :docente-seleccionado.sync="docenteSeleccionadoAgregar"></form-docente>
-
-		</div>
-	</app-modal>
+			</div>
+		</app-modal>
 
 
-</div>
+		<app-modal title="Agregar Docente al Ciclo" :show.sync="showModalDocente" @ok="showModalDocente=!showModalDocente" @cancel="showModalDocente=!showModalDocente" emit-when-ok="event-end-add-docente" emit-when-close="event-close-add-docente">
+			<div class="row">
+
+				<form-docente :docente-seleccionado.sync="docenteSeleccionadoAgregar"></form-docente>
+
+			</div>
+		</app-modal>
+
+		</template>
+		<template v-else>
+			<div class="alert alert-danger">
+				<p>No hay ciclo activo</p>
+			</div>
+		</template>
+
+	</div>
 
 </template>
 
