@@ -9,7 +9,9 @@
 		<template v-if="ciclo">
 
 		<div style="margin-bottom: .4em;">
+			<!--
 			<button type="button" @click.prevent="addDocenteCicloActivo" class="btn btn-primary btn-flat"> <i class="fa fa-plus"></i> Agregar Docente</button>
+			-->
 			<button type="button" @click.prevent="sendAllSilabos" class="btn btn-success btn-flat"> Enviar todos los sílabos <i class="fa fa-envelope-o"></i></button>
 		</div>
 
@@ -99,7 +101,14 @@
 				docenteSeleccionadoAgregar: '',
 				dataDocenteSilabo: {},
 				url: 'api/ciclo/param/docentes',
-				toolbar: null,
+				toolbar: {
+					iconClass: 'fa fa-plus',
+					iconClassOptions: 'fa fa-cogs',
+					label: 'Agregar Docente',
+					labelOptions: 'Campos visibles',
+					nameEmit: 'avent-add-docente-ciclo',
+					btnClass: 'btn btn-primary btn-flat'
+				},
 				currentModel: {},
 				materiasSeleccionadas: [],
 				datos: [],
@@ -195,6 +204,9 @@
 				if(confirm('¿Está seguro de quitar al docente del ciclo? Tenga encuenta que esto borrará todo el progreso relacionado con este')){
 					this.deleteCicloDocente(model.id); // el id ciclo docente
 				}
+			},
+			'avent-add-docente-ciclo': function(){
+				this.addDocenteCicloActivo();
 			}
 		}
 	}

@@ -177,11 +177,17 @@ class CiclosController extends Controller
         try{
 
             $perPage = request()->has('per_page') ? (int) request()->per_page : 5;
+            $search = request()->has('search') ? request()->search : '';
 
             if (request()->has('sort')) {
                 list($sortCol, $sortDir) = explode('|', request()->sort);
-                $data = CicloDocentes::with('cicloDetail')->with('materiasDocenteCiclo')->with('docenteDetail')
-                    ->where('ciclo', $ciclo)
+                $data = CicloDocentes::wherehas('docenteDetail', function($qry) use($search){
+                    $qry->where('nombres', 'LIKE',"%$search%")
+                            ->orWhere('apellidos', 'LIKE',"%$search%")
+                            ->orWhere('Abreviatura', 'LIKE',"%$search%");
+                })->with('cicloDetail')
+                ->with('materiasDocenteCiclo')
+                ->with('docenteDetail')->where('ciclo', $ciclo)
                     ->orderBy($sortCol, $sortDir)
                     ->paginate($perPage);
             } else {
