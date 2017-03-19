@@ -214,7 +214,7 @@ class CiclosController extends Controller
      * @return mixed
      */
     public function saveDocenteCiclo(Request $request, $idCiclo, $idDocente){
-        $existe = CicloDocentes::where('docente', $idDocente)->get();
+        $existe = CicloDocentes::where('docente', $idDocente)->where('ciclo', $idCiclo)->get();
         if(count($existe) > 0){
             return response()->json(['message' => 'El docente ya esta registrado en el ciclo', 'error' => true]);
         }
@@ -223,6 +223,21 @@ class CiclosController extends Controller
             'docente'   => $idDocente,
             'ciclo'     => $idCiclo
         ]);
+
+        return response()->json(['data' => $cicloDocente]);
+    }
+
+
+    /**
+     * @param Request $request
+     * @param $idCicloDocente
+     * @return mixed
+     */
+    public function deleteDocenteCiclo(Request $request, $idCicloDocente){
+        $cicloDocente = CicloDocentes::find($idCicloDocente);
+        if($cicloDocente){
+            $cicloDocente->delete();
+        }
 
         return response()->json(['data' => $cicloDocente]);
     }

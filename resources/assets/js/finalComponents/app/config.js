@@ -31,6 +31,7 @@ export const urlExportDocentes = `${endpoint}/download/docentes`;
 export const urlMateriasDocente = `${endpoint}/docentes/materias`;
 export const urlCicloDocente = `${endpoint}/ciclo/param/docentes`;
 export const urlListaMaterias = `${endpoint}/malla_academica/all`;
+export const urlEliminaDocenteCiclo = `${endpoint}/ciclo/docente/{ciclodocente}`;
 
 //jornada semestre
 export const urlJornadaSemestre = `${endpoint}/jornadasemestre`;

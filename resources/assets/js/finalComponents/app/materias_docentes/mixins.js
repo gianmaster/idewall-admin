@@ -4,7 +4,7 @@
  */
 
  import fnc from '../../../util/reusable_functions';
- import {urlMateriasDocente, urlCiclo, urlCicloDocente, urlListaMaterias, urlEnvioSilabosDocente, urlEnvioTodosSilabosDocente} from '../config';
+ import {urlMateriasDocente, urlCiclo, urlCicloDocente, urlListaMaterias, urlEnvioSilabosDocente, urlEnvioTodosSilabosDocente, urlEliminaDocenteCiclo} from '../config';
 
  const API_URL = 'api/docentes/materias';
 
@@ -111,7 +111,22 @@ const URL_CICLO_DOCENTES = 'api/ciclo/param/docentes';
 						this.load();
 					}
 				}
-			}, fnc.tryError)
+			}, fnc.tryError);
+		},
+		deleteCicloDocente: function(cicloDocente){
+			const url = urlEliminaDocenteCiclo.replace('{ciclodocente}', cicloDocente);
+			this.$http.post(url, {}).then(function(resp){
+				if(resp.error){
+					fnc.niceAlert('error', resp.message);
+				}else{
+					if(resp.data.error){
+						fnc.niceAlert('warning', resp.data.message);
+					}else{
+						fnc.niceAlert('success', 'Se ha eliminado el docente del ciclo correctamente');
+						this.load();
+					}
+				}
+			}, fnc.tryError);
 		}
  	}
- }
+ };

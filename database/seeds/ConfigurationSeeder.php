@@ -185,10 +185,10 @@ class ConfigurationSeeder extends Seeder
          * Ciclos
          * */
         App\Entities\Ciclo::create([
-            'anio' => 2016,
-            'ciclo' => 2,
-            'fecha_inicio'  => '2016-05-09',
-            'fecha_fin'  => '2016-09-30'
+            'anio' => 2017,
+            'ciclo' => 1,
+            'fecha_inicio'  => '2017-05-09',
+            'fecha_fin'  => '2017-09-30'
         ]);
 
 

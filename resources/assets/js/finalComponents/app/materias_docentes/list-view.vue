@@ -45,7 +45,7 @@
 		<app-modal title="Agregar Docente al Ciclo" :show.sync="showModalDocente" @ok="showModalDocente=!showModalDocente" @cancel="showModalDocente=!showModalDocente" emit-when-ok="event-end-add-docente" emit-when-close="event-close-add-docente">
 			<div class="row">
 
-				<form-docente :docente-seleccionado.sync="docenteSeleccionadoAgregar"></form-docente>
+				<form-docente :docente-seleccionado.sync="docenteSeleccionadoAgregar" :show-modal="showModalDocente"></form-docente>
 
 			</div>
 		</app-modal>
@@ -126,7 +126,7 @@
 					template: '${col.materias_docente_ciclo.map(function(ele){return "'+tagL+'"+ele.materia_detail.nombre_materia+"'+tagR+'";}).join(" ")}'
 				},//color-palette label bg-navy
 				{
-					title: 'Gestionar Materias',
+					title: 'Opciones',
 					titleClass: 'text-center',
 					hidden: false,
 					fieldClass: 'text-center',
@@ -142,6 +142,12 @@
 							btnClass: 'btn btn-info btn-xs',
 							iconClass: 'fa fa-send-o',
 							label: 'Enviar Silabos'
+						},
+						{
+							nameEmit: 'materias-docente-quitar',
+							btnClass: 'btn btn-danger btn-xs',
+							iconClass: 'fa fa-close',
+							label: 'Quitar Docente'
 						}
 					]
 				}
@@ -184,6 +190,11 @@
 				if (this.docenteSeleccionadoAgregar != "") {
 					this.addDocenteCiclo(this.ciclo,this.docenteSeleccionadoAgregar);
                 }
+			},
+			'materias-docente-quitar': function(model){
+				if(confirm('¿Está seguro de quitar al docente del ciclo? Tenga encuenta que esto borrará todo el progreso relacionado con este')){
+					this.deleteCicloDocente(model.id); // el id ciclo docente
+				}
 			}
 		}
 	}

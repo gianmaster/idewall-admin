@@ -114,6 +114,7 @@ Route::group(['middleware' => 'auth'], function(){
 		Route::get('ciclos', 'CiclosController@getAllCiclos');
 		Route::get('ciclo/{ciclo}/docentes', 'CiclosController@docentesCiclo');
 		Route::post('ciclo/{ciclo}/docentes/{docente}', 'CiclosController@saveDocenteCiclo');
+		Route::post('ciclo/docente/{ciclodocente}', 'CiclosController@deleteDocenteCiclo');
 		Route::put('docentes/materias/{id}', ['uses' => 'CiclosController@updateMateriasDocenteCiclo', 'as' => 'api.docentes.materias']);
 
 		Route::resource('ciclodocente', 'CicloDocentesController');
