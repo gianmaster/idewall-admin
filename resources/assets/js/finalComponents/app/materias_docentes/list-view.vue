@@ -125,7 +125,7 @@
 					field: 'nombres',
 					hidden: false,
 					sortable: true,
-					template: '${col.docente_detail.abreviatura}. ${col.docente_detail.nombres} ${col.docente_detail.apellidos}'
+					template: '${col.docente_detail.abreviatura?col.docente_detail.abreviatura:""}. ${col.docente_detail.nombres} ${col.docente_detail.apellidos}'
 				},
 				{
 					title: 'Materias',

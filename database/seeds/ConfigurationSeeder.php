@@ -1239,6 +1239,8 @@ class ConfigurationSeeder extends Seeder
             'semestre' => 'SEM8',
         ]);
 
+        /*
+
         App\Entities\MallaAcademica::create([
             'nombre_materia' => 'Organización y Métodos',
             'codigo_materia' => '805',
@@ -1248,6 +1250,8 @@ class ConfigurationSeeder extends Seeder
             'estado' => 'ACTIVO',
             'semestre' => 'SEM8',
         ]);
+
+        */
 
 
         App\Entities\MallaAcademica::create([

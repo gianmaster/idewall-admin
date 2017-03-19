@@ -23,7 +23,10 @@ class CicloDocentes extends Model implements Transformable
     }
 
     public function materiasDocenteCiclo(){
-        return $this->hasMany(MateriasCicloDocente::class, 'ciclo_docente', 'id')->with('materiaDetail')->with('horariosMateriaDocente');
+        return $this->hasMany(MateriasCicloDocente::class, 'ciclo_docente', 'id') //se agrego el whereHas
+            ->whereHas('materiaDetail', function($q){
+                $q->where('activo', true);
+            })->with('materiaDetail')->with('horariosMateriaDocente');
     }
 
     public function cargaDistributiva(){
