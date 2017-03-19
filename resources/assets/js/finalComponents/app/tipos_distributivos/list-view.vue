@@ -80,7 +80,7 @@
 				return this.createMode ? 'Crear Tipo Distributivo' : 'Modificar Tipo Distributivo'
 			},
 			getTitleDistributivo: function(){
-				if(this.currentModel.nombre){
+				if(this.currentModel){
 					return '';
 				}else{
 					return `Tipo Distributivo ${this.currentModel.nombre} - Items`;

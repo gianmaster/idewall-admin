@@ -67,22 +67,24 @@
 
 		</div>
 
+		<!--
 		<div class="row">
 			<div class="col-xs-12 col-sm-6" style="max-height: 300px;">
-				<template v-if="loading == true">
+				<template v-if="loading">
 					<p class="text-center"><i class="fa fa-refresh fa-spin"></i> Cargando Gráfico...</p>
 				</template>
 				<template v-else>
 					<template v-if="ciclo.id">
 
+						
 						<grafico
 								:data="graphs.primero.data"
 								:options="graphs.primero.options"
 								type="doughnut"
 								id="myChart1"
 						></grafico>
+						
 
-						<!--<vue-chart :data="testdata" type="doughnut"></vue-chart>-->
 					</template>
 					<template v-else>
 						<p class="text-center text-red">No hay registros de un ciclo activo <i class="fa fa-pie-chart" aria-hidden="true"></i></p>
@@ -92,18 +94,19 @@
 			</div>
 
 			<div class="col-xs-12 col-sm-6" style="max-height: 300px;">
-				<template v-if="loading == true">
+				<template v-if="loading">
 					<p class="text-center"><i class="fa fa-refresh fa-spin"></i> Cargando Gráfico...</p>
 				</template>
 				<template v-else>
 					<template v-if="ciclo.id">
+
 						<grafico
 								:data="graphs.segundo.data"
 								:options="graphs.segundo.options"
 								type="doughnut"
 								id="myChart2"
 						></grafico>
-						<!--<vue-chart :data="testdata" type="doughnut"></vue-chart>-->
+
 					</template>
 					<template v-else>
 						<p class="text-center text-red">No hay registros de un ciclo activo <i class="fa fa-pie-chart" aria-hidden="true"></i></p>
@@ -118,26 +121,29 @@
 					<a v-link="{path:'malla_academica'}">Malla Académica</a>.</p>
 			</div>
 
-			<app-modal title="Iniciar Nuevo Ciclo" :show.sync="showModalCiclo" @ok="addNewCiclo" @cancel="showModalCiclo=!showModalCiclo" emit-when-ok="event-add-new-ciclo" emit-when-close="event-close-new-ciclo">
-				<div class="row">
 
-					<div class="col-xs-12">
+		</div>
+		-->
 
-						<div class="col-sm-9 col-xs-12">
-							<label>Período <small>(Desde - Hasta)</small></label>
-							<div class="input-group">
-								<input type="date" v-model="newCiclo.fecha_inicio" class="form-control" placeholder="Fecha Iniccio" aria-describedby="basic-addon1">
-								<span class="input-group-addon">A</span>
-								<input type="date" v-model="newCiclo.fecha_fin" class="form-control" placeholder="Fecha Fin" aria-describedby="basic-addon2">
-							</div>
+
+		<app-modal title="Iniciar Nuevo Ciclo" :show.sync="showModalCiclo" @ok="addNewCiclo" @cancel="showModalCiclo=!showModalCiclo" emit-when-ok="event-add-new-ciclo" emit-when-close="event-close-new-ciclo">
+			<div class="row">
+
+				<div class="col-xs-12">
+
+					<div class="col-sm-9 col-xs-12">
+						<label>Período <small>(Desde - Hasta)</small></label>
+						<div class="input-group">
+							<input type="date" v-model="newCiclo.fecha_inicio" class="form-control" placeholder="Fecha Iniccio" aria-describedby="basic-addon1">
+							<span class="input-group-addon">A</span>
+							<input type="date" v-model="newCiclo.fecha_fin" class="form-control" placeholder="Fecha Fin" aria-describedby="basic-addon2">
 						</div>
-
 					</div>
 
 				</div>
-			</app-modal>
 
-		</div>
+			</div>
+		</app-modal>
 
 	</section>
 </template>
@@ -171,13 +177,10 @@
 		created(){
 			setTimeout(() => {
 				this.load();
-			}, 1000)
+			}, 400)
 		},
 		watch: {
 			'event-close-new-ciclo': function(){
-				this.showModalCiclo = false;
-			},
-			'event-add-new-ciclo': function(){
 				this.showModalCiclo = false;
 			}
 		},

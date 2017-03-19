@@ -12,8 +12,8 @@
     import Chart from 'chart.js';
 
     export default{
-        name: 'grafico',
-        ready(){
+        name: 'cheart',
+        created(){
             let ctx = document.getElementById(this.id);
             const myChar = new Chart(ctx, {
                 type: this.type,

@@ -52,19 +52,6 @@ router.map({
     component: require('./finalComponents/app/dashboard/index.vue'),
     //component: require('./finalComponents/app/testVueTable.vue')
   },
-  /*
-  '/usuarios': {
-    component: require('./finalComponents/app/usuariosView.vue')
-  },
-  '/menu': {
-    component: require('./finalComponents/app/testMantenedorMenu.vue')
-  },
-  '/sdk': {
-    component: require('./finalComponents/app/testVueTable.vue')
-  },
-  '/paginate': {
-    component: require('./finalComponents/app/testPagination.vue')
-  },*/
 
   '/profile': require('./finalComponents/app/profile/index.js'),
 
