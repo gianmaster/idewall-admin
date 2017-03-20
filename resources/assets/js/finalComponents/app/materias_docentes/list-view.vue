@@ -12,7 +12,11 @@
 			<!--
 			<button type="button" @click.prevent="addDocenteCicloActivo" class="btn btn-primary btn-flat"> <i class="fa fa-plus"></i> Agregar Docente</button>
 			-->
+
+			<p v-if="enviandoSilabo" class="alert-warning text-center">Enviando Sílabos <i class="fa fa-cog fa-spin"></i></p>			
+
 			<button type="button" @click.prevent="sendAllSilabos" class="btn btn-success btn-flat"> Enviar todos los sílabos <i class="fa fa-envelope-o"></i></button>
+
 		</div>
 
 		<cool-table 
@@ -93,6 +97,7 @@
 		},
 		data(){
 			return {
+				enviandoSilabo: false,
 				ciclo: null,
 				showModal: false,
 				showModalSilabos: false,
@@ -125,7 +130,7 @@
 					field: 'nombres',
 					hidden: false,
 					sortable: true,
-					template: '${col.docente_detail.abreviatura?col.docente_detail.abreviatura:""}. ${col.docente_detail.nombres} ${col.docente_detail.apellidos}'
+					template: '${col.docente_detail.abreviatura?col.docente_detail.abreviatura:""}. ${col.docente_detail.nombres} ${col.docente_detail.apellidos} <span class="text-red"> ${col.docente_detail.estado==="CULMINADO"?"(SIN CONTRATO VIGENTE)":""}</span>'
 				},
 				{
 					title: 'Materias',

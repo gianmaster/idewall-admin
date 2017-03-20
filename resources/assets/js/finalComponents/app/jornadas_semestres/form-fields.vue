@@ -32,7 +32,7 @@
 <script>
 
 	import selectList from '../../reusable/select-list.vue';
-	import {urlListaItems} from '../config';
+	import {urlListaItems, urlParalelosCiclo} from '../config';
 
 	export default {
 		name: 'formulario-jornada-semestre',
@@ -46,7 +46,7 @@
 				urlJornadas: `${urlListaItems}/5`,
 				urlSemestre: `${urlListaItems}/2`,
 				urlAula: `${urlListaItems}/4`,
-				urlParalelo: `${urlListaItems}/6`
+				urlParalelo: urlParalelosCiclo
 			}
 		},
 		components: {

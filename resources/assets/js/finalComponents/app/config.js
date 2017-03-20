@@ -8,6 +8,7 @@ export const urlCiclo = `${endpoint}/ciclo`;
 export const urlCicloCierre = `${endpoint}/ciclo/cierre`;
 export const urlCiclos = `${endpoint}/ciclos`;
 export const urlDashboard = `${endpoint}/dashborad/{ciclo}`;
+export const urlParalelosCiclo = `${endpoint}/catalogo/paralelos/ciclo/activo`;
 //modulo usuarios
 export const urlUsuarios = `${endpoint}/users`;
 export const urlAvatar = `${endpoint}/avatar`;

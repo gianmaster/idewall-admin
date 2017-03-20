@@ -339,4 +339,19 @@ class CiclosController extends Controller
         return response()->json(['data' => $ciclo]);
     }
 
+
+    public function paralelosCicloActivo(){
+        $ciclo = Ciclo::where('estado', 'VIGENTE')->first();
+        if($ciclo){
+            $ciclo = $ciclo->id;
+            $data = DB::select("
+                    select * from catalogo_items where catalogo = 6
+                        and codigo not in (select catalogo_paralelo from jornadas_semestres where ciclo = $ciclo);
+            ");
+            return response()->json(['data' => $data]);
+        }
+
+        return response()->json(['data' => []]);
+    }
+
 }

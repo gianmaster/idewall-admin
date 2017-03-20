@@ -93,6 +93,13 @@
 					template: '${col.semestre.descripcion}'
 				},
 				{
+					title: 'Paralelo',
+					field: 'paralelo',
+					hidden: false,
+					sortable: false,
+					template: '${col.paralelo.descripcion}'
+				},
+				{
 					title: 'Curso / Aula / Paralelo',
 					field: 'aula',
 					hidden: false,

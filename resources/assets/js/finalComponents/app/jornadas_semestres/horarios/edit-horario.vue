@@ -18,7 +18,7 @@
                 <div class="box-body">
                     <p v-dragable-for="item in materias" options='{"group":"people"}' @drag="onDragMateria($event, item)" class="__is_draggable">
                         <span class="text-blue">{{item.nombre_materia}}</span><br>
-                        <small>Cod: {{item.codigo_materia}} - <i>{{item.horas}}Horas</i></small><span class="btn-success badge pull-right">{{item.total}}</span>
+                        <small>Cod: {{item.codigo_materia}} - <i>{{item.horas}}Horas</i> <i data-toggle="tooltip" title="Las horas asignadas superan las horas ya definidas para esta materia" class="fa fa-info-circle text-red" v-if="horaToNumeric(item.total)>item.horas"></i> </small><span class="btn-success badge pull-right">{{item.total}}</span>
                     </p>
                 </div><!-- /.box-body -->
                 <div class="box-footer" @dragover.prevent @drop="onDropMateria">
@@ -119,7 +119,7 @@
                                         </div>
                                         <div class="col-xs-1 text-center">
                                             <div class="btn-group">
-                                                <a href="javascript:;" class="btn btn-success btn-xs" @click="saveMateria($index)">
+                                                <a href="javascript:;" class="btn btn-success btn-xs" @click="saveMateria($index, 'validacion')">
                                                     <i data-toggle="tooltip" class="fa fa-check" title="Guardar"></i>
                                                 </a>
                                                 <a href="javascript:;" class="btn btn-default btn-xs" @click="dia.modoAgregar=false">
@@ -184,6 +184,7 @@
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="fa fa-calendar-{{lista_horas.length <= 0 ? 'times' : 'check'}}-o" aria-hidden="true"></i> Horario - Vista Previa</h3>
                     <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" @click.preven="updateView"><i class="fa fa-refresh"></i></button>
                         <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-{{lista_horas.length <= 0 ? 'plus' : 'minus'}}"></i></button>
                     </div><!-- /.box-tools -->
                 </div><!-- /.box-header -->
@@ -483,6 +484,13 @@
                 return null;
 
             },
+            updateView(){
+                this.$http.get(urlJornadaSemestre + '/' + this.$route.params.model_id + '/horario').then(function(resp){
+                    const materias = resp.data.data.catalogo_jornada == 'ESP' ? resp.data.data.materias_especiales_semestre : resp.data.data.materias_normales_semestre;                    
+                    this.loadHorario(resp.data.horario);
+                    this.loadListahoras(resp.data.lista_horas);
+                }, fnc.tryError);
+            },
             loadData(){
                 this.id_jornada_semestre = this.$route.params.model_id;
                 this.loading = true;
@@ -568,7 +576,7 @@
                 }
 
             },
-            saveMateria(idxDia){
+            saveMateria(idxDia, tipo='under'){
                 const tmp = this.horario[idxDia].materiaTmp;
                 const ini = parseInt(tmp.desde.HH + tmp.desde.mm);
                 const fin = parseInt(tmp.hasta.HH + tmp.hasta.mm);
@@ -590,7 +598,9 @@
                             this.horario[idxDia].modoAgregar = false;
                             this.clearMateria(idxDia);
                         }else{
-                            alert('Materia ya registrada, por favor seleccione otra!');
+                            if(tipo !== 'under'){
+                                alert('Materia ya registrada, por favor seleccione otra!');
+                            }
                         }
 
                     }else{
@@ -719,6 +729,9 @@
                 }else{
                     console.log('No hay horario asignado para este curso');
                 }
+            },
+            horaToNumeric(hora){
+                return fnc.horaCharToNumReal(hora);
             }
 
         }

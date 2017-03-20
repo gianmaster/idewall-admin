@@ -58,7 +58,7 @@ return [
      * Configuracion de pruebas para envio de silabos por correo
      * Dejar en false para modo produccion
      */
-    'email_test' => true,
+    'email_test' => false,
 
     /*
     |--------------------------------------------------------------------------
