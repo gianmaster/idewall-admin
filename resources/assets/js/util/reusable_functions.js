@@ -138,7 +138,9 @@ export default {
 	 * @returns {number}
 	 */
 	horaCharToNumReal(hora){
-		return parseInt(hora.substr(0, 2)) + parseInt(hora.substr(3, 2));
+		const time = hora.split(':');
+		const num = parseFloat(time[0] + '.' + time[1].replace('3', '5'));
+		return num;
 	},
 	/**
 	 * 

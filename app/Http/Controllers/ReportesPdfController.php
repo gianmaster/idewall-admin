@@ -424,12 +424,14 @@ class ReportesPdfController extends Controller
 			  doc.apellidos,
 			  malla.codigo_materia,
 			  malla.nombre_materia,
+			  /*
 			  (select distinct cati.descripcion from horarios_cursos hc, ciclo_materias_docente cmd, jornadas_semestres jm, catalogo_items cati
 			  where hc.ciclo_materia_docente = cmd.id
 					and jm.id = hc.ciclo_jornada_semestre
 					and cati.codigo = jm.catalogo_aula
 					and cati.catalogo = 4
 					and cmd.id = cimado.id) aula,
+					*/
 			  (select distinct cati.descripcion from horarios_cursos hc, ciclo_materias_docente cmd, jornadas_semestres jm, catalogo_items cati
 			  where hc.ciclo_materia_docente = cmd.id
 					and jm.id = hc.ciclo_jornada_semestre

@@ -67,6 +67,30 @@
 
 		</div>
 
+		<div class="row">
+			<div class="col-xs-12">
+				<template v-if="loading">
+					<p class="text-center"><i class="fa fa-refresh fa-spin"></i> Cargando Gráfico...</p>
+				</template>
+				<template v-else>
+					<div class="col-md-4 col-md-offset-1 col-xs-12">
+						<grafico element-id="chart1" type="polarArea" :data="graphs.primero.data" :options="graphs.primero.options"></grafico>
+					</div>
+					<div class="col-md-4 col-md-offset-2 col-xs-12">
+						<grafico element-id="chart2" type="polarArea" :data="graphs.segundo.data" :options="graphs.segundo.options"></grafico>
+					</div>
+
+					<div class="col-xs-12 col-sm-8 col-sm-offset-2" style="margin-top: 20px">
+						<a v-link="{path:'/materias_docentes'}" class="btn btn-primary btn-block"><i class="fa fa-link"></i> IR A ENVÍO DE SÍLABOS </a>
+						<p class="text-center text-red">Use la opción de envío de sílabos solo cuando terminte la asignación de las horas distributivas de los docentes.</p>
+						<p class="text-center text-blue">Recuerde que usted puede agregar y/o actualizar los sílabos en la opción
+							<a v-link="{path:'malla_academica'}">Malla Académica</a>.</p>
+					</div>
+
+				</template>
+			</div>
+		</div>
+
 		<!--
 		<div class="row">
 			<div class="col-xs-12 col-sm-6" style="max-height: 300px;">
@@ -160,7 +184,7 @@
 <script>
 
 	import ContentHeader from '../../new-layout/content-header.vue';
-	import Grafico from './charts/chart.vue';
+	import Grafico from './charts/chartV2.vue';
 	import Mixins from './dashboardMethods';
 	import Modal from '../../reusable/modal.vue';
 	import { urlCiclo } from '../config';

@@ -137,7 +137,7 @@
                         </tab>
 
                         <!-- tab de asignacion de maestros -->
-                        <tab header="<span>Docentes Asignados <i class='fa fa-bookmark'></i></span>">
+                        <tab header="<span><i class='fa fa-bookmark'></i> Docentes Asignados & Grabar <i class='fa fa-save'></i></span>">
 
                             <form action="" @submit.prevent="guardarHorario">
 
@@ -697,7 +697,8 @@
 
                 this.$http.post(urlJornadaSemestre + '/' + this.$route.params.model_id + '/horario', {horario: dataToSend}).then(function(resp){
                     fnc.niceAlert('info', 'Se envia a guardar los datos');
-                    //this.loadData();
+                    this.loadData();
+                    console.log('ahora carga desde el guardar');
                 }, fnc.tryError);
 
             },

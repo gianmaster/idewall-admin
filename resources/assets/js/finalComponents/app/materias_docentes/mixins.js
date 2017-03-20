@@ -20,8 +20,9 @@ const URL_CICLO_DOCENTES = 'api/ciclo/param/docentes';
 		toggleModal: function(){
 			this.showModal = !this.showModal;
 		},
-		toggleDataModel: function(model, materias){
+		toggleDataModel: function(cmdId, model, materias){
 			this.currentModel = model;
+			this.currentModel.ciclo_materia_docente = cmdId;
 			this.toggleMaterias(materias);
 		},
 		toggleMaterias: function(materias){
@@ -50,7 +51,7 @@ const URL_CICLO_DOCENTES = 'api/ciclo/param/docentes';
  		update: function(){ 
  			const materias = this.materiasSeleccionadas;
  			const self = this;
- 			self.$http.put(urlMateriasDocente + '/' + this.currentModel.id, {materias: materias}).then(function(resp){
+ 			self.$http.put(urlMateriasDocente + '/' + this.currentModel.ciclo_materia_docente, {materias: materias}).then(function(resp){
  					fnc.niceAlert('success', 'Esta información ha sido modificada correctamente!');
  					//setTimeout(function(){self.$router.go('/materias_docentes');}, 10);
  					self.$router.go('/materias_docentes?' + (+new Date())); //random token

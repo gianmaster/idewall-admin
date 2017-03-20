@@ -256,6 +256,7 @@ class CiclosController extends Controller
      * Actualizar y/o crear materias para un docente durante un ciclo
      */
     public function updateMateriasDocenteCiclo(Request $request, $id){
+
         if(!$request->has('materias')){
             return response()->json(array(
                 'message' => 'No existe el atributo materias',

@@ -9,7 +9,7 @@
 			<div class="col-xs-4 col-sm-4">
 				<form action="#" method="get" @submit.prevent="search">
 					<div class="input-group">
-						<input type="text" name="filter" v-model="search_filter" class="form-control" placeholder="Buscar...">
+						<input type="text" name="filter" v-model="search_filter" class="form-control" :placeholder="searchPlaceholder">
 						<span class="input-group-btn">
 							<button type="submit" name="search_table" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
 						</span>
@@ -311,6 +311,10 @@
 						order: 'asc'
 					}	
 				}
+			},
+			searchPlaceholder: {
+				type: String,
+				default: 'Buscar...'
 			},
 			columns: {
 				type: Array, default: function(){

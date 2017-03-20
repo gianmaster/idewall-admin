@@ -22,9 +22,9 @@ export default {
                         vm.data = res.data;
                         vm.loadDataChart();
                         vm.loading = false;
-                        auxrenderGraph();
+                        // auxrenderGraph();
                         setTimeout(function () {
-                            auxrenderGraph();
+                            // auxrenderGraph();
                         }, 500);
                     }, fnc.tryError);
                 }
@@ -41,7 +41,7 @@ export default {
                             vm.loadDataChart();
                             vm.loading = false;
                             auxrenderGraph();
-                        }, fnc.tryError)
+                        }, fnc.tryError);
                     }
                     vm.loading = false;
 

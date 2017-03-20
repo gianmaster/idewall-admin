@@ -95,11 +95,11 @@ class JornadasSemestresController extends Controller
 
             $cicloVigente = CiclosController::currentCiclo();
 
-            $data = $request->only(['catalogo_semestre', 'catalogo_jornada', 'catalogo_aula']);
+            $data = $request->only(['catalogo_jornada', 'catalogo_aula']);
 
             $dataToSave = $request->only(['catalogo_semestre', 'catalogo_jornada', 'catalogo_aula', 'catalogo_paralelo']);
 
-            $this->validator->with($data)->passesOrFail(ValidatorInterface::RULE_CREATE);
+            $this->validator->with($dataToSave)->passesOrFail(ValidatorInterface::RULE_CREATE);
 
             $data['ciclo'] = $cicloVigente->id;
             $dataToSave['ciclo'] = $cicloVigente->id;
@@ -109,7 +109,7 @@ class JornadasSemestresController extends Controller
             if(array_has($existe, 0)){
                 return response()->json([
                     'error'   => true,
-                    'message' => 'Ya se ha registrado el curso para esta jornada y mismo semestre!'
+                    'message' => 'Ya se ha registrado el este curso en esta jornada!'
                 ], 403);
             }
 

@@ -24,6 +24,7 @@
 			:url="url" 
 			:data.sync="datos" 
 			:columns="columnas" 
+			search-placeholder="Buscar por docente..."
 			filter-key-word="search">
 		</cool-table>
 
@@ -179,7 +180,7 @@
 		},
 		events: {
 			'materias-docente-update-event' : function(model){
-				this.toggleDataModel(model.docente_detail, model.materias_docente_ciclo);
+				this.toggleDataModel(model.id, model.docente_detail, model.materias_docente_ciclo);
 				this.toggleModal();
 			},
 			'materias-docente-envia-silabos-update-event': function(model){
