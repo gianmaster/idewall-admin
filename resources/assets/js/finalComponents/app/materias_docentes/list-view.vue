@@ -187,6 +187,7 @@
 				//this.docenteSendSilabo = model;
 				this.showModalSilabos = true;
 				this.dataDocenteSilabo = model.docente_detail;
+				this.dataDocenteSilabo.id_ciclo_docente = model.id;
 				this.toggleMaterias(model.materias_docente_ciclo);
 			},
 			//when modal emit ok

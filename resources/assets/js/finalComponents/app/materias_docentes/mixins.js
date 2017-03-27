@@ -74,12 +74,13 @@ const URL_CICLO_DOCENTES = 'api/ciclo/param/docentes';
 			const self = this;
 			const nombre = `${docente.apellidos} ${docente.nombres}`;
 			const email = docente.email;
+			const id = docente.id_ciclo_docente;
 
 			if(materias.length > 0){
 				self.enviandoSilabo = true;			
 				self.$http.post(urlEnvioSilabosDocente, {
 					materias,
-					docente: { nombre, email }
+					docente: { nombre, email, id }
 				}).then(function(resp){
 					fnc.niceAlert('success', 'Silabos enviados correctamente!');
 					self.enviandoSilabo = false;

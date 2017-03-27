@@ -67,7 +67,7 @@ class MateriasCicloDocentesController extends Controller
 
             foreach ($docentes as $docente) {
                 $d = $docente->toArray();
-                $dataDocente = ['nombre' => $d['docente_detail']['nombres'] .' '. $d['docente_detail']['apellidos'], 'email' => $d['docente_detail']['email']];
+                $dataDocente = ['nombre' => $d['docente_detail']['nombres'] .' '. $d['docente_detail']['apellidos'], 'email' => $d['docente_detail']['email'], 'id' => $d['id']];
                 $materias = array();
                 foreach ($d['materias_docente_ciclo'] as $materiaDocente) {
                     array_push($materias, $materiaDocente['materia']);
@@ -125,7 +125,7 @@ class MateriasCicloDocentesController extends Controller
                 $sbj = 'Sílabos - ' . $msj;
 
                 if (count($archivos) > 0) {
-                    Mail::send("emails.envio_silabos", ['docente' => $docente['nombre'], 'mensaje' => $msj], function ($message) use ($docente, $sbj, $archivos) {
+                    Mail::send("emails.envio_silabos", ['docente' => $docente['nombre'], 'mensaje' => $msj, 'ciclo_docente' => $docente['id']], function ($message) use ($docente, $sbj, $archivos) {
 
                         $message->to($docente['email'], $docente['nombre'])->subject($sbj);
                         foreach ($archivos as $archivo) {

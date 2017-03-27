@@ -475,7 +475,7 @@
 			changePerPage: function(){
 				this.pagination.moreTemp=1;
 				this.pagination.current_page=1;
-				this.loadData();	
+				this.loadData();
 			},
 			loadingAnimation: function(type){
 				var query = '.' + this.tableClass.split(' ').join('.');
@@ -512,6 +512,7 @@
 				});
 			},
 			search: function(){
+				this.pagination.current_page=1;
 				this.loadData();
 			},
 			dispacher: function(event, model){
