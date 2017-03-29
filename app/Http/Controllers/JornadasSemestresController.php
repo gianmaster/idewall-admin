@@ -302,8 +302,9 @@ class JornadasSemestresController extends Controller
                     $fFinHorario = Carbon::createFromFormat('Y-m-d H:i', '2000-01-01 ' . $valHorario->hora_fin);
                     $flagIni = Carbon::createFromFormat('Y-m-d H:i', '2000-01-01 ' . $val['hora_inicio'])->between($fIniHorario,$fFinHorario);
                     $flagFin = Carbon::createFromFormat('Y-m-d H:i', '2000-01-01 ' . $val['hora_fin'])->between($fIniHorario,$fFinHorario);
-                    if(($flagFin || $flagIni ) && $val['dia'] == $valHorario->dia && $val['ciclo_jornada_semestre'] != $idCicloJornadaSem){
-                        return 'Hay un choque de horas par el docente ' . $valHorario->abreviatura . '. ' . $valHorario->nombres .' '. $valHorario->apellidos .' con la materia ' . $valHorario->nombre_materia . ' (' . $valHorario->dia . ' de ' .$valHorario->hora_inicio . ' a ' . $valHorario->hora_fin . ' | ' . $valHorario->semestre;
+                    // var_dump([[$flagFin, $flagIni], [$val['dia'], $valHorario->dia], [$val['ciclo_jornada_semestre'], $idCicloJornadaSem]]);
+                    if(($flagFin || $flagIni ) && $val['dia'] == $valHorario->dia && $valHorario->ciclo_jornada_semestre != $idCicloJornadaSem){
+                        return 'Hay un choque de horas para el docente ' . $valHorario->abreviatura . '. ' . $valHorario->nombres .' '. $valHorario->apellidos .' con la materia ' . $valHorario->nombre_materia . ' (' . $valHorario->dia . ' de ' .$valHorario->hora_inicio . ' a ' . $valHorario->hora_fin . ' | ' . $valHorario->semestre . ')';
                     }
                 }
             }

@@ -696,7 +696,7 @@
                 }
 
                 this.$http.post(urlJornadaSemestre + '/' + this.$route.params.model_id + '/horario', {horario: dataToSend}).then(function(resp){
-                    fnc.niceAlert('info', 'Se envia a guardar los datos');
+                    fnc.niceAlert('success', 'Se envia a guardar los datos');
                     this.loadData();
                     console.log('ahora carga desde el guardar');
                 }, fnc.tryError);

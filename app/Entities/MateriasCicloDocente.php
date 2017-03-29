@@ -76,7 +76,8 @@ class MateriasCicloDocente extends Model implements Transformable
       hc.hora_inicio,
       hc.hora_fin,
       hc.num_horas,
-      js.catalogo_semestre semestre
+      js.catalogo_semestre semestre,
+      js.id ciclo_jornada_semestre
   from ciclo_materias_docente cmd,
         ciclo_docentes cd,
         docentes d,
