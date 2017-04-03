@@ -8,7 +8,7 @@ import ExternalComponents from './config/externalComponents';
 import VueDragableFor from 'vuedragablefor';
 Vue.use(VueDragableFor);
 
-Vue.config.debug = false;
+Vue.config.debug = true;
 
 //global filters
 //Vue.use(VueFilter);

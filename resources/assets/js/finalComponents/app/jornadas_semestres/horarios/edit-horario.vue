@@ -637,7 +637,7 @@
             },
             getAtributoMateria(idMateria, atributo){
                 if(this.lista_materias.length > 0 && idMateria){
-                    return _.filter(this.lista_materias, {id: idMateria})[0][atributo];
+                    return _.filter(this.lista_materias, {id: parseInt(idMateria)})[0][atributo];
                 }
                 return idMateria;
             },
@@ -653,14 +653,14 @@
                 });
 
                 if(this.materias_docentes_disponibles.length > 0){
-                    const nombres = _.filter(this.materias_docentes_disponibles, {ciclo_materia_docente : codigos.id_cmd})[0].nombres;
-                    const apellidos = _.filter(this.materias_docentes_disponibles, {ciclo_materia_docente : codigos.id_cmd})[0].apellidos;
+                    const nombres = _.filter(this.materias_docentes_disponibles, {ciclo_materia_docente : codigos.id_cmd.toString()})[0].nombres;
+                    const apellidos = _.filter(this.materias_docentes_disponibles, {ciclo_materia_docente : codigos.id_cmd.toString()})[0].apellidos;
                     return `${nombres} ${apellidos}`;
                 }
                 return null;
             },
             actualizaCalculoMaterias: function(idMateria){
-                const idxMat = _.findIndex(this.materias, {id: idMateria});
+                const idxMat = _.findIndex(this.materias, {id: parseInt(idMateria)});
                 let hora = '00:00';
                 for(let dia of this.horario){
                     for(let mat of dia.materias){
